@@ -1,0 +1,1510 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio Legale Angelicata</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Avv. Angela Angelicata, diritto civile e penale a Milano: progetto dimostrativo con dati di fantasia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.css">
+<style>
+/* Studio legale, VERSIONE 3 (9/11/2026). Franco: «organizziamo qualcosa di analogo [a TRINITI] ma per una singola avvocatessa penalista e civilista…
+   introduciamo un po' di personalizzazione per non ricalcare esattamente il sito, ma personalizzazioni di valore prese da siti premium».
+   Da TRINITI il passo: apertura su due piani con il grande angolo arrotondato, menu che si stringe, blocchi che si danno il cambio sfocandosi,
+   foto che entrano con la tendina, sezione scura tipografica con la voce non scelta sfocata.
+   Nostro: Ti ascolto / Ti spiego / Ti difendo; filtro Tutto · Civile · Penale che adatta la pagina; «Aperto adesso»; tappe che scorrono in orizzontale;
+   frase che si accende parola per parola; firma grande in fondo; cornice bronzo sfalsata (di Franco); immagini di Franco con GPT: plastici di gesso,
+   sabbia e argilla con una persona e la sua guida che indica la strada (testi in ../immagini-gpt.md). Il cerchio marroncino chiaro (v2) resta in «Cosa ti è successo?». */
+:root {
+  --avorio: #f6f1e9; --avorio-2: #efe6da; --gesso: #fbf8f3; --nocciola: #e3d2ba; --sabbia: #d8c4a6;
+  --bronzo: #8f6b47; --bronzo-linea: #b8946b; --bronzo-chiaro: #d2b088;
+  --inchiostro: #1f1a16; --tenue: #685e54; --linea: rgb(70 50 30 / .15); --linea-forte: rgb(70 50 30 / .32);
+  --noce: #2a2420; --su-noce: #f2ebe1; --su-noce-tenue: #b9ad9d; --linea-noce: rgb(242 235 225 / .15);
+  --mattone: #9b392e; --salvia: #5f8159;
+  --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif; --sans: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --gutter: clamp(16px, 4.2vw, 64px); --largo: 1360px; --alto: 64px;
+  --bordo-sx: max(var(--gutter), calc((100vw - var(--largo)) / 2));
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+@view-transition { navigation: auto; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+body { margin: 0; background: var(--avorio); color: var(--inchiostro); font: 400 16px/1.6 var(--sans); overflow-x: clip; -webkit-font-smoothing: antialiased; }
+/* grana di carta su tutta la pagina */
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 200; opacity: .55; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .18 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+h1, h2, h3, h4 { margin: 0; font-weight: 400; text-wrap: balance; }
+p { margin: 0; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+img { display: block; max-width: 100%; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--bronzo); outline-offset: 3px; }
+.contenitore { width: min(100% - 2 * var(--gutter), var(--largo)); margin-inline: auto; }
+.occhio { font: 600 .68rem/1.4 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: var(--tenue); }
+.occhio::before { content: ""; display: inline-block; width: 22px; height: 1px; background: var(--bronzo-linea); vertical-align: middle; margin-right: 12px; }
+.titolo { font: 300 clamp(2.5rem, 4.8vw, 4.6rem)/1.02 var(--serif); letter-spacing: -.01em; }
+.titolo em { font-style: italic; color: var(--bronzo); }
+.bottone { display: inline-flex; align-items: center; gap: 14px; background: var(--inchiostro); color: var(--gesso); text-decoration: none; font: 600 .95rem var(--sans); padding: 17px 28px; border: 0; border-radius: 999px; cursor: pointer; transition: background .3s, transform .35s cubic-bezier(.2,.7,.2,1); }
+.bottone:hover { background: #3a3029; }
+.bottone .freccia { transition: transform .3s; }
+.bottone:hover .freccia { transform: translateX(4px); }
+.pillola { display: inline-flex; align-items: center; gap: 10px; justify-self: start; align-self: flex-start; border: 1px solid var(--bronzo-linea); color: var(--bronzo); background: transparent; text-decoration: none; font: 500 .93rem var(--sans); padding: 10px 22px; border-radius: 999px; cursor: pointer; transition: background .3s, color .3s; }
+.pillola:hover { background: var(--bronzo); color: var(--gesso); }
+.sez { padding-block: clamp(88px, 13vh, 150px); }
+.sez-testa { display: grid; gap: 16px; max-width: 760px; }
+.sez-testa > p:not(.occhio) { color: var(--tenue); font-size: 1.05rem; max-width: 60ch; }
+
+/* ---------- testata: si stringe scorrendo ---------- */
+.testata { position: fixed; top: 0; left: 0; right: 0; z-index: 80; transition: background .45s, box-shadow .45s, backdrop-filter .45s; }
+.testata-riga { display: flex; align-items: center; gap: 26px; height: 78px; transition: height .45s cubic-bezier(.2,.7,.2,1); }
+.marchio { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--inchiostro); flex: none; }
+.monogramma { width: 44px; height: 44px; flex: none; }
+.marchio-linea { width: 1px; height: 30px; background: var(--bronzo-linea); transition: opacity .3s; }
+.marchio-nome { display: grid; line-height: 1.1; overflow: hidden; max-width: 260px; white-space: nowrap; transition: max-width .5s cubic-bezier(.2,.7,.2,1), opacity .35s; }
+.marchio-nome b { font: 500 1.42rem var(--serif); letter-spacing: .03em; }
+.marchio-nome small { font: 600 .6rem var(--sans); letter-spacing: .3em; text-transform: uppercase; color: var(--tenue); margin-top: 3px; }
+.filtri { display: flex; align-items: center; gap: 22px; }
+.filtri-tit { font: 600 .6rem var(--sans); letter-spacing: .26em; text-transform: uppercase; color: var(--tenue); }
+.filtri button { position: relative; background: none; border: 0; padding: 12px 0; cursor: pointer; font: 500 .9rem var(--sans); color: var(--tenue); transition: color .3s; }
+.filtri button::before { content: ""; position: absolute; left: 0; top: 0; width: 18px; height: 1.5px; background: var(--bronzo-linea); transform: scaleX(0); transform-origin: left; transition: transform .4s; }
+.filtri button[aria-pressed="true"] { color: var(--inchiostro); }
+.filtri button[aria-pressed="true"]::before { transform: none; }
+.filtri-corti { max-width: 0; opacity: 0; overflow: hidden; pointer-events: none; transition: max-width .5s cubic-bezier(.2,.7,.2,1), opacity .35s; white-space: nowrap; }
+.filtri-corti button { padding-block: 22px 14px; }
+.filtri-corti button::before { top: 12px; }
+.menu { margin-left: auto; display: flex; gap: 22px; }
+.menu a { position: relative; text-decoration: none; font: 500 .9rem var(--sans); color: var(--tenue); padding: 6px 0; transition: color .3s; white-space: nowrap; }
+.testata:not(.stretta) .filtri-corti { display: none; }
+.menu a::after { content: ""; position: absolute; left: 0; bottom: 0; width: 100%; height: 1.5px; background: var(--bronzo-linea); transform: scaleX(0); transform-origin: left; transition: transform .45s cubic-bezier(.2,.7,.2,1); }
+.menu a:hover, .menu a.attiva { color: var(--inchiostro); }
+.menu a.attiva::after { transform: none; }
+.aperto { display: inline-flex; align-items: center; gap: 8px; font: 500 .78rem var(--sans); color: var(--tenue); white-space: nowrap; }
+.aperto i { width: 7px; height: 7px; border-radius: 50%; background: var(--salvia); box-shadow: 0 0 0 0 rgb(95 129 89 / .5); }
+.aperto.chiuso i { background: var(--sabbia); }
+@media (prefers-reduced-motion: no-preference) { .aperto:not(.chiuso) i { animation: respira 2.4s ease-out infinite; } @keyframes respira { to { box-shadow: 0 0 0 7px rgb(95 129 89 / 0); } } }
+.tel { font: 600 .9rem var(--sans); text-decoration: none; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.apri-menu { display: none; margin-left: auto; width: 44px; height: 44px; background: none; border: 0; cursor: pointer; position: relative; }
+.apri-menu span { position: absolute; left: 11px; right: 11px; height: 1.5px; background: var(--inchiostro); transition: transform .35s, top .35s; }
+.apri-menu span:first-child { top: 17px; } .apri-menu span:last-child { top: 26px; }
+.testata-sotto { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .45s cubic-bezier(.2,.7,.2,1), opacity .3s; }
+.testata-sotto > div { overflow: hidden; }
+.testata-sotto .contenitore { display: flex; align-items: center; justify-content: space-between; gap: 20px; border-top: 1px solid var(--linea); }
+.dimostra { font: 500 .72rem var(--sans); color: var(--tenue); letter-spacing: .04em; }
+.testata.stretta { background: rgb(246 241 233 / .8); -webkit-backdrop-filter: blur(14px) saturate(1.1); backdrop-filter: blur(14px) saturate(1.1); box-shadow: 0 1px 0 var(--linea); }
+.testata.stretta .testata-riga { height: var(--alto); }
+.testata.stretta .marchio-nome { max-width: 0; opacity: 0; }
+.testata.stretta .marchio-linea { opacity: 0; }
+.testata.stretta .filtri-corti { max-width: 340px; opacity: 1; pointer-events: auto; }
+.testata.stretta .testata-sotto { grid-template-rows: 0fr; opacity: 0; }
+/* menu del telefono */
+.velo-menu { position: fixed; inset: 0; z-index: 110; background: rgb(31 26 22 / .22); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); opacity: 0; visibility: hidden; transition: opacity .4s, visibility .4s; }
+.pannello-menu { position: fixed; top: 0; right: 0; bottom: 0; z-index: 120; width: min(420px, 100%); background: var(--gesso); transform: translateX(100%); transition: transform .5s cubic-bezier(.65,.05,.35,1); display: flex; flex-direction: column; gap: 28px; padding: 22px var(--gutter) 36px; overflow-y: auto; }
+.pannello-menu nav { display: grid; gap: 4px; }
+.pannello-menu nav a { font: 300 2.2rem/1.25 var(--serif); text-decoration: none; }
+.pannello-menu .chiudi-menu { align-self: flex-end; background: none; border: 1px solid var(--linea-forte); border-radius: 999px; padding: 8px 18px; cursor: pointer; font: 500 .9rem var(--sans); }
+.menu-aperto .velo-menu { opacity: 1; visibility: visible; }
+.menu-aperto .pannello-menu { transform: none; }
+
+/* ---------- 1. apertura su due piani ---------- */
+.apertura { position: relative; display: grid; grid-template-columns: minmax(0, 47fr) minmax(0, 53fr); min-height: max(700px, 100svh); }
+.apertura-pannello { position: relative; z-index: 2; margin-right: -9vw; background: linear-gradient(165deg, #f6f0e7 0%, #efe5d7 55%, #e7d8c3 100%);
+  border-bottom-right-radius: clamp(150px, 19vw, 320px); box-shadow: 40px 50px 90px -50px rgb(80 55 30 / .35);
+  padding: calc(132px + 5vh) clamp(28px, 7vw, 120px) 10vh var(--bordo-sx); display: flex; flex-direction: column; justify-content: center; gap: 28px; }
+.apertura h1 { font: 300 clamp(3.4rem, 7vw, 7.3rem)/.98 var(--serif); letter-spacing: -.015em; }
+.apertura h1 em { font-style: italic; color: var(--bronzo); }
+.riga { display: block; overflow: hidden; padding-bottom: .07em; margin-bottom: -.07em; }
+.riga > span { display: inline-block; }
+.apertura-sotto { color: var(--tenue); font-size: 1.07rem; max-width: 36ch; }
+.apertura-azioni { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; }
+.link-tel { font: 500 .95rem var(--sans); color: var(--tenue); text-decoration: none; border-bottom: 1px solid var(--linea-forte); padding-bottom: 2px; }
+.link-tel:hover { color: var(--inchiostro); }
+.apertura-piede { display: flex; align-items: center; gap: 18px; margin-top: 18px; }
+.apertura-piede i { flex: none; width: 1px; height: 48px; background: var(--bronzo-linea); }
+.apertura-piede p { font-size: .86rem; color: var(--tenue); line-height: 1.6; }
+.apertura-foto { position: relative; margin: 0; overflow: hidden; background: var(--avorio-2); }
+.apertura-foto .dentro-foto { position: absolute; inset: 0; }
+.apertura-foto canvas, .apertura-foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* velo chiaro in cima alla foto: il menu scuro resta leggibile sopra le immagini di Franco */
+.apertura-foto::after { content: ""; position: absolute; inset: 0 0 auto 0; height: 180px; z-index: 2; pointer-events: none; background: linear-gradient(rgb(246 241 233 / .9), rgb(246 241 233 / .55) 55%, rgb(246 241 233 / 0)); }
+.verticale { position: absolute; right: clamp(12px, 2vw, 28px); bottom: 10vh; z-index: 3; writing-mode: vertical-rl; transform: rotate(180deg); font: 600 .6rem var(--sans); letter-spacing: .32em; text-transform: uppercase; color: rgb(251 248 243 / .92); text-shadow: 0 1px 6px rgb(60 40 20 / .45); display: flex; align-items: center; gap: 14px; }
+.verticale::before { content: ""; width: 1px; height: 46px; background: var(--bronzo-linea); }
+@media (prefers-reduced-motion: no-preference) {
+  .riga > span { transform: translateY(108%); transition: transform 1.15s cubic-bezier(.2,.75,.15,1); }
+  .riga:nth-child(2) > span { transition-delay: .12s; } .riga:nth-child(3) > span { transition-delay: .24s; }
+  .entrata .riga > span { transform: none; }
+  .apertura-sotto, .apertura-azioni, .apertura-piede { opacity: 0; transform: translateY(14px); transition: opacity .9s .55s, transform .9s .55s cubic-bezier(.2,.7,.2,1); }
+  .entrata .apertura-sotto, .entrata .apertura-azioni, .entrata .apertura-piede { opacity: 1; transform: none; }
+  .apertura-foto .dentro-foto { clip-path: inset(0 100% 0 0); transition: clip-path 1.7s cubic-bezier(.77,0,.18,1) .15s; }
+  .apertura-foto .dentro-foto > * { transform: scale(1.12); transition: transform 2.4s cubic-bezier(.2,.7,.2,1) .15s; }
+  .entrata .apertura-foto .dentro-foto { clip-path: inset(0); }
+  .entrata .apertura-foto .dentro-foto > * { transform: none; }
+}
+
+/* ---------- foto con la tendina (da sinistra a destra, con un filo bronzo sul bordo) ---------- */
+.tendina { position: relative; margin: 0; }
+/* dove la foto non c'è ancora: un riquadro liscio nei colori della bicromia (grigio per il ritratto in bianco e nero), niente disegni */
+.tendina > .tendina-dentro { position: absolute; inset: 0; overflow: hidden; background: linear-gradient(140deg, #22332f 0%, #4f4a3e 50%, #a57b50 100%); }
+.tendina.bn > .tendina-dentro { background: linear-gradient(140deg, #262626 0%, #5c5c5c 55%, #b5b5b5 100%); }
+.tendina > .tendina-dentro > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.tendina > .tendina-filo { position: absolute; top: 0; bottom: 0; left: 0; width: 1px; background: var(--bronzo-linea); opacity: 0; pointer-events: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .tendina > .tendina-dentro { clip-path: inset(0 100% 0 0); transition: clip-path 1.25s cubic-bezier(.77,0,.18,1); }
+  .tendina > .tendina-dentro > * { transform: scale(1.1); transition: transform 1.9s cubic-bezier(.2,.7,.2,1); }
+  .tendina.vista > .tendina-dentro { clip-path: inset(0); }
+  .tendina.vista > .tendina-dentro > * { transform: none; }
+  .tendina.vista > .tendina-filo { animation: filo 1.25s cubic-bezier(.77,0,.18,1) forwards; }
+  @keyframes filo { 0% { left: 0; opacity: 1; } 88% { left: 100%; opacity: 1; } 100% { left: 100%; opacity: 0; } }
+}
+
+/* ---------- 2. il metodo: tre lastre che si danno il cambio sfocandosi ---------- */
+.metodo-testa { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 24px 6vw; align-items: end; padding-block: clamp(100px, 15vh, 170px) clamp(40px, 6vh, 64px); }
+.metodo-testa p:not(.occhio) { color: var(--tenue); font-size: 1.05rem; max-width: 44ch; }
+.lastra { background: var(--avorio); border-top: 1px solid var(--linea); }
+.lastra:nth-child(2) { background: #f3ece2; }
+.lastra-dentro { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .85fr) minmax(0, 1.2fr); gap: clamp(24px, 4vw, 64px); align-items: start; padding-block: clamp(40px, 7vh, 84px); }
+.lastra-num { font: 600 .68rem var(--sans); letter-spacing: .28em; color: var(--tenue); display: block; margin-bottom: 18px; }
+.lastra-tit { font: 300 clamp(3.2rem, 6.4vw, 6.4rem)/.95 var(--serif); letter-spacing: -.015em; }
+.lastra-frase { font: italic 400 clamp(1.15rem, 1.6vw, 1.45rem)/1.35 var(--serif); color: var(--bronzo); margin-top: 22px; display: flex; gap: 14px; align-items: baseline; }
+.lastra-frase::before { content: ""; flex: none; width: 34px; height: 1px; background: var(--bronzo-linea); transform: translateY(-5px); }
+.lastra-testo { display: grid; gap: 18px; padding-top: 6px; }
+.lastra-testo p { color: var(--tenue); font-size: 1.01rem; line-height: 1.7; }
+.lastra-testo p + .pillola + p { margin-top: 18px; }
+.lastra-foto { aspect-ratio: 4 / 3.2; }
+.metodo.pila .lastra { position: sticky; top: var(--alto); min-height: calc(100svh - var(--alto)); }
+.metodo.pila .lastra-dentro { filter: blur(calc(var(--p, 0) * 9px)); opacity: calc(1 - var(--p, 0) * .55 - var(--q, 0) * .3); transform: translateY(calc(var(--p, 0) * 36px)) scale(calc(1 - var(--q, 0) * .035)); transform-origin: 50% 0; will-change: filter, transform, opacity; }
+
+/* ---------- 3. «Cosa ti è successo?» nel cerchio marroncino chiaro ---------- */
+.racconta { background: linear-gradient(180deg, var(--avorio), #f0e7da); border-top: 1px solid var(--linea); }
+.racconta-griglia { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: clamp(28px, 5vw, 84px); align-items: center; }
+.disco { --c-testo: #2a221b; --c-tenue: #5f5244; --c-campo: rgb(255 255 255 / .45); --c-segno: #6f5b45;
+  aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 34% 28%, #f0e5d4, var(--nocciola) 68%, #dcc7aa); color: var(--c-testo);
+  box-shadow: 0 50px 90px -40px rgb(90 60 30 / .45), inset 0 0 0 1px rgb(255 255 255 / .45); padding: 13% 12.5%; display: flex; flex-direction: column; justify-content: center; gap: 14px; text-align: center; }
+.disco-cerchio { display: grid; gap: 12px; justify-items: center; }
+.disco h2 { font: 400 clamp(2.4rem, 4vw, 3.9rem)/1 var(--serif); }
+.disco .occhio { color: var(--c-tenue); }
+.disco .occhio::before { display: none; }
+.disco-sotto { color: var(--c-tenue); font-size: .98rem; max-width: 30ch; }
+.disco-campo { display: grid; gap: 10px; }
+.parole { display: grid; gap: 6px; text-align: left; }
+.parole span { font: 600 .62rem var(--sans); letter-spacing: .22em; text-transform: uppercase; color: var(--bronzo); text-align: center; }
+.parole textarea { width: 100%; resize: none; background: var(--c-campo); border: 0; border-bottom: 1px solid var(--c-segno); color: var(--c-testo); font: italic 400 clamp(1.08rem, 1.5vw, 1.28rem)/1.4 var(--serif); padding: 12px 14px; min-height: 82px; }
+.parole textarea::placeholder { color: var(--c-tenue); opacity: .85; }
+.parole textarea:focus { outline: none; border-bottom-color: var(--bronzo); box-shadow: 0 1px 0 var(--bronzo); }
+.capito { min-height: 1.3em; font-size: .9rem; color: var(--c-tenue); }
+.allarme { background: rgb(155 57 46 / .08); border: 1px solid var(--mattone); padding: 10px 12px; font-size: .94rem; text-align: left; color: var(--c-testo); }
+.allarme a { font-weight: 700; }
+.frasi-tit { font: 600 .62rem var(--sans); letter-spacing: .24em; text-transform: uppercase; color: var(--tenue); margin-bottom: 10px; }
+.frasi { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--linea); }
+.frasi button { width: 100%; height: 100%; display: flex; align-items: baseline; gap: 12px; text-align: left; cursor: pointer; border: 0; border-bottom: 1px solid var(--linea); border-left: 2px solid transparent; background: transparent;
+  padding: 13px 12px; color: var(--tenue); font: 400 clamp(1.05rem, 1.3vw, 1.2rem)/1.25 var(--serif); transition: color .25s, padding .3s, border-color .25s, background .25s; }
+.frasi li:nth-child(4n+1) button, .frasi li:nth-child(4n+2) button { background: rgb(227 210 186 / .16); }
+.frasi button:hover { color: var(--inchiostro); }
+.frasi button[aria-pressed="true"] { color: var(--inchiostro); font-style: italic; padding-left: 18px; border-left-color: var(--bronzo); background: rgb(227 210 186 / .4); }
+.frasi .num { flex: none; font: 600 .64rem var(--sans); letter-spacing: .16em; color: var(--bronzo); font-style: normal; }
+.risposta { margin-top: 22px; background: var(--gesso); border: 1px solid var(--linea); border-top: 2px solid var(--bronzo-linea); padding: 26px 28px; display: grid; gap: 12px; box-shadow: 0 30px 60px -40px rgb(80 55 30 / .3); }
+.risposta small { font: 600 .64rem var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--bronzo); }
+.risposta h3 { font: 400 clamp(1.9rem, 2.6vw, 2.5rem)/1.05 var(--serif); }
+.area { font: 600 .62rem var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--tenue); }
+.chi-segue { display: flex; align-items: center; gap: 14px; }
+.chi-segue svg { flex: none; width: 46px; height: 46px; }
+.chi-segue b { display: block; font-size: 1rem; font-weight: 600; }
+.chi-segue span { font-size: .84rem; color: var(--tenue); }
+.scadenza { border: 1px solid var(--mattone); background: rgb(155 57 46 / .06); padding: 12px 14px; display: grid; gap: 2px; }
+.scadenza em { font-style: normal; font: 600 .62rem var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--mattone); }
+.scadenza b { font: 500 1.25rem/1.25 var(--serif); }
+.scadenza a { font-size: .88rem; color: var(--tenue); }
+.scadenza.calma { border-color: var(--linea-forte); background: rgb(227 210 186 / .18); }
+.scadenza.calma em { color: var(--tenue); }
+.righe { display: grid; gap: 6px; border-top: 1px solid var(--linea); padding-top: 12px; font-size: .94rem; color: var(--tenue); }
+.righe b { color: var(--inchiostro); font-weight: 600; }
+.risposta .consiglio { font: italic 400 1.15rem/1.4 var(--serif); }
+.risposta .azioni { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.risposta .bottone { padding: 13px 22px; font-size: .9rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .risposta.cambia > * { animation: sale .6s cubic-bezier(.2,.7,.2,1) both; }
+  .risposta.cambia > :nth-child(2) { animation-delay: .04s; } .risposta.cambia > :nth-child(3) { animation-delay: .08s; } .risposta.cambia > :nth-child(n+4) { animation-delay: .12s; }
+  @keyframes sale { from { opacity: 0; transform: translateY(8px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+}
+
+/* ---------- 4. Civile · Penale: la voce non scelta si sfoca ---------- */
+.materie { background: var(--noce); color: var(--su-noce); }
+.materie .occhio { color: var(--su-noce-tenue); }
+.materie-griglia { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.6fr); gap: 40px 6vw; align-items: start; }
+.interruttore { display: grid; justify-items: start; gap: 2px; margin-top: 26px; }
+.interruttore button { display: flex; align-items: center; gap: 22px; background: none; border: 0; padding: 0; cursor: pointer; color: var(--su-noce); font: 300 clamp(3.4rem, 6.8vw, 6.8rem)/1.02 var(--serif); letter-spacing: -.01em; filter: blur(5px); opacity: .36; transition: filter .6s, opacity .6s; }
+.interruttore button::after { content: ""; width: 0; height: 1px; background: var(--bronzo-chiaro); transition: width .7s .1s cubic-bezier(.2,.7,.2,1); }
+.interruttore button[aria-selected="true"] { filter: none; opacity: 1; }
+.interruttore button[aria-selected="true"]::after { width: clamp(56px, 7vw, 110px); }
+.interruttore button:not([aria-selected="true"]):hover { filter: blur(1.5px); opacity: .62; }
+.materie-nota { color: var(--su-noce-tenue); max-width: 34ch; margin-top: 30px; font-size: 1rem; }
+.materie-elenco { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 32px; border-top: 1px solid var(--linea-noce); }
+.voce { border-bottom: 1px solid var(--linea-noce); }
+.voce > button { width: 100%; display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; text-align: left; background: none; border: 0; padding: 20px 0; cursor: pointer; font: 500 1rem/1.4 var(--sans); color: var(--su-noce); }
+.piu { flex: none; position: relative; width: 12px; height: 12px; margin-top: 5px; }
+.piu::before, .piu::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--bronzo-chiaro); transition: transform .35s; }
+.piu::after { transform: rotate(90deg); }
+.voce.aperta .piu::after { transform: rotate(0); }
+.voce-testo { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .5s cubic-bezier(.2,.7,.2,1); }
+.voce.aperta .voce-testo { grid-template-rows: 1fr; }
+.voce-testo > div { overflow: hidden; }
+.voce-testo p { color: var(--su-noce-tenue); font-size: .93rem; line-height: 1.6; padding-bottom: 12px; }
+.voce-testo a { display: inline-block; color: var(--bronzo-chiaro); font: 600 .85rem var(--sans); text-decoration: none; margin-bottom: 20px; }
+@media (prefers-reduced-motion: no-preference) {
+  .materie-elenco.cambia .voce { animation: sfoca-entra .75s cubic-bezier(.2,.7,.2,1) both; animation-delay: calc(var(--i) * 45ms); }
+  @keyframes sfoca-entra { from { opacity: 0; filter: blur(8px); transform: translateY(10px); } to { opacity: 1; filter: none; transform: none; } }
+}
+
+/* ---------- 5. le tappe: scorrono in orizzontale mentre si scende ---------- */
+.tappe-sez { background: var(--avorio); position: relative; }
+.tappe-fermo { display: flex; flex-direction: column; justify-content: center; gap: clamp(26px, 5vh, 48px); padding-block: clamp(88px, 13vh, 150px); }
+.tappe-sez.pinna .tappe-fermo { position: sticky; top: var(--alto); height: calc(100svh - var(--alto)); padding-block: 4vh; overflow: hidden; }
+.tappe-testa { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+.schede { display: flex; flex-wrap: wrap; gap: 8px; }
+.schede button { font: 500 .88rem var(--sans); color: var(--tenue); background: transparent; border: 1px solid var(--linea-forte); padding: 8px 16px; border-radius: 999px; cursor: pointer; transition: background .3s, color .3s, border-color .3s; }
+.schede button:hover { color: var(--inchiostro); border-color: var(--inchiostro); }
+.schede button[aria-selected="true"] { background: var(--inchiostro); border-color: var(--inchiostro); color: var(--gesso); }
+.schede button[hidden] { display: none; }
+.tappe-binario { padding-left: var(--bordo-sx); scroll-padding-left: var(--bordo-sx); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.tappe-binario::-webkit-scrollbar { display: none; }
+.tappe-sez.pinna .tappe-binario { overflow: visible; }
+.tappe-treno { --avanza: 0; list-style: none; margin: 0; padding: 0 var(--gutter) 0 0; display: flex; width: max-content; position: relative; will-change: transform; }
+.tappe-treno::before, .tappe-treno::after { content: ""; position: absolute; top: 23px; left: 0; height: 1px; }
+.tappe-treno::before { right: var(--gutter); background: var(--linea-forte); }
+.tappe-treno::after { width: calc((100% - var(--gutter)) * var(--avanza)); background: var(--bronzo); transition: width .15s linear; }
+.tappa { position: relative; width: clamp(272px, 26vw, 370px); padding: 58px 34px 8px 0; display: grid; gap: 10px; align-content: start; scroll-snap-align: start; }
+.tappa::before { content: ""; position: absolute; top: 17px; left: 0; width: 11px; height: 11px; border-radius: 50%; border: 1px solid var(--bronzo-linea); background: var(--avorio); z-index: 1; transition: background .4s, transform .4s; }
+.tappa.passata::before { background: var(--bronzo); transform: scale(1.15); }
+.tappa-num { font: 600 .66rem var(--sans); letter-spacing: .26em; color: var(--tenue); }
+.tappa b { font: 400 clamp(1.55rem, 2vw, 1.9rem)/1.1 var(--serif); }
+.tappa p { color: var(--tenue); font-size: .95rem; line-height: 1.6; }
+.tempo { font: 600 .78rem var(--sans); letter-spacing: .03em; color: var(--bronzo); display: grid; gap: 2px; margin-top: 4px; }
+.tempo em { font-style: normal; font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; }
+.tempo.legge { color: var(--mattone); }
+.tappa.fine b { font-style: italic; }
+.tappa.fine .pillola { margin-top: 8px; }
+.legenda { display: flex; flex-wrap: wrap; gap: 6px 24px; font-size: .84rem; color: var(--tenue); }
+.legenda i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; vertical-align: 0; }
+
+/* ---------- 6. il calcolo delle scadenze ---------- */
+.scadenze { background: #f0e7db; border-top: 1px solid var(--linea); }
+.calcolo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 80px); align-items: center; }
+.domanda { display: grid; gap: 20px; }
+.domanda label { display: grid; gap: 8px; font-weight: 600; font-size: .98rem; }
+.domanda input[type="date"] { font: 500 1.2rem var(--sans); color: var(--inchiostro); background: var(--gesso); border: 1px solid var(--linea-forte); border-radius: 4px; padding: 13px 14px; max-width: 280px; color-scheme: light; }
+.stima { font-size: .84rem; color: var(--tenue); border-left: 1px solid var(--bronzo-linea); padding-left: 12px; line-height: 1.6; }
+.esito { background: var(--gesso); border: 1px solid var(--linea); padding: clamp(26px, 4vw, 46px); display: grid; gap: 12px; box-shadow: 0 40px 70px -50px rgb(80 55 30 / .4); }
+.esito .data { font: 300 clamp(2.3rem, 4.2vw, 4rem)/1.05 var(--serif); }
+.esito .mancano { font-weight: 600; color: var(--bronzo); }
+.esito .mancano.poco { color: var(--mattone); }
+.esito .poi { color: var(--tenue); font-size: .95rem; border-top: 1px solid var(--linea); padding-top: 12px; }
+
+/* ---------- 7. la frase che si accende parola per parola ---------- */
+.manifesto-frase { font: 300 clamp(2rem, 4.3vw, 4.1rem)/1.16 var(--serif); letter-spacing: -.01em; max-width: 25ch; margin-top: 26px; }
+.manifesto-frase span { color: rgb(31 26 22 / .17); transition: color .35s; }
+.manifesto-frase span.accesa { color: var(--inchiostro); }
+.quattro { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: clamp(56px, 9vh, 96px); border-top: 1px solid var(--linea); }
+.quattro > div { padding: 30px 28px 4px; border-left: 1px solid var(--linea); display: grid; gap: 10px; align-content: start; }
+.quattro > div:first-child { border-left: 0; padding-left: 0; }
+.quattro .n { font: 600 .66rem var(--sans); letter-spacing: .26em; color: var(--bronzo); }
+.quattro h3 { font: 400 1.55rem/1.15 var(--serif); }
+.quattro p { color: var(--tenue); font-size: .95rem; line-height: 1.65; }
+
+/* ---------- 8. chi ti segue ---------- */
+.chi { background: #f3ece2; border-top: 1px solid var(--linea); }
+.chi-griglia { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 48px 7vw; align-items: center; }
+.ef-sfalsata { --ef-bronzo: #b49e82; --ef-spessore: 3px; --ef-fuori: 9px; --ef-sale: 26px; --ef-stacco: 16px; position: relative; }
+.ef-sfalsata::before, .ef-sfalsata::after { content: ""; position: absolute; pointer-events: none; z-index: 3; }
+.ef-sfalsata::before { inset: calc(-1 * var(--ef-fuori)); border-right: var(--ef-spessore) solid var(--ef-bronzo); border-bottom: var(--ef-spessore) solid var(--ef-bronzo);
+  background: linear-gradient(var(--ef-bronzo), var(--ef-bronzo)) var(--ef-stacco) 0 / calc(100% - var(--ef-stacco)) var(--ef-spessore) no-repeat; }
+.ef-sfalsata::after { left: calc(-1 * var(--ef-fuori)); top: calc(-1 * (var(--ef-fuori) + var(--ef-sale))); bottom: calc(-1 * var(--ef-fuori)); width: var(--ef-spessore); background: var(--ef-bronzo); }
+.chi-foto { aspect-ratio: 4 / 5; max-width: 470px; }
+.chi-foto > .tendina { position: absolute; inset: 0; }
+.chi-testo { display: grid; gap: 18px; }
+.chi-testo h2 { font: 400 clamp(2.6rem, 4.6vw, 4.4rem)/1 var(--serif); }
+.ordine { color: var(--tenue); font-size: .98rem; max-width: 56ch; }
+.chi-frase { font: italic 400 clamp(1.4rem, 2vw, 1.75rem)/1.3 var(--serif); color: var(--bronzo); border-left: 1px solid var(--bronzo-linea); padding-left: 18px; }
+.due-liste { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 6px; }
+.due-liste h4 { font: 600 .64rem var(--sans); letter-spacing: .24em; text-transform: uppercase; color: var(--bronzo); margin-bottom: 10px; }
+.due-liste ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 7px; }
+.due-liste li { padding-left: 16px; position: relative; font-size: .98rem; }
+.due-liste li::before { content: ""; position: absolute; left: 0; top: .78em; width: 7px; height: 1px; background: var(--bronzo-linea); }
+.riceve { font-size: .9rem; color: var(--tenue); }
+
+/* ---------- 9. cosa portare ---------- */
+.portare-griglia { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px clamp(24px, 4vw, 56px); align-items: start; margin-top: 30px; }
+.lista-portare { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--linea); }
+.lista-portare li:nth-child(odd) { background: rgb(227 210 186 / .14); }
+.lista-portare label { display: flex; gap: 14px; align-items: flex-start; padding: 15px 16px; border-bottom: 1px solid var(--linea); cursor: pointer; font-size: 1.02rem; }
+.lista-portare input { flex: none; appearance: none; width: 22px; height: 22px; margin: 1px 0 0; border: 1px solid var(--linea-forte); border-radius: 50%; background: var(--gesso); cursor: pointer; display: grid; place-items: center; transition: background .25s, border-color .25s; }
+.lista-portare input:checked { background: var(--bronzo); border-color: var(--bronzo); }
+.lista-portare input:checked::after { content: ""; width: 5px; height: 10px; border: solid var(--gesso); border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px, -1px); }
+.lista-portare input:checked + span { color: var(--tenue); text-decoration: line-through; text-decoration-color: var(--linea-forte); }
+.lista-portare small { display: block; color: var(--tenue); font-size: .84rem; }
+.pronto { background: var(--gesso); border: 1px solid var(--linea); padding: 26px 28px; display: grid; gap: 12px; }
+.pronto .conta { font: 300 3.2rem/1 var(--serif); color: var(--bronzo); font-variant-numeric: tabular-nums; }
+.pronto .barra-conta { height: 2px; background: var(--linea); }
+.pronto .barra-conta i { display: block; height: 100%; width: 0; background: var(--bronzo); transition: width .5s cubic-bezier(.2,.7,.2,1); }
+.pronto p { color: var(--tenue); font-size: .94rem; }
+.pronto .attenzione { border-left: 1px solid var(--mattone); padding-left: 12px; color: var(--inchiostro); }
+
+/* ---------- 10. scrivimi ---------- */
+.scrivi { background: #f0e7db; border-top: 1px solid var(--linea); }
+.scrivi-griglia { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 20px clamp(24px, 4vw, 56px); align-items: start; margin-top: 30px; }
+.modulo { background: var(--gesso); border: 1px solid var(--linea); padding: clamp(22px, 3vw, 34px); display: grid; gap: 16px; }
+.due-campi { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.modulo label { display: grid; gap: 6px; font-weight: 600; font-size: .92rem; }
+.modulo label small { font-weight: 400; color: var(--tenue); }
+.modulo input, .modulo select, .modulo textarea { font: 400 1rem var(--sans); color: var(--inchiostro); background: var(--avorio); border: 1px solid var(--linea-forte); border-radius: 3px; padding: 11px 12px; width: 100%; color-scheme: light; }
+.modulo textarea { resize: vertical; min-height: 110px; }
+.modulo .avviso { border-left: 1px solid var(--mattone); padding: 2px 0 2px 12px; font-size: .9rem; }
+.modulo .informativa { font-size: .79rem; color: var(--tenue); line-height: 1.55; }
+.modulo .bottone { justify-self: start; }
+.anteprima { background: var(--gesso); border: 1px solid var(--linea); display: grid; }
+.anteprima .testa-a { padding: 15px 18px; border-bottom: 1px solid var(--linea); font: 600 .64rem var(--sans); letter-spacing: .22em; text-transform: uppercase; color: var(--tenue); }
+.posta { list-style: none; margin: 0; padding: 0; }
+.posta li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 12px; padding: 13px 18px; border-bottom: 1px solid var(--linea); font-size: .9rem; }
+.posta li:nth-child(odd) { background: rgb(227 210 186 / .14); }
+.posta .etich { grid-row: span 2; align-self: start; font: 600 .58rem var(--sans); letter-spacing: .12em; text-transform: uppercase; padding: 4px 7px; border: 1px solid var(--linea-forte); color: var(--tenue); min-width: 78px; text-align: center; border-radius: 2px; }
+.posta .urgente .etich { border-color: var(--mattone); color: var(--gesso); background: var(--mattone); }
+.posta .tua { outline: 1px solid var(--bronzo); outline-offset: -1px; }
+.posta b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.posta span { color: var(--tenue); font-size: .84rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.anteprima .spiega { padding: 15px 18px; font-size: .84rem; color: var(--tenue); }
+@media (prefers-reduced-motion: no-preference) { .posta .tua.arriva { animation: arriva .8s cubic-bezier(.2,.7,.2,1) both; } @keyframes arriva { from { opacity: 0; transform: translateY(-14px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } } }
+.crescere { margin-top: clamp(56px, 9vh, 90px); display: grid; gap: 22px; }
+.crescere h3 { font: 400 clamp(1.8rem, 2.6vw, 2.4rem)/1.1 var(--serif); }
+.crescere h3 em { font-style: italic; color: var(--bronzo); }
+.arrivo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--linea); }
+.prossimo { padding: 22px 24px 22px 0; border-bottom: 1px solid var(--linea); display: grid; gap: 6px; align-content: start; }
+.prossimo:not(:nth-child(3n+1)) { padding-left: 24px; border-left: 1px solid var(--linea); }
+.prossimo .stato { justify-self: start; font: 600 .56rem var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--bronzo); border: 1px solid var(--bronzo-linea); padding: 3px 8px; border-radius: 999px; }
+.prossimo .stato.gia { color: var(--salvia); border-color: var(--salvia); }
+.prossimo b { font: 500 1.25rem var(--serif); }
+.prossimo p { color: var(--tenue); font-size: .9rem; }
+
+/* ---------- 11. dove: la mappa vera di Milano (8/11), comandi sopra la mappa nei colori del sito ---------- */
+.mappa-quadro { position: relative; overflow: hidden; background: #eee6da; border: 1px solid var(--linea); min-height: 460px; isolation: isolate; }
+.mappa { position: absolute; inset: 0; }
+.mappa .riserva { position: absolute; inset: 0; display: grid; place-items: center; color: var(--tenue); font-size: .9rem; }
+.mappa-pronta .riserva { display: none; }
+.mappa-quadro button { cursor: pointer; border: 0; }
+.mappa-dove { position: absolute; z-index: 3; top: 18px; left: 18px; display: inline-flex; align-items: center; gap: 10px; background: rgb(251 248 243 / .94); padding: 10px 14px; font: 600 .62rem var(--sans); letter-spacing: .2em; text-transform: uppercase; box-shadow: 0 6px 22px -10px rgb(60 40 20 / .35); pointer-events: none; }
+.mappa-dove i { width: 6px; height: 6px; border-radius: 50%; background: var(--bronzo); }
+.mappa-tasti { position: absolute; z-index: 3; top: 18px; right: 18px; display: grid; box-shadow: 0 6px 22px -10px rgb(60 40 20 / .35); }
+.mappa-tasti button { width: 42px; height: 40px; background: rgb(251 248 243 / .96); color: var(--inchiostro); font: 400 1.25rem/1 var(--sans); border-bottom: 1px solid var(--linea); }
+.mappa-tasti button[data-piatta] { font: 600 .72rem var(--sans); letter-spacing: .08em; border-bottom: 0; }
+.mappa-tasti button:hover { background: var(--gesso); color: var(--bronzo); }
+.mappa-piede { position: absolute; z-index: 3; left: 50%; bottom: 34px; transform: translateX(-50%); display: grid; justify-items: center; gap: 9px; width: max-content; max-width: calc(100% - 24px); }
+.mappa-viste { display: flex; background: rgb(251 248 243 / .96); padding: 4px; box-shadow: 0 10px 30px -14px rgb(60 40 20 / .45); }
+.mappa-viste button { background: none; padding: 10px 16px; font: 500 .82rem var(--sans); color: var(--tenue); white-space: nowrap; transition: background .25s, color .25s; }
+.mappa-viste button[aria-pressed="true"] { background: var(--noce); color: var(--su-noce); }
+.mappa-viste button:not([aria-pressed="true"]):hover { color: var(--bronzo); }
+.mappa-linee { display: flex; align-items: center; gap: 5px; background: rgb(251 248 243 / .92); padding: 6px 10px; }
+.mappa-linee span { font: 600 .56rem var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--tenue); margin-right: 5px; }
+.mappa-linee button { width: 30px; height: 22px; font: 700 .62rem var(--sans); color: #fff; border-radius: 2px; opacity: .28; transition: opacity .2s; }
+.mappa-linee button[aria-pressed="true"] { opacity: 1; }
+.l1 { background: #c34840; } .l2 { background: #418269; } .l3 { background: #d9a93a; color: #3a2f12 !important; } .l4 { background: #4b79ad; } .l5 { background: #977ea9; }
+.mappa-scheda[hidden] { display: none; }
+.mappa-scheda { position: absolute; z-index: 4; left: 18px; top: 66px; width: min(300px, calc(100% - 36px)); background: var(--gesso); border-left: 2px solid var(--bronzo); padding: 16px 18px; box-shadow: 0 18px 40px -18px rgb(60 40 20 / .5); display: grid; gap: 6px; }
+.mappa-scheda small { font: 600 .58rem var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--tenue); }
+.mappa-scheda h4 { font: 400 1.45rem/1.1 var(--serif); }
+.mappa-scheda p { font-size: .86rem; color: var(--tenue); line-height: 1.55; }
+.mappa-scheda a { color: var(--bronzo); font-weight: 600; font-size: .86rem; }
+.mappa-chiudi { position: absolute; top: 6px; right: 8px; background: none; font-size: 1.3rem; color: var(--tenue); width: 30px; height: 30px; }
+.bollino { display: inline-grid; place-items: center; min-width: 26px; height: 18px; padding: 0 4px; margin-right: 3px; font: 700 .6rem var(--sans); color: #fff; border-radius: 2px; vertical-align: 1px; }
+.bollino.l1 { background: #c34840; } .bollino.l2 { background: #418269; } .bollino.l3 { background: #d9a93a; color: #3a2f12; } .bollino.l4 { background: #4b79ad; } .bollino.l5 { background: #977ea9; }
+.segno-nome { cursor: pointer; } .segno-nome .nome-mappa { transition: opacity .35s; } /* MapLibre scrive opacity sul segnaposto: si spegne la scritta dentro */
+.mappa-lontana .segno-nome { pointer-events: none; } .mappa-lontana .segno-nome .nome-mappa { opacity: 0; }
+.nome-mappa { display: inline-block; font: 600 .62rem var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--inchiostro); background: rgb(251 248 243 / .94); border: 1px solid var(--linea-forte); padding: 5px 8px; white-space: nowrap; transform: translateY(-14px); }
+.nome-mappa.qui { color: var(--gesso); background: var(--noce); border-color: transparent; border-top: 2px solid var(--bronzo-chiaro); padding: 8px 13px; text-align: center; transform: translateY(-40px); }
+.nome-mappa.qui small { display: block; font: 500 .6rem var(--sans); letter-spacing: .08em; text-transform: none; color: var(--su-noce-tenue); margin-top: 3px; }
+.segno-sede { width: 26px; height: 26px; }
+.mappa-goccia { position: absolute; left: 3px; top: 0; width: 20px; height: 20px; background: var(--bronzo); border-radius: 50% 50% 50% 0; transform: rotate(-45deg); box-shadow: 0 6px 16px rgb(80 55 30 / .35); }
+.mappa-goccia::after { content: ''; position: absolute; inset: 6px; border-radius: 50%; background: var(--gesso); }
+.mappa-anello { position: absolute; left: 50%; bottom: 0; width: 40px; height: 14px; margin-left: -20px; border: 1.5px solid rgb(143 107 71 / .7); border-radius: 50%; }
+@media (prefers-reduced-motion: no-preference) { .mappa-anello { animation: battito 2.4s ease-out infinite; } @keyframes battito { from { transform: scale(.4); opacity: 1; } to { transform: scale(1.6); opacity: 0; } } }
+.mappa-quadro .maplibregl-ctrl-attrib { background: rgb(251 248 243 / .85); color: #6b6157; font-size: 10px; }
+.mappa-quadro .maplibregl-ctrl-attrib a { color: #6b6157; }
+.mappa-quadro .maplibregl-cooperative-gesture-screen { background: rgb(42 36 32 / .55); color: var(--su-noce); font: 500 1rem var(--sans); }
+/* «come arrivare»: elenco di voci che fanno volare la mappa */
+.dove-elenco { list-style: none; margin: 0; padding: 0; }
+.dove-elenco button { width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 0; background: none; border: 0; border-bottom: 1px solid var(--linea); text-align: left; cursor: pointer; transition: padding .25s, background .25s; }
+.dove-elenco button:hover { padding-left: 6px; background: rgb(227 210 186 / .25); }
+.dove-elenco button > span { display: grid; gap: 2px; font-weight: 600; font-size: .92rem; }
+.dove-elenco small { font-weight: 400; font-size: .8rem; color: var(--tenue); }
+.dove-elenco i { margin-left: auto; font-style: normal; color: var(--bronzo); }
+.segnino { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 2px; min-width: 30px; height: 30px; font: 700 .62rem var(--sans); color: #fff; border-radius: 2px; }
+.segnino.icona { background: var(--avorio-2); color: var(--bronzo); }
+.segnino svg { width: 18px; height: 18px; }
+.segnino em { font-style: normal; display: grid; place-items: center; width: 24px; height: 30px; border-radius: 2px; }
+.dove-foto { aspect-ratio: 3 / 2; }
+@media (max-width: 720px) {
+  .mappa-dove { top: 12px; left: 12px; padding: 8px 10px; font-size: .56rem; }
+  .mappa-tasti { top: 12px; right: 12px; } .mappa-tasti button { width: 36px; height: 34px; }
+  .mappa-piede { bottom: 40px; gap: 6px; }
+  .mappa-viste button { padding: 9px 11px; font-size: .78rem; }
+  .mappa-linee button { width: 27px; }
+  .mappa-scheda { left: 12px; top: auto; bottom: 136px; width: calc(100% - 24px); }
+}
+/* prova A: mappa grande, pannello di lato con il grande angolo arrotondato del sito */
+.dove-grande { display: grid; grid-template-columns: minmax(300px, 360px) minmax(0, 1fr); margin-top: 30px; background: var(--gesso); border: 1px solid var(--linea); border-top-left-radius: clamp(60px, 8vw, 120px); overflow: hidden; }
+.dove-grande .mappa-quadro { min-height: clamp(560px, 80vh, 760px); border: 0; border-left: 1px solid var(--linea); }
+.dove-pannello { padding: clamp(30px, 3.4vw, 48px) clamp(22px, 2.4vw, 34px) 26px; display: flex; flex-direction: column; gap: 12px; }
+.dove-num { font: 500 .75rem var(--sans); letter-spacing: .1em; color: var(--bronzo); }
+.dove-via { font: 300 clamp(2rem, 2.7vw, 2.6rem)/1.04 var(--serif); }
+.dove-sotto { color: var(--tenue); font-size: .9rem; }
+.dove-azioni { display: grid; gap: 10px; margin: 10px 0 12px; }
+.dove-azioni .bottone { justify-content: space-between; }
+.dove-azioni .pillola { justify-self: stretch; align-self: stretch; justify-content: center; }
+.dove-titoletto { display: flex; justify-content: space-between; align-items: baseline; font: 600 .64rem var(--sans); letter-spacing: .22em; text-transform: uppercase; border-bottom: 1px solid var(--linea); padding-bottom: 10px; }
+.dove-titoletto span { font-weight: 500; letter-spacing: .1em; color: var(--tenue); }
+.dove-indicazioni { margin-top: auto; padding-top: 14px; color: var(--bronzo); font-weight: 600; font-size: .9rem; }
+.dove-riga { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px clamp(24px, 3vw, 44px); margin-top: 20px; align-items: start; }
+@media (max-width: 980px) {
+  .dove-grande { grid-template-columns: minmax(0, 1fr); border-top-left-radius: clamp(50px, 14vw, 90px); }
+  .dove-grande .mappa-quadro { order: -1; min-height: min(78vh, 560px); border-left: 0; border-bottom: 1px solid var(--linea); }
+  .dove-riga { grid-template-columns: minmax(0, 1fr); }
+}
+.orari { background: var(--gesso); border: 1px solid var(--linea); padding: 22px 24px; display: grid; gap: 12px; }
+.orari h3 { font: 400 1.5rem/1.15 var(--serif); }
+.orari dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 20px; font-variant-numeric: tabular-nums; font-size: .95rem; }
+.orari dt { color: var(--tenue); } .orari dd { margin: 0; font-weight: 600; text-align: right; }
+.orari p { font-size: .9rem; color: var(--tenue); }
+.adesso-riga { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: .92rem; border-top: 1px solid var(--linea); padding-top: 12px; }
+.orari a { color: var(--bronzo); font-weight: 600; font-size: .92rem; }
+
+/* ---------- fondo con la firma grande ---------- */
+.fondo { background: var(--noce); color: var(--su-noce); padding-top: clamp(80px, 12vh, 130px); overflow: hidden; }
+.fondo-griglia { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 1fr); gap: 36px; }
+.fondo h3 { font: 600 .64rem var(--sans); letter-spacing: .24em; text-transform: uppercase; color: var(--bronzo-chiaro); margin-bottom: 14px; }
+.fondo p, .fondo li, .fondo dd { font-size: .92rem; color: var(--su-noce-tenue); line-height: 1.65; }
+.fondo .nome-f { font: 400 1.7rem var(--serif); color: var(--su-noce); margin-bottom: 8px; }
+.fondo dl { margin: 0; display: grid; gap: 10px; }
+.fondo dt { font-weight: 600; font-size: .86rem; color: var(--su-noce); }
+.fondo dd { margin: 0; }
+.fondo ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.fondo a { color: var(--su-noce); }
+.firma-giro { overflow: hidden; margin-top: clamp(60px, 10vh, 110px); }
+.firma { font: 300 clamp(3rem, 13.2vw, 13rem)/.86 var(--serif); letter-spacing: -.025em; white-space: nowrap; color: var(--su-noce); opacity: .92; padding-bottom: .1em; }
+.firma em { font-style: italic; color: var(--bronzo-chiaro); }
+@media (prefers-reduced-motion: no-preference) { .firma { transform: translateY(70%); transition: transform 1.6s cubic-bezier(.2,.75,.15,1); } .firma-giro.vista .firma { transform: none; } }
+@media (prefers-reduced-motion: no-preference) { .entra-sx { opacity: 0; transform: translateX(-60px); transition: opacity 1.1s cubic-bezier(.2,.7,.2,1) .2s, transform 1.4s cubic-bezier(.2,.7,.2,1) .2s; } .entra-sx.vista { opacity: 1; transform: none; } } /* 9/11, Franco: le scritte accanto alle foto entrano da sinistra verso destra */
+/* costruzione di passaggio verso la fine della pagina (9/11, Franco: «se ne vuoi mettere di più perché viene meglio fallo. Differenzia bene»):
+   larga fino al bordo destro, angolo arrotondato in alto a sinistra, eco dell'apertura; ogni pagina ne ha una diversa dalle altre */
+.tendina.passaggio { height: clamp(300px, 46vw, 600px); margin: clamp(40px, 6vh, 80px) 0 0 var(--bordo-sx); }
+.tendina.passaggio > .tendina-dentro { border-top-left-radius: clamp(90px, 14vw, 220px); }
+@media (max-width: 720px) { .tendina.passaggio { height: 64vw; margin-left: var(--gutter); } }
+/* 9/11, Franco: una frase di Shakespeare sulla costruzione di passaggio, che affiora dalla sabbia lettera per lettera («emergendo per affioramento») */
+.tendina.passaggio .velo-frase { background: linear-gradient(100deg, rgb(246 241 233 / .9) 0%, rgb(246 241 233 / .76) 34%, rgb(246 241 233 / 0) 66%); }
+.passaggio-frase { position: absolute; z-index: 3; left: clamp(28px, 6vw, 96px); top: 50%; transform: translateY(-50%); width: min(560px, 80%); margin: 0; display: grid; gap: 18px; }
+.passaggio-frase p { font: 300 clamp(1.7rem, 3.1vw, 2.9rem)/1.18 var(--serif); color: var(--inchiostro); margin: 0; }
+.passaggio-frase cite { font: 500 .76rem var(--sans); font-style: normal; letter-spacing: .12em; text-transform: uppercase; color: var(--bronzo); }
+.passaggio-frase .p { display: inline-block; white-space: nowrap; } .passaggio-frase .l { display: inline-block; }
+.passaggio-frase .solo-lettori { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (prefers-reduced-motion: no-preference) {
+  .passaggio-frase .l { opacity: 0; filter: blur(9px); transform: translateY(.45em); transition: opacity 1.1s ease, filter 1.4s ease, transform 1.5s cubic-bezier(.2,.7,.2,1); transition-delay: calc(1s + var(--i) * 24ms); }
+  .passaggio-frase.vista .l { opacity: 1; filter: none; transform: none; }
+  .passaggio-frase cite { opacity: 0; transition: opacity 1s ease 3.4s; } .passaggio-frase.vista cite { opacity: 1; }
+}
+@media (max-width: 720px) {
+  .tendina.passaggio { height: 118vw; }
+  .tendina.passaggio .velo-frase { background: linear-gradient(180deg, rgb(246 241 233 / .92) 0%, rgb(246 241 233 / .8) 50%, rgb(246 241 233 / .1) 100%); }
+  .passaggio-frase { top: 30px; transform: none; left: 22px; right: 22px; width: auto; }
+  .passaggio-frase p { font-size: 1.6rem; }
+}
+.riga-fine { border-top: 1px solid var(--linea-noce); padding-block: 20px 28px; display: flex; flex-wrap: wrap; gap: 8px 26px; font-size: .8rem; color: var(--su-noce-tenue); }
+.tocco { display: none; }
+
+/* ---------- misure intermedie e telefono ---------- */
+@media (max-width: 1400px) { .tel { display: none; } }
+@media (max-width: 1220px) {
+  .menu, .tel { display: none; }
+  .apri-menu { display: block; margin-left: 0; }
+  .aperto { margin-left: auto; }
+}
+@media (max-width: 980px) {
+  :root { --alto: 60px; }
+  .apertura-foto::after, .ch-apertura-foto::after { display: none; }
+  .apertura { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+  .apertura-pannello { margin-right: 0; padding: 150px var(--gutter) 64px; border-bottom-right-radius: clamp(90px, 22vw, 180px); }
+  .apertura-foto { height: min(92vw, 640px); margin-top: -70px; }
+  .verticale { display: none; }
+  .metodo-testa, .lastra-dentro, .racconta-griglia, .materie-griglia, .calcolo, .chi-griglia, .portare-griglia, .scrivi-griglia, .dove-griglia { grid-template-columns: minmax(0, 1fr); }
+  .lastra-dentro { gap: 22px; padding-block: 48px; }
+  .lastra-tit { font-size: clamp(3rem, 12vw, 4.6rem); }
+  .racconta-griglia .disco { width: min(100%, 600px); justify-self: center; }
+  .materie-elenco { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .quattro { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .quattro > div:nth-child(3) { border-left: 0; padding-left: 0; }
+  .chi-foto { max-width: 400px; margin-left: 12px; }
+  .arrivo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .prossimo:not(:nth-child(3n+1)) { padding-left: 0; border-left: 0; }
+  .prossimo:nth-child(even) { padding-left: 20px; border-left: 1px solid var(--linea); }
+  .fondo-griglia { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .mappa-quadro { min-height: 440px; }
+}
+@media (max-width: 720px) {
+  body { padding-bottom: calc(62px + env(safe-area-inset-bottom, 0px)); }
+  html { scroll-padding-top: 66px; }
+  .testata-riga { height: 66px; gap: 14px; }
+  .monogramma { width: 38px; height: 38px; }
+  .marchio-nome b { font-size: 1.22rem; }
+  .aperto, .dimostra, .filtri-corti { display: none; }
+  .apri-menu { margin-left: auto; }
+  .filtri { gap: 18px; }
+  .apertura-pannello { padding-top: 136px; gap: 22px; }
+  .apertura h1 { font-size: clamp(3rem, 15vw, 4.2rem); }
+  .apertura-piede { display: none; }
+  /* sul telefono il cerchio tiene solo il titolo; campo e frasi sotto */
+  .racconta-griglia .disco { width: 100%; aspect-ratio: auto; border-radius: 0; background: none; box-shadow: none; padding: 0; gap: 18px; text-align: left; }
+  .disco-cerchio { width: min(100%, 330px); aspect-ratio: 1; border-radius: 50%; margin: 0 auto; padding: 14%; align-content: center; text-align: center;
+    background: radial-gradient(circle at 34% 28%, #f0e5d4, var(--nocciola) 68%, #dcc7aa); box-shadow: 0 40px 70px -36px rgb(90 60 30 / .45); }
+  .disco h2 { font-size: clamp(2.2rem, 10vw, 2.7rem); }
+  .parole span { text-align: left; }
+  .frasi { grid-template-columns: minmax(0, 1fr); }
+  .frasi li:nth-child(n) button { background: transparent; } .frasi li:nth-child(odd) button { background: rgb(227 210 186 / .16); }
+  .risposta { padding: 22px 18px; }
+  .interruttore { grid-auto-flow: column; gap: 22px; }
+  .interruttore button { font-size: clamp(2.6rem, 12vw, 3.4rem); }
+  .interruttore button::after { display: none; }
+  .materie-elenco, .quattro, .arrivo, .fondo-griglia, .due-campi, .due-liste { grid-template-columns: minmax(0, 1fr); }
+  .quattro > div { border-left: 0; padding-left: 0; border-bottom: 1px solid var(--linea); padding-bottom: 24px; }
+  .prossimo:nth-child(even) { padding-left: 0; border-left: 0; }
+  .tappa { width: min(80vw, 310px); }
+  .tocco { display: grid; grid-template-columns: 1fr 1fr; position: fixed; left: 0; right: 0; bottom: 0; z-index: 70; padding-bottom: env(safe-area-inset-bottom, 0px); background: rgb(251 248 243 / .94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--linea-forte); }
+  .tocco a { padding: 17px 10px; text-align: center; font-weight: 600; text-decoration: none; background: var(--gesso); }
+  .tocco a + a { background: var(--inchiostro); color: var(--gesso); }
+  .mappa-quadro { min-height: 460px; }
+}
+</style>
+</head>
+<body>
+
+<header class="testata" id="testata">
+  <div class="contenitore testata-riga">
+    <a class="marchio" href="#inizio" aria-label="Avv. Angela Angelicata, torna all'inizio">
+      <svg class="monogramma" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22.5" fill="none" stroke="#b8946b" stroke-width="1"/><text x="7.5" y="32" font-family="Cormorant Garamond, Georgia, serif" font-size="25" fill="#1f1a16">A</text><text x="22.5" y="34.5" font-family="Cormorant Garamond, Georgia, serif" font-size="25" font-style="italic" fill="#8f6b47">A</text></svg>
+      <i class="marchio-linea" aria-hidden="true"></i>
+      <span class="marchio-nome"><b>Angela Angelicata</b><small>Avvocata · Milano</small></span>
+    </a>
+    <div class="filtri filtri-corti" role="group" aria-label="Ti serve per">
+      <button type="button" data-area="tutto" aria-pressed="true">Tutto</button><button type="button" data-area="civile" aria-pressed="false">Civile</button><button type="button" data-area="penale" aria-pressed="false">Penale</button>
+    </div>
+    <nav class="menu" aria-label="Sezioni">
+      <a href="chi-sono.html">Chi sono</a><a href="#metodo">Il metodo</a><a href="#materie">Materie</a><a href="#tappe">Le tappe</a><a href="#scadenze">Scadenze</a><a href="#scrivi">Contatti</a>
+    </nav>
+    <span class="aperto" id="aperto"><i aria-hidden="true"></i><span>Orari dello studio</span></span>
+    <a class="tel" href="tel:+390200000000">02 0000 0000</a>
+    <button type="button" class="apri-menu" aria-label="Apri il menu" aria-expanded="false" aria-controls="pannello-menu"><span></span><span></span></button>
+  </div>
+  <div class="testata-sotto">
+    <div>
+      <div class="contenitore">
+        <div class="filtri" role="group" aria-label="Ti serve per">
+          <span class="filtri-tit">Ti serve per</span>
+          <button type="button" data-area="tutto" aria-pressed="true">Tutto</button><button type="button" data-area="civile" aria-pressed="false">Civile</button><button type="button" data-area="penale" aria-pressed="false">Penale</button>
+        </div>
+        <span class="dimostra">Progetto dimostrativo · nomi e dati di fantasia</span>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="velo-menu" aria-hidden="true"></div>
+<aside class="pannello-menu" id="pannello-menu" aria-label="Menu" inert>
+  <button type="button" class="chiudi-menu">Chiudi</button>
+  <nav aria-label="Sezioni"><a href="chi-sono.html">Chi sono</a><a href="#metodo">Il metodo</a><a href="#materie">Materie</a><a href="#tappe">Le tappe</a><a href="#scadenze">Scadenze</a><a href="#scrivi">Contatti</a></nav>
+  <a class="bottone" href="tel:+390200000000">Chiama 02 0000 0000</a>
+  <p class="dimostra" style="display:block">Progetto dimostrativo · nomi e dati di fantasia</p>
+</aside>
+
+<main id="inizio">
+  <!-- 1. apertura -->
+  <section class="apertura" aria-labelledby="t-apertura">
+    <div class="apertura-pannello">
+      <p class="occhio">Avvocata · civile e penale · Milano</p>
+      <h1 id="t-apertura"><span class="riga"><span>Ti ascolto.</span></span><span class="riga"><span>Ti spiego.</span></span><span class="riga"><span><em>Ti difendo.</em></span></span></h1>
+      <p class="apertura-sotto">Sono Angela Angelicata. Seguo persone e famiglie nelle cause civili e nei processi penali: dal primo incontro all'ultima udienza parli sempre con me.</p>
+      <div class="apertura-azioni"><a class="bottone magnetico" href="#racconta">Raccontami cosa è successo <span class="freccia" aria-hidden="true">→</span></a><a class="link-tel" href="tel:+390200000000">o chiama 02 0000 0000</a></div>
+      <div class="apertura-piede"><i aria-hidden="true"></i><p>Primo incontro di un'ora, in studio o in video.<br>Preventivo scritto prima di cominciare.</p></div>
+    </div>
+    <figure class="apertura-foto">
+      <div class="dentro-foto"><img src="immagini/apertura.jpg" alt="Una cittadella di gesso e sabbia: su una piazzola, una persona e la sua guida che indica la strada" onerror="this.remove()"></div>
+    </figure>
+    <span class="verticale" aria-hidden="true">Studio legale · dal 2008</span>
+  </section>
+
+  <!-- 2. il metodo -->
+  <section class="metodo" id="metodo" aria-labelledby="t-metodo">
+    <div class="contenitore metodo-testa">
+      <div class="sez-testa"><p class="occhio">Il metodo</p><h2 class="titolo" id="t-metodo">Tre verbi, <em>sempre in quest'ordine</em></h2></div>
+      <p>Prima capisco cosa ti è successo, poi ti dico con parole semplici dove puoi arrivare, infine ti accompagno fino in fondo.</p>
+    </div>
+    <div class="pila">
+      <article class="lastra" aria-labelledby="t-l1">
+        <div class="contenitore lastra-dentro">
+          <div><span class="lastra-num">01 / 03</span><h3 class="lastra-tit" id="t-l1">Ascoltare</h3><p class="lastra-frase">Prima di tutto, la tua storia.</p></div>
+          <div class="lastra-testo">
+            <p>Il primo incontro dura un'ora, in studio o in videochiamata. Mi racconti cosa è successo senza fretta; io leggo i documenti e ti dico con franchezza se c'è un caso.</p>
+            <a class="pillola" href="#racconta">Raccontami cosa è successo</a>
+            <p>Porta quello che hai: la lettera, il contratto, i messaggi. Cosa serve, materia per materia, lo trovi più in basso.</p>
+            <a class="pillola" href="#portare">Cosa portare</a>
+          </div>
+          <figure class="tendina lastra-foto"><div class="tendina-dentro"><img src="immagini/ascoltare.jpg" alt="Seduta sulla panca di travertino dello studio, l'avvocata ascolta una cliente" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+        </div>
+      </article>
+      <article class="lastra" aria-labelledby="t-l2">
+        <div class="contenitore lastra-dentro">
+          <div><span class="lastra-num">02 / 03</span><h3 class="lastra-tit" id="t-l2">Spiegare</h3><p class="lastra-frase">Le strade possibili, e quanto costano.</p></div>
+          <div class="lastra-testo">
+            <p>Ti spiego le strade che hai, i rischi di ognuna e le scadenze che non aspettano. Senza latino e senza giri di parole.</p>
+            <a class="pillola" href="#scadenze">Le scadenze</a>
+            <p>Prima di cominciare ricevi un preventivo scritto, voce per voce: sai quanto spendi prima di decidere.</p>
+            <a class="pillola" href="#tappe">Le tappe</a>
+          </div>
+          <figure class="tendina lastra-foto"><div class="tendina-dentro"><img src="immagini/spiegare.jpg" alt="In piedi, con un foglio in mano, l'avvocata spiega a una coppia seduta al tavolo" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+        </div>
+      </article>
+      <article class="lastra" aria-labelledby="t-l3">
+        <div class="contenitore lastra-dentro">
+          <div><span class="lastra-num">03 / 03</span><h3 class="lastra-tit" id="t-l3">Difendere</h3><p class="lastra-frase">Fino all'ultima udienza.</p></div>
+          <div class="lastra-testo">
+            <p>In tribunale, in procura, al tavolo della trattativa: quando si può, si arriva a un accordo; quando non basta, si va davanti al giudice.</p>
+            <a class="pillola" href="#materie">Civile e penale</a>
+            <p>Non passi da un ufficio all'altro: dal primo incontro alla fine parli sempre con me.</p>
+            <a class="pillola" href="#chi">Chi sono</a>
+          </div>
+          <figure class="tendina lastra-foto"><div class="tendina-dentro"><img src="immagini/difendere.jpg" alt="Su una panca del palazzo di giustizia, l'avvocata parla con una ragazza prima dell'udienza" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 3. cosa ti è successo -->
+  <section class="sez racconta" id="racconta" aria-labelledby="t-racconta">
+    <div class="contenitore racconta-griglia">
+      <div class="disco">
+        <div class="disco-cerchio">
+          <p class="occhio">Il primo passo</p>
+          <h2 id="t-racconta">Cosa ti è successo?</h2>
+          <p class="disco-sotto">Scrivilo come lo diresti a un amico: ti dico da dove cominciare.</p>
+        </div>
+        <div class="disco-campo">
+          <label class="parole"><span>Con parole tue</span><textarea id="parole" rows="2" placeholder="Per esempio: mi è arrivata una lettera dalla procura" autocomplete="off"></textarea></label>
+          <p class="capito" id="capito" aria-live="polite"></p>
+          <p class="allarme" id="allarme" role="alert" hidden></p>
+        </div>
+      </div>
+      <div>
+        <p class="frasi-tit">Oppure scegli la frase più vicina alla tua</p>
+        <ol class="frasi" role="group" aria-label="Le frasi più comuni">
+          <li data-k="separazione"><button type="button" data-k="separazione" aria-pressed="true"><span class="num">01</span>Ci stiamo separando</button></li>
+          <li data-k="denunciato"><button type="button" data-k="denunciato" aria-pressed="false"><span class="num">02</span>Mi hanno denunciato</button></li>
+          <li data-k="eredita"><button type="button" data-k="eredita" aria-pressed="false"><span class="num">03</span>C'è un'eredità da dividere</button></li>
+          <li data-k="querela"><button type="button" data-k="querela" aria-pressed="false"><span class="num">04</span>Voglio sporgere querela</button></li>
+          <li data-k="sfratto"><button type="button" data-k="sfratto" aria-pressed="false"><span class="num">05</span>L'inquilino non paga</button></li>
+          <li data-k="decreto"><button type="button" data-k="decreto" aria-pressed="false"><span class="num">06</span>Mi è arrivato un decreto penale</button></li>
+          <li data-k="incidente"><button type="button" data-k="incidente" aria-pressed="false"><span class="num">07</span>Ho avuto un incidente</button></li>
+          <li data-k="lettera"><button type="button" data-k="lettera" aria-pressed="false"><span class="num">08</span>Ho ricevuto la lettera di un avvocato</button></li>
+        </ol>
+        <aside class="risposta" id="risposta" aria-live="polite" aria-label="La tua prima risposta">
+          <small id="r-frase"></small>
+          <h3 id="r-materia"></h3>
+          <span class="area" id="r-area"></span>
+          <div class="chi-segue"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22.5" fill="#efe6da" stroke="#b8946b" stroke-width="1"/><text x="7.5" y="32" font-family="Cormorant Garamond, Georgia, serif" font-size="25" fill="#1f1a16">A</text><text x="22.5" y="34.5" font-family="Cormorant Garamond, Georgia, serif" font-size="25" font-style="italic" fill="#8f6b47">A</text></svg><div><b>Ti seguo io, Avv. Angela Angelicata</b><span>Ordine degli Avvocati di Milano n. 00000 (di fantasia)</span></div></div>
+          <div class="scadenza" id="r-scadenza"><em id="r-scad-tit"></em><b id="r-scad"></b><a id="r-scad-link" href="#scadenze">Calcola la tua data</a></div>
+          <div class="righe"><span>Primo incontro: <b>un'ora, in studio o in video</b>, con preventivo scritto prima di cominciare</span><span>Da portare: <b id="r-porta"></b></span></div>
+          <p class="consiglio" id="r-consiglio"></p>
+          <div class="azioni"><a class="bottone" href="#scrivi">Mandami il caso <span class="freccia" aria-hidden="true">→</span></a><a class="pillola" href="#tappe" id="r-tappe">Come si svolge</a></div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. civile e penale -->
+  <section class="sez materie" id="materie" aria-labelledby="t-materie">
+    <div class="contenitore materie-griglia">
+      <div>
+        <p class="occhio">Le materie</p>
+        <h2 class="sr" id="t-materie">Diritto civile e diritto penale</h2>
+        <div class="interruttore" role="tablist" aria-label="Area del diritto">
+          <button type="button" role="tab" aria-selected="true" data-lato="civile" aria-controls="materie-elenco">Civile</button>
+          <button type="button" role="tab" aria-selected="false" data-lato="penale" aria-controls="materie-elenco">Penale</button>
+        </div>
+        <p class="materie-nota" id="materie-nota"></p>
+      </div>
+      <ul class="materie-elenco" id="materie-elenco" role="tabpanel"></ul>
+    </div>
+  </section>
+
+  <!-- 5. le tappe -->
+  <section class="tappe-sez" id="tappe" aria-labelledby="t-tappe">
+    <div class="tappe-fermo">
+      <div class="contenitore tappe-testa">
+        <div class="sez-testa"><p class="occhio">Come si svolge</p><h2 class="titolo" id="t-tappe">Le tappe, <em>prima di cominciare</em></h2></div>
+        <div class="schede" role="tablist" aria-label="Materia" id="schede-tappe"></div>
+      </div>
+      <div class="tappe-binario"><ol class="tappe-treno" id="tappe-treno"></ol></div>
+      <div class="contenitore legenda"><span><i style="background:var(--mattone)"></i>Scadenza fissata dalla legge: non aspetta</span><span><i style="background:var(--bronzo)"></i>Durata di solito: non è una promessa, dipende anche dall'altra parte e dal tribunale</span></div>
+    </div>
+  </section>
+
+  <!-- 6. scadenze -->
+  <section class="sez scadenze" id="scadenze" aria-labelledby="t-scadenze">
+    <div class="contenitore calcolo">
+      <div class="domanda">
+        <div class="sez-testa"><p class="occhio">Un calcolo onesto</p><h2 class="titolo" id="t-scadenze">Quanto tempo <em>hai ancora</em></h2><p>Alcune scadenze le fissa la legge, e chi le lascia passare perde un diritto. Metti la data e vedi il giorno.</p></div>
+        <div class="schede" role="tablist" aria-label="Quale scadenza" id="schede-calcolo">
+          <button type="button" role="tab" aria-selected="true" data-c="querela">Querela · 3 mesi</button>
+          <button type="button" role="tab" aria-selected="false" data-c="decreto">Decreto penale · 15 giorni</button>
+          <button type="button" role="tab" aria-selected="false" data-c="indagini">Fine indagini · 20 giorni</button>
+          <button type="button" role="tab" aria-selected="false" data-c="ingiunzione">Decreto ingiuntivo · 40 giorni</button>
+          <button type="button" role="tab" aria-selected="false" data-c="eredita">Successione · 12 mesi</button>
+          <button type="button" role="tab" aria-selected="false" data-c="incidente">Incidente · 2 anni</button>
+        </div>
+        <label for="data-calcolo"><span id="c-domanda"></span></label>
+        <input type="date" id="data-calcolo">
+        <p class="stima" id="c-regola"></p>
+      </div>
+      <div class="esito" aria-live="polite">
+        <p class="occhio">Il termine scade</p>
+        <p class="data" id="c-data">Inserisci la data</p>
+        <p class="mancano" id="c-mancano"></p>
+        <p class="poi" id="c-poi"></p>
+        <p class="stima" id="c-stima"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. prima di cominciare -->
+  <section class="sez manifesto" id="prima" aria-labelledby="t-prima">
+    <div class="contenitore">
+      <p class="occhio" id="t-prima">Prima di cominciare</p>
+      <p class="manifesto-frase" id="manifesto">Quello che mi racconti resta tra noi. Prima di cominciare sai quanto spendi, per scritto. E se non puoi pagare, in molti casi l'avvocato lo paga lo Stato.</p>
+      <div class="quattro">
+        <div><span class="n">01</span><h3>Il primo incontro</h3><p>Un'ora, in studio o in videochiamata. Leggiamo insieme i documenti e ti spiego le strade possibili e i rischi di ognuna.</p></div>
+        <div><span class="n">02</span><h3>Il preventivo, per scritto</h3><p>Prima di iniziare ricevi un preventivo scritto, voce per voce. Lo chiede la legge, e lo faccio sempre.</p></div>
+        <div><span class="n">03</span><h3>Se non puoi pagare</h3><p>Con un reddito sotto la soglia di legge l'avvocato lo paga lo Stato, anche nel penale. Le vittime di alcuni reati, come la violenza domestica o lo stalking, ne hanno diritto qualunque sia il reddito.</p></div>
+        <div><span class="n">04</span><h3>Il segreto professionale</h3><p>Quello che mi racconti non esce dallo studio, e nessuno può obbligarmi a riferirlo, nemmeno un giudice.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. chi ti segue -->
+  <section class="sez chi" id="chi" aria-labelledby="t-chi">
+    <div class="contenitore chi-griglia">
+      <div class="chi-foto ef-sfalsata">
+        <figure class="tendina bn"><div class="tendina-dentro"><img src="immagini/ritratto.jpg" alt="L'Avv. Angela Angelicata sorride nel suo studio" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+      </div>
+      <div class="chi-testo">
+        <p class="occhio">Chi ti segue</p>
+        <h2 id="t-chi">Avv. Angela Angelicata</h2>
+        <p class="ordine">Avvocata dal 2008, iscritta all'Ordine degli Avvocati di Milano con il n. 00000 (di fantasia) e all'elenco dei difensori d'ufficio. Il numero si controlla sull'albo pubblico.</p>
+        <p class="chi-frase">Un'avvocata sola, dall'inizio alla fine: sai sempre con chi parli.</p>
+        <div class="due-liste">
+          <div><h4>Diritto civile</h4><ul><li>Separazioni e divorzi</li><li>Eredità e testamenti</li><li>Affitti e sfratti</li><li>Risarcimento dei danni</li></ul></div>
+          <div><h4>Diritto penale</h4><ul><li>Difesa di chi è indagato o imputato</li><li>Querele e assistenza alle vittime</li><li>Parte civile nel processo</li><li>Reati legati alla strada</li></ul></div>
+        </div>
+        <p class="riceve">Ricevo dal lunedì al venerdì, su appuntamento, in studio o in videochiamata.</p>
+        <a class="pillola" href="chi-sono.html">La mia storia →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. cosa portare -->
+  <section class="sez" id="portare" aria-labelledby="t-portare">
+    <div class="contenitore">
+      <div class="tappe-testa">
+        <div class="sez-testa"><p class="occhio">Il primo incontro</p><h2 class="titolo" id="t-portare">Cosa portare, <em>da spuntare</em></h2><p>Con i documenti giusti il primo incontro serve a decidere, non a fare l'elenco di cosa manca. La lista resta salvata su questo telefono o computer.</p></div>
+        <div class="schede" role="tablist" aria-label="Materia" id="schede-portare"></div>
+      </div>
+      <div class="portare-griglia">
+        <ul class="lista-portare" id="lista-portare"></ul>
+        <div class="pronto">
+          <p class="occhio" id="pronto-tit">Documenti pronti</p>
+          <p class="conta" id="conta">0 / 0</p>
+          <div class="barra-conta"><i id="barra-conta"></i></div>
+          <p>Non hai tutto? Vieni lo stesso: quello che manca te lo chiedo io, quando serve.</p>
+          <p class="attenzione">Porta i documenti all'incontro. <b>Non mandarli con il modulo del sito</b>: per quelli c'è un canale protetto, dopo il primo contatto.</p>
+          <button type="button" class="pillola" onclick="print()">Stampa la lista</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- costruzione di passaggio (9/11) -->
+  <figure class="tendina passaggio" id="frase"><div class="tendina-dentro"><img src="immagini/passaggio-home.jpg" style="object-position: 25% 75%" alt="Un ponte di noce sospeso tra volumi di gesso sotto il cielo, con una galleria illuminata e una freccia incisa sulla rampa" loading="lazy" onerror="this.remove()"><i class="velo-frase" aria-hidden="true"></i></div><i class="tendina-filo" aria-hidden="true"></i><blockquote class="passaggio-frase"><p>Dagli abiti stracciati si vedono anche i vizi piccoli; toghe e pellicce nascondono tutto.</p><cite>William Shakespeare, Re Lear</cite></blockquote></figure>
+
+  <!-- 10. scrivimi -->
+  <section class="sez scrivi" id="scrivi" aria-labelledby="t-scrivi">
+    <div class="contenitore">
+      <div class="sez-testa"><p class="occhio">Scrivimi</p><h2 class="titolo" id="t-scrivi">Poche righe, <em>e arrivano già in ordine</em></h2><p>Quello che hai scritto in cima alla pagina è già qui. Ti richiamo entro un giorno lavorativo. Per un'udienza, un arresto o una scadenza nei prossimi giorni, telefona.</p></div>
+      <div class="scrivi-griglia">
+        <form class="modulo" id="modulo">
+          <div class="due-campi">
+            <label>Nome<input name="nome" autocomplete="given-name" required></label>
+            <label>Telefono o email<input name="contatto" autocomplete="tel" required></label>
+          </div>
+          <div class="due-campi">
+            <label>Di cosa si tratta<select name="materia" id="m-materia">
+              <option value="separazione">Separazione e divorzio</option><option value="eredita">Eredità</option><option value="sfratto">Affitti e sfratti</option><option value="incidente">Incidente</option>
+              <option value="denunciato">Denuncia o atto ricevuto</option><option value="querela">Voglio sporgere querela</option><option value="decreto">Decreto penale</option><option value="lettera">Lettera di un avvocato</option><option value="altro">Altro</option></select></label>
+            <label>C'è una scadenza? <small>se la sai</small><input type="date" name="scadenza"></label>
+          </div>
+          <label>In breve, di cosa si tratta<textarea name="racconto" id="m-racconto" maxlength="600"></textarea></label>
+          <p class="avviso">Scrivi solo di cosa si tratta: niente dettagli dei fatti, niente dati sulla salute, nessun documento allegato. Il resto me lo racconti a voce.</p>
+          <button class="bottone magnetico" type="submit">Manda la richiesta <span class="freccia" aria-hidden="true">→</span></button>
+          <p class="informativa">Uso questi dati solo per risponderti e valutare il caso, prima di un eventuale incarico. Li leggo solo io e chi mi aiuta in studio, vincolato al segreto professionale; se non diventano un incarico, li cancello dopo 6 mesi. Puoi chiedere di vederli, correggerli o cancellarli, e rivolgerti al Garante privacy. <a href="#">Informativa completa</a>.</p>
+        </form>
+        <div class="anteprima">
+          <p class="testa-a">Così arriva all'avvocata</p>
+          <ul class="posta" id="posta">
+            <li class="urgente"><span class="etich">Urgente</span><b>Decreto penale · scade tra 6 giorni</b><span>«mi è arrivato un decreto penale di condanna per…»</span></li>
+            <li><span class="etich">Separazione</span><b>Separazione · nessuna scadenza</b><span>«vorremmo separarci d'accordo, abbiamo due figli…»</span></li>
+            <li><span class="etich">Querela</span><b>Querela · fatti di ottobre</b><span>«un ex socio mi ha diffamato su Facebook…»</span></li>
+          </ul>
+          <p class="spiega">Le richieste con una scadenza vicina o con parole come «udienza», «notifica» o «decreto» salgono in cima con l'etichetta Urgente; le altre si dividono per materia. Le ordina una regola automatica, le legge sempre una persona.</p>
+        </div>
+      </div>
+      <div class="crescere">
+        <h3>Il sito può crescere, <em>quando lo studio vuole</em></h3>
+        <div class="arrivo">
+          <div class="prossimo"><span class="stato">In arrivo</span><b>Prenota il primo incontro</b><p>Giorno e ora tra quelli liberi, in studio o in video, con promemoria il giorno prima.</p></div>
+          <div class="prossimo"><span class="stato">In arrivo</span><b>Area clienti</b><p>Documenti e stato della pratica in un servizio protetto collegato al sito.</p></div>
+          <div class="prossimo"><span class="stato gia">Già qui</span><b>Le email in ordine</b><p>Le richieste arrivano con materia, scadenza e urgenza già scritte.</p></div>
+          <div class="prossimo"><span class="stato">In arrivo</span><b>Altri calcoli</b><p>Quote di un'eredità senza testamento, termini per l'appello, interessi di legge.</p></div>
+          <div class="prossimo"><span class="stato">In arrivo</span><b>Moduli prima dell'incontro</b><p>Uno per pratica: i dati arrivano prima, l'incontro dura meno.</p></div>
+          <div class="prossimo"><span class="stato">In arrivo</span><b>Domande frequenti</b><p>«Cos'è un avviso di garanzia?», «Posso ritirare una querela?»: risposte brevi, scritte dall'avvocata.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. dove: mappa grande con il pannello di lato (8/11) -->
+  <section class="sez" id="dove" aria-labelledby="t-dove">
+    <div class="contenitore">
+      <div class="sez-testa"><p class="occhio">Dove sono</p><h2 class="titolo" id="t-dove">In centro, <em>a due passi dal Palazzo di Giustizia</em></h2></div>
+      <div class="dove-grande">
+        <aside class="dove-pannello">
+          <p class="dove-num">01 /</p>
+          <h3 class="dove-via">Via Luciano Manara 13</h3>
+          <p class="dove-sotto">20122 Milano · secondo piano, con ascensore</p>
+          <div class="dove-azioni"><button type="button" class="bottone" data-vista="citta">Vola sulla città <span class="freccia" aria-hidden="true">↗</span></button><button type="button" class="pillola" data-vista="studio">Torna allo studio</button></div>
+          <p class="dove-titoletto">Come arrivare <span>tocca una voce</span></p>
+          <ul class="dove-elenco">
+            <li><button type="button" data-luogo="tribunale"><b class="segnino icona" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M2.5 7.2 10 3.2l7.5 4M3 17.3h14M4 15.3h12M5.3 8.4v5.6M8.4 8.4v5.6M11.6 8.4v5.6M14.7 8.4v5.6"/></svg></b><span>Palazzo di Giustizia<small>3 minuti a piedi</small></span><i aria-hidden="true">↗</i></button></li>
+            <li><button type="button" data-luogo="sforza"><b class="segnino l4" aria-hidden="true">M4</b><span>Sforza-Policlinico<small>linea blu · 9 minuti a piedi</small></span><i aria-hidden="true">↗</i></button></li>
+            <li><button type="button" data-luogo="babila"><b class="segnino" aria-hidden="true"><em class="l1">M1</em><em class="l4">M4</em></b><span>San Babila<small>linee rossa e blu · 12 minuti a piedi</small></span><i aria-hidden="true">↗</i></button></li>
+            <li><button type="button" data-luogo="linate"><b class="segnino icona" aria-hidden="true"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 2c.8 0 1.2.8 1.2 1.6V8l6 3.4V13l-6-1.8v3.6l1.8 1.4V18L10 17.1 7 18v-1.8l1.8-1.4v-3.6L2.8 13v-1.6l6-3.4V3.6C8.8 2.8 9.2 2 10 2z"/></svg></b><span>Dall'aeroporto di Linate<small>M4 senza cambi fino a Sforza-Policlinico</small></span><i aria-hidden="true">↗</i></button></li>
+            <li><button type="button" data-luogo="centrale"><b class="segnino icona" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5" y="2.5" width="10" height="11.5" rx="2.5"/><path d="M5 8.5h10M7.6 17.6 9 14.2M12.4 17.6 11 14.2"/><circle cx="7.9" cy="11.3" r=".6" fill="currentColor"/><circle cx="12.1" cy="11.3" r=".6" fill="currentColor"/></svg></b><span>Dalla Stazione Centrale<small>M3 fino a Crocetta, poi 12 minuti a piedi</small></span><i aria-hidden="true">↗</i></button></li>
+          </ul>
+          <a class="dove-indicazioni" href="https://www.google.com/maps/dir/?api=1&amp;destination=Via+Luciano+Manara+13,+20122+Milano" target="_blank" rel="noopener">Indicazioni con Google Maps →</a>
+        </aside>
+        <div class="mappa-quadro" id="mappa-milano">
+          <div class="mappa" role="region" aria-label="Mappa di Milano: lo studio in Via Luciano Manara 13, il Palazzo di Giustizia e la metropolitana"><p class="riserva">Via Luciano Manara 13, Milano</p></div>
+          <p class="mappa-dove" aria-live="polite"><i aria-hidden="true"></i><span>Vicino allo studio</span></p>
+          <div class="mappa-tasti"><button type="button" data-zoom="+" aria-label="Avvicina">+</button><button type="button" data-zoom="-" aria-label="Allontana">−</button><button type="button" data-piatta aria-label="Cambia tra vista in rilievo e vista piatta">2D</button></div>
+          <div class="mappa-piede">
+            <div class="mappa-viste" role="group" aria-label="Vista della mappa"><button type="button" data-vista="studio" aria-pressed="true">Lo studio</button><button type="button" data-vista="tribunale" aria-pressed="false">Il tribunale</button><button type="button" data-vista="citta" aria-pressed="false">La città</button></div>
+            <div class="mappa-linee" role="group" aria-label="Linee della metropolitana da mostrare"><span>Metro</span><button type="button" class="l1" data-linea="1" aria-pressed="true">M1</button><button type="button" class="l2" data-linea="2" aria-pressed="true">M2</button><button type="button" class="l3" data-linea="3" aria-pressed="true">M3</button><button type="button" class="l4" data-linea="4" aria-pressed="true">M4</button><button type="button" class="l5" data-linea="5" aria-pressed="true">M5</button></div>
+          </div>
+          <div class="mappa-scheda" hidden><button type="button" class="mappa-chiudi" aria-label="Chiudi">×</button><small>Come arrivare</small><h4></h4><p></p><a target="_blank" rel="noopener"></a></div>
+        </div>
+      </div>
+      <div class="dove-riga">
+        <figure class="tendina dove-foto"><div class="tendina-dentro"><img src="immagini/studio.jpg" alt="All'ingresso di un palazzo, un cliente consegna le chiavi all'avvocata" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+        <div class="orari">
+          <h3>Quando trovarmi</h3>
+          <p>Se non puoi venire, il primo incontro si fa in video.</p>
+          <dl><dt>Lunedì – venerdì</dt><dd>9:00 – 13:00</dd><dt></dt><dd>14:30 – 18:30</dd><dt>Sabato</dt><dd>su appuntamento</dd></dl>
+          <p class="adesso-riga"><span class="aperto" id="aperto-2"><i aria-hidden="true"></i><span></span></span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="fondo" id="contatti">
+  <div class="contenitore fondo-griglia">
+    <div>
+      <p class="nome-f">Studio Legale Angelicata</p>
+      <p>Avv. Angela Angelicata<br>Via Luciano Manara 13, 20122 Milano (indirizzo d'esempio)</p>
+      <p style="margin-top:12px">Telefono 02 0000 0000<br>studio@avvangelicata.example<br>PEC angelicata@pec.example</p>
+    </div>
+    <div>
+      <h3>Dati dello studio</h3>
+      <dl>
+        <dt>Avvocata</dt><dd>Avv. Angela Angelicata, iscritta all'Ordine degli Avvocati di Milano n. 00000. Titolo di avvocato conseguito in Italia.</dd>
+        <dt>Dati fiscali</dt><dd>Avv. Angela Angelicata · P.IVA 00000000000</dd>
+        <dt>Assicurazione professionale</dt><dd>Polizza di responsabilità civile n. 0000 con Compagnia Esempio S.p.A., Via Esempio 1, Milano · copertura: Unione europea</dd>
+        <dt>Regole professionali</dt><dd>Rispetto il <a href="https://www.consiglionazionaleforense.it/codice-deontologico-forense" target="_blank" rel="noopener">Codice deontologico forense</a>, consultabile sul sito del Consiglio nazionale forense.</dd>
+      </dl>
+    </div>
+    <div>
+      <h3>Link utili</h3>
+      <ul>
+        <li><a href="https://www.consiglionazionaleforense.it" target="_blank" rel="noopener">Consiglio nazionale forense</a></li>
+        <li><a href="https://www.giustizia.it" target="_blank" rel="noopener">Ministero della Giustizia</a></li>
+        <li><a href="https://www.garanteprivacy.it" target="_blank" rel="noopener">Garante privacy</a></li>
+        <li><a href="https://www.1522.eu" target="_blank" rel="noopener">1522, numero antiviolenza</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="contenitore firma-giro"><p class="firma" aria-hidden="true">Angela <em>Angelicata</em></p></div>
+  <div class="contenitore riga-fine"><span>Privacy</span><span>Il sito non usa cookie di profilazione, per questo non c'è il banner</span><span>Accessibilità</span><span>Progetto dimostrativo: nomi, numeri e dati sono di fantasia.</span></div>
+</footer>
+
+<nav class="tocco" aria-label="Contatto rapido"><a href="tel:+390200000000">Chiama</a><a href="#scrivi">Scrivimi</a></nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
+<script src="mappa-metro.js"></script>
+<script>
+const $ = (s, el = document) => el.querySelector(s), $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const MUOVI = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+const largo = () => innerWidth > 980;
+const ALTO = () => (innerWidth > 980 ? 64 : 60);
+function caso(seme) { let s = (seme * 9301 + 49297) % 233280 || 1; return () => (s = (s * 16807) % 2147483647) / 2147483647; }
+
+/* ---------- plastici disegnati: il segnaposto finché non arrivano le immagini di Franco (labirinti di gesso, sabbia e argilla visti dall'alto) ---------- */
+function plastico(cv) {
+  const dpr = Math.min(2, devicePixelRatio || 1), W = Math.round(cv.clientWidth * dpr), H = Math.round(cv.clientHeight * dpr);
+  if (!W || !H || (cv.width === W && cv.height === H)) return;
+  cv.width = W; cv.height = H;
+  const c = cv.getContext('2d'), r = caso(+cv.dataset.seme || 3), tipo = cv.dataset.tipo || 'labirinto';
+  const fondo = c.createLinearGradient(0, 0, W, H); fondo.addColorStop(0, '#f1e8da'); fondo.addColorStop(1, '#dccaae'); c.fillStyle = fondo; c.fillRect(0, 0, W, H);
+  const n = { cittadella: 19, labirinto: 15, catacomba: 13, fortezza: 13, ritratto: 11, palazzo: 13 }[tipo] || 15;
+  const m = Array.from({ length: n }, () => Array(n).fill(1));
+  const pila = [[1, 1]]; m[1][1] = 0;
+  while (pila.length) {
+    const [x, y] = pila[pila.length - 1], dirs = [[2, 0], [-2, 0], [0, 2], [0, -2]].sort(() => r() - .5); let mosso = false;
+    for (const [dx, dy] of dirs) { const nx = x + dx, ny = y + dy; if (nx > 0 && ny > 0 && nx < n - 1 && ny < n - 1 && m[ny][nx] === 1) { m[y + dy / 2][x + dx / 2] = 0; m[ny][nx] = 0; pila.push([nx, ny]); mosso = true; break; } }
+    if (!mosso) pila.pop();
+  }
+  const piazzole = tipo === 'catacomba' ? 4 : tipo === 'palazzo' ? 1 : 2;
+  for (let k = 0; k < piazzole; k++) { const px = 2 + Math.floor(r() * (n - 6)), py = 2 + Math.floor(r() * (n - 6)), q = tipo === 'palazzo' ? 4 : 3; for (let yy = py; yy < py + q; yy++) for (let xx = px; xx < px + q; xx++) m[yy][xx] = 0; }
+  const h = m.map((riga, y) => riga.map((v, x) => {
+    if (!v) return 0;
+    const bordo = x === 0 || y === 0 || x === n - 1 || y === n - 1;
+    if (tipo === 'fortezza') return bordo ? 4 + (r() < .3 ? 1 : 0) : 2 + (r() < .25 ? 1 : 0);
+    if (tipo === 'palazzo') return bordo ? 3 : 1 + (r() < .3 ? 2 : 0);
+    if (tipo === 'cittadella') { const d = Math.hypot(x - n * .55, y - n * .5) / n; return Math.max(1, Math.round((1 - d * 1.6) * 6 * (.6 + r() * .5))); }
+    return 1 + (r() < .1 ? 2 + Math.floor(r() * 2) : r() < .3 ? 1 : 0);
+  }));
+  const argilla = m.map(riga => riga.map(() => r() < .2));
+  const maxZ = 6, cella = Math.min(W / (n * 1.06), H / (n * .5 + maxZ * .62 + 1)), cw = cella, ch = cella * .5, hz = cella * .62;
+  const ox = W * (tipo === 'cittadella' ? .6 : .5), oy = (H - (n * ch + maxZ * hz)) / 2 + maxZ * hz;
+  const P = (x, y, z) => [ox + (x - y) * cw / 2, oy + (x + y) * ch / 2 - z * hz];
+  const faccia = (pts, col) => { c.beginPath(); pts.forEach(([a, b], i) => i ? c.lineTo(a, b) : c.moveTo(a, b)); c.closePath(); c.fillStyle = col; c.fill(); c.strokeStyle = 'rgba(110,80,50,.16)'; c.lineWidth = Math.max(.6, dpr * .5); c.stroke(); };
+  // ombra morbida della costruzione sulla sabbia
+  c.save(); c.filter = `blur(${Math.round(cella * .8)}px)`; c.fillStyle = 'rgba(110,80,50,.22)';
+  c.beginPath(); [P(0, 0, 0), P(n, 0, 0), P(n, n, 0), P(0, n, 0)].forEach(([a, b], i) => i ? c.lineTo(a + cella * .9, b + cella * .2) : c.moveTo(a + cella * .9, b + cella * .2)); c.fill(); c.restore();
+  for (let s = 0; s < 2 * n - 1; s++) for (let x = 0; x < n; x++) {
+    const y = s - x; if (y < 0 || y >= n) continue;
+    const z = h[y][x];
+    if (!z) { faccia([P(x, y, 0), P(x + 1, y, 0), P(x + 1, y + 1, 0), P(x, y + 1, 0)], `hsl(36,${28 + r() * 6}%,${82 + r() * 3}%)`); continue; }
+    const [alto, sx, dx] = argilla[y][x] ? ['#e6cbae', '#d6b391', '#b99472'] : ['#f7f2ea', '#e7dbc7', '#ccb898'];
+    faccia([P(x, y + 1, z), P(x + 1, y + 1, z), P(x + 1, y + 1, 0), P(x, y + 1, 0)], sx);
+    faccia([P(x + 1, y, z), P(x + 1, y + 1, z), P(x + 1, y + 1, 0), P(x + 1, y, 0)], dx);
+    faccia([P(x, y, z), P(x + 1, y, z), P(x + 1, y + 1, z), P(x, y + 1, z)], alto);
+  }
+  const luce = c.createLinearGradient(0, 0, W, 0); luce.addColorStop(0, 'rgba(255,248,236,.22)'); luce.addColorStop(1, 'rgba(90,60,30,.10)'); c.fillStyle = luce; c.fillRect(0, 0, W, H);
+}
+const tele = () => $$('canvas.plastico');
+
+/* ---------- i dati: casi, parole, tappe, documenti, scadenze, materie ---------- */
+const AREA = { separazione: "civile", eredita: "civile", sfratto: "civile", incidente: "civile", lettera: "civile", ingiunzione: "civile", denunciato: "penale", querela: "penale", decreto: "penale", indagini: "penale" };
+const CASI = {
+  separazione: { frase: "Ci stiamo separando", materia: "Separazione", area: "Diritto civile · famiglia", scad: ["Nessuna scadenza fissa", "Se c'è già un'udienza fissata, chiamami subito", null, true], porta: "certificato di matrimonio, redditi degli ultimi 3 anni, spese per i figli", consiglio: "Se siete d'accordo, spesso basta la negoziazione assistita: niente tribunale, tempi più brevi.", tappe: "separazione" },
+  denunciato: { frase: "Mi hanno denunciato", materia: "Una denuncia contro di te", area: "Diritto penale · difesa", scad: ["Scadenza di legge", "Se ti è arrivato l'avviso di fine indagini, hai 20 giorni per difenderti", "indagini"], porta: "l'atto che hai ricevuto, con la busta, e i documenti di cui parla", consiglio: "Non parlare dei fatti con nessuno, nemmeno al telefono o in chat, prima di averne parlato con me.", tappe: "denunciato" },
+  eredita: { frase: "C'è un'eredità da dividere", materia: "Successione", area: "Diritto civile · eredità", scad: ["Scadenza di legge", "12 mesi dalla morte per la dichiarazione di successione", "eredita"], porta: "certificato di morte, testamento se c'è, atti delle case, estratti dei conti", consiglio: "Se c'è un testamento, non aprirlo da soli: si pubblica dal notaio.", tappe: "eredita" },
+  querela: { frase: "Voglio sporgere querela", materia: "Sporgere querela", area: "Diritto penale · vittime", scad: ["Scadenza di legge", "3 mesi da quando hai saputo del fatto (per alcuni reati 12)", "querela"], porta: "messaggi, foto, nomi dei testimoni, referti se ci sono", consiglio: "Salva subito messaggi e foto e fanne una copia, prima che spariscano.", tappe: "querela" },
+  sfratto: { frase: "L'inquilino non paga", materia: "Sfratto per morosità", area: "Diritto civile · casa", scad: ["Da sapere", "All'udienza il giudice può dare all'inquilino fino a 90 giorni per pagare", null, true], porta: "contratto registrato, ricevute, elenco dei mesi non pagati", consiglio: "Prima di tutto controlliamo che il contratto sia registrato: cambia la strada da prendere.", tappe: "sfratto" },
+  decreto: { frase: "Mi è arrivato un decreto penale", materia: "Decreto penale di condanna", area: "Diritto penale · difesa", scad: ["Scadenza di legge", "15 giorni dalla notifica per fare opposizione", "decreto"], porta: "il decreto con la busta, e i documenti sui fatti", consiglio: "Non pagare prima di averne parlato: pagando rinunci a fare opposizione.", tappe: "denunciato" },
+  incidente: { frase: "Ho avuto un incidente", materia: "Risarcimento del danno", area: "Diritto civile, e penale se ci sono feriti", scad: ["Scadenza di legge", "2 anni per chiedere il risarcimento dei danni", "incidente"], porta: "modulo blu (CID), verbale, foto, nomi dei testimoni", consiglio: "Conserva tutto, anche gli scontrini delle spese mediche. I referti però portali all'incontro, non mandarli dal sito.", tappe: null },
+  lettera: { frase: "Ho ricevuto la lettera di un avvocato", materia: "Lettera di diffida", area: "Diritto civile", scad: ["Guarda la lettera", "Spesso dà un termine, per esempio 15 giorni: conta da quando l'hai ricevuta", null], porta: "la lettera con la busta, e i documenti di cui parla", consiglio: "Non rispondere da solo, nemmeno al telefono, prima di avermela fatta leggere.", tappe: null }
+};
+const PAROLE = {
+  separazione: ["separa", "divorz", "mio marito", "mia moglie", "coniuge", "affidamento", "mantenimento", "assegno", "convivente", "matrimonio"],
+  eredita: ["eredit", "successione", "testament", "mancato", "mancata", "morto", "morta", "defunt", "eredi ", "lascito", "scomparso"],
+  sfratto: ["sfratt", "inquilin", "affitto", "canone", "morosi", "locazion", "padrone di casa", "affittuario", "non paga"],
+  incidente: ["incident", "tampona", "investit", "sinistro", "assicurazion", " cid ", "risarcim", "colpo di frusta", "macchina", " moto "],
+  denunciato: ["denunciat", "avviso di garanzia", "indagat", "procura", "fine delle indagini", "conclusione delle indagini", "querelat", "mi accusa", "imputat", "invito a presentar", "carabinieri", "polizia"],
+  querela: ["querela", "denunciare", "sporgere", "diffamat", "diffamaz", "truffa", "truffat", "rubat", "furto", "stalking", "perseguit", "aggredit", "minacc"],
+  decreto: ["decreto penale", "opposizione", "condann", "ammenda"],
+  lettera: ["diffida", "raccomandata", "decreto ingiuntivo", "citazione", "lettera di un avvocato", "lettera da un avvocato", "avvocato di"]
+};
+const PERICOLO = [["picchia"], ["violen"], ["ho paura"], ["mi ha messo le mani"], ["minaccia di uccid"], ["mi segue sotto casa"]];
+const SUBITO = [["udienza", "domani"], ["udienza", "oggi"], ["scade", "domani"], ["scade", "oggi"], ["arrestat"], ["fermat", "carabinieri"], ["perquisizion"], ["in caserma"], ["interrogatorio", "domani"], ["ufficiale giudiziario", "domani"], ["sgombero"]];
+const pulisci = t => ' ' + t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ') + ' ';
+const TAPPE = {
+  separazione: [
+    ["Primo incontro", "Ascolto, guardiamo redditi, casa e figli, e ti dico le strade possibili.", "un'ora"],
+    ["L'accordo", "Casa, figli, mantenimento: si scrive insieme, con l'avvocato dell'altro coniuge.", "di solito 2–6 settimane"],
+    ["Negoziazione assistita", "Firmate l'accordo davanti ai due avvocati, senza andare in tribunale.", "un incontro"],
+    ["Il controllo del pubblico ministero", "L'accordo va in procura entro 10 giorni; se ci sono figli, il PM lo approva.", "entro 10 giorni", true],
+    ["Separati", "L'accordo arriva al Comune. Dopo 6 mesi si può chiedere il divorzio.", "divorzio dopo 6 mesi", true]],
+  eredita: [
+    ["Primo incontro", "Chi sono gli eredi, c'è un testamento, cosa c'è nell'eredità.", "un'ora"],
+    ["Il testamento", "Se c'è, si pubblica dal notaio. Se non c'è, decide la legge chi eredita e quanto.", "di solito 2–4 settimane"],
+    ["La dichiarazione", "Va presentata all'Agenzia delle Entrate entro 12 mesi dalla morte.", "entro 12 mesi", true],
+    ["La divisione", "Gli eredi si accordano su chi prende cosa. Se non si accordano, prima si prova la mediazione.", "di solito 1–6 mesi"],
+    ["Se non c'è accordo", "Solo dopo la mediazione si può andare in tribunale per dividere.", "dipende dal tribunale"]],
+  sfratto: [
+    ["Primo incontro", "Contratto, ricevute, mesi non pagati: controlliamo che sia tutto in regola.", "un'ora"],
+    ["L'intimazione", "Preparo l'atto di sfratto e lo notifichiamo all'inquilino.", "di solito 1–2 settimane"],
+    ["L'attesa", "Tra la notifica e l'udienza devono passare almeno 20 giorni.", "almeno 20 giorni", true],
+    ["L'udienza di convalida", "Se l'inquilino non si oppone, il giudice convalida. Può dargli fino a 90 giorni per pagare.", "fino a 90 giorni di grazia", true],
+    ["La casa libera", "Se non se ne va, l'ufficiale giudiziario fissa il giorno del rilascio.", "qualche mese, dipende dal tribunale"]],
+  denunciato: [
+    ["Primo incontro", "Leggo l'atto che hai ricevuto: di cosa ti accusano e a che punto è il procedimento.", "un'ora"],
+    ["Le indagini", "Il pubblico ministero raccoglie le prove. Anche noi possiamo cercarne: testimoni, documenti, consulenze.", "durata massima fissata dalla legge", true],
+    ["La fine delle indagini", "Ti arriva un avviso: hai 20 giorni per mandare memorie e documenti o chiedere di essere sentito.", "20 giorni", true],
+    ["Davanti al giudice", "Il giudice decide se si va a processo. Si può scegliere un rito diverso: abbreviato, patteggiamento, messa alla prova.", "di solito mesi, dipende dal tribunale"],
+    ["La sentenza", "Si ascoltano i testimoni e il giudice decide. Contro la sentenza si può fare appello, entro termini brevi.", "appello: 15–45 giorni", true]],
+  querela: [
+    ["Primo incontro", "Ricostruiamo i fatti e mettiamo in fila le prove: messaggi, foto, testimoni.", "un'ora"],
+    ["La querela", "La scrivo e la presentiamo in procura o ai carabinieri, entro 3 mesi da quando hai saputo del fatto.", "entro 3 mesi", true],
+    ["Le indagini", "Il pubblico ministero indaga. Chiediamo di essere avvisati se vuole archiviare.", "di solito mesi"],
+    ["Archiviazione o processo", "Se il PM chiede di archiviare, puoi opporti entro 20 giorni (30 per i reati con violenza).", "entro 20 giorni", true],
+    ["Nel processo", "Ti costituisci parte civile: chiedi il risarcimento nello stesso processo.", "dipende dal tribunale"]]
+};
+const PORTARE = {
+  separazione: [["Certificato di matrimonio", "si chiede al Comune, anche online"], ["Dichiarazioni dei redditi degli ultimi 3 anni", "di tutti e due, se le hai"], ["Atti della casa o contratto d'affitto", ""], ["Estratti dei conti correnti", "gli ultimi 6 mesi"], ["Spese per i figli", "scuola, sport, medico: anche solo un elenco"], ["Eventuali accordi già scritti tra voi", ""]],
+  eredita: [["Certificato di morte", ""], ["Testamento, se c'è", "o il nome del notaio che lo custodisce"], ["Atti o visure delle case", ""], ["Estratti dei conti e dei titoli", "alla data della morte"], ["Documenti degli eredi", "nomi e codici fiscali"], ["Debiti, mutui, prestiti", "anche solo un elenco"]],
+  sfratto: [["Contratto d'affitto registrato", "con la ricevuta di registrazione"], ["Ricevute o bonifici dell'affitto", ""], ["Elenco dei mesi non pagati", "anche scritto a mano"], ["Lettere o messaggi con l'inquilino", ""], ["Dati dell'inquilino", "nome, codice fiscale se lo hai"]],
+  incidente: [["Modulo blu (CID) o verbale", ""], ["Foto dei mezzi e del luogo", ""], ["Nomi dei testimoni", ""], ["Preventivo o fattura della riparazione", ""], ["Scontrini delle spese mediche", "i referti portali in originale all'incontro"]],
+  lettera: [["La lettera con la busta", "la data di arrivo conta"], ["I documenti di cui parla la lettera", "contratti, fatture"], ["Eventuali risposte che hai già mandato", ""]],
+  denunciato: [["L'atto che hai ricevuto", "con la busta: la data di notifica conta"], ["Un documento d'identità", ""], ["Nomi di chi può confermare la tua versione", ""], ["Messaggi, email, foto legati ai fatti", "non cancellare niente"], ["Verbali firmati in caserma, se ci sono", ""]],
+  querela: [["Una cronologia dei fatti", "date e luoghi, anche scritta a mano"], ["Messaggi, email, foto, registrazioni", "fai una copia"], ["Nomi dei testimoni", ""], ["Referti medici, se ci sono", "in originale, all'incontro"], ["Denunce già fatte, se ci sono", ""]],
+  decreto: [["Il decreto penale con la busta", "la data di notifica conta"], ["Documenti sui fatti di cui parla", ""], ["Un documento d'identità", ""]]
+};
+const NOMI = { separazione: "Separazione", eredita: "Eredità", sfratto: "Sfratto", incidente: "Incidente", lettera: "Lettera ricevuta", denunciato: "Denuncia ricevuta", querela: "Querela", decreto: "Decreto penale" };
+const MATERIE = {
+  civile: { nota: "Famiglia, casa, eredità, danni: quando c'è un diritto da far valere o un accordo da trovare. Spesso si chiude senza arrivare in tribunale.", voci: [
+    ["Separazione e divorzio", "Se siete d'accordo, spesso basta la negoziazione assistita: niente tribunale, tempi più brevi.", "separazione"],
+    ["Figli: affidamento e mantenimento", "Tempi con i figli, assegno, casa: si decide pensando prima a loro, e si può rivedere se le cose cambiano."],
+    ["Eredità e testamenti", "Dichiarazione di successione entro 12 mesi, divisione tra eredi, un testamento da far valere o da contestare.", "eredita"],
+    ["Affitti e sfratti", "Per chi affitta e per chi abita in affitto: contratti, canoni non pagati, sfratto per morosità.", "sfratto"],
+    ["Risarcimento dei danni", "Incidenti stradali, cadute, danni alla casa. Dopo un incidente stradale ci sono 2 anni per chiedere il risarcimento."],
+    ["Recupero crediti", "Fatture e somme non pagate: dalla lettera di diffida al decreto ingiuntivo."],
+    ["Condominio", "Spese, delibere, liti tra vicini: prima si prova a mediare, poi si decide se andare avanti."],
+    ["Contratti e diffide", "Un contratto da leggere prima di firmarlo, una lettera di un avvocato a cui rispondere."],
+    ["Mediazione", "In molte liti civili è obbligatoria prima del giudice: ti accompagno e cerchiamo un accordo."]] },
+  penale: { nota: "Per chi è accusato di un reato e per chi lo ha subito. Qui i tempi sono stretti: prima mi chiami, più strade restano aperte.", voci: [
+    ["Difesa di chi è indagato o imputato", "Dall'avviso di garanzia alla sentenza: leggo gli atti e decidiamo insieme come difenderti.", "denunciato"],
+    ["Querele e assistenza alle vittime", "La querela va presentata entro 3 mesi da quando hai saputo del fatto; per alcuni reati i mesi sono 12.", "querela"],
+    ["Parte civile nel processo", "Chi ha subito un reato può chiedere il risarcimento nello stesso processo penale."],
+    ["Decreto penale di condanna", "15 giorni dalla notifica per fare opposizione: non pagare prima di averne parlato."],
+    ["Reati legati alla strada", "Guida in stato di ebbrezza, omissione di soccorso, lesioni stradali, sospensione della patente."],
+    ["Diffamazione, anche online", "Post, recensioni e messaggi offensivi: le prove si salvano subito, prima che spariscano."],
+    ["Truffe e reati contro il patrimonio", "Truffe online, furti, appropriazioni: dalla querela alla richiesta di risarcimento."],
+    ["Stalking e maltrattamenti", "Se sei in pericolo chiama il 112. Il 1522 è il numero antiviolenza, gratuito e anonimo. Poi si decide insieme come proteggerti."],
+    ["Messa alla prova", "Per alcuni reati, un periodo di lavori di pubblica utilità al posto del processo: se va bene, il reato si estingue."]] }
+};
+const fmt = d => d.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+const oggi = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+const piuGiorni = (d, n) => { const s = new Date(d); s.setDate(s.getDate() + n); return s; };
+/* i mesi si contano sul calendario: stesso giorno del mese; se quel giorno non c'è (31 febbraio), l'ultimo del mese */
+const piuMesi = (d, n) => { const s = new Date(d.getFullYear(), d.getMonth() + n, 1), ultimo = new Date(s.getFullYear(), s.getMonth() + 1, 0).getDate(); s.setDate(Math.min(d.getDate(), ultimo)); return s; };
+const CALCOLI = {
+  querela: { domanda: "Quando hai saputo del fatto?", regola: "Regola: la querela va presentata entro 3 mesi dal giorno in cui hai saputo del fatto (art. 124 del codice penale). Per gli atti persecutori (stalking) e la violenza sessuale i mesi sono 12. Molti reati non hanno bisogno di querela.", calcola: d => piuMesi(d, 3), poi: "Non aspettare l'ultimo giorno: prima si presenta, più sono freschi i ricordi e le prove." },
+  decreto: { domanda: "Quando ti è stato notificato il decreto penale?", regola: "Regola: l'opposizione si presenta entro 15 giorni dalla notifica (art. 461 del codice di procedura penale).", calcola: d => piuGiorni(d, 15), poi: "Negli stessi 15 giorni, se paghi, la pena pecuniaria si riduce di un quinto; ma pagando rinunci all'opposizione. Decidiamolo insieme." },
+  indagini: { domanda: "Quando ti è stato notificato l'avviso di fine indagini?", regola: "Regola: entro 20 giorni puoi presentare memorie e documenti, chiedere altre indagini o di essere interrogato (art. 415-bis del codice di procedura penale).", calcola: d => piuGiorni(d, 20), poi: "Dopo, il pubblico ministero decide se chiedere il processo o l'archiviazione." },
+  ingiunzione: { domanda: "Quando ti è stato notificato il decreto ingiuntivo?", regola: "Regola: l'opposizione al decreto ingiuntivo si fa entro 40 giorni dalla notifica (art. 641 del codice di procedura civile).", calcola: d => piuGiorni(d, 40), poi: "Se i 40 giorni passano senza opposizione, il decreto diventa definitivo e si può arrivare al pignoramento." },
+  eredita: { domanda: "Quando è mancata la persona?", regola: "Regola: la dichiarazione di successione va presentata entro 12 mesi dalla data della morte (d.lgs. 346 del 1990).", calcola: d => piuMesi(d, 12), poi: "Non serve la dichiarazione se gli eredi sono coniuge e figli, non ci sono case o terreni e l'eredità non supera 100.000 €: chiedimi se è il tuo caso." },
+  incidente: { domanda: "Quando è successo l'incidente?", regola: "Regola: il risarcimento dei danni causati dalla circolazione dei veicoli si chiede entro 2 anni dal fatto (art. 2947 del codice civile). Se c'è stato un reato, per esempio lesioni, il termine può essere più lungo.", calcola: d => piuMesi(d, 24), poi: "La richiesta scritta di risarcimento all'assicurazione interrompe il termine, che poi riparte da capo." }
+};
+
+/* ---------- il filtro Tutto · Civile · Penale: adatta tutta la pagina ---------- */
+let area = 'tutto', casoAttivo = 'separazione', tappaAttiva = 'separazione', listaAttiva = 'separazione', modoCalcolo = 'querela', lato = 'civile';
+try { const salvata = localStorage.getItem('avv-area'); if (['tutto', 'civile', 'penale'].includes(salvata)) area = salvata; } catch (e) {}
+const vale = k => area === 'tutto' || AREA[k] === area;
+function impostaArea(a, daUtente) {
+  area = a; if (daUtente) { try { localStorage.setItem('avv-area', a); } catch (e) {} }
+  $$('.filtri button').forEach(b => b.setAttribute('aria-pressed', b.dataset.area === a));
+  $$('.frasi li').forEach(li => { li.hidden = !vale(li.dataset.k); });
+  if (a !== 'tutto') mostraLato(a, daUtente);
+  if (!vale(casoAttivo)) scegli(Object.keys(CASI).find(vale));
+  if (!vale(tappaAttiva)) tappaAttiva = Object.keys(TAPPE).find(vale);
+  mostraTappe(tappaAttiva);
+  $$('#schede-calcolo button').forEach(b => { b.hidden = !vale(b.dataset.c); });
+  if (!vale(modoCalcolo)) calcoloSu(Object.keys(CALCOLI).find(vale));
+  if (!vale(listaAttiva)) listaAttiva = Object.keys(PORTARE).find(vale);
+  mostraLista(listaAttiva);
+}
+$$('.filtri button').forEach(b => b.addEventListener('click', () => impostaArea(b.dataset.area, true)));
+
+/* ---------- «Cosa ti è successo?» ---------- */
+function scegli(k, daTesto) {
+  const c = CASI[k]; if (!c) return; casoAttivo = k;
+  const r = $('#risposta');
+  $('#r-frase').textContent = daTesto ? 'Hai scritto: ' + (daTesto.length > 60 ? daTesto.slice(0, 58) + '…' : daTesto) : c.frase;
+  $('#r-materia').textContent = c.materia;
+  $('#r-area').textContent = c.area;
+  $('#r-scadenza').classList.toggle('calma', !!c.scad[3]);
+  $('#r-scad-tit').textContent = c.scad[0];
+  $('#r-scad').textContent = c.scad[1];
+  const link = $('#r-scad-link'); link.hidden = !c.scad[2]; link.onclick = () => calcoloSu(c.scad[2]);
+  $('#r-porta').textContent = c.porta;
+  $('#r-consiglio').textContent = c.consiglio;
+  const t = $('#r-tappe'); t.hidden = !c.tappe; t.onclick = () => { if (c.tappe) mostraTappe(c.tappe); };
+  r.classList.remove('cambia'); void r.offsetWidth; r.classList.add('cambia');
+  $$('.frasi button').forEach(b => b.setAttribute('aria-pressed', b.dataset.k === k));
+  if (PORTARE[k] && vale(k)) mostraLista(k);
+  $('#m-materia').value = k;
+}
+function capisci(testo) {
+  const t = pulisci(testo), avviso = $('#allarme'), esito = $('#capito');
+  const pericolo = PERICOLO.some(g => g.every(p => t.includes(p))), subito = SUBITO.some(g => g.every(p => t.includes(p)));
+  if (pericolo) avviso.innerHTML = '<b>Se sei in pericolo, chiama subito il <a href="tel:112">112</a>.</b> Il <a href="tel:1522">1522</a> è il numero antiviolenza: gratuito, anonimo, 24 ore su 24.';
+  else if (subito) avviso.innerHTML = '<b>Sembra una cosa di queste ore: non scrivere, telefona.</b> <a href="tel:+390200000000">02 0000 0000</a>. Chi viene arrestato ha diritto a parlare subito con un avvocato.';
+  avviso.hidden = !(pericolo || subito);
+  if (testo.trim().length < 4) { esito.textContent = ''; return; }
+  let meglio = null, punti = 0;
+  for (const [k, parole] of Object.entries(PAROLE)) { const n = parole.filter(p => t.includes(p)).length; if (n > punti) { punti = n; meglio = k; } }
+  if (meglio) { esito.textContent = 'Ho capito: ' + CASI[meglio].materia.toLowerCase() + '. Ecco da dove cominciare.'; if (!vale(meglio)) impostaArea('tutto'); scegli(meglio, testo.trim()); }
+  else esito.textContent = 'Non ho capito bene. Prova con altre parole, oppure chiamami: 02 0000 0000.';
+  const m = $('#m-racconto'); if (!m.dataset.toccato) m.value = testo;
+}
+(() => { const campo = $('#parole'); let t; campo.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => capisci(campo.value), 350); }); })();
+$('#m-racconto').addEventListener('input', e => { e.target.dataset.toccato = '1'; });
+$$('.frasi button').forEach(b => b.addEventListener('click', () => scegli(b.dataset.k)));
+
+/* ---------- Civile · Penale ---------- */
+function mostraLato(l, anima = true) {
+  lato = l;
+  $$('.interruttore button').forEach(b => b.setAttribute('aria-selected', b.dataset.lato === l));
+  $('#materie-nota').textContent = MATERIE[l].nota;
+  const ul = $('#materie-elenco');
+  ul.innerHTML = MATERIE[l].voci.map(([nome, testo, k], i) => `<li class="voce" style="--i:${i}"><button type="button" aria-expanded="false"><span>${nome}</span><i class="piu" aria-hidden="true"></i></button><div class="voce-testo"><div><p>${testo}</p>${k ? `<a href="#tappe" data-tappe="${k}">Le tappe →</a>` : ''}</div></div></li>`).join('');
+  if (anima && MUOVI) { ul.classList.remove('cambia'); void ul.offsetWidth; ul.classList.add('cambia'); }
+}
+$$('.interruttore button').forEach(b => b.addEventListener('click', () => mostraLato(b.dataset.lato)));
+/* 9/11, Franco: «la parola Civile è sempre nitida e la parola Penale sempre sfocata»: si cambiava solo cliccando e niente lo diceva.
+   Ora la voce si accende anche passandoci col mouse, e la prima volta che la sezione appare Penale si accende da sola per un attimo, poi torna Civile. */
+$$('.interruttore button').forEach(b => b.addEventListener('mouseenter', () => { if (matchMedia('(hover: hover)').matches && b.getAttribute('aria-selected') !== 'true') mostraLato(b.dataset.lato); }));
+(() => { const box = $('.interruttore'); if (!box || !MUOVI || !('IntersectionObserver' in window)) return; let t1, t2;
+  const ferma = () => { clearTimeout(t1); clearTimeout(t2); };
+  const io = new IntersectionObserver(e => { if (!e[0].isIntersecting) return; io.disconnect(); if (area !== 'tutto' || lato !== 'civile') return;
+    t1 = setTimeout(() => mostraLato('penale'), 1400); t2 = setTimeout(() => mostraLato('civile'), 4400);
+    box.addEventListener('pointerdown', ferma, { once: true }); box.addEventListener('mouseenter', ferma, { once: true }); }, { threshold: 0.6 });
+  io.observe(box); })();
+$('#materie-elenco').addEventListener('click', e => {
+  const a = e.target.closest('a[data-tappe]'); if (a) { if (!vale(a.dataset.tappe)) impostaArea('tutto', true); mostraTappe(a.dataset.tappe); return; }
+  const b = e.target.closest('.voce > button'); if (!b) return;
+  const v = b.parentElement, aperta = !v.classList.contains('aperta'); v.classList.toggle('aperta', aperta); b.setAttribute('aria-expanded', aperta);
+});
+
+/* ---------- le tappe ---------- */
+function mostraTappe(k) {
+  tappaAttiva = k;
+  $('#schede-tappe').innerHTML = Object.keys(TAPPE).filter(vale).map(c => `<button type="button" role="tab" aria-selected="${c === k}" data-k="${c}">${NOMI[c]}</button>`).join('');
+  $('#tappe-treno').innerHTML = TAPPE[k].map(([t, d, tempo, legge], i) => `<li class="tappa"><span class="tappa-num">${String(i + 1).padStart(2, '0')}</span><b>${t}</b><p>${d}</p><span class="tempo${legge ? ' legge' : ''}">${legge ? '<em>Scadenza di legge</em>' : ''}${tempo}</span></li>`).join('')
+    + `<li class="tappa fine"><span class="tappa-num">E poi</span><b>Ogni caso ha i suoi tempi.</b><p>Al primo incontro ti dico quelli del tuo, per scritto.</p><a class="pillola" href="#scrivi">Raccontami il tuo caso</a></li>`;
+  impostaPin();
+}
+$('#schede-tappe').addEventListener('click', e => { const b = e.target.closest('button'); if (b) mostraTappe(b.dataset.k); });
+function impostaPin() {
+  const sez = $('#tappe'), fermo = $('.tappe-fermo'), treno = $('#tappe-treno'), bin = $('.tappe-binario');
+  if (largo() && MUOVI) {
+    sez.classList.add('pinna');
+    const sinistra = bin.getBoundingClientRect().left + parseFloat(getComputedStyle(bin).paddingLeft);
+    const dist = Math.max(0, sinistra + treno.offsetWidth - innerWidth);
+    sez.dataset.dist = dist; sez.style.height = (fermo.offsetHeight + dist) + 'px';
+  } else { sez.classList.remove('pinna'); sez.style.height = ''; sez.dataset.dist = 0; treno.style.transform = ''; treno.style.setProperty('--avanza', 1); $$('.tappa', treno).forEach(t => t.classList.add('passata')); }
+  scorriTappe();
+}
+function scorriTappe() {
+  const sez = $('#tappe'); if (!sez.classList.contains('pinna')) return;
+  const fermo = $('.tappe-fermo'), treno = $('#tappe-treno'), r = sez.getBoundingClientRect(), tot = sez.offsetHeight - fermo.offsetHeight, dist = +sez.dataset.dist || 0;
+  const p = tot > 0 ? Math.min(1, Math.max(0, (ALTO() - r.top) / tot)) : 0;
+  treno.style.transform = `translate3d(${(-p * dist).toFixed(1)}px,0,0)`; treno.style.setProperty('--avanza', p.toFixed(4));
+  const tutte = $$('.tappa', treno); tutte.forEach((t, i) => t.classList.toggle('passata', i / (tutte.length - 1) <= p + .03));
+}
+
+/* ---------- le scadenze ---------- */
+function calcola() {
+  const c = CALCOLI[modoCalcolo], v = $('#data-calcolo').value;
+  $('#c-domanda').textContent = c.domanda; $('#c-regola').textContent = c.regola; $('#c-poi').textContent = c.poi;
+  $('#c-stima').textContent = 'È solo una stima, calcolata oggi, ' + fmt(oggi()) + '. Non tiene conto dei festivi né della sospensione di agosto dei termini civili: fammi sempre controllare la data prima di contarci.';
+  const out = $('#c-data'), manc = $('#c-mancano');
+  if (!v) { out.textContent = 'Inserisci la data'; manc.textContent = ''; return; }
+  const [y, m, g] = v.split('-').map(Number), inizio = new Date(y, m - 1, g), fine = c.calcola(inizio);
+  if (inizio > oggi()) { out.textContent = 'La data è nel futuro'; manc.textContent = "Controlla l'anno."; manc.className = 'mancano poco'; return; }
+  const giorni = Math.round((fine - oggi()) / 864e5);
+  out.textContent = fmt(fine);
+  manc.className = 'mancano' + (giorni <= 15 ? ' poco' : '');
+  manc.textContent = giorni > 1 ? 'Mancano ' + giorni + ' giorni.' + (giorni <= 15 ? ' Sono pochi: telefona, non scrivere.' : '') : giorni === 1 ? 'Scade domani: telefona subito, 02 0000 0000.' : giorni === 0 ? 'Scade oggi: telefona subito, 02 0000 0000.' : 'Il termine sembra già passato. Chiamami comunque: ci sono casi in cui si conta diversamente.';
+}
+function calcoloSu(k) { if (!CALCOLI[k]) return; modoCalcolo = k; $$('#schede-calcolo button').forEach(b => b.setAttribute('aria-selected', b.dataset.c === k)); calcola(); }
+$$('#schede-calcolo button').forEach(b => b.addEventListener('click', () => calcoloSu(b.dataset.c)));
+$('#data-calcolo').addEventListener('input', calcola);
+$('#data-calcolo').max = new Date().toISOString().slice(0, 10);
+
+/* ---------- cosa portare ---------- */
+const leggi = k => { try { return JSON.parse(localStorage.getItem('portare-' + k) || '[]'); } catch (e) { return []; } };
+const salva = (k, v) => { try { localStorage.setItem('portare-' + k, JSON.stringify(v)); } catch (e) {} };
+function mostraLista(k) {
+  listaAttiva = k;
+  $('#schede-portare').innerHTML = Object.keys(PORTARE).filter(vale).map(c => `<button type="button" role="tab" aria-selected="${c === k}" data-k="${c}">${NOMI[c]}</button>`).join('');
+  const fatti = leggi(k), ul = $('#lista-portare');
+  ul.innerHTML = PORTARE[k].map(([cosa, nota], i) => `<li><label><input type="checkbox" data-i="${i}"${fatti.includes(i) ? ' checked' : ''}><span>${cosa}${nota ? '<small>' + nota + '</small>' : ''}</span></label></li>`).join('');
+  const conta = () => { const sel = $$('input:checked', ul).map(x => +x.dataset.i); salva(k, sel);
+    $('#conta').textContent = sel.length + ' / ' + PORTARE[k].length; $('#barra-conta').style.width = (sel.length / PORTARE[k].length * 100) + '%'; };
+  $$('input', ul).forEach(x => x.addEventListener('change', conta)); conta();
+  $('#pronto-tit').textContent = 'Documenti pronti · ' + NOMI[k];
+}
+$('#schede-portare').addEventListener('click', e => { const b = e.target.closest('button'); if (b) mostraLista(b.dataset.k); });
+
+/* ---------- il modulo e come arriva ---------- */
+$('#modulo').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = new FormData(e.target), k = f.get('materia'), racconto = (f.get('racconto') || '').trim(), scad = f.get('scadenza');
+  const t = pulisci(racconto); let giorni = null;
+  if (scad) { const [y, m, g] = scad.split('-').map(Number); giorni = Math.round((new Date(y, m - 1, g) - oggi()) / 864e5); }
+  const urgente = (giorni !== null && giorni <= 7) || k === 'decreto' || /udienza|notific|scade|decreto|arrest|ufficiale giudiziario/.test(t);
+  const quando = giorni === null ? 'nessuna scadenza indicata' : giorni < 0 ? 'scadenza passata' : giorni === 0 ? 'scade oggi' : 'scade tra ' + giorni + ' giorni';
+  const esc = s => s.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+  const nome = NOMI[k] || 'Altro', li = document.createElement('li'); li.className = 'tua arriva' + (urgente ? ' urgente' : '');
+  li.innerHTML = `<span class="etich">${urgente ? 'Urgente' : esc(nome)}</span><b>${esc(nome)} · ${quando} · ${esc(f.get('nome') || '')}</b><span>«${esc(racconto.slice(0, 80) || 'nessun testo')}…»</span>`;
+  const posta = $('#posta'), vecchia = $('.tua', posta); if (vecchia) vecchia.remove();
+  const primaNormale = $('li:not(.urgente)', posta);
+  if (urgente) posta.prepend(li); else if (primaNormale) posta.insertBefore(li, primaNormale); else posta.append(li);
+  $('button[type="submit"]', e.target).firstChild.textContent = 'Richiesta pronta: guarda come arriva ';
+});
+
+/* ---------- «Aperto adesso» ---------- */
+function aperto() {
+  const d = new Date(), g = d.getDay(), m = d.getHours() * 60 + d.getMinutes(), feriale = g >= 1 && g <= 5;
+  const fasce = [[540, 780], [870, 1110]], f = feriale && fasce.find(([a, b]) => m >= a && m < b), hh = x => Math.floor(x / 60) + ':' + String(x % 60).padStart(2, '0');
+  let testo;
+  if (f) testo = 'Aperto adesso · fino alle ' + hh(f[1]);
+  else {
+    let dopo;
+    if (feriale && m < 540) dopo = 'alle 9:00'; else if (feriale && m >= 780 && m < 870) dopo = 'alle 14:30';
+    else { const nomi = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato']; let k = (g + 1) % 7; while (k === 0 || k === 6) k = (k + 1) % 7; dopo = (k === (g + 1) % 7 ? 'domani' : nomi[k]) + ' alle 9:00'; }
+    testo = 'Chiuso · riapre ' + dopo;
+  }
+  ['#aperto', '#aperto-2'].forEach(s => { const el = $(s); if (!el) return; el.classList.toggle('chiuso', !f); $('span', el).textContent = testo; });
+}
+aperto(); setInterval(aperto, 60000);
+
+/* ---------- testata, lastre, frase: tutto quello che si muove scorrendo ---------- */
+const testata = $('#testata'), lastre = $$('.lastra');
+function impostaPila() {
+  const si = largo() && MUOVI; $('.metodo').classList.toggle('pila', si);
+  if (!si) lastre.forEach(l => { l.firstElementChild.style.removeProperty('--p'); l.firstElementChild.style.removeProperty('--q'); });
+}
+function scorriLastre() {
+  if (!$('.metodo').classList.contains('pila')) return;
+  const vh = innerHeight, a = ALTO(), ps = lastre.map(l => Math.min(1, Math.max(0, (l.getBoundingClientRect().top - a) / (vh - a))));
+  lastre.forEach((l, i) => { const d = l.firstElementChild; d.style.setProperty('--p', ps[i].toFixed(3)); d.style.setProperty('--q', i < lastre.length - 1 ? (1 - ps[i + 1]).toFixed(3) : '0'); });
+}
+const frase = $('#manifesto');
+frase.innerHTML = frase.textContent.trim().split(/\s+/).map(w => `<span>${w}</span>`).join(' ');
+const paroleFrase = $$('span', frase);
+function scorriFrase() {
+  if (!MUOVI) { paroleFrase.forEach(s => s.classList.add('accesa')); return; }
+  const r = frase.getBoundingClientRect(), vh = innerHeight, p = Math.min(1, Math.max(0, (vh * .85 - r.top) / (r.height + vh * .35))), n = Math.round(p * paroleFrase.length);
+  paroleFrase.forEach((s, i) => s.classList.toggle('accesa', i < n));
+}
+let inCoda = false;
+function suScroll() { if (inCoda) return; inCoda = true; requestAnimationFrame(() => { inCoda = false; testata.classList.toggle('stretta', scrollY > 40); scorriLastre(); scorriTappe(); scorriFrase(); }); }
+addEventListener('scroll', suScroll, { passive: true });
+let attesa; addEventListener('resize', () => { clearTimeout(attesa); attesa = setTimeout(() => { impostaPila(); impostaPin(); tele().forEach(plastico); suScroll(); }, 150); });
+
+/* ---------- menu attivo mentre si legge ---------- */
+const vociMenu = $$('.menu a');
+const spia = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) vociMenu.forEach(a => a.classList.toggle('attiva', a.getAttribute('href') === '#' + e.target.id)); }), { rootMargin: '-40% 0px -55% 0px' });
+['metodo', 'materie', 'tappe', 'scadenze', 'scrivi'].forEach(id => spia.observe(document.getElementById(id)));
+
+/* ---------- foto con la tendina e firma: entrano quando arrivano sullo schermo ---------- */
+const vedi = 'IntersectionObserver' in window && MUOVI ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vista'); vedi.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px', threshold: .15 }) : null;
+$$('.tendina').forEach(el => vedi ? vedi.observe(el) : el.classList.add('vista'));
+/* 9/11, Franco: «fai entrare anche le scritte accanto alle foto nel senso opposto, ovvero da sinistra verso destra»: stesso segnale delle tendine */
+/* 9/11: la frase sulla costruzione di passaggio affiora lettera per lettera; i lettori di schermo leggono la frase intera */
+$$('.passaggio-frase p').forEach(el => { const t = el.textContent.trim(); el.textContent = ''; let i = 0;
+  const sr = document.createElement('span'); sr.className = 'solo-lettori'; sr.textContent = t; el.appendChild(sr);
+  t.split(' ').forEach((w, k, a) => { const p = document.createElement('span'); p.className = 'p'; p.setAttribute('aria-hidden', 'true');
+    for (const ch of w) { const l = document.createElement('span'); l.className = 'l'; l.textContent = ch; l.style.setProperty('--i', i++); p.appendChild(l); }
+    el.appendChild(p); if (k < a.length - 1) el.appendChild(document.createTextNode(' ')); }); });
+$$('.passaggio-frase').forEach(el => vedi ? vedi.observe(el) : el.classList.add('vista'));
+$$('.lastra-testo, .chi-testo, .orari, .dove-pannello').forEach(el => { el.classList.add('entra-sx'); vedi ? vedi.observe(el) : el.classList.add('vista'); });
+/* la firma sta in fondo alla pagina: scatta appena se ne vede un filo */
+const vediFirma = vedi ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vista'); vediFirma.unobserve(e.target); } }), { threshold: 0 }) : null;
+$$('.firma-giro').forEach(el => vediFirma ? vediFirma.observe(el) : el.classList.add('vista'));
+
+/* ---------- pulsanti che seguono un poco il mouse ---------- */
+if (MUOVI && matchMedia('(pointer: fine)').matches) $$('.magnetico').forEach(b => {
+  b.addEventListener('mousemove', e => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${((e.clientX - r.left - r.width / 2) * .2).toFixed(1)}px, ${((e.clientY - r.top - r.height / 2) * .3).toFixed(1)}px)`; });
+  b.addEventListener('mouseleave', () => { b.style.transform = ''; });
+});
+
+/* ---------- menu del telefono ---------- */
+function menu(apri) { document.body.classList.toggle('menu-aperto', apri); $('.apri-menu').setAttribute('aria-expanded', apri); $('#pannello-menu').inert = !apri; }
+$('.apri-menu').addEventListener('click', () => menu(!document.body.classList.contains('menu-aperto')));
+$('.velo-menu').addEventListener('click', () => menu(false));
+$('.chiudi-menu').addEventListener('click', () => menu(false));
+$$('#pannello-menu a').forEach(a => a.addEventListener('click', () => menu(false)));
+addEventListener('keydown', e => { if (e.key === 'Escape') menu(false); });
+
+/* ---------- la mappa vera di Milano (8/11): palazzi in 3D, metro M1-M5, studio e Palazzo di Giustizia ----------
+   Dal pacchetto «Mappa 3D Besana» di Franco, rivisto: colori del sito, dati della metro in mappa-metro.js (un .js si apre anche con il doppio clic,
+   un .json no), un solo MapLibre. Piano dell'animazione: si apre sullo studio; quando la mappa entra nello schermo sale sulla città con le metro,
+   si ferma, poi torna giù sullo studio (il finale è lo studio). Basta toccarla per fermare il giro.
+   Zoom mai sotto 14 con i palazzi in rilievo (LEZIONI 7/11, «grumi»): nella vista della città le case svaniscono e restano strade e metro. */
+function mappaMilano(quadro) {
+  const box = quadro && $('.mappa', quadro);
+  if (!box || !window.maplibregl) return;
+  const zona = quadro.closest('section') || quadro; // i pulsanti possono stare anche fuori dalla mappa (pannello, scheda degli orari)
+  const SEDE = [9.20256, 45.46097], TRIBUNALE = [9.20134, 45.46106], INDIRIZZO = 'Via+Luciano+Manara+13,+20122+Milano';
+  const COL = { 1: '#c34840', 2: '#418269', 3: '#d9a93a', 4: '#4b79ad', 5: '#977ea9' }, NOMI_L = { 1: 'rossa', 2: 'verde', 3: 'gialla', 4: 'blu', 5: 'lilla' };
+  const colore = v => ['match', v, '1', COL[1], '2', COL[2], '3', COL[3], '4', COL[4], COL[5]];
+  const M = window.METRO || { linee: { type: 'FeatureCollection', features: [] }, fermate: { type: 'FeatureCollection', features: [] } };
+  const nome = ['coalesce', ['get', 'name:it'], ['get', 'name']], altezza = ['coalesce', ['get', 'render_height'], 8];
+  const principali = ['all', ['in', ['get', 'class'], ['literal', ['primary', 'secondary', 'tertiary', 'trunk', 'motorway']]], ['!=', ['get', 'brunnel'], 'tunnel']];
+  const largoV = (a, b) => ['interpolate', ['exponential', 1.6], ['zoom'], 12, a, 17, b];
+  const stile = { version: 8, glyphs: 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf',
+    sources: {
+      osm: { type: 'vector', url: 'https://tiles.openfreemap.org/planet', attribution: '<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>' },
+      linee: { type: 'geojson', data: M.linee, attribution: 'Metro: <a href="https://gisportal.comune.milano.it/server/rest/services/D_Mobilita/ATM_Metro/MapServer" target="_blank" rel="noopener">Comune di Milano</a>, CC BY 4.0' },
+      fermate: { type: 'geojson', data: M.fermate } },
+    layers: [
+      { id: 'fondo', type: 'background', paint: { 'background-color': '#eee6da' } },
+      { id: 'verde', type: 'fill', source: 'osm', 'source-layer': 'landcover', filter: ['in', ['get', 'class'], ['literal', ['grass', 'wood', 'farmland']]], paint: { 'fill-color': '#e4e0cd' } },
+      { id: 'parchi', type: 'fill', source: 'osm', 'source-layer': 'park', paint: { 'fill-color': '#e4e0cd' } },
+      { id: 'acqua', type: 'fill', source: 'osm', 'source-layer': 'water', paint: { 'fill-color': '#d3dcdc' } },
+      { id: 'vie', type: 'line', source: 'osm', 'source-layer': 'transportation', filter: ['==', ['get', 'class'], 'minor'], layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#f8f3eb', 'line-width': largoV(0.6, 7) } },
+      { id: 'binari', type: 'line', source: 'osm', 'source-layer': 'transportation', filter: ['==', ['get', 'class'], 'rail'], paint: { 'line-color': '#d2c4ae', 'line-width': largoV(0.8, 2.5) } },
+      { id: 'corsi', type: 'line', source: 'osm', 'source-layer': 'transportation', filter: principali, layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: { 'line-color': '#d9c09c', 'line-width': largoV(1.2, 12), 'line-opacity': ['interpolate', ['linear'], ['zoom'], 12.5, 0.45, 14.5, 1] } },
+      { id: 'metro', type: 'line', source: 'linee', layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: { 'line-color': colore(['get', 'l']), 'line-width': ['interpolate', ['linear'], ['zoom'], 12, 2.4, 15, 3.6, 18, 6], 'line-opacity': 0.85 } },
+      { id: 'case', type: 'fill-extrusion', source: 'osm', 'source-layer': 'building', minzoom: 13.8, filter: ['!=', ['get', 'hide_3d'], true],
+        paint: { 'fill-extrusion-color': ['interpolate', ['linear'], altezza, 0, '#efe8dd', 12, '#e6dccd', 30, '#dccfbc'],
+          'fill-extrusion-height': ['case', ['<=', altezza, 5], ['+', 7, ['%', ['to-number', ['id'], 3], 9]], altezza],
+          'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], 0], 'fill-extrusion-opacity': ['interpolate', ['linear'], ['zoom'], 13.9, 0, 14.4, 0.95] } },
+      { id: 'nomi-vie', type: 'symbol', source: 'osm', 'source-layer': 'transportation_name', minzoom: 15.2, filter: ['in', ['get', 'class'], ['literal', ['minor', 'tertiary', 'secondary', 'primary', 'trunk']]],
+        layout: { 'symbol-placement': 'line', 'text-field': nome, 'text-font': ['Noto Sans Regular'], 'text-size': ['interpolate', ['linear'], ['zoom'], 15, 10, 18, 13], 'text-max-angle': 30, 'text-padding': 2 },
+        paint: { 'text-color': '#7d6e60', 'text-halo-color': '#fbf8f3', 'text-halo-width': 1.6 } },
+      { id: 'quartieri', type: 'symbol', source: 'osm', 'source-layer': 'place', maxzoom: 14.6, filter: ['in', ['get', 'class'], ['literal', ['suburb', 'quarter', 'neighbourhood']]],
+        layout: { 'text-field': ['upcase', nome], 'text-font': ['Noto Sans Regular'], 'text-size': 10, 'text-letter-spacing': 0.2, 'text-max-width': 8 },
+        paint: { 'text-color': '#a3927f', 'text-halo-color': '#f6f1e9', 'text-halo-width': 1.2 } },
+      { id: 'fermate', type: 'circle', source: 'fermate',
+        paint: { 'circle-color': '#fbf8f3', 'circle-radius': ['interpolate', ['linear'], ['zoom'], 12, 3, 15, 5, 18, 8], 'circle-stroke-color': colore(['slice', ['get', 'l'], 0, 1]), 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 12, 1.8, 16, 3] } },
+      { id: 'nomi-fermate', type: 'symbol', source: 'fermate', minzoom: 12.6,
+        layout: { 'text-field': ['get', 'n'], 'text-font': ['Noto Sans Bold'], 'text-size': ['interpolate', ['linear'], ['zoom'], 12.6, 10, 16, 12.5], 'text-offset': [0, 1.1], 'text-anchor': 'top', 'text-padding': 4 },
+        paint: { 'text-color': '#3b3029', 'text-halo-color': '#fbf8f3', 'text-halo-width': 1.8 } }],
+    light: { anchor: 'viewport', color: '#fff6ea', intensity: 0.3, position: [1.4, 200, 35] } };
+
+  const tel = () => box.clientWidth < 560;
+  const VISTE = () => tel() ? {
+      studio: { center: [9.20215, 45.46112], zoom: 16.5, pitch: 55, bearing: -62 },
+      tribunale: { center: [9.20120, 45.46112], zoom: 16.7, pitch: 52, bearing: 25 },
+      citta: { center: [9.1985, 45.4655], zoom: 12.6, pitch: 0, bearing: 0 } } : {
+      studio: { center: [9.20205, 45.46108], zoom: 16.9, pitch: 58, bearing: -62 },
+      tribunale: { center: [9.20120, 45.46112], zoom: 17.1, pitch: 54, bearing: 25 },
+      citta: { center: [9.1965, 45.4660], zoom: 13.3, pitch: 18, bearing: 0 } };
+  const NOMI = { studio: 'Vicino allo studio', tribunale: 'Palazzo di Giustizia', citta: 'Milano e la metro' };
+  let map;
+  try { map = new maplibregl.Map({ container: box, style: stile, ...VISTE().studio, minZoom: 11, maxZoom: 18.5, maxPitch: 65, maxBounds: [[9.04, 45.37], [9.34, 45.57]],
+    attributionControl: false, cooperativeGestures: true, fadeDuration: 0, preserveDrawingBuffer: true,
+    locale: { 'CooperativeGesturesHandler.WindowsHelpText': 'Per avvicinare la mappa tieni premuto Ctrl e usa la rotella', 'CooperativeGesturesHandler.MacHelpText': 'Per avvicinare la mappa tieni premuto ⌘ e usa la rotella', 'CooperativeGesturesHandler.MobileHelpText': 'Usa due dita per muovere la mappa' } }); } catch (e) { return; }
+  map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
+
+  const segno = (p, html, cls) => { const e = document.createElement('div'); e.className = cls; e.innerHTML = html; new maplibregl.Marker({ element: e, anchor: 'bottom' }).setLngLat(p).addTo(map); return e; };
+  segno(SEDE, '<span class="mappa-goccia"></span><span class="mappa-anello"></span>', 'segno-sede');
+  segno(SEDE, '<span class="nome-mappa qui">Studio Angelicata<small>Via Manara 13</small></span>', 'segno-nome').addEventListener('click', () => vola('studio'));
+  segno(TRIBUNALE, '<span class="nome-mappa">Palazzo di Giustizia</span>', 'segno-nome').addEventListener('click', () => vola('tribunale'));
+  const lontano = () => quadro.classList.toggle('mappa-lontana', map.getZoom() < 14.6);
+  map.on('zoom', lontano); map.on('moveend', lontano);
+
+  // viste, giro iniziale, scheda del luogo
+  const etichetta = $('.mappa-dove span', quadro), sch = $('.mappa-scheda', quadro), piatta = $('[data-piatta]', quadro);
+  let giro = null, giroFatto = false, piatto = false; // piatto: l'ha scelto chi guarda con il tasto 2D
+  const fermaGiro = () => { clearTimeout(giro); giro = null; giroFatto = true; };
+  const segna = (id, testo) => { $$('[data-vista]', zona).forEach(b => b.setAttribute('aria-pressed', String(b.dataset.vista === id))); if (etichetta) etichetta.textContent = testo || NOMI[id] || 'Esplora Milano'; };
+  function scheda(d) { if (!sch) return; sch.hidden = !d; if (!d) return; $('h4', sch).textContent = d.titolo; $('p', sch).innerHTML = d.testo; const a = $('a', sch); a.href = d.link; a.textContent = 'Indicazioni con Google Maps ↗'; }
+  function vola(id, durata, dalGiro) { if (!dalGiro) fermaGiro(); scheda(null); segna(id); map.flyTo({ ...VISTE()[id], duration: MUOVI ? (durata || 3000) : 0, essential: true }); }
+  const metri = c => { const r = Math.PI / 180; return 6371000 * Math.hypot((c[0] - SEDE[0]) * r * Math.cos(SEDE[1] * r), (c[1] - SEDE[1]) * r); };
+  const minuti = c => Math.max(1, Math.round(metri(c) * 1.3 / 80));
+  const bollini = l => l.split(',').map(n => `<b class="bollino l${n}">M${n}</b>`).join('');
+  const verso = c => `https://www.google.com/maps/dir/?api=1&origin=${c[1]},${c[0]}&destination=${INDIRIZZO}&travelmode=transit`;
+  function fermata(n, l, c) {
+    fermaGiro(); segna('', n);
+    const m = metri(c), linee = l.split(',').map(x => NOMI_L[x]);
+    scheda({ titolo: n, link: verso(c), testo: bollini(l) + ' ' + (linee.length > 1 ? 'linee ' + linee.join(' e ') : 'linea ' + linee[0]) + (m < 1500 ? ` · ${minuti(c)} minuti a piedi dallo studio` : '') });
+    map.flyTo({ center: c, zoom: 16.2, pitch: piatto ? 0 : 52, bearing: -20, duration: MUOVI ? 2800 : 0, essential: true });
+  }
+  const perNome = n => M.fermate.features.find(f => f.properties.n === n);
+  const vaiFermata = n => { const f = perNome(n); if (f) fermata(f.properties.n, f.properties.l, f.geometry.coordinates); };
+  const LUOGHI = {
+    tribunale: () => vola('tribunale'),
+    sforza: () => vaiFermata('Sforza-Policlinico'),
+    babila: () => vaiFermata('San Babila'),
+    crocetta: () => vaiFermata('Crocetta'),
+    linate: () => { fermaGiro(); segna('', 'Da Linate allo studio'); const f = perNome('Linate Aeroporto'), c = f ? f.geometry.coordinates : [9.2785, 45.4601];
+      scheda({ titolo: 'Dall’aeroporto di Linate', link: verso(c), testo: bollini('4') + ' linea blu senza cambi fino a Sforza-Policlinico, circa un quarto d’ora; poi 9 minuti a piedi.' });
+      map.flyTo({ center: [(c[0] + SEDE[0]) / 2, (c[1] + SEDE[1]) / 2 + 0.002], zoom: tel() ? 11 : 12.1, pitch: 0, bearing: 0, duration: MUOVI ? 3200 : 0, essential: true }); },
+    centrale: () => { fermaGiro(); segna('', 'Dalla Stazione Centrale'); const f = perNome('Centrale FS'), c = f ? f.geometry.coordinates : [9.2026, 45.4844];
+      scheda({ titolo: 'Dalla Stazione Centrale', link: verso(c), testo: bollini('3') + ' linea gialla fino a Crocetta, sei fermate; poi 12 minuti a piedi.' });
+      map.flyTo({ center: [9.1990, 45.4728], zoom: tel() ? 12.6 : 13.3, pitch: 0, bearing: 0, duration: MUOVI ? 3200 : 0, essential: true }); } };
+
+  $$('[data-vista]', zona).forEach(b => b.addEventListener('click', () => vola(b.dataset.vista)));
+  $$('[data-luogo]', zona).forEach(b => b.addEventListener('click', () => { LUOGHI[b.dataset.luogo] && LUOGHI[b.dataset.luogo](); if (!largo()) box.scrollIntoView({ behavior: MUOVI ? 'smooth' : 'auto', block: 'center' }); }));
+  $$('[data-zoom]', quadro).forEach(b => b.addEventListener('click', () => { fermaGiro(); b.dataset.zoom === '+' ? map.zoomIn() : map.zoomOut(); }));
+  piatta && piatta.addEventListener('click', () => { fermaGiro(); piatto = map.getPitch() > 10; map.easeTo({ pitch: piatto ? 0 : 58, duration: MUOVI ? 900 : 0 }); });
+  map.on('pitch', () => { if (piatta) piatta.textContent = map.getPitch() > 10 ? '2D' : '3D'; });
+  $('.mappa-chiudi', quadro)?.addEventListener('click', () => scheda(null));
+
+  // linee della metro da accendere e spegnere
+  const attive = new Set(['1', '2', '3', '4', '5']);
+  $$('[data-linea]', quadro).forEach(b => b.addEventListener('click', () => {
+    const n = b.dataset.linea; attive.has(n) ? attive.delete(n) : attive.add(n); b.setAttribute('aria-pressed', String(attive.has(n)));
+    const lista = [...attive], f = lista.length ? ['any', ...lista.map(x => ['in', x, ['get', 'l']])] : ['==', ['get', 'l'], '-'];
+    map.setFilter('metro', ['in', ['get', 'l'], ['literal', lista]]); map.setFilter('fermate', f); map.setFilter('nomi-fermate', f); }));
+
+  ['fermate', 'nomi-fermate'].forEach(id => {
+    map.on('click', id, e => { const f = e.features && e.features[0]; if (f) fermata(f.properties.n, f.properties.l, f.geometry.coordinates); });
+    map.on('mouseenter', id, () => { map.getCanvas().style.cursor = 'pointer'; });
+    map.on('mouseleave', id, () => { map.getCanvas().style.cursor = ''; }); });
+  map.on('movestart', e => { if (e.originalEvent) { fermaGiro(); segna('', 'Esplora Milano'); } });
+  box.addEventListener('pointerdown', fermaGiro);
+
+  // il giro: una volta sola, quando la mappa è ben dentro lo schermo
+  let pronta = false, vista = false;
+  const parti = () => { if (!pronta || !vista || giroFatto || !MUOVI || giro) return;
+    giro = setTimeout(() => { vola('citta', 4200, true); giro = setTimeout(() => { vola('studio', 4200, true); giroFatto = true; giro = null; }, 4200 + 2600); }, 900); };
+  map.on('load', () => { pronta = true; if (tel()) { const a = $('.maplibregl-ctrl-attrib', box); a && a.classList.remove('maplibregl-compact-show'); } quadro.classList.add('mappa-pronta'); lontano(); parti(); });
+  new IntersectionObserver(e => { vista = e[0].isIntersecting; parti(); }, { threshold: 0.5 }).observe(box);
+}
+
+/* ---------- partenza ---------- */
+tele().forEach(plastico);
+mostraLato('civile', false);
+scegli('separazione');
+calcola();
+impostaArea(area);
+impostaPila();
+suScroll();
+const entra = () => document.body.classList.add('entrata');
+(document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 700))]) : Promise.resolve()).then(() => requestAnimationFrame(entra));
+try { mappaMilano($('#mappa-milano')); } catch (e) {}
+</script>
+<script>/* telecomando per la vetrina (9/11/2026): quando il sito è mostrato dentro il telescopio della vetrina, la vetrina lo fa scorrere con un messaggio; da solo non fa niente */ addEventListener("message", e => { const d = e.data; if (d && typeof d.scorri === "number") scrollBy({ top: d.scorri, behavior: "instant" }); if (d && d.inizio) scrollTo({ top: 0, behavior: "instant" }); });</script>
+<script>/* dentro la vetrina Zenit Atelier: il tasto Esc riporta al telescopio; da solo non fa niente */ if (parent !== window) addEventListener("keydown", e => { if (e.key === "Escape") parent.postMessage({ esci: 1 }, "*"); });</script><!-- zenit-rovescio: uscendo dalla lente della vetrina Zenit Atelier il sito si rovescia e poi torna com'è (pezzo unico: progetti/vetrina/telescopio/pezzo-rovescio.html, si monta con strumenti/monta-rovescio.js) -->
+<style>html.zenit-rovescio { filter: invert(1) hue-rotate(180deg); } html.zenit-rovescio :is(img, video, canvas, .zenit-tieni) { filter: brightness(var(--zenit-foto, 1)) invert(1) hue-rotate(180deg); }   /* prima si abbassa la luce della foto, poi la si rovescia: al contrario esce slavata */
+html.zenit-passa::view-transition-old(root), html.zenit-passa::view-transition-new(root) { animation-duration: var(--zenit-ms, 2600ms); animation-timing-function: cubic-bezier(.45, 0, .55, 1); }</style>
+<script>if (parent !== window) addEventListener("message", e => { const d = e.data, h = document.documentElement; if (!d || !("rovescio" in d)) return;
+  if (d.rovescio) { h.style.setProperty("--zenit-foto", d.foto || 1); h.classList.add("zenit-rovescio"); setTimeout(() => parent.postMessage({ rovescio: "fatto" }, "*"), 0); return; }   /* niente requestAnimationFrame: in una pagina nascosta non scatta */
+  if (!h.classList.contains("zenit-rovescio")) return; const via = () => h.classList.remove("zenit-rovescio");
+  if (!document.startViewTransition || !d.ms || matchMedia("(prefers-reduced-motion: reduce)").matches) return via();
+  h.style.setProperty("--zenit-ms", d.ms + "ms"); h.classList.add("zenit-passa");
+  document.startViewTransition(via).finished.finally(() => h.classList.remove("zenit-passa")); });</script>
+<!-- /zenit-rovescio -->
+</body>
+</html>
