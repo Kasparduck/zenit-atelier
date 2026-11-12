@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chi sono · Studio Legale Angelicata</title>
+<meta name="description" content="Avv. Angela Angelicata, avvocata civilista e penalista a Milano: chi sono, la mia storia, come lavoro. Progetto dimostrativo con dati di fantasia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Pagina «Chi sono» (9/11/2026). Franco: «inizia a sinistra una voce… cliccando su una voce appaia la pagina su cui scorrendo entra la solita costruzione
+   da sinistra a destra. Sotto ci sono le foto di una avvocatessa sui 40 anni molto bella che in ambienti diversi parla con persone… togli il superfluo
+   per un avvocato penalista e civilista di Milano… le foto con persone e ambienti falle duotone… con un tocco di colore qua e là»; «ha anche una foto sua
+   a parte sorridente». Ritmo preso dalla pagina About di TRINITI (apertura con la costruzione e l'angolo arrotondato, foto grande, tre colonne con tre foto,
+   percorso con le voci non attive sfocate, quattro principi, foto con testo, riquadro scuro, saluto finale), testi e identità nostri. */
+:root {
+  --avorio: #f6f1e9; --avorio-2: #efe6da; --gesso: #fbf8f3; --nocciola: #e3d2ba; --sabbia: #d8c4a6;
+  --bronzo: #8f6b47; --bronzo-linea: #b8946b; --bronzo-chiaro: #d2b088;
+  --inchiostro: #1f1a16; --tenue: #685e54; --linea: rgb(70 50 30 / .15); --linea-forte: rgb(70 50 30 / .32);
+  --noce: #2a2420; --su-noce: #f2ebe1; --su-noce-tenue: #b9ad9d; --linea-noce: rgb(242 235 225 / .15);
+  --salvia: #5f8159;
+  --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif; --sans: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --gutter: clamp(16px, 4.2vw, 64px); --largo: 1360px; --alto: 64px;
+  --bordo-sx: max(var(--gutter), calc((100vw - var(--largo)) / 2));
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+@view-transition { navigation: auto; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+body { margin: 0; background: var(--avorio); color: var(--inchiostro); font: 400 16px/1.6 var(--sans); overflow-x: clip; -webkit-font-smoothing: antialiased; }
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 200; opacity: .55; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .18 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+h1, h2, h3, h4 { margin: 0; font-weight: 400; text-wrap: balance; }
+p { margin: 0; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+img { display: block; max-width: 100%; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outline-offset: 3px; }
+.contenitore { width: min(100% - 2 * var(--gutter), var(--largo)); margin-inline: auto; }
+.occhio { font: 600 .68rem/1.4 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: var(--tenue); }
+.occhio::before { content: ""; display: inline-block; width: 22px; height: 1px; background: var(--bronzo-linea); vertical-align: middle; margin-right: 12px; }
+.titolo { font: 300 clamp(2.5rem, 4.8vw, 4.6rem)/1.02 var(--serif); letter-spacing: -.01em; }
+.titolo em { font-style: italic; color: var(--bronzo); }
+.bottone { display: inline-flex; align-items: center; gap: 14px; background: var(--inchiostro); color: var(--gesso); text-decoration: none; font: 600 .95rem var(--sans); padding: 17px 28px; border: 0; border-radius: 999px; cursor: pointer; transition: background .3s, transform .35s cubic-bezier(.2,.7,.2,1); }
+.bottone:hover { background: #3a3029; }
+.pillola { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; justify-self: start; border: 1px solid var(--bronzo-linea); color: var(--bronzo); text-decoration: none; font: 500 .93rem var(--sans); padding: 10px 22px; border-radius: 999px; transition: background .3s, color .3s; }
+.pillola:hover { background: var(--bronzo); color: var(--gesso); }
+.sez { padding-block: clamp(80px, 12vh, 140px); }
+
+/* ---------- testata (uguale alla home; sotto, l'indice di questa pagina) ---------- */
+.testata { position: fixed; top: 0; left: 0; right: 0; z-index: 80; transition: background .45s, box-shadow .45s; }
+.testata-riga { display: flex; align-items: center; gap: 26px; height: 78px; transition: height .45s cubic-bezier(.2,.7,.2,1); }
+.marchio { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--inchiostro); flex: none; }
+.monogramma { width: 44px; height: 44px; flex: none; }
+.marchio-linea { width: 1px; height: 30px; background: var(--bronzo-linea); transition: opacity .3s; }
+.marchio-nome { display: grid; line-height: 1.1; overflow: hidden; max-width: 260px; white-space: nowrap; transition: max-width .5s cubic-bezier(.2,.7,.2,1), opacity .35s; }
+.marchio-nome b { font: 500 1.42rem var(--serif); letter-spacing: .03em; }
+.marchio-nome small { font: 600 .6rem var(--sans); letter-spacing: .3em; text-transform: uppercase; color: var(--tenue); margin-top: 3px; }
+.menu { margin-left: auto; display: flex; gap: 22px; }
+.menu a { position: relative; text-decoration: none; font: 500 .9rem var(--sans); color: var(--tenue); padding: 6px 0; white-space: nowrap; transition: color .3s; }
+.menu a::after { content: ""; position: absolute; left: 0; bottom: 0; width: 100%; height: 1.5px; background: var(--bronzo-linea); transform: scaleX(0); transform-origin: left; transition: transform .45s cubic-bezier(.2,.7,.2,1); }
+.menu a:hover, .menu a.attiva { color: var(--inchiostro); }
+.menu a.attiva::after { transform: none; }
+.aperto { display: inline-flex; align-items: center; gap: 8px; font: 500 .78rem var(--sans); color: var(--tenue); white-space: nowrap; }
+.aperto i { width: 7px; height: 7px; border-radius: 50%; background: var(--salvia); }
+.aperto.chiuso i { background: var(--sabbia); }
+@media (prefers-reduced-motion: no-preference) { .aperto:not(.chiuso) i { animation: respira 2.4s ease-out infinite; } @keyframes respira { 0% { box-shadow: 0 0 0 0 rgb(95 129 89 / .5); } 100% { box-shadow: 0 0 0 7px rgb(95 129 89 / 0); } } }
+.tel { font: 600 .9rem var(--sans); text-decoration: none; white-space: nowrap; }
+.apri-menu { display: none; width: 44px; height: 44px; background: none; border: 0; cursor: pointer; position: relative; }
+.apri-menu span { position: absolute; left: 11px; right: 11px; height: 1.5px; background: var(--inchiostro); }
+.apri-menu span:first-child { top: 17px; } .apri-menu span:last-child { top: 26px; }
+.testata-sotto { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .45s cubic-bezier(.2,.7,.2,1), opacity .3s; }
+.testata-sotto > div { overflow: hidden; }
+.testata-sotto .contenitore { display: flex; align-items: center; justify-content: space-between; gap: 20px; border-top: 1px solid var(--linea); }
+.sottomenu { display: flex; gap: 24px; flex-wrap: wrap; }
+.sottomenu a { position: relative; text-decoration: none; font: 500 .88rem var(--sans); color: var(--tenue); padding: 12px 0; transition: color .3s; }
+.sottomenu a::before { content: ""; position: absolute; left: 0; top: 0; width: 18px; height: 1.5px; background: var(--bronzo-linea); transform: scaleX(0); transform-origin: left; transition: transform .4s; }
+.sottomenu a.attiva { color: var(--inchiostro); }
+.sottomenu a.attiva::before { transform: none; }
+.dimostra { font: 500 .72rem var(--sans); color: var(--tenue); letter-spacing: .04em; }
+.testata.stretta { background: rgb(246 241 233 / .8); -webkit-backdrop-filter: blur(14px) saturate(1.1); backdrop-filter: blur(14px) saturate(1.1); box-shadow: 0 1px 0 var(--linea); }
+.testata.stretta .testata-riga { height: var(--alto); }
+.testata.stretta .marchio-nome { max-width: 0; opacity: 0; }
+.testata.stretta .marchio-linea { opacity: 0; }
+.testata.stretta .testata-sotto { grid-template-rows: 0fr; opacity: 0; }
+.velo-menu { position: fixed; inset: 0; z-index: 110; background: rgb(31 26 22 / .22); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); opacity: 0; visibility: hidden; transition: opacity .4s, visibility .4s; }
+.pannello-menu { position: fixed; top: 0; right: 0; bottom: 0; z-index: 120; width: min(420px, 100%); background: var(--gesso); transform: translateX(100%); transition: transform .5s cubic-bezier(.65,.05,.35,1); display: flex; flex-direction: column; gap: 28px; padding: 22px var(--gutter) 36px; overflow-y: auto; }
+.pannello-menu nav { display: grid; gap: 4px; }
+.pannello-menu nav a { font: 300 2.2rem/1.25 var(--serif); text-decoration: none; }
+.pannello-menu nav a.attiva { font-style: italic; color: var(--bronzo); }
+.pannello-menu .chiudi-menu { align-self: flex-end; background: none; border: 1px solid var(--linea-forte); border-radius: 999px; padding: 8px 18px; cursor: pointer; font: 500 .9rem var(--sans); }
+.menu-aperto .velo-menu { opacity: 1; visibility: visible; }
+.menu-aperto .pannello-menu { transform: none; }
+
+/* ---------- foto con la tendina (come nella home) ---------- */
+.tendina { position: relative; margin: 0; overflow: hidden; }
+/* dove la foto non c'è ancora: un riquadro liscio nei colori della bicromia (grigio per il ritratto in bianco e nero), niente disegni */
+.tendina > .tendina-dentro { position: absolute; inset: 0; overflow: hidden; background: linear-gradient(140deg, #22332f 0%, #4f4a3e 50%, #a57b50 100%); }
+.tendina.bn > .tendina-dentro { background: linear-gradient(140deg, #262626 0%, #5c5c5c 55%, #b5b5b5 100%); }
+.tendina > .tendina-dentro > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.tendina > .tendina-filo { position: absolute; top: 0; bottom: 0; left: 0; width: 1px; background: var(--bronzo-linea); opacity: 0; pointer-events: none; z-index: 2; }
+@media (prefers-reduced-motion: no-preference) {
+  .tendina > .tendina-dentro { clip-path: inset(0 100% 0 0); transition: clip-path 1.3s cubic-bezier(.77,0,.18,1) var(--ritardo, 0s); }
+  .tendina > .tendina-dentro > * { transform: scale(1.1); transition: transform 2s cubic-bezier(.2,.7,.2,1) var(--ritardo, 0s); }
+  .tendina.vista > .tendina-dentro { clip-path: inset(0); }
+  .tendina.vista > .tendina-dentro > * { transform: none; }
+  .tendina.vista > .tendina-filo { animation: filo 1.3s cubic-bezier(.77,0,.18,1) var(--ritardo, 0s) forwards; }
+  @keyframes filo { 0% { left: 0; opacity: 1; } 88% { left: 100%; opacity: 1; } 100% { left: 100%; opacity: 0; } }
+}
+.ef-sfalsata { --ef-bronzo: #b49e82; --ef-spessore: 3px; --ef-fuori: 9px; --ef-sale: 26px; --ef-stacco: 16px; position: relative; }
+.ef-sfalsata::before, .ef-sfalsata::after { content: ""; position: absolute; pointer-events: none; z-index: 3; }
+.ef-sfalsata::before { inset: calc(-1 * var(--ef-fuori)); border-right: var(--ef-spessore) solid var(--ef-bronzo); border-bottom: var(--ef-spessore) solid var(--ef-bronzo);
+  background: linear-gradient(var(--ef-bronzo), var(--ef-bronzo)) var(--ef-stacco) 0 / calc(100% - var(--ef-stacco)) var(--ef-spessore) no-repeat; }
+.ef-sfalsata::after { left: calc(-1 * var(--ef-fuori)); top: calc(-1 * (var(--ef-fuori) + var(--ef-sale))); bottom: calc(-1 * var(--ef-fuori)); width: var(--ef-spessore); background: var(--ef-bronzo); }
+
+/* ---------- 1. apertura: titolo a sinistra, la costruzione a destra con l'angolo arrotondato in basso ---------- */
+.ch-apertura { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); min-height: min(90svh, 880px); }
+.ch-apertura-testo { padding: calc(130px + 6vh) clamp(24px, 5vw, 84px) 9vh var(--bordo-sx); display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+.ch-apertura h1 { font: 300 clamp(3.6rem, 7.6vw, 7.6rem)/.95 var(--serif); letter-spacing: -.015em; }
+.ch-apertura h1 em { font-style: italic; color: var(--bronzo); }
+.ch-apertura-testo p:not(.occhio) { color: var(--tenue); font-size: 1.06rem; max-width: 50ch; }
+.ch-apertura-foto { position: relative; margin: 0; overflow: hidden; background: var(--avorio-2); border-bottom-left-radius: clamp(110px, 14vw, 240px); }
+.ch-apertura-foto .dentro-foto { position: absolute; inset: 0; }
+.ch-apertura-foto::after { content: ""; position: absolute; inset: 0 0 auto 0; height: 180px; z-index: 2; pointer-events: none; background: linear-gradient(rgb(246 241 233 / .9), rgb(246 241 233 / .55) 55%, rgb(246 241 233 / 0)); }
+.ch-apertura-foto .dentro-foto > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.riga { display: block; overflow: hidden; padding-bottom: .07em; margin-bottom: -.07em; }
+.riga > span { display: inline-block; }
+@media (prefers-reduced-motion: no-preference) {
+  .riga > span { transform: translateY(108%); transition: transform 1.15s cubic-bezier(.2,.75,.15,1); }
+  .riga:nth-child(2) > span { transition-delay: .12s; }
+  .entrata .riga > span { transform: none; }
+  .ch-apertura-testo > p { opacity: 0; transform: translateY(14px); transition: opacity .9s .45s, transform .9s .45s cubic-bezier(.2,.7,.2,1); }
+  .entrata .ch-apertura-testo > p { opacity: 1; transform: none; }
+  .ch-apertura-foto .dentro-foto { clip-path: inset(0 100% 0 0); transition: clip-path 1.7s cubic-bezier(.77,0,.18,1) .15s; }
+  .ch-apertura-foto .dentro-foto > * { transform: scale(1.12); transition: transform 2.4s cubic-bezier(.2,.7,.2,1) .15s; }
+  .entrata .ch-apertura-foto .dentro-foto { clip-path: inset(0); }
+  .entrata .ch-apertura-foto .dentro-foto > * { transform: none; }
+}
+
+/* ---------- 2. piacere: la sua foto sorridente ---------- */
+.piacere { display: grid; grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr); gap: 48px 7vw; align-items: center; }
+.piacere-foto { aspect-ratio: 4 / 5; max-width: 460px; margin-left: 12px; }
+.piacere-foto > .tendina { position: absolute; inset: 0; }
+/* la seconda foto di casa, piccola, appoggiata sull'angolo (Franco 9/11: «due casalinghe e il resto») */
+.piacere-foto > .piacere-piccola { inset: auto; right: -16%; bottom: -12%; width: 50%; aspect-ratio: 1; z-index: 4; box-shadow: 0 0 0 8px var(--avorio), 0 30px 50px -24px rgb(60 40 20 / .45); }
+@media (max-width: 720px) { .piacere-foto { margin-bottom: 44px; } .piacere-foto > .piacere-piccola { right: -4px; bottom: -40px; width: 44%; } }
+.piacere-testo { display: grid; gap: 20px; }
+.piacere-testo p:not(.occhio) { color: var(--tenue); font-size: 1.04rem; line-height: 1.75; max-width: 58ch; }
+.firmetta { display: grid; gap: 2px; margin-top: 6px; }
+.firmetta b { font: italic 400 2rem var(--serif); color: var(--bronzo); }
+.firmetta span { font-size: .84rem; color: var(--tenue); }
+
+/* ---------- 3. il mio lavoro: due colonne e la foto grande con l'angolo in alto a destra ---------- */
+.ch-due { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 6vw; align-items: start; }
+.ch-due .attacco { font: 400 1.25rem/1.5 var(--serif); font-style: italic; color: var(--bronzo); margin-bottom: 14px; }
+.ch-due p:not(.attacco) { color: var(--tenue); font-size: 1.04rem; line-height: 1.75; }
+.foto-grande { margin-top: clamp(48px, 8vh, 90px); margin-right: var(--bordo-sx); aspect-ratio: 21 / 9; border-top-right-radius: clamp(90px, 12vw, 200px); }
+
+/* ---------- 4. la mia storia: tre colonne di testo e tre foto ---------- */
+.storia-testi { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px clamp(24px, 4vw, 72px); border-top: 1px solid var(--linea); padding-top: 30px; margin-top: 30px; }
+.storia-testi p { color: var(--tenue); font-size: 1rem; line-height: 1.75; }
+.storia-foto { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 4vw, 72px); margin-top: clamp(48px, 8vh, 90px); }
+.storia-foto .tendina { aspect-ratio: 4 / 5; }
+.storia-foto .tendina:nth-child(2) { --ritardo: .15s; } .storia-foto .tendina:nth-child(3) { --ritardo: .3s; }
+
+/* ---------- 5. il percorso: le voci non attive restano sfocate ---------- */
+.percorso-lista { list-style: none; margin: 40px 0 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(250px, 1fr); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.percorso-lista::-webkit-scrollbar { display: none; }
+.percorso-lista li { scroll-snap-align: start; }
+.percorso-lista button { width: 100%; height: 100%; display: grid; grid-template-rows: 1fr auto auto; text-align: left; background: none; border: 0; padding: 0; cursor: pointer; }
+.percorso-lista p { padding: 0 30px 28px 0; color: var(--inchiostro); font-size: 1rem; line-height: 1.65; filter: blur(4px); opacity: .5; transition: filter .6s, opacity .6s; }
+.percorso-lista button:hover p { filter: blur(1.5px); opacity: .75; }
+.percorso-lista .segno { display: block; height: 1px; background: var(--linea-forte); transition: background .5s, transform .5s; transform-origin: center; }
+.percorso-lista .anno { padding-top: 16px; font: 300 clamp(1.7rem, 2.4vw, 2.2rem)/1 var(--serif); color: var(--tenue); transition: color .5s; }
+.percorso-lista li.attiva p { filter: none; opacity: 1; }
+.percorso-lista li.attiva .segno { background: var(--bronzo-linea); transform: scaleY(3); }
+.percorso-lista li.attiva .anno { color: var(--inchiostro); }
+/* 9/11, Franco: «è tagliato il testo sotto 2008»: sei colonne da 250px non entravano e l'ultima restava tagliata sul bordo. Sul computer stanno tutte nello schermo */
+@media (min-width: 1200px) { .percorso-lista { grid-auto-columns: minmax(0, 1fr); overflow: visible; } .percorso-lista p { padding-right: 24px; font-size: .96rem; } }
+
+/* ---------- 6. come lavoro: quattro principi ---------- */
+.come-griglia { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 64px); margin-top: 30px; }
+.come-griglia > div { border-top: 1px solid var(--linea); padding: 34px 0 44px; display: grid; gap: 12px; align-content: start; }
+.come-griglia h3 { font: 400 clamp(1.7rem, 2.5vw, 2.3rem)/1.1 var(--serif); }
+.come-griglia p { color: var(--tenue); font-size: 1rem; line-height: 1.75; max-width: 44ch; }
+
+/* ---------- 7. lo studio: foto a sinistra con l'angolo in basso a destra ---------- */
+.ch-studio { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 6vw; align-items: center; }
+.ch-studio .tendina { aspect-ratio: 5 / 6; border-bottom-right-radius: clamp(90px, 12vw, 200px); }
+.ch-studio-testo { display: grid; gap: 20px; padding-right: var(--bordo-sx); }
+.ch-studio-testo h3 { font: 300 clamp(2rem, 3.4vw, 3.2rem)/1.08 var(--serif); }
+.ch-studio-testo p { color: var(--tenue); font-size: 1.03rem; line-height: 1.75; max-width: 52ch; }
+
+/* ---------- 8. il mio impegno: riquadro scuro ---------- */
+.impegno { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); background: var(--noce); color: var(--su-noce); }
+.impegno > * { padding: clamp(36px, 6vw, 88px); }
+.impegno h2 { font: 300 clamp(2rem, 3.2vw, 3rem)/1.1 var(--serif); color: var(--bronzo-chiaro); display: grid; place-items: center; text-align: center; }
+.impegno p { border-left: 1px solid var(--linea-noce); font: 300 clamp(1.4rem, 2.1vw, 1.95rem)/1.4 var(--serif); }
+
+/* ---------- 9. il saluto ---------- */
+.grazie h2 { font: 300 clamp(2.3rem, 4.6vw, 4.5rem)/1.1 var(--serif); letter-spacing: -.01em; }
+.grazie p { font: 300 clamp(2.3rem, 4.6vw, 4.5rem)/1.1 var(--serif); letter-spacing: -.01em; color: var(--bronzo-linea); margin-top: 8px; }
+.grazie a { color: var(--bronzo); text-decoration: none; border-bottom: 1px solid var(--bronzo-linea); }
+.grazie a:hover { color: var(--inchiostro); }
+
+/* ---------- fondo (uguale alla home) ---------- */
+.fondo { background: var(--noce); color: var(--su-noce); padding-top: clamp(80px, 12vh, 130px); overflow: hidden; }
+.fondo-griglia { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 1fr); gap: 36px; }
+.fondo h3 { font: 600 .64rem var(--sans); letter-spacing: .24em; text-transform: uppercase; color: var(--bronzo-chiaro); margin-bottom: 14px; }
+.fondo p, .fondo li, .fondo dd { font-size: .92rem; color: var(--su-noce-tenue); line-height: 1.65; }
+.fondo .nome-f { font: 400 1.7rem var(--serif); color: var(--su-noce); margin-bottom: 8px; }
+.fondo dl { margin: 0; display: grid; gap: 10px; }
+.fondo dt { font-weight: 600; font-size: .86rem; color: var(--su-noce); }
+.fondo dd { margin: 0; }
+.fondo ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.fondo a { color: var(--su-noce); }
+.firma-giro { overflow: hidden; margin-top: clamp(60px, 10vh, 110px); }
+.firma { font: 300 clamp(3rem, 13.2vw, 13rem)/.86 var(--serif); letter-spacing: -.025em; white-space: nowrap; color: var(--su-noce); opacity: .92; padding-bottom: .1em; }
+.firma em { font-style: italic; color: var(--bronzo-chiaro); }
+@media (prefers-reduced-motion: no-preference) { .firma { transform: translateY(70%); transition: transform 1.6s cubic-bezier(.2,.75,.15,1); } .firma-giro.vista .firma { transform: none; } }
+@media (prefers-reduced-motion: no-preference) { .entra-sx { opacity: 0; transform: translateX(-60px); transition: opacity 1.1s cubic-bezier(.2,.7,.2,1) .2s, transform 1.4s cubic-bezier(.2,.7,.2,1) .2s; } .entra-sx.vista { opacity: 1; transform: none; } } /* 9/11, Franco: le scritte accanto alle foto entrano da sinistra verso destra */
+/* costruzione di passaggio verso la fine della pagina (9/11, Franco: «se ne vuoi mettere di più perché viene meglio fallo. Differenzia bene»):
+   larga fino al bordo destro, angolo arrotondato in alto a sinistra, eco dell'apertura; ogni pagina ne ha una diversa dalle altre */
+.tendina.passaggio { height: clamp(300px, 46vw, 600px); margin: clamp(40px, 6vh, 80px) 0 0 var(--bordo-sx); }
+.tendina.passaggio > .tendina-dentro { border-top-left-radius: clamp(90px, 14vw, 220px); }
+@media (max-width: 720px) { .tendina.passaggio { height: 64vw; margin-left: var(--gutter); } }
+/* 9/11, Franco: una frase di Shakespeare sulla costruzione di passaggio, che affiora dalla sabbia lettera per lettera («emergendo per affioramento») */
+.tendina.passaggio .velo-frase { background: linear-gradient(100deg, rgb(246 241 233 / .9) 0%, rgb(246 241 233 / .76) 34%, rgb(246 241 233 / 0) 66%); }
+.passaggio-frase { position: absolute; z-index: 3; left: clamp(28px, 6vw, 96px); top: 50%; transform: translateY(-50%); width: min(560px, 80%); margin: 0; display: grid; gap: 18px; }
+.passaggio-frase p { font: 300 clamp(1.7rem, 3.1vw, 2.9rem)/1.18 var(--serif); color: var(--inchiostro); margin: 0; }
+.passaggio-frase cite { font: 500 .76rem var(--sans); font-style: normal; letter-spacing: .12em; text-transform: uppercase; color: var(--bronzo); }
+.passaggio-frase .p { display: inline-block; white-space: nowrap; } .passaggio-frase .l { display: inline-block; }
+.passaggio-frase .solo-lettori { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (prefers-reduced-motion: no-preference) {
+  .passaggio-frase .l { opacity: 0; filter: blur(9px); transform: translateY(.45em); transition: opacity 1.1s ease, filter 1.4s ease, transform 1.5s cubic-bezier(.2,.7,.2,1); transition-delay: calc(1s + var(--i) * 24ms); }
+  .passaggio-frase.vista .l { opacity: 1; filter: none; transform: none; }
+  .passaggio-frase cite { opacity: 0; transition: opacity 1s ease 3.4s; } .passaggio-frase.vista cite { opacity: 1; }
+}
+@media (max-width: 720px) {
+  .tendina.passaggio { height: 118vw; }
+  .tendina.passaggio .velo-frase { background: linear-gradient(180deg, rgb(246 241 233 / .92) 0%, rgb(246 241 233 / .8) 50%, rgb(246 241 233 / .1) 100%); }
+  .passaggio-frase { top: 30px; transform: none; left: 22px; right: 22px; width: auto; }
+  .passaggio-frase p { font-size: 1.6rem; }
+}
+.riga-fine { border-top: 1px solid var(--linea-noce); padding-block: 20px 28px; display: flex; flex-wrap: wrap; gap: 8px 26px; font-size: .8rem; color: var(--su-noce-tenue); }
+.tocco { display: none; }
+
+@media (max-width: 1400px) { .tel { display: none; } }
+@media (max-width: 1220px) { .menu, .tel { display: none; } .aperto { margin-left: auto; } .apri-menu { display: block; } }
+@media (max-width: 980px) {
+  :root { --alto: 60px; }
+  .apertura-foto::after, .ch-apertura-foto::after { display: none; }
+  .ch-apertura { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+  .ch-apertura-testo { padding: 150px var(--gutter) 48px; }
+  .ch-apertura-foto { height: min(70vw, 520px); margin-left: var(--gutter); }
+  .piacere, .ch-due, .ch-studio, .impegno { grid-template-columns: minmax(0, 1fr); }
+  .piacere-foto { max-width: 400px; }
+  .storia-testi, .storia-foto { grid-template-columns: minmax(0, 1fr); }
+  .storia-foto { grid-auto-flow: column; grid-auto-columns: min(72vw, 360px); grid-template-columns: none; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-right: calc(-1 * var(--gutter)); padding-right: var(--gutter); }
+  .storia-foto .tendina { scroll-snap-align: start; }
+  .foto-grande { aspect-ratio: 4 / 3; }
+  .ch-studio .tendina { aspect-ratio: 4 / 3; margin-right: var(--gutter); }
+  .ch-studio-testo { padding-inline: var(--gutter); }
+  .impegno p { border-left: 0; border-top: 1px solid var(--linea-noce); }
+  .fondo-griglia { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+@media (max-width: 720px) {
+  body { padding-bottom: calc(62px + env(safe-area-inset-bottom, 0px)); }
+  .testata-riga { height: 66px; gap: 14px; }
+  .monogramma { width: 38px; height: 38px; }
+  .marchio-nome b { font-size: 1.22rem; }
+  .aperto, .dimostra { display: none; }
+  .apri-menu { margin-left: auto; }
+  .sottomenu { gap: 16px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .sottomenu a { white-space: nowrap; }
+  .ch-apertura-testo { padding-top: 140px; }
+  .ch-apertura h1 { font-size: clamp(3.2rem, 16vw, 4.4rem); }
+  .percorso-lista { grid-auto-columns: 78vw; }
+  .percorso-lista p { filter: none; opacity: 1; }
+  .come-griglia, .fondo-griglia { grid-template-columns: minmax(0, 1fr); }
+  .tocco { display: grid; grid-template-columns: 1fr 1fr; position: fixed; left: 0; right: 0; bottom: 0; z-index: 70; padding-bottom: env(safe-area-inset-bottom, 0px); background: rgb(251 248 243 / .94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--linea-forte); }
+  .tocco a { padding: 17px 10px; text-align: center; font-weight: 600; text-decoration: none; background: var(--gesso); }
+  .tocco a + a { background: var(--inchiostro); color: var(--gesso); }
+}
+</style>
+</head>
+<body>
+
+<header class="testata" id="testata">
+  <div class="contenitore testata-riga">
+    <a class="marchio" href="index.html" aria-label="Avv. Angela Angelicata, torna alla home">
+      <svg class="monogramma" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22.5" fill="none" stroke="#b8946b" stroke-width="1"/><text x="7.5" y="32" font-family="Cormorant Garamond, Georgia, serif" font-size="25" fill="#1f1a16">A</text><text x="22.5" y="34.5" font-family="Cormorant Garamond, Georgia, serif" font-size="25" font-style="italic" fill="#8f6b47">A</text></svg>
+      <i class="marchio-linea" aria-hidden="true"></i>
+      <span class="marchio-nome"><b>Angela Angelicata</b><small>Avvocata · Milano</small></span>
+    </a>
+    <nav class="menu" aria-label="Pagine">
+      <a href="chi-sono.html" class="attiva" aria-current="page">Chi sono</a><a href="index.html#metodo">Il metodo</a><a href="index.html#materie">Materie</a><a href="index.html#tappe">Le tappe</a><a href="index.html#scadenze">Scadenze</a><a href="index.html#scrivi">Contatti</a>
+    </nav>
+    <span class="aperto" id="aperto"><i aria-hidden="true"></i><span>Orari dello studio</span></span>
+    <a class="tel" href="tel:+390200000000">02 0000 0000</a>
+    <button type="button" class="apri-menu" aria-label="Apri il menu" aria-expanded="false" aria-controls="pannello-menu"><span></span><span></span></button>
+  </div>
+  <div class="testata-sotto">
+    <div>
+      <div class="contenitore">
+        <nav class="sottomenu" aria-label="In questa pagina"><a href="#piacere">Piacere</a><a href="#lavoro">Il mio lavoro</a><a href="#storia">La mia storia</a><a href="#percorso">Il percorso</a><a href="#come">Come lavoro</a><a href="#studio">Lo studio</a></nav>
+        <span class="dimostra">Progetto dimostrativo · nomi e dati di fantasia</span>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="velo-menu" aria-hidden="true"></div>
+<aside class="pannello-menu" id="pannello-menu" aria-label="Menu" inert>
+  <button type="button" class="chiudi-menu">Chiudi</button>
+  <nav aria-label="Pagine"><a href="chi-sono.html" class="attiva" aria-current="page">Chi sono</a><a href="index.html#metodo">Il metodo</a><a href="index.html#materie">Materie</a><a href="index.html#tappe">Le tappe</a><a href="index.html#scadenze">Scadenze</a><a href="index.html#scrivi">Contatti</a></nav>
+  <a class="bottone" href="tel:+390200000000">Chiama 02 0000 0000</a>
+  <p class="dimostra" style="display:block">Progetto dimostrativo · nomi e dati di fantasia</p>
+</aside>
+
+<main>
+  <!-- 1. apertura -->
+  <section class="ch-apertura" aria-labelledby="t-chi">
+    <div class="ch-apertura-testo">
+      <p class="occhio">Avvocata · civile e penale · Milano</p>
+      <h1 id="t-chi"><span class="riga"><span>Chi</span></span><span class="riga"><span><em>sono</em></span></span></h1>
+      <p>Sono un'avvocata civilista e penalista. Dal 2008 assisto a Milano persone e famiglie nei momenti in cui la legge entra nella loro vita all'improvviso: una separazione, un'eredità contesa, una denuncia, un processo.</p>
+      <p>Il mio studio è a pochi passi dal Palazzo di Giustizia. Lavoro da sola, per scelta: chi mi affida un problema parla con me dal primo incontro all'ultima udienza.</p>
+    </div>
+    <figure class="ch-apertura-foto">
+      <div class="dentro-foto"><img src="immagini/chi-apertura.jpg" style="object-position: 92% 50%" alt="Una piazza ovale di gesso chiusa tra pareti morbide, con il cielo che entra da una grande apertura in alto e una freccia incisa sulla rampa" onerror="this.remove()"></div>
+    </figure>
+  </section>
+
+  <!-- 2. piacere: la sua foto sorridente -->
+  <section class="sez" id="piacere" aria-labelledby="t-piacere">
+    <div class="contenitore piacere">
+      <div class="piacere-foto ef-sfalsata">
+        <figure class="tendina"><div class="tendina-dentro"><img src="immagini/chi-cane.jpg" style="object-position: 58% 50%" alt="A casa, l'avvocata tiene in braccio il suo cane e gli sorride" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+        <figure class="tendina piacere-piccola"><div class="tendina-dentro"><img src="immagini/chi-disco.jpg" style="object-position: 40% 50%" alt="La sera, l'avvocata appoggia la puntina su un disco" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+      </div>
+      <div class="piacere-testo">
+        <p class="occhio">Piacere</p>
+        <h2 class="titolo" id="t-piacere">Sono Angela, <em>e ti ascolto.</em></h2>
+        <p>Ho scelto questo lavoro perché credo che nessuno debba affrontare da solo il momento in cui la legge gli cambia la vita. Una separazione, un'eredità che divide una famiglia, una denuncia arrivata all'improvviso: in quei giorni servono competenza e calma, e qualcuno che ti spieghi con parole semplici cosa sta succedendo.</p>
+        <p>Quando chiudo lo studio torno alle cose semplici: gioco con il mio cane, che mi aspetta sempre alla porta, e la sera metto un disco e lascio che la musica chiuda la giornata.</p>
+        <div class="firmetta"><b>Angela Angelicata</b><span>Avvocata, Ordine degli Avvocati di Milano n. 00000 (di fantasia)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. il mio lavoro -->
+  <section class="sez" id="lavoro" aria-labelledby="t-lavoro" style="padding-top:0">
+    <div class="contenitore ch-due">
+      <h2 class="titolo" id="t-lavoro">Andare <em>avanti</em></h2>
+      <div><p class="attacco">Ti aiuto a uscire da un momento difficile con un piano chiaro.</p><p>Seguo cause civili e procedimenti penali davanti al Tribunale e alla Corte d'Appello di Milano e, quando serve, davanti alla Corte di Cassazione. Ogni pratica la studio io, scrivo io gli atti e vengo io in udienza.</p></div>
+    </div>
+    <figure class="tendina foto-grande"><div class="tendina-dentro"><img src="immagini/chi-avanti.jpg" alt="Sotto un portico, l'avvocata cammina e parla con una signora" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+  </section>
+
+  <!-- 4. la mia storia -->
+  <section class="sez" id="storia" aria-labelledby="t-storia" style="padding-top:0">
+    <div class="contenitore">
+      <h2 class="titolo" id="t-storia">La mia <em>storia</em></h2>
+      <div class="storia-testi">
+        <p>Sono nata a Bergamo nel 1985 e mi sono laureata in Giurisprudenza all'Università Statale di Milano. Ho fatto la pratica in uno studio penale del centro, imparando presto che un processo si prepara molto prima dell'udienza. Nel 2008 sono diventata avvocata.</p>
+        <p>Per sei anni ho lavorato in uno studio associato, tra cause di famiglia e processi penali. Nel 2014 ho aperto il mio studio, per seguire meno pratiche ma seguirle da vicino, una per una.</p>
+        <p>Oggi mi occupo di separazioni e figli, eredità, casa e risarcimenti, e di difesa penale, sia per chi è accusato sia per chi ha subito un reato. Sono iscritta all'elenco dei difensori d'ufficio.</p>
+      </div>
+      <div class="storia-foto">
+        <figure class="tendina"><div class="tendina-dentro"><img src="immagini/chi-storia-1.jpg" style="object-position: 62% 50%" alt="Al tavolo dello studio una signora firma un documento accanto al marito, l'avvocata segue in piedi" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+        <figure class="tendina"><div class="tendina-dentro"><img src="immagini/chi-storia-2.jpg" alt="In un capannone, l'avvocata ascolta un artigiano davanti al grande portone di legno" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+        <figure class="tendina"><div class="tendina-dentro"><img src="immagini/chi-storia-3.jpg" alt="Con le cuffie, l'avvocata riascolta una registrazione insieme a una consulente" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. il percorso -->
+  <section class="sez" id="percorso" aria-labelledby="t-percorso" style="padding-top:0">
+    <div class="contenitore">
+      <h2 class="titolo" id="t-percorso">Il mio <em>percorso</em></h2>
+      <ol class="percorso-lista" id="percorso-lista">
+        <li class="attiva"><button type="button" aria-pressed="true"><p>Ho seguito il corso di alta formazione in diritto di famiglia e dei minori: oggi le separazioni con figli sono una parte importante del mio lavoro.</p><i class="segno" aria-hidden="true"></i><span class="anno">2023</span></button></li>
+        <li><button type="button" aria-pressed="false"><p>Sono stata abilitata a difendere davanti alla Corte di Cassazione e alle altre giurisdizioni superiori.</p><i class="segno" aria-hidden="true"></i><span class="anno">2021</span></button></li>
+        <li><button type="button" aria-pressed="false"><p>Sono diventata mediatrice familiare: molte separazioni si chiudono con un accordo, senza arrivare davanti al giudice.</p><i class="segno" aria-hidden="true"></i><span class="anno">2018</span></button></li>
+        <li><button type="button" aria-pressed="false"><p>Ho aperto il mio studio a Milano, a pochi passi dal Palazzo di Giustizia.</p><i class="segno" aria-hidden="true"></i><span class="anno">2014</span></button></li>
+        <li><button type="button" aria-pressed="false"><p>Mi sono iscritta all'elenco dei difensori d'ufficio: da allora difendo anche chi un avvocato non l'ha scelto.</p><i class="segno" aria-hidden="true"></i><span class="anno">2010</span></button></li>
+        <li><button type="button" aria-pressed="false"><p>Ho superato l'esame di Stato e mi sono iscritta all'Ordine degli Avvocati di Milano.</p><i class="segno" aria-hidden="true"></i><span class="anno">2008</span></button></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 6. come lavoro -->
+  <section class="sez" id="come" aria-labelledby="t-come" style="padding-top:0">
+    <div class="contenitore">
+      <h2 class="titolo" id="t-come">Come <em>lavoro</em></h2>
+      <div class="come-griglia">
+        <div><h3>Un'avvocata sola</h3><p>Non passi da un collaboratore all'altro. Studio io il tuo caso, scrivo io gli atti, vengo io in udienza. Se un giorno non posso esserci, lo sai prima, e sai chi mi sostituisce.</p></div>
+        <div><h3>Il costo, detto prima</h3><p>Prima di cominciare ricevi un preventivo scritto, voce per voce. Se il lavoro cambia strada, ne parliamo prima, non a cose fatte.</p></div>
+        <div><h3>Parole chiare</h3><p>Le decisioni legali sono difficili. Ti spiego le strade possibili e i rischi di ognuna con parole semplici, e ti lascio il tempo di scegliere.</p></div>
+        <div><h3>Sempre raggiungibile</h3><p>Rispondo alle email entro un giorno lavorativo. Per le urgenze vere, un'udienza, una notifica o un arresto, c'è il telefono.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. lo studio -->
+  <section class="sez" id="studio" aria-labelledby="t-studio" style="padding-top:0">
+    <div class="contenitore"><p class="occhio" style="margin-bottom:40px">Il mio studio</p></div>
+    <div class="ch-studio">
+      <figure class="tendina"><div class="tendina-dentro"><img src="immagini/chi-studio.jpg" alt="Nel corridoio dello studio, l'avvocata parla con il suo praticante" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+      <div class="ch-studio-testo">
+        <h3 id="t-studio">La fiducia si costruisce un incontro alla volta.</h3>
+        <p>Con me lavorano un praticante e una segretaria: sono loro a risponderti al telefono e a fissare gli appuntamenti. Le decisioni sul tuo caso, però, le prendiamo sempre io e te.</p>
+        <p>Lo studio è al secondo piano di un palazzo d'epoca in Via Manara, a tre minuti a piedi dal Palazzo di Giustizia, con una sala riservata per i primi incontri. Se non puoi venire, ci vediamo in videochiamata.</p>
+        <a class="pillola" href="index.html#dove">Dove sono →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. il mio impegno -->
+  <section class="contenitore" aria-labelledby="t-impegno">
+    <div class="impegno">
+      <h2 id="t-impegno">Il mio impegno</h2>
+      <p>Nessun avvocato onesto può prometterti come finirà. Io posso prometterti che saprai sempre a che punto sei, cosa rischi e cosa puoi fare.</p>
+    </div>
+  </section>
+
+  <!-- costruzione di passaggio (9/11) -->
+  <figure class="tendina passaggio" id="frase"><div class="tendina-dentro"><img src="immagini/passaggio-chi.jpg" style="object-position: 70% 72%" alt="Dune di gesso all'aperto, con un ponte di noce in diagonale che entra in una galleria illuminata e una freccia incisa nel terreno" loading="lazy" onerror="this.remove()"><i class="velo-frase" aria-hidden="true"></i></div><i class="tendina-filo" aria-hidden="true"></i><blockquote class="passaggio-frase"><p>La clemenza non si impone: cade come la pioggia gentile dal cielo.</p><cite>William Shakespeare, Il mercante di Venezia</cite></blockquote></figure>
+
+  <!-- 9. il saluto -->
+  <section class="sez grazie" aria-labelledby="t-grazie">
+    <div class="contenitore">
+      <h2 id="t-grazie">Grazie di essere arrivato fin qui.</h2>
+      <p>Se vuoi, raccontami cosa ti è successo. <a href="index.html#racconta">Scrivimi</a></p>
+    </div>
+  </section>
+</main>
+
+<footer class="fondo">
+  <div class="contenitore fondo-griglia">
+    <div>
+      <p class="nome-f">Studio Legale Angelicata</p>
+      <p>Avv. Angela Angelicata<br>Via Luciano Manara 13, 20122 Milano (indirizzo d'esempio)</p>
+      <p style="margin-top:12px">Telefono 02 0000 0000<br>studio@avvangelicata.example<br>PEC angelicata@pec.example</p>
+    </div>
+    <div>
+      <h3>Dati dello studio</h3>
+      <dl>
+        <dt>Avvocata</dt><dd>Avv. Angela Angelicata, iscritta all'Ordine degli Avvocati di Milano n. 00000. Titolo di avvocato conseguito in Italia.</dd>
+        <dt>Dati fiscali</dt><dd>Avv. Angela Angelicata · P.IVA 00000000000</dd>
+        <dt>Assicurazione professionale</dt><dd>Polizza di responsabilità civile n. 0000 con Compagnia Esempio S.p.A., Via Esempio 1, Milano · copertura: Unione europea</dd>
+        <dt>Regole professionali</dt><dd>Rispetto il <a href="https://www.consiglionazionaleforense.it/codice-deontologico-forense" target="_blank" rel="noopener">Codice deontologico forense</a>, consultabile sul sito del Consiglio nazionale forense.</dd>
+      </dl>
+    </div>
+    <div>
+      <h3>Link utili</h3>
+      <ul>
+        <li><a href="https://www.consiglionazionaleforense.it" target="_blank" rel="noopener">Consiglio nazionale forense</a></li>
+        <li><a href="https://www.giustizia.it" target="_blank" rel="noopener">Ministero della Giustizia</a></li>
+        <li><a href="https://www.garanteprivacy.it" target="_blank" rel="noopener">Garante privacy</a></li>
+        <li><a href="https://www.1522.eu" target="_blank" rel="noopener">1522, numero antiviolenza</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="contenitore firma-giro"><p class="firma" aria-hidden="true">Angela <em>Angelicata</em></p></div>
+  <div class="contenitore riga-fine"><span>Privacy</span><span>Il sito non usa cookie di profilazione, per questo non c'è il banner</span><span>Accessibilità</span><span>Progetto dimostrativo: nomi, numeri e dati sono di fantasia.</span></div>
+</footer>
+
+<nav class="tocco" aria-label="Contatto rapido"><a href="tel:+390200000000">Chiama</a><a href="index.html#scrivi">Scrivimi</a></nav>
+
+<script>
+const $ = (s, el = document) => el.querySelector(s), $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const MUOVI = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+function caso(seme) { let s = (seme * 9301 + 49297) % 233280 || 1; return () => (s = (s * 16807) % 2147483647) / 2147483647; }
+
+/* ---------- plastici disegnati al posto delle immagini che Franco farà con GPT; «duo» = nei due colori delle foto in bicromia ---------- */
+function plastico(cv) {
+  const dpr = Math.min(2, devicePixelRatio || 1), W = Math.round(cv.clientWidth * dpr), H = Math.round(cv.clientHeight * dpr);
+  if (!W || !H || (cv.width === W && cv.height === H)) return;
+  cv.width = W; cv.height = H;
+  const c = cv.getContext('2d'), r = caso(+cv.dataset.seme || 3), tipo = cv.dataset.tipo || 'labirinto', duo = cv.dataset.tono === 'duo';
+  const T = cv.dataset.tono === 'bn'
+    ? { f1: '#3b3b3b', f2: '#1f1f1f', terra: () => `hsl(0,0%,${19 + r() * 5}%)`, gesso: ['#f0f0f0', '#bfbfbf', '#7e7e7e'], argilla: ['#d4d4d4', '#a2a2a2', '#666'], bordo: 'rgba(0,0,0,.3)', ombra: 'rgba(0,0,0,.45)', l1: 'rgba(255,255,255,.1)', l2: 'rgba(0,0,0,.22)' }
+    : duo
+    ?{ f1: '#2c3a34', f2: '#1d2824', terra: () => `hsl(150,${10 + r() * 4}%,${19 + r() * 4}%)`, gesso: ['#efcb9c', '#c99c6c', '#8c6442'], argilla: ['#dca46c', '#b07a4a', '#7a5332'], bordo: 'rgba(15,25,20,.3)', ombra: 'rgba(5,10,8,.45)', l1: 'rgba(255,214,170,.12)', l2: 'rgba(10,20,15,.22)' }
+    : { f1: '#f1e8da', f2: '#dccaae', terra: () => `hsl(36,${28 + r() * 6}%,${82 + r() * 3}%)`, gesso: ['#f7f2ea', '#e7dbc7', '#ccb898'], argilla: ['#e6cbae', '#d6b391', '#b99472'], bordo: 'rgba(110,80,50,.16)', ombra: 'rgba(110,80,50,.22)', l1: 'rgba(255,248,236,.22)', l2: 'rgba(90,60,30,.10)' };
+  const fondo = c.createLinearGradient(0, 0, W, H); fondo.addColorStop(0, T.f1); fondo.addColorStop(1, T.f2); c.fillStyle = fondo; c.fillRect(0, 0, W, H);
+  const n = { cittadella: 19, labirinto: 15, catacomba: 13, fortezza: 13, ritratto: 11, palazzo: 13 }[tipo] || 15;
+  const m = Array.from({ length: n }, () => Array(n).fill(1));
+  const pila = [[1, 1]]; m[1][1] = 0;
+  while (pila.length) {
+    const [x, y] = pila[pila.length - 1], dirs = [[2, 0], [-2, 0], [0, 2], [0, -2]].sort(() => r() - .5); let mosso = false;
+    for (const [dx, dy] of dirs) { const nx = x + dx, ny = y + dy; if (nx > 0 && ny > 0 && nx < n - 1 && ny < n - 1 && m[ny][nx] === 1) { m[y + dy / 2][x + dx / 2] = 0; m[ny][nx] = 0; pila.push([nx, ny]); mosso = true; break; } }
+    if (!mosso) pila.pop();
+  }
+  for (let k = 0; k < 2; k++) { const px = 2 + Math.floor(r() * (n - 6)), py = 2 + Math.floor(r() * (n - 6)); for (let yy = py; yy < py + 3; yy++) for (let xx = px; xx < px + 3; xx++) m[yy][xx] = 0; }
+  const h = m.map((riga, y) => riga.map((v, x) => {
+    if (!v) return 0;
+    const bordo = x === 0 || y === 0 || x === n - 1 || y === n - 1;
+    if (tipo === 'fortezza') return bordo ? 4 + (r() < .3 ? 1 : 0) : 2 + (r() < .25 ? 1 : 0);
+    if (tipo === 'palazzo') return bordo ? 3 : 1 + (r() < .3 ? 2 : 0);
+    if (tipo === 'cittadella') { const d = Math.hypot(x - n * .55, y - n * .5) / n; return Math.max(1, Math.round((1 - d * 1.6) * 6 * (.6 + r() * .5))); }
+    return 1 + (r() < .1 ? 2 + Math.floor(r() * 2) : r() < .3 ? 1 : 0);
+  }));
+  const argilla = m.map(riga => riga.map(() => r() < .2));
+  const maxZ = 6, cella = Math.min(W / (n * 1.06), H / (n * .5 + maxZ * .62 + 1)), cw = cella, ch = cella * .5, hz = cella * .62;
+  const ox = W * (tipo === 'cittadella' ? .6 : .5), oy = (H - (n * ch + maxZ * hz)) / 2 + maxZ * hz;
+  const P = (x, y, z) => [ox + (x - y) * cw / 2, oy + (x + y) * ch / 2 - z * hz];
+  const faccia = (pts, col) => { c.beginPath(); pts.forEach(([a, b], i) => i ? c.lineTo(a, b) : c.moveTo(a, b)); c.closePath(); c.fillStyle = col; c.fill(); c.strokeStyle = T.bordo; c.lineWidth = Math.max(.6, dpr * .5); c.stroke(); };
+  c.save(); c.filter = `blur(${Math.round(cella * .8)}px)`; c.fillStyle = T.ombra;
+  c.beginPath(); [P(0, 0, 0), P(n, 0, 0), P(n, n, 0), P(0, n, 0)].forEach(([a, b], i) => i ? c.lineTo(a + cella * .9, b + cella * .2) : c.moveTo(a + cella * .9, b + cella * .2)); c.fill(); c.restore();
+  for (let s = 0; s < 2 * n - 1; s++) for (let x = 0; x < n; x++) {
+    const y = s - x; if (y < 0 || y >= n) continue;
+    const z = h[y][x];
+    if (!z) { faccia([P(x, y, 0), P(x + 1, y, 0), P(x + 1, y + 1, 0), P(x, y + 1, 0)], T.terra()); continue; }
+    const [alto, sx, dx] = argilla[y][x] ? T.argilla : T.gesso;
+    faccia([P(x, y + 1, z), P(x + 1, y + 1, z), P(x + 1, y + 1, 0), P(x, y + 1, 0)], sx);
+    faccia([P(x + 1, y, z), P(x + 1, y + 1, z), P(x + 1, y + 1, 0), P(x + 1, y, 0)], dx);
+    faccia([P(x, y, z), P(x + 1, y, z), P(x + 1, y + 1, z), P(x, y + 1, z)], alto);
+  }
+  const luce = c.createLinearGradient(0, 0, W, 0); luce.addColorStop(0, T.l1); luce.addColorStop(1, T.l2); c.fillStyle = luce; c.fillRect(0, 0, W, H);
+}
+const tele = () => $$('canvas.plastico');
+
+/* ---------- «Aperto adesso» ---------- */
+function aperto() {
+  const d = new Date(), g = d.getDay(), m = d.getHours() * 60 + d.getMinutes(), feriale = g >= 1 && g <= 5;
+  const fasce = [[540, 780], [870, 1110]], f = feriale && fasce.find(([a, b]) => m >= a && m < b), hh = x => Math.floor(x / 60) + ':' + String(x % 60).padStart(2, '0');
+  let testo;
+  if (f) testo = 'Aperto adesso · fino alle ' + hh(f[1]);
+  else {
+    let dopo;
+    if (feriale && m < 540) dopo = 'alle 9:00'; else if (feriale && m >= 780 && m < 870) dopo = 'alle 14:30';
+    else { const nomi = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato']; let k = (g + 1) % 7; while (k === 0 || k === 6) k = (k + 1) % 7; dopo = (k === (g + 1) % 7 ? 'domani' : nomi[k]) + ' alle 9:00'; }
+    testo = 'Chiuso · riapre ' + dopo;
+  }
+  const el = $('#aperto'); el.classList.toggle('chiuso', !f); $('span', el).textContent = testo;
+}
+aperto(); setInterval(aperto, 60000);
+
+/* ---------- il percorso: una voce alla volta nitida, le altre sfocate; scorre da solo finché non lo tocchi ---------- */
+const voci = $$('#percorso-lista li');
+let attiva = 0, giro = null;
+function accendi(i, scorri) {
+  attiva = (i + voci.length) % voci.length;
+  voci.forEach((li, k) => { li.classList.toggle('attiva', k === attiva); $('button', li).setAttribute('aria-pressed', k === attiva); });
+  if (scorri) { const lista = $('#percorso-lista'), li = voci[attiva]; lista.scrollTo({ left: li.offsetLeft - lista.offsetLeft, behavior: MUOVI ? 'smooth' : 'auto' }); }
+}
+voci.forEach((li, k) => $('button', li).addEventListener('click', () => { clearInterval(giro); giro = null; accendi(k); }));
+if (MUOVI) {
+  const parti = () => { if (!giro) giro = setInterval(() => accendi(attiva + 1, true), 4500); };
+  const ferma = () => { clearInterval(giro); giro = null; };
+  const lista = $('#percorso-lista');
+  lista.addEventListener('mouseenter', ferma); lista.addEventListener('focusin', ferma);
+  new IntersectionObserver(e => { e[0].isIntersecting ? parti() : ferma(); }, { threshold: .4 }).observe(lista);
+}
+
+/* ---------- testata che si stringe e indice della pagina ---------- */
+const testata = $('#testata');
+let inCoda = false;
+addEventListener('scroll', () => { if (inCoda) return; inCoda = true; requestAnimationFrame(() => { inCoda = false; testata.classList.toggle('stretta', scrollY > 40); }); }, { passive: true });
+const vociIndice = $$('.sottomenu a');
+const spia = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) vociIndice.forEach(a => a.classList.toggle('attiva', a.getAttribute('href') === '#' + e.target.id)); }), { rootMargin: '-40% 0px -55% 0px' });
+['piacere', 'lavoro', 'storia', 'percorso', 'come', 'studio'].forEach(id => spia.observe(document.getElementById(id)));
+
+/* ---------- foto con la tendina e firma ---------- */
+const osserva = (sel, opzioni) => { const els = $$(sel); if (!('IntersectionObserver' in window) || !MUOVI) { els.forEach(el => el.classList.add('vista')); return; }
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vista'); io.unobserve(e.target); } }), opzioni); els.forEach(el => io.observe(el)); };
+osserva('.tendina', { rootMargin: '0px 0px -12% 0px', threshold: .15 });
+osserva('.firma-giro', { threshold: 0 });
+/* 9/11, Franco: «fai entrare anche le scritte accanto alle foto nel senso opposto, ovvero da sinistra verso destra»: stesso segnale delle tendine */
+/* 9/11: la frase sulla costruzione di passaggio affiora lettera per lettera; i lettori di schermo leggono la frase intera */
+$$('.passaggio-frase p').forEach(el => { const t = el.textContent.trim(); el.textContent = ''; let i = 0;
+  const sr = document.createElement('span'); sr.className = 'solo-lettori'; sr.textContent = t; el.appendChild(sr);
+  t.split(' ').forEach((w, k, a) => { const p = document.createElement('span'); p.className = 'p'; p.setAttribute('aria-hidden', 'true');
+    for (const ch of w) { const l = document.createElement('span'); l.className = 'l'; l.textContent = ch; l.style.setProperty('--i', i++); p.appendChild(l); }
+    el.appendChild(p); if (k < a.length - 1) el.appendChild(document.createTextNode(' ')); }); });
+osserva('.passaggio-frase', { rootMargin: '0px 0px -12% 0px', threshold: .3 });
+$$('.piacere-testo, .ch-due, .storia-testi, .ch-studio-testo').forEach(el => el.classList.add('entra-sx'));
+osserva('.entra-sx', { rootMargin: '0px 0px -12% 0px', threshold: .15 });
+
+/* ---------- menu del telefono ---------- */
+function menu(apri) { document.body.classList.toggle('menu-aperto', apri); $('.apri-menu').setAttribute('aria-expanded', apri); $('#pannello-menu').inert = !apri; }
+$('.apri-menu').addEventListener('click', () => menu(!document.body.classList.contains('menu-aperto')));
+$('.velo-menu').addEventListener('click', () => menu(false));
+$('.chiudi-menu').addEventListener('click', () => menu(false));
+$$('#pannello-menu a').forEach(a => a.addEventListener('click', () => menu(false)));
+addEventListener('keydown', e => { if (e.key === 'Escape') menu(false); });
+
+/* ---------- partenza ---------- */
+tele().forEach(plastico);
+let attesa; addEventListener('resize', () => { clearTimeout(attesa); attesa = setTimeout(() => tele().forEach(plastico), 150); });
+const entra = () => document.body.classList.add('entrata');
+(document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 700))]) : Promise.resolve()).then(() => requestAnimationFrame(entra));
+</script>
+<script>/* dentro la vetrina Zenit Atelier: il tasto Esc riporta al telescopio; da solo non fa niente */ if (parent !== window) addEventListener("keydown", e => { if (e.key === "Escape") parent.postMessage({ esci: 1 }, "*"); });</script>
+</body>
+</html>

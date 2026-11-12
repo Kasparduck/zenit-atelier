@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zenit Atelier</title>
+<meta name="description" content="Zenit Atelier, la vetrina: un telescopio con i siti dentro la lente e le loro pagine intorno.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:opsz,wght@6..72,400&display=swap">
+<style>
+/* VETRINA, FASE 1 (9/11/2026): il telescopio da solo. Franco: «facciamo un telescopio con la lente puntata verso chi guarda; se si attiva un regolatore
+   si fa uno zooming in, se si gira dall'altra parte uno zooming out, diversamente il sito resta a una grandezza ottimizzata; se il telescopio gira un po'
+   di lato anche la pagina del sito scorre». Ghiera esterna con i nomi dei siti, ghiera zigrinata dello zoom, diaframma a lamelle. Dall'11/11 (Franco: «più moderno»): metallo nero, luci di taglio rame e azzurra, fondo blu notte.
+   Base e ispirazioni: ../ispirazioni/obys.md, ../ispirazioni/eminente.md; piano a fasi in ../SCHEDA.md. */
+:root {
+  --carbone: #05080d; --carbone-2: #0e1622; --luce: rgb(120 160 220 / .07);   /* 11/11: blu notte (prima carbone caldo #15120f) */
+  --bronzo-scuro: #1d2530; --bronzo: #b8703f; --bronzo-chiaro: #e0935c; --avorio: #eef1f5; --tenue: #8d97a5;   /* i nomi restano, i colori ora sono acciaio e rame */
+  --sans: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --d: min(94svh, 96vw, 1240px);   /* diametro del telescopio (9/11, Franco: «più grande») */
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; overflow: hidden; background: radial-gradient(ellipse 70% 60% at 50% 48%, var(--carbone-2), var(--carbone) 70%); color: var(--avorio); font: 400 15px/1.5 var(--sans); -webkit-font-smoothing: antialiased; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+::selection { background: transparent; }
+/* 11/11: la grana non usa più mix-blend-mode: sopra le strisce che si muovono costringeva a ridisegnare tutto lo schermo a ogni fotogramma (351 ms contro 20, misurato con strumenti/pesa-pagina.js) */
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .32; z-index: 4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .4 0 0 0 .12 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+.scena { position: fixed; inset: 0; display: grid; place-items: center; perspective: 1600px; z-index: 2; }
+.alone { position: absolute; width: calc(var(--d) * 1.5); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle calc(var(--d) * .26) at 25% 19%, rgb(255 140 70 / .17), transparent), radial-gradient(circle calc(var(--d) * .26) at 80% 28%, rgb(110 165 255 / .13), transparent), radial-gradient(circle calc(var(--d) * .22) at 77% 80%, rgb(255 140 70 / .09), transparent), radial-gradient(circle, var(--luce), transparent 62%); pointer-events: none; }
+.telescopio { position: relative; width: var(--d); aspect-ratio: 1; perspective: 1600px; }
+/* 9/11, Franco: «il sito tende a sfocarsi»: inclinare la lente ridisegna il sito storto e le scritte si ammorbidiscono. Si inclinano solo anelli e tubo; la lente resta dritta */
+.inclina { transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .35s cubic-bezier(.2,.7,.2,1); }
+.telescopio.intro { transform-style: preserve-3d; transform: rotateX(var(--irx, 0deg)) rotateY(var(--iry, 0deg)); }
+.telescopio.gira { transition: none; }
+/* il tubo: anelli dietro la lente, si vedono quando il telescopio si inclina */
+.tubo { position: absolute; inset: 1.5%; border-radius: 50%; transform-style: preserve-3d; pointer-events: none; }
+.tubo i { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle, #06080b 60%, #141a23 61%, #2a3443 66%, #0b0e13 70%); }
+/* la lente: il sito vivo, ritagliato nel cerchio */
+.vetro { position: absolute; left: 50%; top: 50%; width: 73.7%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; overflow: hidden; background: #05070a; isolation: isolate; }
+.sito { position: absolute; left: 50%; top: 50%; width: 1280px; height: 1280px; transform-origin: 50% 50%; transform: translate(-50%, -50%) translate(var(--px, 0px), 0) scale(var(--s, .5)); filter: blur(var(--sfoca, 0px)); }
+.sito iframe { width: 1280px; height: 1280px; border: 0; display: block; background: #f6f1e9; pointer-events: none; }
+.riflesso { position: absolute; inset: 0; border-radius: 50%; pointer-events: none; z-index: 3;
+  background: radial-gradient(ellipse 55% 38% at 32% 22%, rgb(236 244 255 / .13), transparent 60%), radial-gradient(circle at 50% 50%, transparent 74%, rgb(3 5 9 / .4) 100%);
+  box-shadow: inset 0 0 0 1px rgb(220 235 255 / .1), inset 0 0 30px rgb(0 0 0 / .5); }
+.riflesso::after { content: ""; position: absolute; inset: 4%; border-radius: 50%; border-top: 1.5px solid rgb(150 190 255 / .2); border-left: 1px solid rgb(255 160 100 / .16); border-right: 1px solid transparent; border-bottom: 1px solid transparent; transform: rotate(-18deg); filter: blur(.6px); }
+/* il diaframma a lamelle sopra il vetro, sotto gli anelli */
+/* l'anello di metallo: la foto, ferma, sopra il vetro e sotto i nomi */
+.anello { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+.diaframma { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; will-change: transform; }   /* uno strato suo: quando le lamelle si muovono si ridisegna solo lui */
+/* gli anelli disegnati */
+.anelli { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.anelli .presa { cursor: grab; }
+.anelli .presa:active { cursor: grabbing; }
+.anelli text { font-family: var(--sans); }
+.nome-sito { font-weight: 500; font-size: 20.5px; letter-spacing: 9px; fill: #f5f7fa; transition: fill .35s; }
+/* 9/11, Franco: le scritte dei siti bianche; passandoci sopra diventano nere, su una piastrina di platino (sul metallo scuro il nero non si leggerebbe) */
+.piastra { opacity: 0; transition: opacity .35s; }
+.voce { cursor: pointer; }
+.voce.sopra .piastra { opacity: 1; }
+.voce.sopra .nome-sito { fill: #141210; }
+/* I SITI INTORNO ALLA LENTE (11/11/2026, idea di Franco, immagini in ../ispirazioni/franco-siti-intorno-*.jpg): «i siti… li volevo disporre in un modo un tantino
+   diverso e non lasciandoli grigi come su Obys: desaturati la maggior parte e saturo uno solo, quello scelto dal cliente cliccando sul nome. Cliccando sul nome
+   il sito, presente anche fuori dall'obiettivo, prende tutta la pagina e si compone in modo dinamico, in modo che ci si possa navigare, mentre l'obiettivo sparisce».
+   Ogni striscia è UN sito con le sue pagine in fila (le «carte», fatte da strumenti/carte-sito.js): si accende tutta quando quel sito è scelto.
+   I tre modi di guardare scelti da Franco l'11/11 (in alto a destra): la diagonale che sale, quella che scende, la scalinata. */
+.strisce { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity 1.6s; --carta-w: clamp(270px, 27vw, 520px); --vuoto: clamp(12px, 1.1vw, 20px); }
+body.pronto .strisce { opacity: 1; }
+body.pronto .strisce.cambia { opacity: 0; transition: opacity .35s; }
+.piano { position: absolute; left: 50%; top: 50%; width: 150vmax; height: 150vmax; transform: translate(-50%, -50%) rotate(var(--inclina, -16deg)); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: var(--vuoto); }
+.striscia { flex: none; width: 100%; height: calc(var(--carta-w) / 1.6); overflow: hidden; }
+.binario { display: flex; width: max-content; height: 100%; animation: scorre var(--durata, 150s) linear infinite var(--verso, normal); }
+@keyframes scorre { to { transform: translateX(-50%); } }
+.carta { flex: none; display: block; height: 100%; aspect-ratio: 16 / 10; margin-right: var(--vuoto); border-radius: clamp(6px, .6vw, 11px); background: #10151d center / cover no-repeat; box-shadow: inset 0 0 0 1px rgb(255 240 220 / .09); }
+/* spente (non grigie: resta un filo di colore) e, per il sito scelto, a colori */
+.spenta { filter: saturate(.36) brightness(.5); transition: filter 1s cubic-bezier(.3,.6,.2,1); }
+.spenta.accesa { filter: saturate(1) brightness(.84); }   /* a colori ma un filo sotto la lente: la più luminosa resta lei */
+/* la scalinata (immagine di Franco con le due colonne ai lati): un piano steso per terra che si allontana verso l'alto, con due colonne di pagine */
+.strisce[data-disp="scalinata"] { perspective: 1500px; perspective-origin: 50% -18%; }
+.pavimento { position: absolute; left: 50%; bottom: -4%; width: 104vw; height: 200vh; transform-origin: 50% 100%; transform: translateX(-50%) rotateX(58deg); display: flex; justify-content: space-between; }
+.colonna { flex: none; width: 31%; height: 100%; overflow: hidden; }
+.binario-v { display: flex; flex-direction: column; animation: viene var(--durata, 170s) linear infinite; }
+@keyframes viene { from { transform: translateY(-50%); } to { transform: translateY(0); } }
+.colonna .carta { width: 100%; height: auto; margin: 0 0 var(--vuoto); }
+/* il silenzio intorno alla lente: un'ombra che stacca l'obiettivo dalle carte, e i bordi dello schermo più scuri sotto le scritte */
+.strisce::after { content: ""; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgb(5 8 12 / .92) calc(var(--d) * .5), rgb(5 8 12 / 0) calc(var(--d) * .5 + 13vmin)),
+    radial-gradient(ellipse 78% 78% at 50% 50%, rgb(5 8 12 / 0) 58%, rgb(5 8 12 / .82) 100%),
+    radial-gradient(ellipse 34vw 30vh at 0 0, rgb(5 8 12 / .9), rgb(5 8 12 / 0)),
+    linear-gradient(to bottom, rgb(5 8 12 / .55), rgb(5 8 12 / 0) 14%, rgb(5 8 12 / 0) 84%, rgb(5 8 12 / .6)); }
+/* la riga in basso a sinistra sta sopra le carte: una targhetta scura la tiene leggibile */
+.didascalia { padding: 13px 15px; border-radius: 12px; background: rgb(9 13 19 / .92); border: 1px solid rgb(255 240 220 / .07); }   /* niente sfocatura dietro: sopra le strisce in movimento pesa */
+/* cliccando un nome (12/11, Franco): l'obiettivo rimpicciolisce chiudendo le lamelle, il sito ne esce rovesciato (scuro, se è chiaro) e cresce fino a tutta la
+   pagina, poi torna com'è. I numeri che si muovono (cerchio, grandezze, lamelle) li scrive il codice a ogni fotogramma, tutti insieme: vedi «il sito a tutta pagina» */
+.didascalia, .firma, .modi { transition: opacity .6s; }
+body.aperto .didascalia, body.aperto .firma, body.aperto .modi, body.aperto .busta { opacity: 0; pointer-events: none; }
+body.aperto .scena { pointer-events: none; }
+body.coperto .strisce { visibility: hidden; }
+body.coperto .binario, body.coperto .binario-v { animation-play-state: paused; }
+/* il sito a tutta pagina: caricato di nascosto, dentro un cerchio che parte dal vetro e si allarga */
+.pagina-piena { position: fixed; inset: 0; z-index: 6; overflow: hidden; opacity: 0; pointer-events: none; }
+/* di nascosto: prima trasparente ma «in vista» (così il sito fa la sua entrata e al clic è già composto: una pagina nascosta del tutto il browser la tiene ferma),
+   poi, composto, nascosto del tutto (.dorme: non costa più niente); al clic torna in vista (.vista) */
+.pagina-piena.dorme { visibility: hidden; }
+.pagina-piena.vista { opacity: 1; visibility: visible; pointer-events: auto; }
+/* 12/11, Franco: «le transizioni sono scattose, non fluide». Prima il cerchio era un ritaglio (clip-path) e ogni grandezza la scriveva il codice a ogni
+   fotogramma: se la pagina aveva da fare, saltava. Ora il cerchio è un disco grande quanto basta a coprire lo schermo (--R, la mezza diagonale), rimpicciolito
+   e riportato a 1 con «scale»; dentro, il sito a misura di schermo, ingrandito del contrario. Si muovono solo «transform» e «opacity», con una transizione
+   sola fatta partire una volta: il movimento lo fa la scheda grafica e resta liscio anche se la pagina è occupata */
+.pp-cerchio { position: absolute; left: 50%; top: 50%; width: calc(var(--R, 100vmax) * 2); height: calc(var(--R, 100vmax) * 2); margin: calc(var(--R, 100vmax) * -1) 0 0 calc(var(--R, 100vmax) * -1);
+  border-radius: 50%; overflow: hidden; background: #05070a; will-change: transform; }
+.pagina-piena.piena .pp-cerchio { border-radius: 0; }   /* arrivato a tutto schermo non serve più il cerchio */
+.pp-cerchio iframe { position: absolute; left: 50%; top: 50%; width: var(--W, 100vw); height: var(--H, 100vh); margin: calc(var(--H, 100vh) / -2) 0 0 calc(var(--W, 100vw) / -2); display: block; border: 0; transform-origin: 50% 50%; will-change: transform; }
+/* prima di muoversi (.esce-pronta): l'obiettivo passa SOPRA il sito a tutta pagina, che è già al suo posto dietro il vetro, e le strisce si fermano.
+   Poi (.esce): il vetro diventa trasparente (dentro si vede il sito che cresce, sotto il riflesso e le lamelle che si chiudono) e il sito della lente,
+   avvicinandosi un poco, sfuma in quello che esce */
+body.esce-pronta .scena { z-index: 7; will-change: transform, opacity; }
+body.esce-pronta .binario, body.esce-pronta .binario-v { animation-play-state: paused; }
+body.esce .sito { opacity: 0; transition: opacity .6s ease-out, transform 1.1s cubic-bezier(.3,0,.3,1); }
+body.esce .vetro { background: transparent; }
+body.esce .tubo, body.esce .cattura { visibility: hidden; }
+.torna { position: fixed; left: 50%; bottom: 18px; z-index: 7; transform: translate(-50%, 16px); opacity: 0; pointer-events: none; transition: opacity .5s, transform .5s;
+  display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 14px; border-radius: 999px; border: 1px solid rgb(255 240 220 / .22); background: rgb(9 13 19 / .88); color: var(--avorio);
+  font: 500 .82rem var(--sans); letter-spacing: .04em; cursor: pointer; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgb(0 0 0 / .35); }
+.torna kbd { font: 500 .68rem var(--sans); letter-spacing: .08em; padding: 2px 6px; border-radius: 5px; border: 1px solid rgb(255 240 220 / .25); color: var(--tenue); }
+.torna:hover { background: rgb(18 25 36 / .95); }
+body.aperto .torna { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; transition-delay: 5.6s; }   /* compare quando il sito è tornato com'è */
+/* in basso a destra: i tre modi di guardare i siti (11/11 sera, Franco: «sposterei le voci "a scalinata", "in discesa"… in basso a destra»; prima stavano in alto a destra,
+   dove ora c'è la busta dei contatti). Sopra le strisce che si muovono: una targhetta scura come quella della riga a sinistra */
+.modi { position: fixed; right: 18px; bottom: 16px; z-index: 3; display: flex; gap: 22px; padding: 9px 16px 10px; border-radius: 12px; background: rgb(9 13 19 / .92); border: 1px solid rgb(255 240 220 / .07); font: 500 .86rem var(--sans); letter-spacing: .05em; }
+.modi button { all: unset; cursor: pointer; color: var(--tenue); padding: 4px 0; border-bottom: 1px solid transparent; transition: color .3s, border-color .3s; }
+.modi button:hover { color: var(--avorio); }
+.modi button[aria-pressed="true"] { color: var(--avorio); border-bottom-color: var(--bronzo-chiaro); }
+/* sul telefono in basso c'è la riga che spiega: lì le voci restano in alto, sotto la busta */
+@media (max-aspect-ratio: 5/4) { .modi { right: 12px; top: 74px; bottom: auto; gap: 14px; padding: 0; background: none; border: 0; font-size: .74rem; } }
+
+/* CONTATTI (11/11/2026 sera, Franco, con due immagini fatte con GPT: ../ispirazioni/franco-contatti-busta.webp e franco-contatti-pagina.jpg): «in alto a destra
+   metterei "Contatti" (prendi direttamente la busta allegata e piazzala in alto a destra). Quando si clicca sulla busta si apre una pagina che non mette le
+   categorie come Cuberto, ma solo gli altri dati». La busta è la sua immagine, intera (contatti-busta.webp); la pagina che si apre è la sua: a sinistra la foto
+   (contatti-foto.jpg, la parte sinistra della sua immagine, con «Zenit Atelier» già scritto dentro), a destra su scuro il titolo e il modulo, in lettere vere. */
+.busta { all: unset; position: fixed; right: 20px; top: 14px; z-index: 3; width: clamp(128px, 11.4vw, 192px); cursor: pointer; filter: drop-shadow(0 10px 20px rgb(0 0 0 / .5));
+  transition: opacity .6s, transform .45s cubic-bezier(.2,.7,.2,1), filter .45s; }
+.busta img { display: block; width: 100%; height: auto; -webkit-user-drag: none; }
+.busta:hover, .busta:focus-visible { transform: translateY(-3px); filter: drop-shadow(0 16px 24px rgb(0 0 0 / .55)) brightness(1.2); }
+.contatti { --c-fondo: #212120; --c-crema: #f6ead9; position: fixed; inset: 0; z-index: 8; display: grid; grid-template-columns: 62.2% 1fr; background: var(--c-fondo); color: var(--c-crema);
+  opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .45s, visibility 0s .45s; }
+body.contatti-aperti .contatti { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity .45s; }
+.contatti ::selection { background: rgb(224 147 92 / .45); }
+/* la foto entra da sinistra come una tendina e intanto si allontana appena; chiudendo torna subito al punto di partenza, sotto la pagina che sfuma */
+.c-foto { position: relative; margin: 0; min-height: 0; overflow: hidden; clip-path: inset(0 100% 0 0); transition: clip-path 0s .5s; }
+body.contatti-aperti .c-foto { clip-path: inset(0); transition: clip-path 1.15s cubic-bezier(.7,0,.2,1) .1s; }
+.c-foto img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: left top; transform-origin: 0 0; transform: scale(1.06); transition: transform 0s .5s; }
+body.contatti-aperti .c-foto img { transform: none; transition: transform 2.4s cubic-bezier(.2,.7,.2,1) .1s; }
+.c-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(33 33 32 / 0) 84%, var(--c-fondo) 100%); pointer-events: none; }
+.c-pannello { position: relative; min-width: 0; display: flex; flex-direction: column; justify-content: center; padding: 9vh 4.9vw 5vh 0; }
+.c-chiudi { all: unset; position: absolute; right: clamp(14px, 1.9vw, 34px); top: clamp(12px, 2.2vh, 24px); width: 44px; height: 44px; display: grid; place-items: center; cursor: pointer; color: var(--c-crema); transition: transform .45s cubic-bezier(.2,.7,.2,1), color .3s; }
+.c-chiudi svg { width: 22px; height: 22px; }
+.c-chiudi:hover, .c-chiudi:focus-visible { transform: rotate(90deg); color: #fff; }
+.c-titolo { margin: 0 0 clamp(22px, 5vh, 56px); font: 400 clamp(2.5rem, 5.9vw, 6.6rem)/.98 "Newsreader", Georgia, serif; letter-spacing: -.02em; }
+.c-titolo span { display: block; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; }
+.c-titolo i { display: block; font-style: normal; transform: translateY(110%); transition: transform 0s .5s; }
+body.contatti-aperti .c-titolo i { transform: none; transition: transform 1s cubic-bezier(.2,.75,.2,1) calc(.45s + var(--k) * 110ms); }
+/* i campi arrivano uno dopo l'altro, dopo il titolo */
+.c-e { opacity: 0; transform: translateY(14px); transition: opacity 0s .5s, transform 0s .5s; }
+body.contatti-aperti .c-e { opacity: 1; transform: none; transition: opacity .7s cubic-bezier(.2,.7,.2,1) calc(.8s + var(--k) * 80ms), transform .7s cubic-bezier(.2,.7,.2,1) calc(.8s + var(--k) * 80ms); }
+.c-riga { display: block; margin-bottom: clamp(16px, 3.3vh, 34px); }
+.c-riga > span { display: block; font: 500 clamp(.95rem, 1.18vw, 1.22rem)/1.3 var(--sans); letter-spacing: .01em; }
+.c-riga input, .c-riga textarea { display: block; width: 100%; margin: 0; background: transparent; color: var(--c-crema); font: 400 1.05rem/1.45 var(--sans); border: 0; border-radius: 0; outline: 0; caret-color: #e0935c; user-select: text; -webkit-user-select: text; }
+.c-riga input { padding: 7px 0 10px; border-bottom: 1px solid rgb(246 234 217 / .72); transition: border-color .3s; }
+.c-riga textarea { margin-top: 12px; padding: 12px 14px; height: clamp(104px, 17vh, 164px); border: 1px solid rgb(246 234 217 / .68); resize: vertical; transition: border-color .3s; }
+.c-riga input:focus, .c-riga textarea:focus { border-color: #e0935c; }
+.c-riga textarea::placeholder { color: rgb(246 234 217 / .4); }
+.c-riga input:-webkit-autofill { -webkit-text-fill-color: #f6ead9; transition: background-color 99999s; }
+.c-azioni { display: flex; align-items: center; flex-wrap: wrap; gap: 14px clamp(22px, 2.8vw, 46px); margin-top: clamp(4px, 1.4vh, 12px); }
+.c-invia { all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; justify-content: space-between; gap: clamp(30px, 3.2vw, 54px); padding: 15px 22px 15px 24px; background: var(--c-crema); color: #1b1a19; font: 500 clamp(1.1rem, 1.55vw, 1.6rem)/1 var(--sans); transition: background .3s; }
+.c-invia svg { width: 1.3em; height: auto; transition: transform .35s cubic-bezier(.2,.7,.2,1); }
+.c-invia:hover, .c-invia:focus-visible { background: #fff; }
+.c-invia:hover svg, .c-invia:focus-visible svg { transform: translateX(6px); }
+.c-invia:focus-visible, .c-chiudi:focus-visible, .c-allega:focus-within { outline: 2px solid #e0935c; outline-offset: 4px; }
+.c-allega { display: inline-flex; align-items: center; gap: 13px; cursor: pointer; font: 400 clamp(.98rem, 1.25vw, 1.3rem)/1.2 var(--sans); transition: color .3s; }
+.c-allega svg { flex: none; width: 1.5em; height: 1.5em; }
+.c-allega:hover { color: #fff; }
+.c-allega input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.c-nota { min-height: 1.5em; margin: 14px 0 0; font-size: .88rem; color: #f0a877; }
+.c-privato { margin: 2px 0 0; font-size: .78rem; color: rgb(246 234 217 / .5); }
+.c-grazie p { margin: 0 0 clamp(18px, 3.4vh, 30px); max-width: 30ch; font: 400 clamp(1.05rem, 1.4vw, 1.4rem)/1.5 var(--sans); }
+.c-grazie .c-prova { max-width: 44ch; font-size: .82rem; color: #f0a877; }
+@media (max-aspect-ratio: 5/4), (max-width: 820px) {
+  .busta { right: 10px; top: 10px; width: 108px; }
+  .contatti { grid-template-columns: 1fr; grid-template-rows: 27svh auto; overflow-y: auto; overscroll-behavior: contain; }
+  .c-foto::after { background: linear-gradient(180deg, rgb(33 33 32 / 0) 58%, var(--c-fondo) 100%); }
+  .c-pannello { justify-content: flex-start; padding: 14px 22px 34px; }
+  .c-titolo { font-size: clamp(2.5rem, 12vw, 3.6rem); margin-bottom: 26px; }
+  .c-chiudi { position: fixed; right: 8px; top: 8px; border-radius: 50%; background: rgb(20 20 19 / .72); }
+}
+@media (prefers-reduced-motion: reduce) { .c-foto, body.contatti-aperti .c-foto { clip-path: none; transition: none; } .c-foto img, body.contatti-aperti .c-foto img, .c-titolo i, body.contatti-aperti .c-titolo i, .c-e, body.contatti-aperti .c-e { transform: none; transition: none; } .c-e { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .binario, .binario-v { animation: none; } body.aperto .torna { transition-delay: .2s; } }
+.tacca-num { font-weight: 500; font-size: 9.5px; letter-spacing: .5px; fill: #8c99aa; }
+.incisione { font-weight: 500; font-size: 9px; letter-spacing: 3.6px; fill: #47515f; }
+/* riflesso del metallo lavorato: luce che corre sugli anelli (solo sugli anelli, non sul vetro) */
+.lucentezza { position: absolute; inset: 0; border-radius: 50%; pointer-events: none;   /* 11/11: senza mix-blend-mode, che pesava a ogni fotogramma; su metallo scuro la differenza non si vede */
+  /* 11/11: quattro riflessi larghi, come sul metallo tornito sotto due luci: azzurro in alto a destra e in basso a sinistra, rame in alto a sinistra e in basso a destra */
+  background: conic-gradient(from 0deg, transparent 8deg, rgb(130 180 255 / .17) 45deg, transparent 84deg, transparent 100deg, rgb(255 150 90 / .11) 135deg, transparent 168deg, transparent 190deg, rgb(130 180 255 / .1) 225deg, transparent 262deg, transparent 276deg, rgb(255 150 90 / .2) 315deg, transparent 352deg);
+  -webkit-mask: radial-gradient(circle closest-side, transparent 74.4%, #000 74.7%); mask: radial-gradient(circle closest-side, transparent 74.4%, #000 74.7%); }
+.cattura { position: absolute; left: 50%; top: 50%; width: 70%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; z-index: 5; cursor: grab; touch-action: none; }
+.cattura.presa-lente { cursor: grabbing; }
+
+/* la riga sotto: cosa fa il sito nella lente, e come si usa (sparisce dopo il primo gesto) */
+.didascalia { position: fixed; left: 18px; bottom: 16px; width: min(300px, calc((100vw - var(--d)) / 2 - 24px)); text-align: left; display: grid; gap: 6px; pointer-events: none; }
+@media (max-aspect-ratio: 5/4) { .didascalia { left: 50%; bottom: max(14px, 2.2svh); transform: translateX(-50%); width: min(92vw, 640px); text-align: center; } }
+.didascalia b { font-weight: 600; font-size: .95rem; letter-spacing: .02em; color: var(--avorio); }
+.didascalia span { font-size: .82rem; color: var(--tenue); }
+.aiuto { transition: opacity .8s; }
+.aiuto.via { opacity: 0; }
+/* il nome (scelto da Franco il 9/11). 11/11, Franco, con l'immagine del suo marchio (../ispirazioni/franco-obiettivo-moderno-7-marchio.jpg): «la scritta Zenit Atelier
+   è meglio come la vedi qui»: «Zenit» pieno e «Atelier» sottile, minuscole, dentro una targhetta di vetro con gli angoli da mirino, due crocette e un filo di luce rame sotto.
+   Niente sfocatura dietro (sopra le strisce che si muovono pesa): il vetro è una velatura. */
+.firma { position: fixed; left: 22px; top: 18px; z-index: 3; margin: 0; pointer-events: none; }
+.targa { position: relative; display: inline-block; padding: 13px 24px 14px; border-radius: 10px; border: 1px solid rgb(205 222 255 / .3); white-space: nowrap;
+  background: linear-gradient(180deg, rgb(150 180 230 / .1), rgb(8 12 20 / .5) 55%, rgb(8 12 20 / .62)); box-shadow: inset 0 1px 0 rgb(255 255 255 / .09), 0 12px 34px rgb(0 0 0 / .4);
+  font: 300 1.62rem/1 var(--sans); letter-spacing: .012em; color: #f4f1ec; }
+.targa b { font-weight: 600; margin-right: .1em; }
+/* gli angoli da mirino: in alto a sinistra e in basso a destra */
+.targa::before { content: ""; position: absolute; inset: 7px; opacity: .75; pointer-events: none;
+  background: linear-gradient(#d4e3ff, #d4e3ff) left top / 9px 1px no-repeat, linear-gradient(#d4e3ff, #d4e3ff) left top / 1px 9px no-repeat, linear-gradient(#d4e3ff, #d4e3ff) right bottom / 9px 1px no-repeat, linear-gradient(#d4e3ff, #d4e3ff) right bottom / 1px 9px no-repeat; }
+/* il filo di luce rame lungo il bordo basso */
+.targa::after { content: ""; position: absolute; left: 12%; right: 12%; bottom: -1px; height: 1.5px; border-radius: 2px; background: linear-gradient(90deg, rgb(255 150 90 / 0), #f08a4c 38%, #ffd0ab 52%, #f08a4c 64%, rgb(255 150 90 / 0)); }
+/* le due crocette, a cavallo del bordo in alto e in basso */
+.targa i { position: absolute; left: 50%; width: 13px; height: 13px; margin-left: -6.5px; opacity: .85; background: linear-gradient(#e6efff, #e6efff) center / 13px 1px no-repeat, linear-gradient(#e6efff, #e6efff) center / 1px 13px no-repeat; }
+.targa i:first-child { top: -7px; }
+.targa i:last-child { bottom: -7px; }
+.didascalia { z-index: 3; }
+/* 12/11: la vetrina va online prima di essere finita (Franco: «affinché possano subito arrivarci sopra e vedere, anche se il sito è in costruzione»): lo dice una riga piccola sotto il nome */
+.cantiere { display: block; margin: 14px 0 0 4px; font: 500 .68rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--tenue); }
+.cantiere::before { content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 9px 1px 0; border-radius: 50%; background: var(--bronzo-chiaro); vertical-align: middle; }
+@media (prefers-reduced-motion: reduce) { .telescopio, .inclina { transition: none; } }
+@media (max-width: 720px) { .nome-sito { font-size: 19px; letter-spacing: 5px; } .tacca-num { font-size: 14px; } .incisione { font-size: 12px; } .didascalia span { font-size: .76rem; } .firma { left: 12px; top: 12px; } .targa { font-size: 1.08rem; padding: 9px 14px 10px; border-radius: 8px; } .targa::before { inset: 5px; } }
+</style>
+</head>
+<body>
+<p class="firma"><span class="targa"><i></i><b>Zenit</b> Atelier<i></i></span><small class="cantiere">Vetrina in costruzione</small></p>
+<div class="strisce" id="strisce" aria-hidden="true"></div>
+
+<main class="scena" aria-label="Un telescopio puntato verso di te: nella lente si vede un sito vero">
+  <div class="alone" aria-hidden="true"></div>
+  <div class="telescopio" id="telescopio">
+    <div class="tubo inclina" aria-hidden="true" id="tubo"></div>
+
+    <div class="vetro">
+      <div class="sito" id="sito"><iframe id="cornice" title="Il sito dentro la lente" tabindex="-1" src="about:blank"></iframe></div>
+      <i class="riflesso"></i>
+    </div>
+
+    <svg class="diaframma" id="diaframma" viewBox="-500 -500 1000 1000" aria-hidden="true">
+      <defs>
+        <clipPath id="cerchio-diaframma"><circle r="367"/></clipPath>
+        <linearGradient id="lamella" x1="0" y1="-1" x2="1" y2="1"><stop offset="0" stop-color="#252c37"/><stop offset=".55" stop-color="#11151c"/><stop offset="1" stop-color="#07090d"/></linearGradient>
+      </defs>
+      <g clip-path="url(#cerchio-diaframma)" id="lamelle"></g>
+    </svg>
+
+    <img class="anello" src="obiettivo-anello.webp" alt="" draggable="false">
+
+    <svg class="anelli inclina" id="anelli" viewBox="-500 -500 1000 1000" aria-hidden="true">
+      <defs>
+        <linearGradient id="rame" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffcda4"/><stop offset="1" stop-color="#c9642d"/></linearGradient>
+        <path id="giro-nomi" d="M 0,444.3 A 444.3 444.3 0 1 1 0,-444.3 A 444.3 444.3 0 1 1 0,444.3 A 444.3 444.3 0 1 1 0,-444.3 A 444.3 444.3 0 1 1 0,444.3"/>
+        <path id="giro-nomi-sotto" d="M 0,-444.3 A 444.3 444.3 0 1 0 0,444.3 A 444.3 444.3 0 1 0 0,-444.3 A 444.3 444.3 0 1 0 0,444.3 A 444.3 444.3 0 1 0 0,-444.3"/>
+        <linearGradient id="platino" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#80858a"/><stop offset=".22" stop-color="#d8dce0"/><stop offset=".5" stop-color="#fbfcfd"/><stop offset=".78" stop-color="#ced2d6"/><stop offset="1" stop-color="#7c8186"/></linearGradient>
+      </defs>
+      <g id="ghiera-zoom" class="presa" data-presa="zoom">
+        <circle r="402" fill="none" stroke="#000" stroke-opacity="0" stroke-width="38" pointer-events="stroke"/>
+        <line x1="0" y1="-388" x2="0" y2="-416.5" stroke="url(#rame)" stroke-width="2.4" stroke-linecap="round"/>
+      </g>
+      <g id="ghiera-nomi" class="presa" data-presa="nomi">
+        <circle r="444.3" fill="none" stroke="#000" stroke-opacity="0" stroke-width="32" pointer-events="stroke"/>
+        <g id="nomi"></g>
+      </g>
+      <path d="M -10,-513 L 10,-513 L 0,-494 Z" fill="url(#rame)" pointer-events="none"/>
+    </svg>
+
+<div class="cattura" id="cattura" role="img" aria-label="Lente: trascina o usa la rotella per muoverti nel sito; frecce della tastiera per scorrere"></div>
+  </div>
+</main>
+
+<div class="didascalia" aria-live="polite">
+  <b id="cosa-fa"></b>
+  <span class="aiuto" id="aiuto">Clicca un nome sulla ghiera per aprire il sito a tutta pagina · gira la ghiera per cambiare sito · la ghiera zigrinata avvicina · afferra la lente e trascina per muoverti</span>
+</div>
+
+<div class="modi" id="modi" role="group" aria-label="Come disporre i siti intorno alla lente">
+  <button type="button" data-disp="sale">In salita</button>
+  <button type="button" data-disp="scende">In discesa</button>
+  <button type="button" data-disp="scalinata">A scalinata</button>
+</div>
+
+<button class="busta" id="busta" type="button" aria-label="Contatti" aria-haspopup="dialog"><img src="contatti-busta.webp" alt="" draggable="false"></button>
+
+<section class="contatti" id="contatti" role="dialog" aria-modal="true" aria-label="Contatti: parliamo del tuo sito" aria-hidden="true">
+  <figure class="c-foto"><img data-src="contatti-foto.jpg" alt="Zenit Atelier"></figure>
+  <div class="c-pannello">
+    <button class="c-chiudi" id="c-chiudi" type="button" aria-label="Chiudi i contatti"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M2 2l18 18M20 2L2 20"/></svg></button>
+    <h2 class="c-titolo"><span><i style="--k:0">Parliamo</i></span><span><i style="--k:1">del tuo sito.</i></span></h2>
+    <form class="c-modulo" id="c-modulo" novalidate>
+      <label class="c-riga c-e" style="--k:0"><span>Nome</span><input name="nome" type="text" autocomplete="name"></label>
+      <label class="c-riga c-e" style="--k:1"><span>Email</span><input name="email" type="email" autocomplete="email" inputmode="email"></label>
+      <label class="c-riga c-e" style="--k:2"><span>Raccontami il tuo progetto</span><textarea name="progetto" placeholder="Che lavoro fai, che cosa deve fare il sito, entro quando ti serve."></textarea></label>
+      <div class="c-azioni c-e" style="--k:3">
+        <button class="c-invia" type="submit">Invia <svg viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M1 10h31M24 2l8 8-8 8"/></svg></button>
+        <label class="c-allega"><input type="file" id="c-file" name="file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg><span id="c-file-nome">Allega un file</span></label>
+      </div>
+      <p class="c-nota c-e" id="c-nota" style="--k:4" role="status"></p>
+      <p class="c-privato c-e" style="--k:4">Uso i tuoi dati solo per risponderti.</p>
+    </form>
+    <div class="c-grazie" id="c-grazie" hidden>
+      <p>Grazie, <b id="c-grazie-nome"></b>. Ho letto tutto: ti rispondo entro un giorno, a <span id="c-grazie-email"></span>.</p>
+      <p class="c-prova">In prova: il messaggio non è ancora partito. Prima di andare online si sceglie dove farlo arrivare.</p>
+      <button class="c-invia" id="c-fatto" type="button">Torna alla vetrina <svg viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M1 10h31M24 2l8 8-8 8"/></svg></button>
+    </div>
+  </div>
+</section>
+
+<div class="pagina-piena" id="pagina-piena" aria-hidden="true"><div class="pp-cerchio" id="pp-cerchio"><iframe id="pieno" title="Il sito a tutta pagina" src="about:blank"></iframe></div></div>
+<button class="torna" id="torna" type="button" tabindex="-1">← Torna al telescopio <kbd>Esc</kbd></button>
+
+<script>
+const $ = s => document.querySelector(s);
+const MUOVI = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+const qs = new URLSearchParams(location.search);   // per le prove: ?zoom=2&diaframma=0.5&sito=1&gira=10,6&disp=scalinata&apri=0
+/* i siti nella ghiera: nome inciso, indirizzo, colore di fondo (per quando prende tutta la pagina), cosa fa per il cliente, e le sue carte: una riga per striscia
+   (le carte stanno in carte/ e si fanno con strumenti/carte-sito.js). Sito nuovo = una riga qui.
+   11/11: lo studio legale è la versione di FANTASIA (Angela Angelicata, in progetti/esempi): il sito vero dell'avvocata non entra in vetrina finché lei non dice sì.
+   Meridiano (la boutique fatta da Franco) è un segnaposto al posto del poliambulatorio, finché non c'è il secondo sito nuovo. */
+const serie = (nome, da, a) => Array.from({ length: a - da + 1 }, (_, k) => nome + '-' + String(da + k).padStart(2, '0') + '.jpg');
+const SITI = [
+  { nome: 'STUDIO LEGALE ANGELICATA · MILANO', src: 'siti/angelicata/index.html', fondo: '#f4ede3', fa: "Studio legale · calcola le scadenze, capisce le parole della gente, mette in ordine le richieste",
+    carte: [serie('angelicata', 1, 8), serie('angelicata', 9, 15)] },
+  { nome: 'MERIDIANO · BOUTIQUE DI OROLOGI', src: 'siti/meridiano/meridiano.html', fondo: '#0e100d', fa: "Boutique di orologi · la collezione con i filtri, il confronto, l'appuntamento in boutique",
+    carte: [serie('meridiano', 1, 6)] }
+];
+const PASSO_NOMI = 360 / SITI.length;
+
+/* ---------- disegno: tubo, nomi, lamelle. Dall'11/11 il metallo è la foto dell'obiettivo scelto da Franco (obiettivo-anello.webp): qui si disegna solo
+   ciò che cambia o si muove. RN è il raggio della fascia dei nomi, in millesimi del lato. ---------- */
+const RN = 444.3;
+(() => {
+  const tubo = $('#tubo'); for (let k = 1; k <= 7; k++) { const i = document.createElement('i'); i.style.transform = `translateZ(${-k * 16}px) scale(${1 - k * .012})`; i.style.opacity = 1 - k * .1; tubo.appendChild(i); }
+  const ns = 'http://www.w3.org/2000/svg', el = (t, a, p) => { const e = document.createElementNS(ns, t); for (const k in a) e.setAttribute(k, a[k]); p.appendChild(e); return e; };
+  const n = $('#nomi');
+  SITI.forEach((s, i) => {
+    const v = el('g', { class: 'voce', 'data-i': i }, n);
+    // 9/11, Franco: «manca un po' la sensibilità quando si tocca la scritta, a volte parte, a volte no»: una fascia invisibile larga intorno al nome
+    el('path', { class: 'presa-nome', fill: 'none', stroke: '#000', 'stroke-opacity': 0, 'stroke-width': 44, 'stroke-linecap': 'round', 'pointer-events': 'stroke' }, v);
+    el('path', { class: 'piastra', fill: 'none', stroke: 'url(#platino)', 'stroke-width': 27, 'stroke-linecap': 'round' }, v);
+    const t = el('text', { class: 'nome-sito', 'data-i': i }, v);
+    const tp = el('textPath', { href: '#giro-nomi', startOffset: ((180 + i * PASSO_NOMI) / 720 * 100) + '%', 'text-anchor': 'middle', 'dominant-baseline': 'central' }, t); tp.textContent = s.nome;
+    // un puntino di rame a metà tra un nome e l'altro
+    const a = (i + .5) * PASSO_NOMI * Math.PI / 180; el('circle', { class: 'puntino', cx: Math.sin(a) * RN, cy: -Math.cos(a) * RN, r: 2.6, fill: '#e0935c' }, n);
+  });
+  // la piastrina di platino sotto ogni nome, lunga quanto il nome
+  const piastre = () => document.querySelectorAll('.voce').forEach(v => {
+    const i = +v.dataset.i, L = v.querySelector('text').getComputedTextLength(); if (!L) return;
+    const c = i * PASSO_NOMI * Math.PI / 180, d = (L / 2 + 20) / RN, P = g => [Math.sin(g) * RN, -Math.cos(g) * RN].map(x => x.toFixed(1));
+    const [x1, y1] = P(c - d), [x2, y2] = P(c + d); v.querySelector('.piastra').setAttribute('d', `M ${x1},${y1} A ${RN} ${RN} 0 0 1 ${x2},${y2}`);
+    // la fascia sensibile: più lunga del nome, ma senza arrivare al nome vicino
+    const dl = Math.min((L / 2 + 42) / RN, PASSO_NOMI / 2 * Math.PI / 180 - .03), [h1, k1] = P(c - dl), [h2, k2] = P(c + dl);
+    v.querySelector('.presa-nome').setAttribute('d', `M ${h1},${k1} A ${RN} ${RN} 0 0 1 ${h2},${k2}`);
+  });
+  piastre(); if (document.fonts) document.fonts.ready.then(piastre);
+  // lamelle: perno sul bordo (sotto l'anello), la lamella punta verso il centro e gira intorno al perno
+  const L = $('#lamelle'), N = 9;
+  for (let k = 0; k < N; k++) {
+    const a = k * 360 / N, r = a * Math.PI / 180, px = Math.cos(r) * 398, py = Math.sin(r) * 398;
+    const g = el('g', { 'data-a': a, 'data-px': px.toFixed(2), 'data-py': py.toFixed(2) }, L);
+    el('path', { d: 'M-35,-110 L440,-81 Q478,12 432,111 L81,249 Q-23,93 -35,-110 Z', fill: 'url(#lamella)', stroke: '#9db8de', 'stroke-opacity': .2, 'stroke-width': 1.2 }, g);
+  }
+})();
+function posZoom(z) { return 101 * Math.log(z); }   // gradi della tacca di quello zoom (1× in alto)
+
+/* ---------- stato ---------- */
+let zoom = +(qs.get('zoom') || 1), angNomi = 0, attivo = +(qs.get('sito') || 0), apertura = 0, panX = 0, sfoca = 0, ultimoZoom = zoom;
+const tel = $('#telescopio'), sito = $('#sito'), cornice = $('#cornice'), vetro = document.querySelector('.vetro');
+const scala = () => vetro.clientWidth / 1280 * 1.06;   // a 1× il sito riempie la lente (gli angoli restano fuori dal cerchio)
+
+function disegnaZoom() {
+  $('#ghiera-zoom').setAttribute('transform', `rotate(${-posZoom(zoom)})`);
+  const s = scala() * zoom, maxPan = Math.max(0, (1280 * s - vetro.clientWidth) / 2) + vetro.clientWidth * .3;   // 9/11: di lato ci si muove sempre, anche senza zoom, fino a portare i bordi del sito al centro della lente
+  panX = Math.max(-maxPan, Math.min(maxPan, panX));
+  sito.style.setProperty('--s', s.toFixed(4)); sito.style.setProperty('--px', panX.toFixed(1) + 'px');
+}
+function disegnaNomi() {
+  $('#ghiera-nomi').setAttribute('transform', `rotate(${angNomi})`);
+  // 11/11: un nome che sta nella metà bassa della ghiera si gira e si legge dritto, da sinistra a destra (prima era capovolto). Cambia verso quando passa
+  // da un fianco (a ore 3 o a ore 9), con un po' di margine perché non sfarfalli sul confine
+  document.querySelectorAll('.nome-sito textPath').forEach(tp => {
+    const g = +tp.parentNode.dataset.i * PASSO_NOMI, a = (((g + angNomi) % 360) + 360) % 360, era = tp.dataset.sotto === '1', sotto = era ? (a > 84 && a < 276) : (a > 96 && a < 264);
+    if (tp.dataset.sotto !== undefined && sotto === era) return;
+    tp.dataset.sotto = sotto ? '1' : '0';
+    let giro = sotto ? (360 - g) % 360 : 180 + g; if (giro < 180) giro += 360;   // sempre nel mezzo del doppio giro, lontano dai capi
+    tp.setAttribute('href', sotto ? '#giro-nomi-sotto' : '#giro-nomi'); tp.setAttribute('startOffset', (giro / 720 * 100) + '%');
+  });
+}
+function disegnaDiaframma(t) {   // t = 0 chiuso, 1 aperto
+  apertura = t;
+  // le lamelle girano intorno al perno e si ritirano sotto la ghiera: aperte, il vetro è tutto libero
+  document.querySelectorAll('#lamelle g').forEach(g => { const a = +g.dataset.a * Math.PI / 180, fuori = t * 385; g.setAttribute('transform', `translate(${(+g.dataset.px + Math.cos(a) * fuori).toFixed(1)},${(+g.dataset.py + Math.sin(a) * fuori).toFixed(1)}) rotate(${+g.dataset.a + 180 + 14 - t * 46})`); g.style.opacity = t > .985 ? 0 : 1; });
+}
+function anima(da, a, ms, passo) {
+  return new Promise(fine => { const t0 = performance.now(); const f = now => { const k = Math.min(1, (now - t0) / ms), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; passo(da + (a - da) * e); k < 1 ? requestAnimationFrame(f) : fine(); }; requestAnimationFrame(f); });
+}
+
+/* ---------- cambio sito: il diaframma si chiude, il sito cambia, il diaframma si apre ---------- */
+let cambiando = false, caricato = -1;
+async function mostraSito(i, primo) {
+  attivo = (i + SITI.length) % SITI.length; disegnaNomi(); accendi();
+  $('#cosa-fa').textContent = SITI[attivo].fa;
+  if (cambiando) return; cambiando = true;
+  // 12/11: se intanto qualcuno clicca un nome e il sito esce dalla lente, le lamelle le muove l'uscita (apriSito): qui ci si ferma, se no i due movimenti si pestano i piedi
+  const lamelle = v => { if (!aperto) disegnaDiaframma(v); };
+  if (!primo) await anima(apertura, 0, MUOVI ? 650 : 1, lamelle);
+  const carico = new Promise(r => { cornice.onload = () => r(); setTimeout(r, 6000); });
+  caricato = attivo; cornice.src = SITI[attivo].src; await carico;
+  await new Promise(r => setTimeout(r, primo ? 900 : 350));   // il sito disegna la sua apertura
+  if (!aperto) { panX = 0; disegnaZoom(); }
+  await anima(aperto ? apertura : 0, 1, MUOVI ? 1400 : 1, lamelle);
+  cambiando = false;
+  if (caricato !== attivo) mostraSito(attivo);   // se nel frattempo si è girata la ghiera su un altro sito
+  else if (partito && !aperto) preparaTraPoco(attivo, 900);   // e intanto lo stesso sito si prepara, di nascosto, a tutta pagina (vedi apriSito)
+}
+
+/* ---------- mani sulla ghiera: trascinare per girare; rotella sulla ghiera dello zoom ---------- */
+const centro = () => { const r = tel.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
+const angolo = e => { const [cx, cy] = centro(); return Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI; };
+let presa = null, angPrima = 0, toccato = false, girato = 0, voceGiu = null;
+function primoGesto() { if (!toccato) { toccato = true; $('#aiuto').classList.add('via'); } }
+$('#anelli').addEventListener('pointerdown', e => {
+  const g = e.target.closest('.presa'); if (!g) return;
+  // 9/11: prima chiudeva subito il sito anche con un semplice clic sul nome; ora lo chiude solo se la ghiera gira davvero (vedi pointermove)
+  presa = g.dataset.presa; girato = 0; voceGiu = e.target.closest('.voce'); angPrima = angolo(e); g.setPointerCapture?.(e.pointerId); e.preventDefault(); primoGesto();
+});
+addEventListener('pointermove', e => {
+  if (!presa) return;
+  let d = angolo(e) - angPrima; if (d > 180) d -= 360; if (d < -180) d += 360; angPrima += d;
+  if (presa === 'zoom') { zoom = Math.max(.6, Math.min(3, Math.exp((posZoom(zoom) - d) / 101))); disegnaZoom(); }
+  else { girato += Math.abs(d); angNomi += d; disegnaNomi(); }
+});
+addEventListener('pointercancel', () => { presa = null; });
+addEventListener('pointerup', e => {
+  // un clic sul nome (senza girare la ghiera) apre il sito di quel nome a tutta pagina (11/11).
+  // Il nome si ricorda dal pointerdown: con il mouse agganciato alla ghiera, il rilascio arriva alla ghiera e non al nome
+  const v = voceGiu; voceGiu = null;
+  if (presa === 'nomi' && girato <= 3 && v) { presa = null; apriSito(+v.dataset.i); return; }
+  if (presa === 'nomi') {   // la ghiera dei nomi scatta sul nome più vicino alla tacca
+    const i = ((Math.round(-angNomi / PASSO_NOMI) % SITI.length) + SITI.length) % SITI.length, meta = -Math.round(-angNomi / PASSO_NOMI) * PASSO_NOMI, da = angNomi;
+    anima(da, meta, 450, v => { angNomi = v; disegnaNomi(); });
+    if (i !== attivo) mostraSito(i);
+  }
+  presa = null;
+});
+$('#anelli').addEventListener('wheel', e => {
+  const g = e.target.closest('.presa'); if (!g) return; e.preventDefault(); primoGesto();
+  if (g.dataset.presa === 'zoom') { zoom = Math.max(.6, Math.min(3, zoom * Math.exp(-e.deltaY * .0012))); disegnaZoom(); }
+  else { angNomi -= Math.sign(e.deltaY) * PASSO_NOMI; disegnaNomi(); mostraSito(attivo + Math.sign(e.deltaY)); }
+}, { passive: false });
+$('#cattura').addEventListener('dblclick', () => { anima(zoom, 1, 600, v => { zoom = v; disegnaZoom(); }); });
+
+/* ---------- la lente (9/11, Franco: «i movimenti alto, basso, sinistra, destra non li controllo tanto»): prima scorreva da sola avvicinando il puntatore al bordo.
+   Ora si afferra la lente e si trascina: il sito segue la mano, il telescopio si inclina dalla parte in cui si tira, lasciando il sito scivola ancora un poco e si ferma.
+   Restano la rotella sulla lente e le frecce della tastiera (+ e - per lo zoom). ---------- */
+const scorri = px => cornice.contentWindow && cornice.contentWindow.postMessage({ scorri: px }, '*');
+const lente = $('#cattura'), limita = (v, m) => Math.max(-m, Math.min(m, v));
+lente.addEventListener('wheel', e => { e.preventDefault(); primoGesto(); scorri(e.deltaY / (scala() * zoom)); }, { passive: false });
+let mira = [0, 0], sopra = false, presaLente = null, spinta = [0, 0], inerzia = [0, 0], ultimoMoto = 0;
+lente.addEventListener('pointerenter', () => { sopra = true; });
+lente.addEventListener('pointerleave', () => { sopra = false; mira = [0, 0]; });
+lente.addEventListener('pointerdown', e => { presaLente = [e.clientX, e.clientY]; inerzia = [0, 0]; lente.setPointerCapture?.(e.pointerId); lente.classList.add('presa-lente'); primoGesto(); });
+lente.addEventListener('pointermove', e => {
+  const r = lente.getBoundingClientRect(); mira = [(e.clientX - r.left) / r.width * 2 - 1, (e.clientY - r.top) / r.height * 2 - 1];
+  if (!presaLente) return;
+  const dx = e.clientX - presaLente[0], dy = e.clientY - presaLente[1]; presaLente = [e.clientX, e.clientY];
+  scorri(-dy / (scala() * zoom)); panX += dx; disegnaZoom();
+  spinta = [spinta[0] + dx, spinta[1] + dy]; inerzia = [inerzia[0] * .5 + dx * .5, inerzia[1] * .5 + dy * .5]; ultimoMoto = performance.now();
+});
+const lascia = () => { if (!presaLente) return; presaLente = null; lente.classList.remove('presa-lente'); if (performance.now() - ultimoMoto > 90) inerzia = [0, 0]; };
+lente.addEventListener('pointerup', lascia); lente.addEventListener('pointercancel', lascia);
+addEventListener('keydown', e => {
+  if (contattiAperti) { if (e.key === 'Escape') chiudiContatti(); return; }   // mentre si scrive nei contatti, frecce e + / − non muovono la lente
+  if (e.key === 'Escape') { chiudiSito(); return; }
+  if (aperto) return;
+  const k = { ArrowDown: [0, 160], ArrowUp: [0, -160], PageDown: [0, 600], PageUp: [0, -600], ArrowLeft: [40, 0], ArrowRight: [-40, 0] }[e.key];
+  if (k) { e.preventDefault(); primoGesto(); if (k[1]) scorri(k[1]); if (k[0]) { panX += k[0]; disegnaZoom(); } spinta = [spinta[0] - k[0] * .3, spinta[1] - k[1] * .05]; }
+  if (e.key === '+' || e.key === '-') { zoom = Math.max(.6, Math.min(3, zoom * (e.key === '+' ? 1.15 : 1 / 1.15))); disegnaZoom(); }
+});
+
+const forza = (qs.get('gira') || '').split(',').map(Number);
+function giro() {
+  if (aperto) return requestAnimationFrame(giro);   // mentre un sito esce o è a tutta pagina il telescopio non ha niente da calcolare: si lascia libera la pagina
+  let tx, ty;
+  if (qs.get('gira')) { tx = forza[0] / 10 * 7; ty = forza[1] / 10 * 7; }
+  else {
+    // inclinazione: dalla parte in cui si tira (e un filo verso il puntatore, per dare vita); torna dritto da solo
+    tx = 0;   // 9/11, Franco: «non farlo oscillare il telescopio, lascialo fisso»
+    ty = 0;
+    spinta = [spinta[0] * .84, spinta[1] * .84];
+    if (!presaLente && (Math.abs(inerzia[0]) > .25 || Math.abs(inerzia[1]) > .25)) {
+      scorri(-inerzia[1] / (scala() * zoom)); panX += inerzia[0]; disegnaZoom();
+      inerzia = [inerzia[0] * .92, inerzia[1] * .92];
+    }
+  }
+  tel.style.setProperty('--ry', tx.toFixed(2) + 'deg'); tel.style.setProperty('--rx', (-ty).toFixed(2) + 'deg');
+  // la messa a fuoco: durante lo zoom il sito si sfoca appena e torna nitido in fretta
+  sfoca = Math.max(sfoca * .8, Math.min(2.2, Math.abs(zoom - ultimoZoom) * 40)); ultimoZoom = zoom;
+  sito.style.setProperty('--sfoca', sfoca > .2 ? sfoca.toFixed(2) + 'px' : '0px');
+  requestAnimationFrame(giro);
+}
+
+/* ---------- i siti intorno alla lente (11/11/2026, idea di Franco): strisce di carte, spente; a colori quelle del sito scelto.
+   Ogni striscia è UN sito con le sue pagine in fila. I tre modi di guardare scelti da Franco l'11/11 tra le sue immagini («queste tre modalità sono quelle che
+   mi piacciono di più», ../ispirazioni/franco-modo-*.jpg): la diagonale che sale, la diagonale che scende, la scalinata. Si scelgono in alto a destra. ---------- */
+const strisce = $('#strisce');
+let sopraNome = null, disposizione = '';
+const carta = f => `<i class="carta" style="background-image:url('carte/${f}')"></i>`;
+// quante carte servono per coprire un tratto lungo «lungo» con carte di passo «passo»: solo quelle, per non disegnare carte che non si vedono mai
+const giroDi = (una, lungo, passo) => { const serve = Math.ceil(lungo / passo) + 1; let giro = una; while (giro.length < serve) giro = giro.concat(una); return giro.concat(giro); };
+const vuoto = () => Math.min(20, Math.max(12, innerWidth * .011));
+function fila(sito, k, verso, durata, sfasa) {   // una striscia: le pagine di un sito in fila, due volte, per girare senza fine
+  const tutte = SITI[sito].carte, base = tutte[k % tutte.length], n = sfasa % base.length;
+  const giro = giroDi(base.slice(n).concat(base.slice(0, n)), Math.max(innerWidth, innerHeight) * 1.5, Math.min(520, Math.max(270, innerWidth * .27)) + vuoto());
+  return `<div class="striscia spenta" data-sito="${sito}"><div class="binario" style="--durata:${durata}s;--verso:${verso > 0 ? 'normal' : 'reverse'}">${giro.map(carta).join('')}</div></div>`;
+}
+// 11/11, Franco: «quando la diagonale… si inverte… non si inverte il verso con cui i siti scendono»: la discesa è lo specchio della salita, quindi ogni
+// striscia lì scorre al contrario (specchio = -1): quella che in salita scende verso sinistra, in discesa scende verso destra
+const diagonale = (gradi, specchio = 1) => `<div class="piano" style="--inclina:${gradi}deg">${Array.from({ length: 7 }, (_, r) => fila(r % SITI.length, Math.floor(r / SITI.length), (r % 2 ? -1 : 1) * specchio, 190 + r * 14, r * 3)).join('')}</div>`;
+const DISPOSIZIONI = {
+  // la diagonale che sale verso destra e quella che scende: strisce parallele, un sito per striscia, a turno
+  sale: () => diagonale(-17),
+  scende: () => diagonale(15, -1),
+  // la scalinata: due colonne ai lati dell'obiettivo, stese su un piano che si allontana verso l'alto; le pagine vengono piano verso chi guarda.
+  // I siti si dividono tra le due colonne (con due siti: una colonna a testa)
+  scalinata: () => {
+    const lati = [[], []]; SITI.forEach((_, i) => lati[i % 2].push(i));
+    const passo = innerWidth * 1.04 * .31 / 1.6 + vuoto(), lungo = innerHeight * 2;
+    return `<div class="pavimento">${lati.map((siti, lato) => {
+      if (!siti.length) return '<div class="colonna"></div>';
+      // le pagine dei siti di questa colonna, una per sito a turno
+      const liste = siti.map(s => SITI[s].carte.flat().map(f => [s, f])), una = []; for (let k = 0; k < Math.max(...liste.map(l => l.length)); k++) liste.forEach(l => { if (l[k]) una.push(l[k]); });
+      // 11/11, Franco: «la scalinata di destra scende più lenta di quella di sinistra e si crea una asimmetria»: le due colonne hanno un numero diverso di pagine,
+      // e con un tempo fisso andavano a velocità diverse. Il tempo si conta a pagina (11,5 secondi l'una): stessa velocità, e le file restano allineate
+      const giro = giroDi(una, lungo, passo), solo = siti.length === 1;
+      return `<div class="colonna${solo ? ' spenta' : ''}"${solo ? ` data-sito="${siti[0]}"` : ''}><div class="binario-v" style="--durata:${(giro.length / 2 * 11.5).toFixed(1)}s">${giro.map(([s, f]) => solo ? carta(f) : `<i class="carta spenta" data-sito="${s}" style="background-image:url('carte/${f}')"></i>`).join('')}</div></div>`;
+    }).join('')}</div>`;
+  }
+};
+const PRIMO_MODO = 'sale';
+function accendi() { const s = sopraNome ?? attivo; strisce.querySelectorAll('[data-sito]').forEach(e => e.classList.toggle('accesa', +e.dataset.sito === s)); }
+function disponi(nome, subito) {
+  if (!DISPOSIZIONI[nome]) nome = PRIMO_MODO;
+  if (nome === disposizione && !subito) return; disposizione = nome;
+  document.querySelectorAll('#modi button').forEach(b => b.setAttribute('aria-pressed', b.dataset.disp === nome));
+  const metti = () => { strisce.dataset.disp = nome; strisce.innerHTML = DISPOSIZIONI[nome](); accendi(); strisce.classList.remove('cambia'); };
+  if (subito) metti(); else { strisce.classList.add('cambia'); setTimeout(metti, 380); }
+}
+$('#modi').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { primoGesto(); disponi(b.dataset.disp); } });
+let rifai = null; addEventListener('resize', () => { clearTimeout(rifai); rifai = setTimeout(() => { if (partito) disponi(disposizione, true); }, 220); });   // cambiando la finestra cambiano le carte che servono
+// passando sopra un nome: piastrina di platino e le sue strisce a colori (un assaggio); cliccandolo, il sito prende tutta la pagina
+document.querySelectorAll('.voce').forEach(v => {
+  v.addEventListener('pointerenter', e => {
+    if (presa || aperto || e.pointerType === 'touch') return;
+    document.querySelectorAll('.voce.sopra').forEach(x => x !== v && x.classList.remove('sopra'));
+    v.classList.add('sopra'); sopraNome = +v.dataset.i; accendi();
+    if (partito) preparaTraPoco(sopraNome, 150);   // chi passa su un nome sta per cliccarlo: il suo sito si prepara a tutta pagina
+  });
+  v.addEventListener('pointerleave', () => { v.classList.remove('sopra'); sopraNome = null; accendi(); });
+});
+
+/* ---------- il sito a tutta pagina. 12/11/2026, Franco: «vorrei che l'obiettivo rimpicciolisse sempre di più e si chiudesse nel frattempo con il meccanismo a
+   lamelle, mentre rimpicciolisce il sito ivi contenuto esce e ingrandisce sempre di più ma passa in dark mode… Dopo che ha occupato tutto lo schermo si reillumina
+   gradualmente ritornando alla versione originale (questo lo faremo sempre per ogni sito, a meno che non sia molto scuro, allora faremo il contrario)… in 3 o 4
+   secondi si deve avere a grandezza di schermo il sito originale». (Prima, 11/11: lente e anelli sfumavano e un cerchio del colore di fondo si allargava: «non mi
+   piace molto la transizione».)
+   Com'è fatto. Il sito a tutta pagina si carica DI NASCOSTO appena è nella lente e si rovescia da solo (chiaro e scuro scambiati, le foto restano foto): il pezzo
+   che lo fa sta dentro ogni sito della vetrina (pezzo-rovescio.html, skill «vetrina»). Al clic: 1) nel vetro il sito della lente sfuma in quello rovesciato;
+   2) l'obiettivo, che sta sopra, rimpicciolisce verso il centro chiudendo le lamelle, mentre il sito sotto cresce e il suo cerchio si allarga oltre l'anello fino a
+   tutto lo schermo; 3) un attimo fermo, poi il sito torna com'è. Si torna con il pulsante in basso o con Esc: l'obiettivo ricresce dal centro e riapre le lamelle.
+   12/11 notte, Franco dopo averla vista: «le transizioni sono scattose, non fluide, e non volevo che la dark page si illuminasse per mezzo di un cerchio che si
+   espande dal centro. Avrei voluto che si schiarisse tutta intera gradualmente. Se vuoi puoi allungare i tempi a 5 o 6 secondi o 7». Quindi: la luce torna su
+   tutta la pagina insieme, piano; i tempi sono più lunghi (circa 5 secondi e mezzo); e si muovono solo «transform» e «opacity» con transizioni fatte partire
+   una volta (vedi .pp-cerchio nello stile): niente più numeri scritti a ogni fotogramma, tranne le lamelle, che stanno in uno strato loro. ---------- */
+const pieno = $('#pieno'), paginaPiena = $('#pagina-piena'), cerchio = $('#pp-cerchio'), torna = $('#torna'), scena = document.querySelector('.scena');
+const T_ESCE = 2600, T_FERMO = 250, T_LUCE = 2600, FACILE = 'cubic-bezier(.65, 0, .35, 1)';
+let aperto = false, copre = null, giroUscita = 0;
+const attesa = ms => new Promise(r => setTimeout(r, ms)), dueFotogrammi = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+// le misure dello schermo per il sito a tutta pagina e per il suo cerchio (la mezza diagonale: un disco così copre tutto lo schermo)
+const misure = () => { const W = innerWidth, H = innerHeight, R = Math.hypot(W, H) / 2 + 4; paginaPiena.style.setProperty('--W', W + 'px'); paginaPiena.style.setProperty('--H', H + 'px'); paginaPiena.style.setProperty('--R', R.toFixed(1) + 'px'); return { W, H, R }; };
+misure(); addEventListener('resize', misure);
+// un sito è «scuro» se il suo fondo è scuro: allora esce chiaro e torna scuro, e le sue foto non si abbassano
+const scuro = i => { const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(SITI[i].fondo || ''); return !!m && (parseInt(m[1], 16) * .299 + parseInt(m[2], 16) * .587 + parseInt(m[3], 16) * .114) < 96; };
+// il sito a tutta pagina, pronto di nascosto: caricato e già rovesciato
+let pienoDi = -1, pienoCaricato = false, pienoRovescio = false, preparo = null, sonno = null;
+// il colore di fondo del sito rovesciato (gli stessi conti di «invert(1) hue-rotate(180deg)»): è il fondo intorno al sito mentre esce ancora piccolo
+const rovescioDi = hex => { const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex || ''); if (!m) return '#05070a'; const [r, g, b] = [1, 2, 3].map(k => 255 - parseInt(m[k], 16)), c = v => Math.max(0, Math.min(255, Math.round(v)));
+  return `rgb(${c(-.574 * r + 1.43 * g + .144 * b)} ${c(.426 * r + .43 * g + .144 * b)} ${c(.426 * r + 1.43 * g - .856 * b)})`; };
+function preparaPieno(i) {
+  if (pienoDi === i) return; pienoDi = i; pienoCaricato = pienoRovescio = false; clearTimeout(sonno); paginaPiena.classList.remove('dorme');
+  pieno.onload = () => {
+    if (pienoDi !== i || /^about:/.test(pieno.getAttribute('src') || 'about:')) return; pienoCaricato = true;
+    pieno.contentWindow.postMessage({ rovescio: 1, foto: scuro(i) ? 1 : .6 }, '*');
+    sonno = setTimeout(() => { if (pienoDi === i && !aperto) paginaPiena.classList.add('dorme'); }, 4500);   // fatta la sua entrata, il sito nascosto si ferma
+  };
+  misure(); cerchio.style.background = rovescioDi(SITI[i].fondo); pieno.src = SITI[i].src;
+}
+const preparaTraPoco = (i, ms) => { clearTimeout(preparo); preparo = setTimeout(() => { if (!aperto) preparaPieno(i); }, ms); };
+// pronto = caricato e rovesciato. Un sito senza il pezzo del rovescio non risponde: mezzo secondo dopo il caricamento si parte lo stesso, ed esce com'è
+const pienoPronto = i => new Promise(fine => { const t0 = performance.now(); let dalCarico = 0; (function guarda() {
+  const ora = performance.now(); if (pienoDi !== i) return fine();
+  if (pienoCaricato && !dalCarico) dalCarico = ora;
+  if ((pienoCaricato && (pienoRovescio || ora - dalCarico > 500)) || ora - t0 > 5000) return fine();
+  setTimeout(guarda, 40); })(); });
+const pulisciPiena = () => { clearTimeout(sonno); paginaPiena.classList.remove('vista', 'dorme', 'piena'); paginaPiena.style.transition = paginaPiena.style.opacity = ''; cerchio.style.transition = cerchio.style.transform = pieno.style.transition = pieno.style.transform = ''; pieno.classList.remove('vivo'); };
+async function apriSito(i) {
+  if (aperto) return; aperto = true; const mio = ++giroUscita; primoGesto(); clearTimeout(preparo); clearTimeout(copre);
+  if (paginaPiena.classList.contains('vista')) { pulisciPiena(); pienoDi = -1; }   // riaperto mentre si stava ancora chiudendo: si ricarica da capo
+  if (i !== attivo) {   // il nome cliccato va sotto la tacca e il suo sito nella lente: al ritorno si ritrova quello
+    let meta = -i * PASSO_NOMI; while (meta - angNomi > 180) meta -= 360; while (meta - angNomi < -180) meta += 360;
+    anima(angNomi, meta, 500, v => { angNomi = v; disegnaNomi(); });
+    attivo = caricato = i; cornice.src = SITI[i].src; panX = 0; disegnaZoom(); $('#cosa-fa').textContent = SITI[i].fa;
+  }
+  sopraNome = null; accendi();
+  document.body.classList.add('aperto');   // le scritte intorno sfumano subito
+  preparaPieno(i); await pienoPronto(i);
+  if (!aperto || mio !== giroUscita) return;
+  // le misure: il cerchio parte dal vetro (S0) e arriva a coprire lo schermo (1); il sito parte rimpicciolito fin quasi a stare nel vetro (k0: un filo meno, così
+  // le scritte non saltano troppo di grandezza rispetto a quelle della lente; sopra e sotto resta il suo colore di fondo). Dentro il cerchio rimpicciolito il
+  // sito è ingrandito del contrario (I0), così sullo schermo vale k0
+  const { W, H, R } = misure(), D = vetro.getBoundingClientRect().width, r0 = D / 2 * 1.012, k0 = Math.min(1, D / Math.min(W, H) * .82), S0 = r0 / R, I0 = k0 / S0, s0 = scala() * zoom, PICCOLO = .045;
+  const metti = e => { cerchio.style.transform = `scale(${(S0 + (1 - S0) * e).toFixed(5)})`; pieno.style.transform = `scale(${(I0 + (1 - I0) * e).toFixed(5)})`; scena.style.transform = `scale(${(1 - (1 - PICCOLO) * e).toFixed(5)})`; };
+  // 1) prima che qualcosa si muova: il sito a tutta pagina va al suo posto dietro il vetro (non si vede: davanti c'è ancora quello della lente) e il browser
+  //    ha il tempo di disegnarlo. Se partisse subito, il primo tratto del movimento andrebbe a scatti
+  clearTimeout(sonno); paginaPiena.classList.remove('dorme', 'piena');
+  cerchio.style.transition = pieno.style.transition = scena.style.transition = 'none'; metti(0); scena.style.opacity = 1;
+  document.body.classList.add('esce-pronta'); paginaPiena.classList.add('vista');
+  if (MUOVI) { await dueFotogrammi(); await attesa(180); }
+  if (!aperto || mio !== giroUscita) return;
+  // 2) tutto insieme, con una transizione sola: il cerchio e il sito crescono, l'obiettivo rimpicciolisce e alla fine, ormai un punto, sfuma; le lamelle si
+  //    chiudono nella prima parte, finché l'obiettivo è ancora abbastanza grande da vederle; nel vetro il sito della lente si avvicina mentre sfuma
+  document.body.classList.add('esce');
+  if (qs.has('fermo')) {   // per le prove: ?apri=0&dopo=7000&fermo=0.4 ferma l'uscita a quel punto, da fotografare
+    const p = +qs.get('fermo'), facile = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+    metti(facile(p)); disegnaDiaframma(apertura * (1 - facile(Math.min(1, p / .6)))); scena.style.opacity = p < .78 ? 1 : Math.max(0, 1 - (p - .78) / .2); return document.body.classList.add('fermo');
+  }
+  if (MUOVI) {
+    void cerchio.offsetWidth;   // la partenza è scritta: da qui parte la transizione
+    sito.style.setProperty('--s', (s0 * 1.5).toFixed(4));
+    cerchio.style.transition = pieno.style.transition = `transform ${T_ESCE}ms ${FACILE}`;
+    scena.style.transition = `transform ${T_ESCE}ms ${FACILE}, opacity ${Math.round(T_ESCE * .2)}ms linear ${Math.round(T_ESCE * .78)}ms`;
+    metti(1); scena.style.opacity = 0;
+    anima(apertura, 0, T_ESCE * .6, v => { if (mio === giroUscita) disegnaDiaframma(v); });
+    await attesa(T_ESCE + 60);
+    if (!aperto || mio !== giroUscita) return;
+  }
+  cerchio.style.transition = pieno.style.transition = scena.style.transition = 'none'; metti(1); scena.style.opacity = 0; disegnaDiaframma(0);
+  paginaPiena.classList.add('piena'); document.body.classList.add('coperto'); pieno.classList.add('vivo'); torna.tabIndex = 0;
+  // 3) un attimo fermo, poi la luce torna su tutta la pagina insieme, piano (il sito senza il pezzo del rovescio ignora il messaggio)
+  copre = setTimeout(() => { if (aperto && mio === giroUscita && pieno.contentWindow) pieno.contentWindow.postMessage({ rovescio: 0, ms: MUOVI ? T_LUCE : 0 }, '*'); }, MUOVI ? T_FERMO : 0);
+}
+function chiudiSito() {
+  if (!aperto) return; aperto = false; const mio = ++giroUscita;
+  clearTimeout(copre); torna.tabIndex = -1; torna.blur();
+  document.querySelectorAll('.voce.sopra').forEach(v => v.classList.remove('sopra'));
+  document.body.classList.remove('coperto', 'esce', 'aperto', 'fermo'); disegnaZoom();   // tornano le strisce, le scritte e, nel vetro, il sito della lente
+  // il ritorno: il sito a tutta pagina sfuma, l'obiettivo ricresce dal centro (anche lui con una transizione sola) e riapre le lamelle
+  const T = MUOVI ? 1100 : 1;
+  if (paginaPiena.classList.contains('vista')) { paginaPiena.style.transition = 'opacity .55s'; paginaPiena.style.opacity = 0; }
+  scena.style.transition = `transform ${T}ms cubic-bezier(.2, .7, .2, 1), opacity ${Math.round(T * .35)}ms linear`; scena.style.transform = 'scale(1)'; scena.style.opacity = 1;
+  anima(apertura, 1, T, v => { if (mio === giroUscita) disegnaDiaframma(v); });
+  // finito il ritorno, il sito a tutta pagina si scarica, e poco dopo si ricarica di nascosto dall'inizio, di nuovo rovesciato
+  copre = setTimeout(() => { if (aperto) return; document.body.classList.remove('esce-pronta'); scena.style.transition = scena.style.transform = scena.style.opacity = ''; pulisciPiena(); pienoDi = -1; pieno.src = 'about:blank'; preparaTraPoco(attivo, 700); }, T + 80);
+}
+torna.addEventListener('click', chiudiSito);
+addEventListener('message', e => {
+  if (!e.data) return;
+  if (e.data.esci) chiudiSito();   // Esc premuto dentro il sito: i nostri siti lo passano alla vetrina
+  if (e.data.rovescio === 'fatto' && e.source === pieno.contentWindow) pienoRovescio = true;   // il sito a tutta pagina dice che si è rovesciato
+});
+
+/* ---------- i contatti (11/11/2026 sera, Franco: la busta in alto a destra apre la pagina «Parliamo del tuo sito.»). Un gesto alla volta: la pagina scura copre,
+   la foto entra da sinistra, il titolo sale, i campi arrivano uno dopo l'altro. Si chiude con la X o con Esc.
+   IN PROVA: «Invia» controlla i campi e mostra il grazie, ma NON spedisce niente e il file scelto non va da nessuna parte. Prima di andare online va scelto
+   dove arrivano i messaggi (vedi ../SCHEDA.md); allora si tolgono la riga «In prova» e questo avviso. ---------- */
+const contatti = $('#contatti'), modulo = $('#c-modulo'), grazie = $('#c-grazie'), cNota = $('#c-nota'), busta = $('#busta'), campoFile = $('#c-file'), nomeFile = $('#c-file-nome');
+let contattiAperti = false, copreContatti = null;
+// la foto pesa 280 kB: si carica quando ci si avvicina alla busta (o poco dopo l'avvio), non insieme al telescopio
+const caricaFotoContatti = () => { const f = contatti.querySelector('img[data-src]'); if (f) { f.src = f.dataset.src; f.removeAttribute('data-src'); } };
+function apriContatti() {
+  if (contattiAperti || aperto) return; contattiAperti = true; primoGesto(); caricaFotoContatti();
+  contatti.setAttribute('aria-hidden', 'false'); document.body.classList.add('contatti-aperti');
+  clearTimeout(copreContatti); copreContatti = setTimeout(() => {
+    if (!contattiAperti) return;
+    document.body.classList.add('coperto');   // sotto la pagina le strisce non si vedono: si fermano
+    if (matchMedia('(pointer: fine)').matches && grazie.hidden) modulo.elements.nome.focus({ preventScroll: true });   // sul telefono no: aprirebbe subito la tastiera
+  }, 900);
+}
+function chiudiContatti() {
+  if (!contattiAperti) return; contattiAperti = false; clearTimeout(copreContatti);
+  document.activeElement && document.activeElement.blur && document.activeElement.blur();
+  document.body.classList.remove('contatti-aperti', 'coperto'); contatti.setAttribute('aria-hidden', 'true');
+  // dopo un invio, alla prossima apertura il modulo è di nuovo vuoto
+  setTimeout(() => { if (!contattiAperti && !grazie.hidden) { modulo.reset(); nomeFile.textContent = 'Allega un file'; cNota.textContent = ''; grazie.hidden = true; modulo.hidden = false; } }, 500);
+}
+busta.addEventListener('click', apriContatti);
+busta.addEventListener('pointerenter', caricaFotoContatti); busta.addEventListener('focus', caricaFotoContatti);
+$('#c-chiudi').addEventListener('click', chiudiContatti); $('#c-fatto').addEventListener('click', chiudiContatti);
+campoFile.addEventListener('change', () => { const f = campoFile.files[0]; nomeFile.textContent = f ? (f.name.length > 30 ? f.name.slice(0, 27) + '…' : f.name) : 'Allega un file'; });
+modulo.addEventListener('input', () => { cNota.textContent = ''; });
+modulo.addEventListener('submit', e => {
+  e.preventDefault();
+  const c = modulo.elements, nome = c.nome.value.trim(), email = c.email.value.trim(), racconto = c.progetto.value.trim();
+  const manca = !nome ? ['nome', 'Scrivimi il tuo nome.'] : !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) ? ['email', 'Controlla l’email: mi serve per risponderti.'] : racconto.length < 10 ? ['progetto', 'Due righe sul progetto: che lavoro fai e che cosa ti serve.'] : null;
+  if (manca) { cNota.textContent = manca[1]; c[manca[0]].focus(); return; }
+  $('#c-grazie-nome').textContent = nome.split(/\s+/)[0]; $('#c-grazie-email').textContent = email;
+  modulo.hidden = true; grazie.hidden = false; $('#c-fatto').focus({ preventScroll: true });
+});
+
+/* ---------- partenza: il telescopio arriva un poco di tre quarti e si gira verso chi guarda, poi il diaframma si apre ---------- */
+// un gesto alla volta: il telescopio si gira, il diaframma si apre, e solo dopo si costruiscono e compaiono le pagine intorno
+// (costruirle subito appesantiva l'avvio: misurato l'11/11 con strumenti/pesa-pagina.js)
+let partito = false;
+const pronto = () => { if (partito) return; partito = true; disponi(disposizione || qs.get('disp') || PRIMO_MODO, true); requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add('pronto'))); setTimeout(caricaFotoContatti, 3500); preparaTraPoco(attivo, 2500); if (qs.has('contatti')) apriContatti(); };   // per le prove: ?contatti=1 apre subito la pagina dei contatti
+document.querySelectorAll('#modi button').forEach(b => b.setAttribute('aria-pressed', b.dataset.disp === (DISPOSIZIONI[qs.get('disp')] ? qs.get('disp') : PRIMO_MODO)));
+setTimeout(pronto, 9000);   // riserva, se un sito tarda a caricarsi
+if (qs.has('apri')) setTimeout(() => apriSito(+qs.get('apri')), +(qs.get('dopo') || 5200));
+disegnaDiaframma(qs.get('diaframma') !== null ? +qs.get('diaframma') : 0);
+angNomi = -attivo * PASSO_NOMI; disegnaNomi(); disegnaZoom();
+addEventListener('resize', disegnaZoom);
+if (MUOVI && !qs.has('gira')) {
+  tel.classList.add('intro', 'gira'); tel.style.setProperty('--iry', '-28deg'); tel.style.setProperty('--irx', '6deg');
+  requestAnimationFrame(() => requestAnimationFrame(() => { tel.classList.remove('gira'); tel.style.transition = 'transform 1.8s cubic-bezier(.2,.7,.2,1)'; tel.style.setProperty('--iry', '0deg'); tel.style.setProperty('--irx', '0deg'); setTimeout(() => { tel.style.transition = ''; tel.classList.remove('intro'); requestAnimationFrame(giro); }, 1850); }));
+} else requestAnimationFrame(giro);
+if (qs.get('diaframma') !== null) { cornice.src = SITI[attivo].src; $('#cosa-fa').textContent = SITI[attivo].fa; pronto(); }
+else mostraSito(attivo, true).then(() => {
+  pronto();
+  // la ghiera dello zoom gira un poco da sola, per far capire che si tocca
+  if (!MUOVI) return;
+  setTimeout(async () => { if (toccato) return; await anima(1, 1.6, 900, v => { zoom = v; disegnaZoom(); }); await new Promise(r => setTimeout(r, 500)); await anima(1.6, 1, 900, v => { zoom = v; disegnaZoom(); }); }, 1200);
+});
+</script>
+</body>
+</html>
