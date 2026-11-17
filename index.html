@@ -100,21 +100,27 @@ body.pronto .strisce.cambia { opacity: 0; transition: opacity .35s; }
    sempre satura per sito che cambia posizione (satura al punto giusto non ipersatura)»). Il colore spento è un filtro su tutta la striscia, e una carta dentro
    non può toglierselo: sopra le strisce c'è un secondo piano uguale, senza filtro e vuoto, che scorre insieme (stessi tempi); lì si accende una carta sola per
    sito, e ogni tanto passa a un'altra (codice: «la pagina satura»). I nomi sono diversi apposta (le prove contano .striscia, .carta e .binario-v). */
-.striscia-viva { flex: none; width: 100%; height: calc(var(--carta-w) / 1.6); overflow: hidden; }
+.striscia-viva { flex: none; width: 100%; height: calc(var(--carta-w) / 1.6); }   /* niente taglio: la targhetta sta appesa FUORI dalla pagina, sotto o sopra la cornice */
 .scorre-viva { display: flex; width: max-content; height: 100%; animation: scorre var(--durata, 150s) linear infinite var(--verso, normal); }
 .pv { flex: none; display: block; height: 100%; aspect-ratio: 16 / 10; margin-right: var(--vuoto); border-radius: clamp(6px, .6vw, 11px); background: center / cover no-repeat; opacity: 0; transition: opacity 1.6s cubic-bezier(.3,.6,.2,1); }
 /* il bordo della pagina piena è un filo di RAME, non chiaro (17/11, Franco: «il bianchino intorno al nero non sta tanto bene»); passando sul nome o sulla
    pagina diventa una cornice di rame piena («La cornice di rame la preferirei») */
-.pv.ha { filter: saturate(1.14) brightness(1.1); box-shadow: inset 0 0 0 1px rgb(224 147 92 / .5), 0 0 30px rgb(0 0 0 / .45) !important; transition: opacity 1.6s cubic-bezier(.3,.6,.2,1), box-shadow .35s; }
-.pv.ha.chiamata, .pv.ha.sopra { box-shadow: inset 0 0 0 2px #e0935c, 0 0 30px rgb(0 0 0 / .45) !important; }   /* piena e un filo più accesa (17/11: «più accese le pagine sature») */
+/* LA CORNICE SPESSA E UGUALE SU TUTTI I SITI (17/11 sera, Franco: «I bordi di rame sono più spessi intorno ad alcune (non so se tutte le pagine di HORA VERA)
+   come piace a me. Non sono spesse intorno alla pagina di STUDIO ANGELICATA però… Cerca di essere più preciso»). La causa: il filtro di luce stava sulla
+   pagina INTERA e schiariva anche cornice e targhetta (sullo studio, brightness 1.8: il rame diventava giallino pallido su una pagina chiara, cioè spariva).
+   Ora il filtro sta SOLO sull'immagine (::before); la cornice (::after) e la targhetta hanno i colori veri, uguali su ogni sito, chiaro o scuro. */
+.pv.ha { isolation: isolate; box-shadow: 0 0 30px rgb(0 0 0 / .45) !important; transition: opacity 1.6s cubic-bezier(.3,.6,.2,1); }
+.pv.ha::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: inherit; filter: saturate(1.14) brightness(1.1); pointer-events: none; }
+.pv.ha::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; box-shadow: inset 0 0 0 3px #e0935c; pointer-events: none; transition: box-shadow .35s; }
+.pv.ha.chiamata::after, .pv.ha.sopra::after { box-shadow: inset 0 0 0 4px #f2ad7b; }   /* con il mouse sopra: un filo più spessa e più chiara */
 .pv.su { opacity: 1; }
 /* IL NOME SULLA PAGINA PIENA (17/11/2026, Franco: «Sulla pagina più satura si legge il nome del sito che è cliccabile (poi vediamo come fare il colore e
    trasmettere subito ad occhio che è una zona cliccabile)». Tra tre modi già fatti (targhetta, mirino, titolo) ha scelto la targhetta: «Meglio la 1. È più
    chiaro». «Attento solo alla freccettina gialla che è fatta male»: la freccia è DISEGNATA (tratto sottile, punta aperta), non il carattere → della scrittura.
    Con il mouse sopra la pagina la targhetta diventa di platino, come i nomi sulla ghiera; il clic apre il sito (codice: «il clic sulla pagina piena»). */
 .pv { position: relative; }
-.targhetta { position: absolute; left: 30%; top: 86%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: .9em; padding: .72em .95em .72em 1.2em; border-radius: 8px; background: rgb(9 13 19 / .84); border: 1px solid rgb(224 147 92 / .45);
-  color: #f5f7fa; font: normal 500 clamp(9px, calc(var(--carta-w) * .025), 12px)/1 "Manrope", sans-serif; letter-spacing: .32em; text-transform: uppercase; white-space: nowrap; transition: left 1.6s linear, top 1.6s linear, background .35s, color .35s, border-color .35s; }   /* scivola lungo la pagina per restare dove si legge: postoTarga() */
+.targhetta { position: absolute; left: 30%; top: 86%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: .9em; padding: .72em .95em .72em 1.2em; border-radius: 8px; background: rgb(9 13 19 / .95); border: 2px solid #e0935c; z-index: 2;
+  color: #fff; font: normal 600 clamp(12px, calc(var(--carta-w) * .034), 16px)/1 "Manrope", sans-serif; letter-spacing: .26em;   /* 17/11 sera: bordo di rame pieno e scritta più grande («i bordi sono poco evidenziati e le scritte stesse si vedono male») */ text-transform: uppercase; white-space: nowrap; transition: left 1.6s linear, top 1.6s linear, background .35s, color .35s, border-color .35s, opacity .5s; }   /* scivola lungo la pagina per restare dove si legge: postoTarga() */
 .targhetta::after { content: ""; flex: none; width: 1.85em; height: .78em; background: #e0935c; animation: freccia 4s ease-in-out infinite; transition: background .35s;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 10'%3E%3Cpath d='M1 5h21M17.6 1.2 22 5l-4.4 3.8' fill='none' stroke='black' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 10'%3E%3Cpath d='M1 5h21M17.6 1.2 22 5l-4.4 3.8' fill='none' stroke='black' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
@@ -124,7 +130,7 @@ body.pronto .strisce.cambia { opacity: 0; transition: opacity .35s; }
 .pv.sopra .targhetta::after { background: #141210; }
 @keyframes freccia { 0%, 68%, 100% { transform: translateX(0); } 82% { transform: translateX(.45em); } }
 @media (prefers-reduced-motion: reduce) { .targhetta::after { animation: none; } }
-.colonna-viva { flex: none; width: 31%; height: 100%; overflow: hidden; }
+.colonna-viva { flex: none; width: 31%; height: 100%; }
 .viene-viva { display: flex; flex-direction: column; animation: viene var(--durata, 170s) linear infinite; }
 .colonna-viva .pv { width: 100%; height: auto; margin: 0 0 var(--vuoto); }
 body.coperto .scorre-viva, body.coperto .viene-viva, body.esce-pronta .scorre-viva, body.esce-pronta .viene-viva { animation-play-state: paused; }
@@ -427,9 +433,9 @@ const PASSO_NOMI = 360 / SITI.length;
        di L'atelier su fondo grigio ardesia: «Puoi usare questa di GPT come riferimento?». Fatto così: ogni pagina di Hora Vera è fotografata dal sito vero due
        volte nello stesso punto, nera (hora-NN.jpg) e su grigio (hora-g-NN.jpg; campo «spenta» in SITI). Nelle strisce scorrono le grigie; la pagina scelta
        è la nera, piena. Un sito scuro SENZA le sorelle grigie resta com'era (più luce e neri sollevati). */
-    if (s.spenta) return `.spenta[data-sito="${i}"] { filter: saturate(.8) brightness(.7); } .spenta.accesa[data-sito="${i}"] { filter: saturate(1) brightness(.92); } [data-sito="${i}"] .carta { box-shadow: inset 0 0 0 1px rgb(255 240 220 / .12); } .pv.ha[data-s="${i}"] { filter: saturate(1.1) brightness(1.42); box-shadow: inset 0 0 0 1px rgb(255 240 220 / .45), 0 0 26px rgb(0 0 0 / .5); }`;
+    if (s.spenta) return `.spenta[data-sito="${i}"] { filter: saturate(.8) brightness(.7); } .spenta.accesa[data-sito="${i}"] { filter: saturate(1) brightness(.92); } [data-sito="${i}"] .carta { box-shadow: inset 0 0 0 1px rgb(255 240 220 / .12); } .pv.ha[data-s="${i}"]::before { filter: saturate(1.1) brightness(1.42); }`;
     const [giu, su] = ['saturate(.55) contrast(.8) brightness(1.2)', 'saturate(1.05) contrast(.86) brightness(1.55)'];
-    return `.spenta[data-sito="${i}"] { filter: ${giu}; } .spenta.accesa[data-sito="${i}"] { filter: ${su}; } [data-sito="${i}"] .carta { box-shadow: inset 0 0 0 1px rgb(255 240 220 / .3); } .pv.ha[data-s="${i}"] { filter: saturate(1.12) contrast(.92) brightness(1.8); box-shadow: inset 0 0 0 1px rgb(255 240 220 / .4); }`; }).join('');
+    return `.spenta[data-sito="${i}"] { filter: ${giu}; } .spenta.accesa[data-sito="${i}"] { filter: ${su}; } [data-sito="${i}"] .carta { box-shadow: inset 0 0 0 1px rgb(255 240 220 / .3); } .pv.ha[data-s="${i}"]::before { filter: saturate(1.12) contrast(.92) brightness(1.8); }`; }).join('');
   if (css) document.head.appendChild(Object.assign(document.createElement('style'), { textContent: css })); })();
 
 /* ---------- disegno: tubo, nomi, lamelle. Dall'11/11 il metallo è la foto dell'obiettivo scelto da Franco (obiettivo-anello.webp): qui si disegna solo
@@ -663,15 +669,19 @@ if (qs.get('attiva')) document.body.classList.add('attiva-' + qs.get('attiva'));
    Per le prove: window.SATURA.adesso() dice quali sono e quanto si vedono (da 0 a 1); window.SATURA.cambia(sito) ne sceglie un'altra subito. ---------- */
 const T_SATURA = 9000;
 let vive = SITI.map(() => []), quandoSatura = SITI.map(() => 0), targaVoto = SITI.map(() => 0);
-function doveSiVede() {
-  const t = document.querySelector('.telescopio').getBoundingClientRect();
-  return { x: t.left + t.width / 2, y: t.top + t.height / 2, r: t.width / 2 + Math.min(innerWidth, innerHeight) * .07,
+function doveSiVede(sito = -1) {   // «sito»: per chi si guarda; le pagine piene e le targhette DEGLI ALTRI siti sono un ingombro (17/11: la targhetta di Hora Vera,
+  const t = document.querySelector('.telescopio').getBoundingClientRect(), altri = [];   // appesa sotto la sua pagina, finiva sotto la pagina piena dello studio)
+  if (sito >= 0) vive.forEach((l, s) => { if (s !== sito) l.forEach(c => { if (!c.isConnected || !c.classList.contains('su')) return;
+    const p = postoDi(c), e = c.firstElementChild; altri.push({ cx: p.cx, cy: p.cy, w: p.w, h: p.h, cos: p.cos, sin: p.sin });
+    if (e) { const r = e.getBoundingClientRect(); altri.push({ cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: e.offsetWidth, h: e.offsetHeight, cos: p.cos, sin: p.sin }); } }); });
+  return { x: t.left + t.width / 2, y: t.top + t.height / 2, r: t.width / 2 + Math.min(innerWidth, innerHeight) * .07, altri,
     ingombri: [...document.querySelectorAll('.didascalia, .firma, .modi, .busta')].map(e => e.getBoundingClientRect()) };
 }
 function inVista(x, y, d) {   // un punto dello schermo: una pagina, lì, si vede?
   if (x < innerWidth * .02 || x > innerWidth * .98 || y < innerHeight * .09 || y > innerHeight * .91) return false;   // i bordi, più scuri
   if (Math.hypot(x - d.x, y - d.y) < d.r) return false;                                                               // l'obiettivo e la sua ombra
   if ((x / (innerWidth * .3)) ** 2 + (y / (innerHeight * .26)) ** 2 < 1) return false;                                 // l'angolo scuro del nome, in alto a sinistra
+  if (d.altri.some(o => { const dx = x - o.cx, dy = y - o.cy; return Math.abs(dx * o.cos + dy * o.sin) <= o.w / 2 + 8 && Math.abs(dy * o.cos - dx * o.sin) <= o.h / 2 + 8; })) return false;   // la pagina piena e la targhetta di un altro sito
   return !d.ingombri.some(q => x > q.left - 8 && x < q.right + 8 && y > q.top - 8 && y < q.bottom + 8);               // le scritte e i pulsanti
 }
 // dov'è una carta sullo schermo: centro, misure vere, inclinazione, e quanti pixel al secondo si sposta (le strisce scorrono lungo la loro inclinazione).
@@ -690,18 +700,22 @@ function quantoSiVede(c, d, ms = 0, p = postoDi(c)) {   // da 0 a 1: quindici pu
     if (inVista(p.cx + p.vx * ms / 1000 + lx * p.cos - ly * p.sin, p.cy + p.vy * ms / 1000 + lx * p.sin + ly * p.cos, d)) n++; }
   return n / 15;
 }
-// LA TARGHETTA RESTA IN VISTA (17/11/2026): le pagine piene non si vedono mai intere (l'obiettivo è grande, ai lati restano due fasce strette) e intanto
-// scorrono: una targhetta ferma in un angolo della pagina finiva mezza fuori dallo schermo o sotto l'obiettivo. Quindi la targhetta scivola piano lungo
-// la pagina e resta dove si legge: a ogni giro (1,5 s) si cerca, sul bordo basso o alto della pagina, il punto in cui i suoi tre punti si vedono adesso
-// e fra 1,5 secondi. Voto da 0 a 6. «ora» è il posto di adesso: non si salta senza motivo.
-const largaTarga = (s, p) => (SITI[s].nome.length * .8 + 5.5) * Math.min(12, Math.max(9, p.w * .025));   // stima, prima che la targhetta esista
-function postoTarga(p, d, larga, ora) {
-  const mezzo = Math.max(0, p.w / 2 - larga / 2 - p.w * .035); let meglio = null;
+// LA TARGHETTA STA APPESA ALLA CORNICE, FUORI DALLA PAGINA (17/11/2026). Storia: prima stava in un angolo della pagina e finiva mezza fuori schermo;
+// poi scivolava dentro la pagina per restare in vista, ma copriva immagini e scritte (Franco: «alcune scritte sulle pagine come HORA VERA si posizionano
+// sulle immagini a volte e stanno male. Verifica che non si posizionino su nulla»). Misurato con una mappa dei vuoti di ogni carta: dentro la pagina un
+// posto vuoto E in vista c'era solo una volta su quattro (le pagine piene non si vedono mai intere: l'obiettivo è grande). Quindi la targhetta è un
+// cartellino appeso al bordo basso (o alto) della cornice di rame, come sotto un quadro: non copre mai la pagina. Lungo quel bordo scivola piano per
+// restare dove si legge: a ogni giro (1,5 s) si cerca il punto in cui i suoi tre punti si vedono adesso e fra 1,5 secondi. Voto da 0 a 6.
+const corpoTarga = p => Math.min(16, Math.max(12, p.w * .034));   // come il font di .targhetta
+const largaTarga = (s, p) => (SITI[s].nome.length * .8 + 5.5) * corpoTarga(p);   // stima, prima che la targhetta esista
+function postoTarga(p, d, larga, ora, alta = corpoTarga(p) * 2.6) {   // «ora» è il posto di adesso: non si salta senza motivo
+  const mezzo = Math.max(0, p.w / 2 - larga / 2), fuori = p.h / 2 + alta / 2 - 3; let meglio = null;   // 3 px sopra il bordo: sembra attaccata alla cornice
   for (const riga of [1, -1]) for (let k = 0; k <= 8; k++) {
-    const lx = -mezzo + 2 * mezzo * k / 8, ly = riga * p.h * .36; let n = 0;
+    const lx = -mezzo + 2 * mezzo * k / 8, ly = riga * fuori; let n = 0;
     for (const ms of [0, 1500]) for (const q of [-.46, 0, .46]) { const x = lx + q * larga; if (inVista(p.cx + p.vx * ms / 1000 + x * p.cos - ly * p.sin, p.cy + p.vy * ms / 1000 + x * p.sin + ly * p.cos, d)) n++; }
-    const vicino = ora ? -Math.abs(lx - ora.lx) / p.w - (Math.sign(ly) !== Math.sign(ora.ly) ? .6 : 0) : (riga === 1 ? .1 : 0) - Math.abs(lx) / p.w * .1;
-    if (!meglio || n + vicino > meglio.n + meglio.vicino) meglio = { lx, ly, n, vicino };
+    const vede = n >= 6 ? 0 : n === 5 ? -1.5 : -4 - (5 - n) * 3;
+    const vicino = ora ? -Math.abs(lx - ora.lx) / p.w * 1.2 - (Math.sign(ly) !== Math.sign(ora.ly) ? .8 : 0) : (riga === 1 ? .15 : 0) - (lx + mezzo) / p.w * .1;
+    if (!meglio || vede + vicino > meglio.punti) meglio = { lx, ly, n, punti: vede + vicino };
   }
   return { lx: meglio.lx, ly: meglio.ly, voto: meglio.n };
 }
@@ -712,13 +726,19 @@ function mettiTarga(c, p, t, subito) {
   if (subito) { void e.offsetWidth; e.style.transition = ''; }
   c._targa = t;
 }
+// Le pagine di un sito che si vedono abbastanza (adesso e a fine turno), ognuna con il posto migliore per la sua targhetta. «avanti» (ms) le sposta come
+// saranno fra un po': serve solo alla prova window.SATURA.prova().
+function candidate(s, d, avanti = 0) {
+  const mem = new Map();
+  return [...strisce.querySelectorAll(`.pv[data-s="${s}"]`)].map(c => { let p = postoDi(c, mem); if (avanti) p = { ...p, cx: p.cx + p.vx * avanti / 1000, cy: p.cy + p.vy * avanti / 1000 };
+    const v = Math.min(quantoSiVede(c, d, 0, p), quantoSiVede(c, d, T_SATURA, p)); return v >= .3 ? { c, p, v, targa: postoTarga(p, d, largaTarga(s, p)) } : null; }).filter(Boolean);
+}
+// Le migliori, a gradini: [quanto si legge la targhetta (0-6), quanta pagina si vede almeno]. Prima quelle con il nome tutto in vista e la pagina ben visibile.
+function migliori(lista) { for (const [voto, vede] of [[6, .55], [6, .4], [5, .4], [4, .3], [0, 0]]) { const ok = lista.filter(x => x.targa.voto >= voto && x.v >= vede); if (ok.length) return ok; } return lista; }
 function scegliSatura(s) {
-  const d = doveSiVede(), mem = new Map(), prima = vive[s][0], pr = prima && prima.isConnected ? prima.getBoundingClientRect() : null;
-  let scelte = [...strisce.querySelectorAll(`.pv[data-s="${s}"]`)].filter(c => !vive[s].includes(c)).map(c => { const p = postoDi(c, mem); return { c, p, v: Math.min(quantoSiVede(c, d, 0, p), quantoSiVede(c, d, T_SATURA, p)) }; }).filter(x => x.v > 0);
+  const d = doveSiVede(s), prima = vive[s][0], pr = prima && prima.isConnected ? prima.getBoundingClientRect() : null;
+  let scelte = migliori(candidate(s, d).filter(x => !vive[s].includes(x.c)));
   if (!scelte.length) return;
-  const soglia = Math.min(.6, Math.max(...scelte.map(x => x.v))); scelte = scelte.filter(x => x.v >= soglia);
-  scelte.forEach(x => { x.targa = postoTarga(x.p, d, largaTarga(s, x.p)); });
-  for (const minimo of [6, 5, 4]) { const conNome = scelte.filter(x => x.targa.voto >= minimo); if (conNome.length) { scelte = conNome; break; } }   // prima quelle dove il nome si legge tutto
   if (prima) { const altre = scelte.filter(x => x.c.dataset.f !== prima.dataset.f); if (altre.length) scelte = altre; }
   if (pr && scelte.length > 1) {   // tra le buone, la metà più lontana da quella di prima: cambia davvero posto
     const lontano = x => Math.hypot(x.p.cx - pr.left - pr.width / 2, x.p.cy - pr.top - pr.height / 2);
@@ -734,12 +754,16 @@ function scegliSatura(s) {
 function saturaDaCapo() { vive = SITI.map(() => []); SITI.forEach((_, s) => { scegliSatura(s); quandoSatura[s] = performance.now() - s * T_SATURA / SITI.length; }); }   // i siti cambiano a turno, non insieme
 setInterval(() => {
   if (!partito || document.hidden || document.body.classList.contains('coperto')) return;
-  const d = doveSiVede(), ora = performance.now();
+  const ora = performance.now();
   SITI.forEach((_, s) => { const l = vive[s].filter(c => c.isConnected && c.firstElementChild); if (!l.length) return;   // la targhetta resta dove si legge
-    const mem = new Map(), posti = l.map(c => postoDi(c, mem)), k = posti.length > 1 && quantoSiVede(l[1], d, 0, posti[1]) > quantoSiVede(l[0], d, 0, posti[0]) ? 1 : 0;
-    const t = postoTarga(posti[k], d, l[k].firstElementChild.offsetWidth, l[k]._targa); targaVoto[s] = t.voto; l.forEach((c, i) => mettiTarga(c, posti[i], t)); });
-  SITI.forEach((_, s) => { const c = vive[s][0]; if (s === sopraViva) return;   // con il mouse sopra non scappa via
-    if (!c || !c.isConnected || ora - quandoSatura[s] > T_SATURA || Math.max(...vive[s].map(x => quantoSiVede(x, d))) < .34) scegliSatura(s); });
+    const d = doveSiVede(s), mem = new Map(), posti = l.map(c => postoDi(c, mem)), k = posti.length > 1 && quantoSiVede(l[1], d, 0, posti[1]) > quantoSiVede(l[0], d, 0, posti[0]) ? 1 : 0;
+    const t = postoTarga(posti[k], d, l[k].firstElementChild.offsetWidth, l[k]._targa, l[k].firstElementChild.offsetHeight); targaVoto[s] = t.voto; l.forEach((c, i) => mettiTarga(c, posti[i], t)); });
+  SITI.forEach((_, s) => { const c = vive[s][0], d = doveSiVede(s); if (s === sopraViva) return;   // con il mouse sopra non scappa via
+    // si cambia pagina: a fine turno; se quella accesa non si vede più; o se la sua targhetta non si legge più (dopo almeno 3 secondi, e solo se un'altra
+    // pagina ha la targhetta in vista)
+    let male = ora - quandoSatura[s] > 3000 && targaVoto[s] < 5;
+    if (male) { const altre = migliori(candidate(s, d).filter(x => !vive[s].includes(x.c))); male = altre.length > 0 && altre[0].targa.voto >= 5; }
+    if (!c || !c.isConnected || ora - quandoSatura[s] > T_SATURA || male || Math.max(...vive[s].map(x => quantoSiVede(x, d))) < .34) scegliSatura(s); });
 }, 1500);
 /* ---------- il clic sulla pagina piena (17/11/2026): le strisce stanno SOTTO la scena e il mouse non le tocca; quindi a ogni movimento si guarda a mano
    se il puntatore è sopra una pagina piena (dentro il suo rettangolo, raddrizzato dell'inclinazione delle strisce). Sopra: targhetta di platino, mano,
@@ -749,6 +773,7 @@ const scenaLibera = e => !presa && !aperto && !contattiAperti && partito && (e.t
 function vivaSotto(x, y) {
   for (let s = 0; s < SITI.length; s++) for (const c of vive[s]) {
     if (!c.isConnected || !c.classList.contains('su')) continue;
+    const e = c.firstElementChild, q = e && e.getBoundingClientRect(); if (q && x >= q.left && x <= q.right && y >= q.top && y <= q.bottom) return s;   // sulla targhetta appesa alla cornice
     const r = c.getBoundingClientRect(); if (x < r.left || x > r.right || y < r.top || y > r.bottom) continue;
     const piano = c.closest('.piano'); if (!piano) return s;   // nella scalinata basta il rettangolo
     const a = -parseFloat(piano.style.getPropertyValue('--inclina')) * Math.PI / 180, dx = x - (r.left + r.width / 2), dy = y - (r.top + r.height / 2);
@@ -764,8 +789,10 @@ addEventListener('pointermove', e => {
   if (s >= 0) { vive[s].forEach(c => c.classList.add('sopra')); preparaTraPoco(s, 150); }
 });
 addEventListener('click', e => { if (!scenaLibera(e)) return; const s = vivaSotto(e.clientX, e.clientY); if (s >= 0) { primoGesto(); preparaTraPoco(s, 0); saliEApri(s); } });   // punto 8: prima si accende il nome sull'obiettivo
-window.SATURA = { adesso: () => { const d = doveSiVede(); return vive.map((l, s) => ({ sito: SITI[s].nome, pagina: l[0] ? l[0].dataset.f : null, accese: strisce.querySelectorAll(`.pv.su[data-s="${s}"]`).length, vede: l.length ? Math.max(...l.map(x => quantoSiVede(x, d))) : 0 })); }, cambia: s => scegliSatura(s),
-  dove: () => vive.map((l, s) => { const c = l.find(x => x.isConnected && x.classList.contains('su')); if (!c) return null; const r = c.getBoundingClientRect(); return { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2), targa: (c.firstChild && c.firstChild.className) || '', voto: targaVoto[s], sotto: (document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2) || {}).className || '' }; }) };
+window.SATURA = { adesso: () => vive.map((l, s) => { const d = doveSiVede(s); return { sito: SITI[s].nome, pagina: l[0] ? l[0].dataset.f : null, accese: strisce.querySelectorAll(`.pv.su[data-s="${s}"]`).length, vede: l.length ? Math.max(...l.map(x => quantoSiVede(x, d))) : 0 }; }), cambia: s => scegliSatura(s),
+  // la prova del vuoto: per ogni sito, la pagina migliore fra «avanti» millisecondi: nome, quanto si legge la targhetta, quanto è pieno sotto, quanta pagina si vede
+  prova: avanti => SITI.map((_, s) => { const m = migliori(candidate(s, doveSiVede(s), avanti))[0]; return m ? m.c.dataset.f.replace('.jpg', '') + ' v' + m.targa.voto + ' s' + m.v.toFixed(2) : '-'; }),
+  dove: () => vive.map((l, s) => { const c = l.find(x => x.isConnected && x.classList.contains('su')); if (!c) return null; const r = c.getBoundingClientRect(); return { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2), pagina: c.dataset.f, voto: targaVoto[s], sotto: (document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2) || {}).className || '' }; }) };
 function disponi(nome, subito) {
   if (!DISPOSIZIONI[nome]) nome = PRIMO_MODO;
   if (nome === disposizione && !subito) return; disposizione = nome;

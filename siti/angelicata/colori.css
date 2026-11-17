@@ -113,8 +113,10 @@ html[data-colori="4"] {
   --k-pannello-bottone: var(--pieno); --k-pannello-su-bottone: #fdfbf6; --k-pannello-bottone-sopra: var(--pieno-sopra);
   --k-testata-testo: #1f1c1a; --k-testata-tenue: #655f58; --k-testata-linea: rgb(50 40 25 / .15); --k-testata-voce: var(--voce);
   --k-velo-foto: var(--avorio);
-  --k-disco-1: #f0e3c4; --k-disco-2: #dfcb9f; --k-disco-3: #cbb07c; --k-disco-testo: #241d12; --k-disco-tenue: #5e5038;
-  --k-disco-campo: rgb(255 255 255 / .5); --k-disco-segno: #7a6540; --k-disco-voce: var(--oro-testo); --k-disco-ombra: 90 65 20;
+  /* 17/11/2026, Franco: «il Cosa ti è successo contornato dal beige… penso sia sbagliato e debba essere contornato dall'amaranto»; visti i due accanto: «La 2».
+     Il cerchio è AMARANTO già quando il sito si apre (Tutto): prima era beige dorato (#f0e3c4, #dfcb9f, #cbb07c, testo scuro). Con Civile resta petrolio. */
+  --k-disco-1: var(--vino-vivo); --k-disco-2: var(--vino); --k-disco-3: var(--vino-basso); --k-disco-testo: #f8f0e7; --k-disco-tenue: var(--vino-su);
+  --k-disco-campo: rgb(255 255 255 / .1); --k-disco-segno: var(--oro-chiaro); --k-disco-voce: var(--oro-chiaro); --k-disco-ombra: 74 19 32;
 }
 html[data-colori="4"][data-area="civile"] {
   --accento: var(--blu-medio); --voce: var(--blu-medio); --pieno: var(--blu); --pieno-sopra: var(--blu-medio);
