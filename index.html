@@ -354,8 +354,15 @@ body.aperto .invito { pointer-events: none; }
         <linearGradient id="rame" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffcda4"/><stop offset="1" stop-color="#c9642d"/></linearGradient>
         <path id="giro-nomi" d="M 0,444.3 A 444.3 444.3 0 1 1 0,-444.3 A 444.3 444.3 0 1 1 0,444.3 A 444.3 444.3 0 1 1 0,-444.3 A 444.3 444.3 0 1 1 0,444.3"/>
         <path id="giro-nomi-sotto" d="M 0,-444.3 A 444.3 444.3 0 1 0 0,444.3 A 444.3 444.3 0 1 0 0,-444.3 A 444.3 444.3 0 1 0 0,444.3 A 444.3 444.3 0 1 0 0,-444.3"/>
+        <linearGradient id="amaranto" gradientUnits="userSpaceOnUse" x1="-300" y1="-300" x2="300" y2="300"><stop offset="0" stop-color="#f6b3c2"/><stop offset=".1" stop-color="#cf3359"/><stop offset=".3" stop-color="#7a1230"/><stop offset=".5" stop-color="#c2284f"/><stop offset=".7" stop-color="#7a1230"/><stop offset=".9" stop-color="#cf3359"/><stop offset="1" stop-color="#f6b3c2"/></linearGradient>
         <linearGradient id="platino" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#80858a"/><stop offset=".22" stop-color="#d8dce0"/><stop offset=".5" stop-color="#fbfcfd"/><stop offset=".78" stop-color="#ced2d6"/><stop offset="1" stop-color="#7c8186"/></linearGradient>
       </defs>
+      <g id="cerchio-amaranto" pointer-events="none" fill="none">
+        <circle r="424.5" stroke="url(#amaranto)" stroke-width="6"/>
+        <circle r="427.3" stroke="#2a0611" stroke-width=".8" stroke-opacity=".85"/>
+        <circle r="421.7" stroke="#2a0611" stroke-width=".8" stroke-opacity=".85"/>
+        <circle r="425.4" stroke="#ffe3ea" stroke-width=".7" stroke-opacity=".38"/>
+      </g>
       <g id="ghiera-zoom" class="presa" data-presa="zoom">
         <circle r="402" fill="none" stroke="#000" stroke-opacity="0" stroke-width="38" pointer-events="stroke"/>
         <g id="tacche-zoom" class="tacche"></g>
@@ -1088,6 +1095,20 @@ else mostraSito(attivo, true).then(() => {
   if (!MUOVI) return;
   setTimeout(async () => { if (toccato) return; await anima(1, 1.6, 900, v => { zoom = zoomMeta = v; disegnaZoom(); }); await new Promise(r => setTimeout(r, 500)); await anima(1.6, 1, 900, v => { zoom = zoomMeta = v; disegnaZoom(); }); if (!DUE_ANELLI || toccato) return; await new Promise(r => setTimeout(r, 400)); await anima(0, -24, 900, mettiGiro); await new Promise(r => setTimeout(r, 400)); await anima(-24, 0, 900, mettiGiro); }, 1200);
 });
+/* LA SCRITTA «ENGLISH», PROVA DEL POSTO (17/11/2026, passo 5.2; Franco: «vorrei che uno vedesse ad esempio la scritta deutsch o english già su un lato
+   del sito e che cliccandovi sopra immediatamente il sito viene tradotto»; solo nella home, su un lato). IL POSTO, scelto da lui tra tre («scelgo
+   la 1»): una linguetta in piedi sul bordo destro, a metà altezza. IL CONTORNO: «ENGLISH lo voglio contornato in amaranto metallico che si veda
+   bene»: 3 px di amaranto con i riflessi del metallo (scuro, acceso, chiaro, acceso, scuro), niente bagliore. Con il mouse sopra il fondo diventa
+   d'argento, come le targhette. Per ora la scritta non traduce e si accende solo con ?lingua: va di serie quando l'inglese c'è. */
+if (qs.get('lingua')) {
+  const b = document.body.appendChild(Object.assign(document.createElement('button'), { id: 'lingua', type: 'button', textContent: 'English' }));
+  const AMARANTO = 'linear-gradient(172deg, #8a1535, #c2284f 16%, #f3a1b3 33%, #c2284f 50%, #8a1535 68%, #d85173 85%, #8a1535) border-box';
+  const SCURO = 'linear-gradient(#090d13, #090d13) padding-box, ' + AMARANTO, ARGENTO = 'linear-gradient(90deg, #80858a, #d8dce0 22%, #fbfcfd 50%, #ced2d6 78%, #7c8186) padding-box, ' + AMARANTO;
+  b.style.cssText = 'position:fixed;z-index:6;right:0;top:50%;transform:translateY(-50%);margin:0;cursor:pointer;writing-mode:vertical-rl;padding:24px 12px 24px 13px;border:4px solid transparent;border-right:0;border-radius:11px 0 0 11px;color:#fff;font:600 14px/1 Manrope,sans-serif;letter-spacing:.3em;text-transform:uppercase;white-space:nowrap;box-shadow:0 0 22px rgb(0 0 0 / .55);transition:color .3s;';
+  b.style.background = SCURO;
+  b.addEventListener('pointerenter', () => { b.style.background = ARGENTO; b.style.color = '#141210'; });
+  b.addEventListener('pointerleave', () => { b.style.background = SCURO; b.style.color = '#fff'; });
+}
 </script>
 </body>
 </html>
