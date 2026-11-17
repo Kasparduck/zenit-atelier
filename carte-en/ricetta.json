@@ -1,0 +1,167 @@
+{
+ "che_cosa": "Come sono nate le 43 carte di carte-en/ (18/11/2026): le stesse di carte/, stessi nomi, stesso punto, con i siti in inglese. Misura: foto 1440 x 900, poi 720 x 450 (ffmpeg, lanczos), JPEG.",
+ "inglese": "pagina.html?lang=en; nelle due home (index.html dello studio, ora-vera.html) anche linguetta=0, perche' le carte italiane sono nate prima della linguetta ENGLISH e nella lente della vetrina la linguetta non c'e'.",
+ "controllo": "Ogni ricetta e' stata prima rifatta in ITALIANO e confrontata con la carta italiana (differenza media dei pixel: da 0,05 a 4 su 255, cioe' la stessa foto); poi rifatta in inglese. I fogli a coppie si rifanno con ffmpeg (tile).",
+ "studio_angelicata": {
+  "sito": "progetti/esempi/avvocata-angelicata/sito/",
+  "modi": {
+   "rotella": "Come strumenti/carte-sito.js (Chrome nascosto, schema chiaro, 1440 x 900, 6 secondi di attesa, poi rotella vera: sei scatti di rotella da 120 px ogni 110 ms e 1,7 secondi di attesa, cioe' passi di 720 px; JPEG qualita' 3), ma la foto si fa quando scrollY = (bordo alto del pezzo «sel») - d. Con sel «html» e' il passo intero di carte-sito.js (d = -720 x numero del passo): li' basta carte-sito.js <pagina>?lang=en <cartella> <prefisso> 0.8 e prendere lo stesso passo. Con un pezzo vero (#tappe, #chi, #dove, #studio, l'impegno) serve perche' in inglese i testi piu' lunghi spostano tutto quello che viene dopo (la home e' alta 14954 px invece di 14763): lo stesso passo cadrebbe da 50 a 500 px piu' su. L'ultimo salto prima della foto e' sempre un passo intero, cosi' le entrate sono allo stesso momento dell'italiana. ATTENZIONE: i punti ancorati e l'ora finta li ha fatti un programmino di prova (carte-ancorate.js: carte-sito.js con in piu' il punto ancorato e l'orologio della pagina messo a un'ora data), rimasto nella cartella temporanea della sessione del 18/11 insieme a scatti-angelicata.js, somiglia.js e foglio-coppie.js; in strumenti/ non c'e': se le carte vanno rifatte spesso, va portato li'.",
+   "scatta": "node strumenti/scatta.js <sito + pagina> uscita.png 1440 900 \"<cond>\" <dopo> \"<chiedi>\", poi ffmpeg -i uscita.png -vf scale=720:450:flags=lanczos -q:v <qualita_jpeg>. Uno alla volta, senza altri Chrome accesi.",
+   "ora": "La testata dello studio dice «Aperto adesso · fino alle 13:00» secondo l'ora vera (di notte «Chiuso · riapre alle 9:00»). Le carte italiane sono del 17/11 alle 12:20 (la 04 e la 05 alle 17:05): le inglesi sono fatte con l'orologio della pagina messo a quell'ora."
+  },
+  "guardie_nuove_per_scatta": [
+   "PULITO: scatta.js riusa il profilo di Chrome della stessa porta (cartelle scatta-97xx nella cartella temporanea) e il sito ricorda Civile/Penale (localStorage «avv-area»): dopo un clic su Penale fatto da un giro prima la pagina si riapre amaranto o con l'esempio penale. La condizione toglie la memoria e ricarica; nella 03 il clic su Penale non scrive piu' nella memoria.",
+   "CARATTERI: la condizione aspetta che Cormorant Garamond e Manrope (Google Fonts) siano caricati: con piu' Chrome accesi la foto usciva con i caratteri di riserva.",
+   "PUNTO RIMESSO: lo scorrimento si ripete nella «domanda», un attimo prima della foto, perche' caratteri e traduzione cambiano le altezze dopo il primo scorrimento.",
+   "La 05 mostra le materie in amaranto perche' la pagina, la prima volta che quella parte compare, accende Penale da sola tra 1,4 e 4,4 secondi: la foto va fatta in quella finestra (dopo = 2500; l'italiana era a 3500, quasi al limite)."
+  ],
+  "carte": [
+   {
+    "nome": "angelicata-01",
+    "modo": "scatta",
+    "pagina": "index.html?lang=en&linguetta=0",
+    "cond": "(localStorage.getItem('avv-area') ? (localStorage.removeItem('avv-area'), location.reload(), false) : true) && document.readyState === 'complete' && ['Cormorant Garamond', 'Manrope'].every(n => [...document.fonts].some(f => f.family.replace(/[\"']/g, '') === n && f.status === 'loaded')) && ![...document.fonts].some(f => f.status === 'loading') && (window.__o = window.__o || (() => { const V = Date, T = new V(2026, 10, 17, 12, 20).getTime(); window.Date = function () { return new V(T); }; try { aperto(); } finally { window.Date = V; } return 1; })()) && true",
+    "dopo": 4000,
+    "chiedi": "document.querySelector('#aperto').textContent.trim() + ' | area ' + (document.documentElement.dataset.area || '?')",
+    "qualita_jpeg": 3
+   },
+   {
+    "nome": "angelicata-02",
+    "modo": "rotella",
+    "pagina": "index.html?lang=en&linguetta=0",
+    "sel": "html",
+    "d": -1440,
+    "ora": "2026-11-17T12:20:00",
+    "carta_italiana": "carte-sito.js index.html passo 2 (0.8)"
+   },
+   {
+    "nome": "angelicata-03",
+    "modo": "scatta",
+    "pagina": "index.html?lang=en&linguetta=0",
+    "cond": "(localStorage.getItem('avv-area') ? (localStorage.removeItem('avv-area'), location.reload(), false) : true) && document.readyState === 'complete' && ['Cormorant Garamond', 'Manrope'].every(n => [...document.fonts].some(f => f.family.replace(/[\"']/g, '') === n && f.status === 'loaded')) && ![...document.fonts].some(f => f.status === 'loading') && (window.__o = window.__o || (() => { const V = Date, T = new V(2026, 10, 17, 12, 20).getTime(); window.Date = function () { return new V(T); }; try { aperto(); } finally { window.Date = V; } return 1; })()) && (window.__a = window.__a || (document.head.insertAdjacentHTML('beforeend', '<style>*,*::before,*::after{transition:none!important}</style>'), Storage.prototype.setItem = function () {}, document.querySelector('button[data-area=\"penale\"]').click(), setTimeout(() => document.querySelector('#materie').scrollIntoView({ block: 'center', behavior: 'instant' }), 600), 1), true)",
+    "dopo": 5000,
+    "chiedi": "(document.querySelector('#materie').scrollIntoView({ block: 'center', behavior: 'instant' }), 'y=' + Math.round(scrollY) + ' ' + document.querySelector('#aperto').textContent.trim() + ' | area ' + (document.documentElement.dataset.area || '?'))",
+    "qualita_jpeg": 3
+   },
+   {
+    "nome": "angelicata-04",
+    "modo": "scatta",
+    "pagina": "index.html?lang=en&linguetta=0",
+    "cond": "(localStorage.getItem('avv-area') ? (localStorage.removeItem('avv-area'), location.reload(), false) : true) && document.readyState === 'complete' && ['Cormorant Garamond', 'Manrope'].every(n => [...document.fonts].some(f => f.family.replace(/[\"']/g, '') === n && f.status === 'loaded')) && ![...document.fonts].some(f => f.status === 'loading') && (window.__o = window.__o || (() => { const V = Date, T = new V(2026, 10, 17, 17, 5).getTime(); window.Date = function () { return new V(T); }; try { aperto(); } finally { window.Date = V; } return 1; })()) && (window.__g || (window.__g = (() => { document.head.insertAdjacentHTML('beforeend', '<style>*{transition:none !important;animation-duration:.01s !important}</style>'); const b = document.querySelector('.filtri button[data-area=\"tutto\"]'); if (b) b.click(); const r = document.querySelector('.racconta'); scrollTo(0, r.offsetTop - 40); return 1; })()))",
+    "dopo": 3500,
+    "chiedi": "(scrollTo(0, document.querySelector('.racconta').offsetTop - 40), 'y=' + Math.round(scrollY) + ' frase ' + document.querySelector('.frasi button[aria-pressed=\"true\"]').dataset.k + ' ' + document.querySelector('#aperto').textContent.trim() + ' | area ' + (document.documentElement.dataset.area || '?'))",
+    "qualita_jpeg": 2
+   },
+   {
+    "nome": "angelicata-05",
+    "modo": "scatta",
+    "pagina": "index.html?lang=en&linguetta=0",
+    "cond": "(localStorage.getItem('avv-area') ? (localStorage.removeItem('avv-area'), location.reload(), false) : true) && document.readyState === 'complete' && ['Cormorant Garamond', 'Manrope'].every(n => [...document.fonts].some(f => f.family.replace(/[\"']/g, '') === n && f.status === 'loaded')) && ![...document.fonts].some(f => f.status === 'loading') && (window.__o = window.__o || (() => { const V = Date, T = new V(2026, 10, 17, 17, 5).getTime(); window.Date = function () { return new V(T); }; try { aperto(); } finally { window.Date = V; } return 1; })()) && (window.__g || (window.__g = (() => { document.head.insertAdjacentHTML('beforeend', '<style>*{transition:none !important;animation-duration:.01s !important}</style>'); const r = document.querySelector('.racconta'); scrollTo(0, r.offsetTop + r.offsetHeight - 430); return 1; })()))",
+    "dopo": 2500,
+    "chiedi": "(scrollTo(0, document.querySelector('.racconta').offsetTop + document.querySelector('.racconta').offsetHeight - 430), 'y=' + Math.round(scrollY) + ' lato ' + document.querySelector('.interruttore button[aria-selected=\"true\"]').dataset.lato + ' ' + document.querySelector('#aperto').textContent.trim() + ' | area ' + (document.documentElement.dataset.area || '?'))",
+    "qualita_jpeg": 2
+   },
+   {
+    "nome": "angelicata-06",
+    "modo": "rotella",
+    "pagina": "index.html?lang=en&linguetta=0",
+    "sel": "#tappe",
+    "d": 285,
+    "ora": "2026-11-17T12:20:00",
+    "carta_italiana": "carte-sito.js index.html passo 7 (0.8)"
+   },
+   {
+    "nome": "angelicata-07",
+    "modo": "rotella",
+    "pagina": "index.html?lang=en&linguetta=0",
+    "sel": "#chi",
+    "d": 144,
+    "ora": "2026-11-17T12:20:00",
+    "carta_italiana": "carte-sito.js index.html passo 12 (0.8)"
+   },
+   {
+    "nome": "angelicata-08",
+    "modo": "rotella",
+    "pagina": "index.html?lang=en&linguetta=0",
+    "sel": "#dove",
+    "d": 113,
+    "ora": "2026-11-17T12:20:00",
+    "carta_italiana": "carte-sito.js index.html passo 17 (0.8)"
+   },
+   {
+    "nome": "angelicata-09",
+    "modo": "scatta",
+    "pagina": "chi-sono.html?lang=en",
+    "cond": "(localStorage.getItem('avv-area') ? (localStorage.removeItem('avv-area'), location.reload(), false) : true) && document.readyState === 'complete' && ['Cormorant Garamond', 'Manrope'].every(n => [...document.fonts].some(f => f.family.replace(/[\"']/g, '') === n && f.status === 'loaded')) && ![...document.fonts].some(f => f.status === 'loading') && (window.__o = window.__o || (() => { const V = Date, T = new V(2026, 10, 17, 12, 20).getTime(); window.Date = function () { return new V(T); }; try { aperto(); } finally { window.Date = V; } return 1; })()) && true",
+    "dopo": 4000,
+    "chiedi": "document.querySelector('#aperto').textContent.trim() + ' | area ' + (document.documentElement.dataset.area || '?')",
+    "qualita_jpeg": 3
+   },
+   {
+    "nome": "angelicata-10",
+    "modo": "rotella",
+    "pagina": "chi-sono.html?lang=en",
+    "sel": "html",
+    "d": -720,
+    "ora": "2026-11-17T12:20:00",
+    "carta_italiana": "carte-sito.js chi-sono.html passo 1 (0.8)"
+   },
+   {
+    "nome": "angelicata-11",
+    "modo": "rotella",
+    "pagina": "chi-sono.html?lang=en",
+    "sel": "html",
+    "d": -1440,
+    "ora": "2026-11-17T12:20:00",
+    "carta_italiana": "carte-sito.js chi-sono.html passo 2 (0.8)"
+   },
+   {
+    "nome": "angelicata-12",
+    "modo": "rotella",
+    "pagina": "per-capire.html?lang=en",
+    "sel": "html",
+    "d": 0,
+    "ora": "2026-11-17T12:20:00",
+    "carta_italiana": "carte-sito.js per-capire.html passo 0 (0.8)"
+   },
+   {
+    "nome": "angelicata-13",
+    "modo": "rotella",
+    "pagina": "chi-sono.html?lang=en",
+    "sel": "#studio",
+    "d": 224,
+    "ora": "2026-11-17T12:20:00",
+    "carta_italiana": "carte-sito.js chi-sono.html passo 6 (0.8)"
+   },
+   {
+    "nome": "angelicata-14",
+    "modo": "rotella",
+    "pagina": "per-capire.html?lang=en",
+    "sel": "html",
+    "d": -720,
+    "ora": "2026-11-17T12:20:00",
+    "carta_italiana": "carte-sito.js per-capire.html passo 1 (0.8)"
+   },
+   {
+    "nome": "angelicata-15",
+    "modo": "rotella",
+    "pagina": "chi-sono.html?lang=en",
+    "sel": "[aria-labelledby=\"t-impegno\"]",
+    "d": -240,
+    "ora": "2026-11-17T12:20:00",
+    "carta_italiana": "carte-sito.js chi-sono.html passo 8 (0.8)"
+   }
+  ]
+ },
+ "hora_vera": {
+  "sito": "progetti/vetrina/orologi/sito/",
+  "un_comando": "node strumenti/carte-nero-grigio.js progetti/vetrina/telescopio/carte-en/hora-nero-grigio.json <cartella> nero,grigio 4   -> <NN>-nero.jpg diventa hora-NN.jpg, <NN>-grigio.jpg diventa hora-g-NN.jpg (undici voci: 01, 03, 05, 07-14)",
+  "carte": {
+   "01": "nell'elenco (presentazione ferma: ?tempo=5000&seme=1). Solo la nera, poi rifatta a qualita' 3 dal .png come l'italiana. L'italiana era la prima carta di carte-sito.js su ora-vera.html: un fotogramma di un filmato con le chiazze messe a caso, che non si puo' rifare uguale; cosi' almeno si rifa' sempre la stessa.",
+   "02, 04, 06": "scene di Visioni (1683, 1580, 1910): node strumenti/carte-sito.js \"progetti/vetrina/orologi/sito/index.html?lang=en\" <cartella> visioni 0.8 (due minuti, da solo), poi si prende il passo che somiglia di piu' alla carta italiana. La pagina aspetta le animazioni, quindi il numero del passo cambia da un giro all'altro: il 17/11 erano 05, 18 e 32; il 18/11 in italiano 05, 20 e 36 e in inglese 05, 19 e 35. Due passi vicini mostrano la stessa scena: va preso quello con la barretta «SKIP» in basso per la 02 e la 04 e quello senza per la 06, come nelle italiane.",
+   "03": "nell'elenco (Otto meridiani con il filmato di Venezia fermato a 2,48 s = 07:48). In italiano la stessa voce ridà la carta italiana quasi identica (differenza 0,05).",
+   "05, 07, 08, 11, 14 (Quattro tempi) e 09, 10, 12, 13 (L'atelier)": "nell'elenco: le voci di carte/hora-nero-grigio.json con lang=en. In L'atelier la «domanda» deve dare le tre colonne del contatore a multipli interi di 1,2em (controllato: 0, -1.2, -2.4, -8.4).",
+   "grigie": "hora-g-03, 05, 07-14 = la veste «grigio» dello strumento. hora-g-01, 02, 04, 06 = la nera a mezza saturazione: ffmpeg -i hora-NN.jpg -vf eq=saturation=0.5 -q:v 2 hora-g-NN.jpg (provato sulle italiane: differenza 0)."
+  }
+ }
+}

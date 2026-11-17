@@ -697,8 +697,20 @@ const strisce = $('#strisce');
 let sopraNome = null, disposizione = '', salita = null, salendo = false, chiusoAlle = -1e9;
 // la carta che scorre nelle strisce: per un sito che ha le sorelle grigie (campo «spenta» in SITI) è la grigia; la nera vera si accende nel piano di sopra
 const spentaDi = (s, f) => SITI[s] && SITI[s].spenta ? f.replace(SITI[s].spenta[0], SITI[s].spenta[1]) : f;
-const carta = (f, s) => `<i class="carta" style="background-image:url('carte/${spentaDi(s, f)}')"></i>`;
-SITI.forEach(s => { if (s.spenta) s.carte.flat().forEach(f => { new Image().src = 'carte/' + f; }); });   // le nere pronte prima che tocchi a loro, se no compaiono di colpo
+/* LE CARTE IN INGLESE (18/11/2026, Franco: «sul sito Web Retold scorrono le pagine dei siti in italiano, non di quelle in inglese. Non va bene se schiacci
+   ENGLISH»). Le stesse foto, con gli stessi nomi, rifatte dai siti in inglese, stanno in carte-en/. La cartella si sceglie dalla lingua della pagina; se
+   carte-en/ non c'è (si prova caricandone una) restano le italiane. Al cambio di lingua le foto nuove si caricano prima e si scambiano tutte insieme. */
+let carteEn = false;
+const cartella = () => carteEn && document.documentElement.lang === 'en' ? 'carte-en/' : 'carte/';
+function cambiaCarte() {
+  const verso = cartella(), pezzi = [...document.querySelectorAll('.carta, .pv')].map(e => [e, e.style.backgroundImage]).filter(([, b]) => /carte(-en)?\//.test(b) && !b.includes(verso));
+  const nuove = pezzi.map(([, b]) => b.replace(/carte(-en)?\//, verso)), indirizzi = [...new Set(nuove.map(b => (b.match(/url\(["']?([^"')]+)/) || [])[1]).filter(Boolean))];
+  Promise.all(indirizzi.map(u => new Promise(r => { const i = new Image(); i.onload = i.onerror = r; i.src = u; }))).then(() => { if (cartella() !== verso) return; pezzi.forEach(([e], k) => { if (e.isConnected) e.style.backgroundImage = nuove[k]; }); });
+}
+{ const prova = new Image(); prova.onload = () => { carteEn = true; if (document.documentElement.lang === 'en') cambiaCarte(); }; prova.src = 'carte-en/angelicata-01.jpg'; }
+window.CARTE = { cartella, adesso: () => { const n = { 'carte/': 0, 'carte-en/': 0 }; document.querySelectorAll('.carta, .pv').forEach(e => { const m = e.style.backgroundImage.match(/carte(-en)?\//); if (m) n[m[0]]++; }); return { inglesiPronte: carteEn, ...n }; } };
+const carta = (f, s) => `<i class="carta" style="background-image:url('${cartella()}${spentaDi(s, f)}')"></i>`;
+SITI.forEach(s => { if (s.spenta) s.carte.flat().forEach(f => { new Image().src = cartella() + f; }); });   // le nere pronte prima che tocchi a loro, se no compaiono di colpo
 const viva = (s, f) => `<i class="pv" data-s="${s}" data-f="${f}"></i>`;   // il posto vuoto, nel piano di sopra, della stessa pagina: si accende quando tocca a lei
 // quante carte servono per coprire un tratto lungo «lungo» con carte di passo «passo»: solo quelle, per non disegnare carte che non si vedono mai
 const giroDi = (una, lungo, passo) => { const serve = Math.ceil(lungo / passo) + 1; let giro = una; while (giro.length < serve) giro = giro.concat(una); return giro.concat(giro); };
@@ -733,7 +745,7 @@ const DISPOSIZIONI = {
       // e con un tempo fisso andavano a velocità diverse. Il tempo si conta a pagina (11,5 secondi l'una): stessa velocità, e le file restano allineate
       const giro = giroDi(una, lungo, passo), solo = siti.length === 1, durata = (giro.length / 2 * 11.5).toFixed(1);
       sopra.push(`<div class="colonna-viva"><div class="viene-viva" style="--durata:${durata}s">${giro.map(([s, f]) => viva(s, f)).join('')}</div></div>`);
-      return `<div class="colonna${solo ? ' spenta' : ''}"${solo ? ` data-sito="${siti[0]}"` : ''}><div class="binario-v" style="--durata:${durata}s">${giro.map(([s, f]) => solo ? carta(f, s) : `<i class="carta spenta" data-sito="${s}" style="background-image:url('carte/${spentaDi(s, f)}')"></i>`).join('')}</div></div>`;
+      return `<div class="colonna${solo ? ' spenta' : ''}"${solo ? ` data-sito="${siti[0]}"` : ''}><div class="binario-v" style="--durata:${durata}s">${giro.map(([s, f]) => solo ? carta(f, s) : `<i class="carta spenta" data-sito="${s}" style="background-image:url('${cartella()}${spentaDi(s, f)}')"></i>`).join('')}</div></div>`;
     }).join('')}</div><div class="velo-bordi"></div><div class="pavimento">${sopra.join('')}</div>`;
   }
 };
@@ -824,7 +836,7 @@ function scegliSatura(s) {
   }
   const scelta = scelte[Math.floor(Math.random() * scelte.length)], c = scelta.c, fratelli = [...c.parentNode.children], gemella = fratelli[(fratelli.indexOf(c) + fratelli.length / 2) % fratelli.length];
   const nuove = gemella && gemella !== c ? [c, gemella] : [c];   // la fila è scritta due volte per girare senza fine: si accende anche la gemella
-  nuove.forEach(x => { x.style.backgroundImage = `url('carte/${x.dataset.f}')`; x.innerHTML = `<b class="targhetta">${SITI[s].nome}</b>`; mettiTarga(x, scelta.p, scelta.targa, true); x.classList.add('ha'); void x.offsetWidth; x.classList.add('su'); });
+  nuove.forEach(x => { x.style.backgroundImage = `url('${cartella()}${x.dataset.f}')`; x.innerHTML = `<b class="targhetta">${SITI[s].nome}</b>`; mettiTarga(x, scelta.p, scelta.targa, true); x.classList.add('ha'); void x.offsetWidth; x.classList.add('su'); });
   vive[s].forEach(x => { x.classList.remove('su', 'sopra'); setTimeout(() => { if (!x.classList.contains('su')) { x.classList.remove('ha'); x.style.backgroundImage = ''; x.innerHTML = ''; } }, 1900); });
   if (sopraViva === s) { sopraViva = -1; scena.style.cursor = ''; }
   vive[s] = nuove; quandoSatura[s] = performance.now(); targaVoto[s] = scelta.targa.voto;
@@ -1147,6 +1159,7 @@ const LINGUA = window.LINGUA = (() => {
   function metti(l) {
     const prima = lingua; lingua = l === 'en' ? 'en' : 'it'; document.documentElement.lang = lingua; zone().forEach(passa);
     if (prima !== lingua && partito && caricato >= 0) { cornice.src = inLingua(SITI[caricato].src); if (!aperto) { pienoDi = -1; pieno.src = 'about:blank'; preparaTraPoco(attivo, 900); } }   // il sito nella lente si riapre nella lingua nuova
+    if (prima !== lingua) cambiaCarte();   // e le pagine che scorrono intorno diventano quelle di quella lingua
     const b = document.querySelector('#lingua'); if (b) { b.textContent = lingua === 'en' ? 'Italiano' : 'English'; b.setAttribute('aria-label', lingua === 'en' ? 'Leggi il sito in italiano' : 'Read this site in English'); }
     const bu = document.querySelector('#busta'), im = bu && bu.querySelector('img'), vuole = lingua === 'en' ? 'contatti-busta-vuota.webp' : 'contatti-busta.webp';   // la busta: in inglese l'immagine senza parola e «Contact» scritto sopra
     if (im) { bu.classList.toggle('in-inglese', lingua === 'en'); if (im.getAttribute('src') !== vuole) im.setAttribute('src', vuole); }
