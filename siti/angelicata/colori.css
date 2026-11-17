@@ -1,0 +1,299 @@
+/* PROVE DEI COLORI dello Studio Legale Angelicata (16/11/2026).
+   Franco: «Vorrei cambiare i colori del sito. Valutiamo come combinare tra loro 3 colori fondamentali nel più felice dei modi: amaranto o bordeaux,
+   blu navy e oro o ocra, vedi se trovi anche altro o soluzioni migliori»; «fammi una pagina con 4 proposte di combinazione di colori».
+   Senza data-colori su <html> questo foglio non tocca niente: il sito resta com'è. L'attributo lo mette colori.js quando l'indirizzo ha ?colori=1…4.
+     1 Inchiostro  comanda il blu: pannelli e fondi scuri blu, le parole che contano bordeaux, il cerchio è un sigillo di ceralacca, fili d'oro
+     2 Velluto     comanda il bordeaux: pannelli e fondi scuri bordeaux, le parole in blu inchiostro, il cerchio blu, fili d'oro
+     3 Notte       tutto il sito scuro, blu profondo: le parole d'oro, i riquadri bordeaux, il cerchio chiaro come una luna
+     4 Due codici  carta chiara: il blu è il civile, il bordeaux è il penale, l'oro è il filo; con il filtro Tutto · Civile · Penale il sito cambia veste
+   In più ?blu=petrolio sposta il blu verso il petrolio in tutte e quattro (la cosa «in più» trovata: con bordeaux e oro è la terna più equilibrata).
+   Regola che vale per tutte: bordeaux e blu non si toccano mai in grande; tra loro c'è sempre la carta o un filo d'oro.
+   Quando Franco sceglie: i valori della tavolozza scelta entrano nelle pagine, e questo foglio e colori.js si tolgono. */
+
+/* ============ 1. I TRE COLORI, ognuno con i suoi toni: qui si cambia una tinta per tutte e quattro le prove ============ */
+html[data-colori] {
+  --blu-abisso: #0a1124; --blu-notte: #0f1830; --blu-notte-2: #131d3a; --blu-notte-3: #152142; --blu-scheda: #1a264b;
+  --blu-basso: #121c3b; --blu: #17244a; --blu-alto: #1f2f5c; --blu-medio: #263a70;
+  --blu-testo: #16203a; --blu-tenue: #5a6177; --blu-su: #b3bbce; --blu-carta: #e8ecf3; --blu-rgb: 23 36 74;
+  --vino-basso: #44111c; --vino-fondo: #4c1421; --vino: #5e1827; --vino-alto: #731f2f; --vino-voce: #762131; --vino-vivo: #93293b;
+  --vino-su: #e4c7c3; --vino-carta: #f5e9e5; --vino-rgb: 118 33 49;
+  --oro-testo: #89681c; --oro: #b9974c; --oro-chiaro: #d8b870; --oro-carta: #f5eedb; --oro-rgb: 185 151 76;
+  /* valori di riserva, uguali per tutte le prove che non li cambiano */
+  --k-bottone: var(--inchiostro); --k-su-bottone: var(--gesso); --k-bottone-sopra: var(--blu-medio);
+  --k-durata: var(--bronzo); --k-filo-tappe: var(--bronzo-linea); --k-cornice: var(--oro);
+  --k-fondo: var(--noce); --k-impegno: var(--noce); --k-impegno-testo: var(--su-noce); --k-segno-mappa: var(--noce);
+  --k-pannello-luce: linear-gradient(165deg, rgb(255 255 255 / .08) 0%, rgb(255 255 255 / 0) 50%, rgb(0 0 0 / .18) 100%);
+  --k-pannello-linea: rgb(255 255 255 / .32);
+  color-scheme: light;
+}
+/* il blu spostato verso il petrolio */
+html[data-colori][data-blu="petrolio"] {
+  --blu-abisso: #07171c; --blu-notte: #0a1f26; --blu-notte-2: #0d262e; --blu-notte-3: #0f2b33; --blu-scheda: #13333c;
+  --blu-basso: #0d2a32; --blu: #12353e; --blu-alto: #19444f; --blu-medio: #1d4d59;
+  --blu-testo: #10262c; --blu-tenue: #54666a; --blu-su: #adc2c5; --blu-carta: #e2ecec; --blu-rgb: 18 53 62;
+}
+
+/* ============ 2. LE QUATTRO PROVE ============ */
+/* 1 · INCHIOSTRO: comanda il blu */
+html[data-colori="1"] {
+  --avorio: #f6f2ea; --avorio-2: #ebe6db; --gesso: #fcfaf5; --sabbia: #cdc6b8;
+  --inchiostro: var(--blu-testo); --tenue: var(--blu-tenue); --linea: rgb(var(--blu-rgb) / .14); --linea-forte: rgb(var(--blu-rgb) / .32);
+  --bronzo: var(--vino-voce); --bronzo-linea: var(--oro); --bronzo-chiaro: var(--oro-chiaro); --voce: var(--vino-voce);
+  --noce: var(--blu); --su-noce: #f3eee4; --su-noce-tenue: var(--blu-su); --linea-noce: rgb(243 238 228 / .16);
+  --mattone: var(--vino-vivo);
+  --k-ombra: 16 24 50; --k-carta-2: #f1ede3; --k-carta-3: var(--blu-carta); --k-racconta: #efe9dd;
+  --k-riga: rgb(var(--blu-rgb) / .05); --k-riga-forte: rgb(var(--blu-rgb) / .11); --k-spenta: rgb(var(--blu-rgb) / .2);
+  --k-bottone: var(--blu); --k-bottone-sopra: var(--blu-medio); --k-durata: var(--oro-testo); --k-filo-tappe: var(--oro);
+  --k-pannello-colore: var(--blu); --k-pannello-testo: #f4efe5; --k-pannello-tenue: var(--blu-su); --k-pannello-voce: var(--oro-chiaro); --k-pannello-filo: var(--oro);
+  --k-pannello-bottone: #f4efe5; --k-pannello-su-bottone: var(--blu); --k-pannello-bottone-sopra: var(--oro-chiaro);
+  --k-testata-testo: #f4efe5; --k-testata-tenue: var(--blu-su); --k-testata-linea: rgb(244 239 229 / .18); --k-testata-voce: var(--oro-chiaro);
+  --k-velo-foto: var(--blu);
+  --k-disco-1: var(--vino-vivo); --k-disco-2: var(--vino); --k-disco-3: var(--vino-basso); --k-disco-testo: #f8f0e7; --k-disco-tenue: var(--vino-su);
+  --k-disco-campo: rgb(255 255 255 / .1); --k-disco-segno: var(--oro-chiaro); --k-disco-voce: var(--oro-chiaro); --k-disco-ombra: 74 19 32;
+  --k-impegno: var(--vino); --k-impegno-testo: #f8efe8;
+  --mappa-fondo: #ecebe5; --mappa-verde: #dfe4d6; --mappa-acqua: #cdd8e6; --mappa-vie: #f8f6f1; --mappa-binari: #cfc9bc; --mappa-corsi: #dccfa9;
+  --mappa-case-1: #f1eee7; --mappa-case-2: #e6e2d8; --mappa-case-3: #d9d3c6; --mappa-nomi: #6c7183; --mappa-alone: #fbf9f4; --mappa-quartieri: #9a9fae; --mappa-alone-quartieri: #f6f2ea; --mappa-scritte: #1d2742;
+}
+/* 2 · VELLUTO: comanda il bordeaux */
+html[data-colori="2"] {
+  --avorio: #f7f1e9; --avorio-2: #eee5da; --gesso: #fdf9f4; --sabbia: #d6c9bc;
+  --inchiostro: #241a1d; --tenue: #6a5d5f; --linea: rgb(var(--vino-rgb) / .15); --linea-forte: rgb(var(--vino-rgb) / .32);
+  --bronzo: var(--blu-medio); --bronzo-linea: var(--oro); --bronzo-chiaro: var(--oro-chiaro); --voce: var(--blu-medio);
+  --noce: var(--vino); --su-noce: #f8efe8; --su-noce-tenue: var(--vino-su); --linea-noce: rgb(248 239 232 / .18);
+  --mattone: var(--vino-vivo);
+  --k-ombra: 60 18 28; --k-carta-2: #f4ebe4; --k-carta-3: var(--vino-carta); --k-racconta: #f2e8e0;
+  --k-riga: rgb(var(--vino-rgb) / .05); --k-riga-forte: rgb(var(--vino-rgb) / .11); --k-spenta: rgb(36 26 29 / .18);
+  --k-bottone: var(--blu); --k-bottone-sopra: var(--blu-medio); --k-durata: var(--blu-medio); --k-filo-tappe: var(--oro);
+  --k-pannello-colore: var(--vino); --k-pannello-testo: #f8efe8; --k-pannello-tenue: var(--vino-su); --k-pannello-voce: var(--oro-chiaro); --k-pannello-filo: var(--oro-chiaro);
+  --k-pannello-bottone: #f8efe8; --k-pannello-su-bottone: var(--vino-fondo); --k-pannello-bottone-sopra: var(--oro-chiaro);
+  --k-testata-testo: #f8efe8; --k-testata-tenue: var(--vino-su); --k-testata-linea: rgb(248 239 232 / .2); --k-testata-voce: var(--oro-chiaro);
+  --k-velo-foto: var(--vino);
+  --k-disco-1: var(--blu-medio); --k-disco-2: var(--blu); --k-disco-3: var(--blu-basso); --k-disco-testo: #f4efe5; --k-disco-tenue: var(--blu-su);
+  --k-disco-campo: rgb(255 255 255 / .09); --k-disco-segno: var(--oro-chiaro); --k-disco-voce: var(--oro-chiaro); --k-disco-ombra: 16 24 50;
+  --k-fondo: var(--vino-fondo); --k-impegno: var(--blu); --k-impegno-testo: #f4efe5;
+}
+/* 3 · NOTTE: tutto il sito scuro */
+html[data-colori="3"] {
+  color-scheme: dark;
+  --avorio: var(--blu-notte); --avorio-2: var(--blu-notte-3); --gesso: var(--blu-scheda); --sabbia: #5c6684;
+  --inchiostro: #f1ebdf; --tenue: #a9b1c6; --linea: rgb(241 235 223 / .13); --linea-forte: rgb(241 235 223 / .3);
+  --bronzo: var(--oro-chiaro); --bronzo-linea: #a88d50; --bronzo-chiaro: var(--oro-chiaro); --voce: var(--oro-chiaro);
+  --noce: var(--vino); --su-noce: #f8efe8; --su-noce-tenue: var(--vino-su); --linea-noce: rgb(248 239 232 / .18);
+  --mattone: #e08593;
+  --k-ombra: 0 0 0; --k-carta-2: var(--blu-notte-2); --k-carta-3: var(--blu-notte-3); --k-racconta: var(--blu-notte-2);
+  --k-riga: rgb(255 255 255 / .04); --k-riga-forte: rgb(255 255 255 / .09); --k-spenta: rgb(241 235 223 / .22);
+  --k-bottone: #f1ebdf; --k-su-bottone: var(--blu-notte); --k-bottone-sopra: var(--oro-chiaro); --k-durata: var(--oro-chiaro); --k-filo-tappe: var(--oro);
+  --k-pannello-colore: var(--blu); --k-pannello-testo: #f4efe5; --k-pannello-tenue: var(--blu-su); --k-pannello-voce: var(--oro-chiaro); --k-pannello-filo: var(--oro);
+  --k-pannello-bottone: #f4efe5; --k-pannello-su-bottone: var(--blu-notte); --k-pannello-bottone-sopra: var(--oro-chiaro);
+  --k-testata-testo: #f4efe5; --k-testata-tenue: var(--blu-su); --k-testata-linea: rgb(244 239 229 / .16); --k-testata-voce: var(--oro-chiaro);
+  --k-velo-foto: var(--blu-notte);
+  --k-disco-1: #f1e4c6; --k-disco-2: #dcc89c; --k-disco-3: #c4a976; --k-disco-testo: #211b12; --k-disco-tenue: #5d4f36;
+  --k-disco-campo: rgb(255 255 255 / .5); --k-disco-segno: #7a6540; --k-disco-voce: #7a5c16; --k-disco-ombra: 0 0 0;
+  --k-fondo: var(--blu-abisso); --k-impegno: var(--vino); --k-impegno-testo: #f8efe8;
+  --mappa-fondo: #121b36; --mappa-verde: #14213c; --mappa-acqua: #0a1228; --mappa-vie: #1e2a4c; --mappa-binari: #2a3658; --mappa-corsi: #6d6038;
+  --mappa-case-1: #1c2747; --mappa-case-2: #243159; --mappa-case-3: #2c3b68; --mappa-nomi: #9da6bd; --mappa-alone: #0f1830; --mappa-quartieri: #7d87a3; --mappa-alone-quartieri: #0f1830; --mappa-scritte: #ece6d9;
+}
+html[data-colori="3"][data-blu="petrolio"] {
+  --mappa-fondo: #0d262d; --mappa-verde: #102c2f; --mappa-acqua: #071a20; --mappa-vie: #18373f; --mappa-binari: #23444c;
+  --mappa-case-1: #15323a; --mappa-case-2: #1c3e47; --mappa-case-3: #244a54; --mappa-nomi: #9db6b9; --mappa-alone: #0a1f26; --mappa-quartieri: #7b9a9e; --mappa-alone-quartieri: #0a1f26;
+}
+/* 4 · DUE CODICI: carta chiara; blu = civile, bordeaux = penale, oro = il filo. Senza scelta (Tutto): etichette ocra, parole bordeaux, pulsanti blu */
+html[data-colori="4"] {
+  --avorio: #f7f3ea; --avorio-2: #ece6d9; --gesso: #fdfbf6; --sabbia: #d3c9b6;
+  --inchiostro: #1f1c1a; --tenue: #655f58; --linea: rgb(50 40 25 / .15); --linea-forte: rgb(50 40 25 / .32);
+  --accento: var(--oro-testo); --pieno: var(--blu); --pieno-sopra: var(--blu-medio);
+  --bronzo: var(--accento); --bronzo-linea: var(--oro); --bronzo-chiaro: var(--oro-chiaro); --voce: var(--vino-voce);
+  --noce: #1e1c1d; --su-noce: #f4eee3; --su-noce-tenue: #b8b0a4; --linea-noce: rgb(244 238 227 / .16);
+  --mattone: var(--vino-vivo);
+  --k-ombra: 40 30 15; --k-carta-2: #f2ecdf; --k-carta-3: #f1ead9; --k-racconta: #f0e9da;
+  --k-riga: rgb(var(--oro-rgb) / .09); --k-riga-forte: rgb(var(--oro-rgb) / .2); --k-spenta: rgb(31 28 26 / .17);
+  --k-bottone: var(--pieno); --k-bottone-sopra: var(--pieno-sopra); --k-durata: var(--oro-testo); --k-filo-tappe: var(--oro);
+  --k-pannello-colore: #f4eee1; --k-pannello-luce: linear-gradient(165deg, rgb(255 255 255 / .55) 0%, rgb(255 255 255 / 0) 55%, rgb(120 90 40 / .1) 100%);
+  --k-pannello-testo: #1f1c1a; --k-pannello-tenue: #655f58; --k-pannello-voce: var(--voce); --k-pannello-filo: var(--oro); --k-pannello-linea: rgb(50 40 25 / .32);
+  --k-pannello-bottone: var(--pieno); --k-pannello-su-bottone: #fdfbf6; --k-pannello-bottone-sopra: var(--pieno-sopra);
+  --k-testata-testo: #1f1c1a; --k-testata-tenue: #655f58; --k-testata-linea: rgb(50 40 25 / .15); --k-testata-voce: var(--voce);
+  --k-velo-foto: var(--avorio);
+  --k-disco-1: #f0e3c4; --k-disco-2: #dfcb9f; --k-disco-3: #cbb07c; --k-disco-testo: #241d12; --k-disco-tenue: #5e5038;
+  --k-disco-campo: rgb(255 255 255 / .5); --k-disco-segno: #7a6540; --k-disco-voce: var(--oro-testo); --k-disco-ombra: 90 65 20;
+}
+html[data-colori="4"][data-area="civile"] {
+  --accento: var(--blu-medio); --voce: var(--blu-medio); --pieno: var(--blu); --pieno-sopra: var(--blu-medio);
+  --avorio: #f3f4f4; --avorio-2: #e5e8ed; --gesso: #fcfcfc; --k-carta-2: #ebeef2; --k-carta-3: #e6eaf1; --k-racconta: #e9edf2; --k-pannello-colore: #e8ecf2;
+  --k-pannello-luce: linear-gradient(165deg, rgb(255 255 255 / .55) 0%, rgb(255 255 255 / 0) 55%, rgb(23 36 74 / .08) 100%);
+  --linea: rgb(var(--blu-rgb) / .14); --linea-forte: rgb(var(--blu-rgb) / .3); --k-riga: rgb(var(--blu-rgb) / .05); --k-riga-forte: rgb(var(--blu-rgb) / .11); --k-durata: var(--oro-testo);
+  --k-disco-1: var(--blu-medio); --k-disco-2: var(--blu); --k-disco-3: var(--blu-basso); --k-disco-testo: #f4efe5; --k-disco-tenue: var(--blu-su);
+  --k-disco-campo: rgb(255 255 255 / .09); --k-disco-segno: var(--oro-chiaro); --k-disco-voce: var(--oro-chiaro); --k-disco-ombra: 16 24 50;
+}
+/* 16/11, Franco: «non vedo il blu petrolio»: scelto Civile (o Penale), il pannello d'apertura si veste del suo colore, in grande */
+/* 17/11, Franco: «No, la pagina era blu petrolio e continui ad aprirmi il vecchio beige schifoso». Il pannello d'apertura è petrolio DA SUBITO
+   (anche con «Tutto», cioè come la pagina si apre); con «Penale» diventa amaranto. Il beige d'apertura non c'è più. */
+html[data-colori="4"] {
+  --k-pannello-luce: linear-gradient(165deg, rgb(255 255 255 / .08) 0%, rgb(255 255 255 / 0) 50%, rgb(0 0 0 / .18) 100%); --k-pannello-linea: rgb(255 255 255 / .32);
+  --k-pannello-voce: var(--oro-chiaro); --k-pannello-filo: var(--oro); --k-pannello-bottone: #f4efe5; --k-pannello-bottone-sopra: var(--oro-chiaro);
+  --k-testata-testo: #f4efe5; --k-testata-linea: rgb(244 239 229 / .18); --k-testata-voce: var(--oro-chiaro); }
+html[data-colori="4"]:not([data-area="penale"]) { --k-pannello-colore: var(--blu); --k-pannello-testo: #f4efe5; --k-pannello-tenue: var(--blu-su); --k-pannello-su-bottone: var(--blu); --k-testata-tenue: var(--blu-su); --k-velo-foto: var(--blu); }
+html[data-colori="4"][data-area="penale"] { --k-pannello-colore: var(--vino); --k-pannello-testo: #f8efe8; --k-pannello-tenue: var(--vino-su); --k-pannello-su-bottone: var(--vino); --k-testata-tenue: var(--vino-su); --k-velo-foto: var(--vino); }
+html[data-colori="4"] .testata:not(.stretta) .filtri button[aria-pressed="true"] { color: var(--oro-chiaro); --bronzo-linea: var(--oro-chiaro); }
+html[data-colori="4"][data-area="civile"][data-blu="petrolio"] { --avorio: #f2f4f3; --avorio-2: #e2e9e8; --k-carta-2: #e9efee; --k-carta-3: #e2ecec; --k-racconta: #e6eeed; }
+html[data-colori="4"][data-area="penale"] {
+  --accento: var(--vino-voce); --voce: var(--vino-voce); --pieno: var(--vino); --pieno-sopra: var(--vino-alto);
+  --avorio: #f8f2ee; --avorio-2: #efe3de; --gesso: #fefaf8; --k-carta-2: #f5e9e5; --k-carta-3: #f2e4e0; --k-racconta: #f3e6e2;   /* (17/11) qui c'erano anche il colore e la luce CHIARI del pannello d'apertura: venendo dopo la riga del 16/11 la cancellavano, e con Penale il pannello usciva rosa pallido con le scritte bianche (l'ha visto Franco nella vetrina: «l'amaranto non lo vedo»). Tolti: il pannello è amaranto. */
+  --linea: rgb(var(--vino-rgb) / .15); --linea-forte: rgb(var(--vino-rgb) / .3); --k-riga: rgb(var(--vino-rgb) / .05); --k-riga-forte: rgb(var(--vino-rgb) / .11); --k-durata: var(--oro-testo);
+  --k-disco-1: var(--vino-vivo); --k-disco-2: var(--vino); --k-disco-3: var(--vino-basso); --k-disco-testo: #f8f0e7; --k-disco-tenue: var(--vino-su);
+  --k-disco-campo: rgb(255 255 255 / .1); --k-disco-segno: var(--oro-chiaro); --k-disco-voce: var(--oro-chiaro); --k-disco-ombra: 74 19 32;
+}
+
+/* ============ 3. REGOLE COMUNI: i colori scritti a mano nelle pagine passano dalle variabili qui sopra ============ */
+html[data-colori] body { background: var(--avorio); color: var(--inchiostro); transition: background-color .9s; }
+html[data-colori] :is(.titolo em, .lastra-frase, .chi-frase, .crescere h3 em, .firmetta b, .ch-due .attacco, .pannello-menu nav a.attiva, .grazie a) { color: var(--voce); }
+html[data-colori] :is(.apertura h1 em, .ch-apertura h1 em) { color: var(--k-pannello-voce); }
+html[data-colori] .bottone, html[data-colori] .schede button[aria-selected="true"] { background: var(--k-bottone); color: var(--k-su-bottone); }
+html[data-colori] .schede button[aria-selected="true"] { border-color: var(--k-bottone); }
+html[data-colori] .bottone:hover { background: var(--k-bottone-sopra); }
+
+/* testata: finché sta sopra il pannello d'apertura prende i colori del pannello; stretta, quelli della pagina */
+html[data-colori] .testata.stretta { background: color-mix(in srgb, var(--avorio) 84%, transparent); }
+html[data-colori] .testata:not(.stretta) { --inchiostro: var(--k-testata-testo); --tenue: var(--k-testata-tenue); --linea: var(--k-testata-linea); --voce: var(--k-testata-voce); color: var(--k-testata-testo); }
+html[data-colori] .monogramma circle, html[data-colori] .chi-segue svg circle { stroke: var(--bronzo-linea); }
+html[data-colori] .chi-segue svg circle { fill: var(--avorio-2); }
+html[data-colori] :is(.monogramma, .chi-segue svg) text:nth-of-type(1) { fill: var(--inchiostro); }
+html[data-colori] :is(.monogramma, .chi-segue svg) text:nth-of-type(2) { fill: var(--voce); }
+html[data-colori] .velo-menu { background: rgb(var(--k-ombra) / .32); }
+
+/* apertura: il pannello a sinistra e il velo in cima alla foto */
+html[data-colori] .apertura-pannello { background-color: var(--k-pannello-colore); background-image: var(--k-pannello-luce); box-shadow: 40px 50px 90px -50px rgb(var(--k-ombra) / .45); color: var(--k-pannello-testo);
+  --inchiostro: var(--k-pannello-testo); --tenue: var(--k-pannello-tenue); --bronzo-linea: var(--k-pannello-filo); --linea-forte: var(--k-pannello-linea);
+  --k-bottone: var(--k-pannello-bottone); --k-su-bottone: var(--k-pannello-su-bottone); --k-bottone-sopra: var(--k-pannello-bottone-sopra); transition: background-color .9s, color .9s; }
+html[data-colori] .ch-apertura { background-color: var(--k-pannello-colore); background-image: var(--k-pannello-luce); transition: background-color .9s; }
+html[data-colori] .ch-apertura-testo { color: var(--k-pannello-testo); --inchiostro: var(--k-pannello-testo); --tenue: var(--k-pannello-tenue); --bronzo-linea: var(--k-pannello-filo); }
+html[data-colori] :is(.apertura-foto, .ch-apertura-foto)::after { background: linear-gradient(color-mix(in srgb, var(--k-velo-foto) 88%, transparent), color-mix(in srgb, var(--k-velo-foto) 50%, transparent) 55%, transparent); }
+/* L'USCITA DALLA LENTE DELLA VETRINA (17/11/2026, Franco, con l'immagine fatta da GPT, `piani/uscita-chiara-gpt.png`): «siccome la modalità con cui si
+   apre la pagina dello STUDIO ANGELICATA è stata valutata dark mode da GPT. Partiamo dal light mode in allegato per poi farla diventare com'è adesso».
+   Il sito, com'è adesso, è già «scuro» (pannello petrolio): quindi dalla lente esce CHIARO, come nella sua immagine (pannello crema, scritte petrolio,
+   «Ti difendo» ocra, pulsante petrolio, voci scure), e poi sfuma nella versione vera. Qui il «rovescio» della vetrina (classe zenit-rovescio, messa dal
+   pezzo comune in fondo alla pagina) non capovolge i colori: mette questa veste chiara. Il ritorno lo fa il pezzo comune, tutta la pagina insieme. */
+html.zenit-rovescio[data-colori="4"], html.zenit-rovescio[data-colori="4"] :is(img, video, canvas, .zenit-tieni) { filter: none; }
+html.zenit-rovescio[data-colori="4"] {
+  --k-pannello-colore: #f6efe5; --k-pannello-luce: linear-gradient(165deg, rgb(255 255 255 / .55) 0%, rgb(255 255 255 / 0) 55%, rgb(120 90 40 / .1) 100%);
+  --k-pannello-testo: var(--blu); --k-pannello-tenue: var(--blu); --k-pannello-voce: var(--oro-testo); --k-pannello-filo: var(--oro); --k-pannello-linea: rgb(50 40 25 / .32);
+  --k-pannello-bottone: var(--blu); --k-pannello-su-bottone: #fdfbf6; --k-pannello-bottone-sopra: var(--blu-medio);
+  --k-testata-testo: var(--blu); --k-testata-tenue: var(--blu); --k-testata-linea: rgb(50 40 25 / .15); --k-testata-voce: var(--oro-testo);
+  --k-velo-foto: var(--avorio); }
+html.zenit-rovescio[data-colori="4"] .testata:not(.stretta) .filtri button[aria-pressed="true"] { color: var(--oro-testo); --bronzo-linea: var(--oro-testo); }
+html.zenit-rovescio[data-colori="4"] .apertura-pannello { transition: none; }
+
+/* le sezioni chiare */
+html[data-colori] .lastra { background: var(--avorio); }
+html[data-colori] .lastra:nth-child(2) { background: var(--k-carta-2); }
+html[data-colori] .racconta { background: linear-gradient(180deg, var(--avorio), var(--k-racconta)); }
+html[data-colori] :is(.scadenze, .scrivi) { background: var(--k-carta-3); transition: background-color .9s; }
+html[data-colori] .chi { background: var(--k-carta-2); }
+
+/* il cerchio di «Cosa ti è successo?» */
+html[data-colori] .disco { --c-testo: var(--k-disco-testo); --c-tenue: var(--k-disco-tenue); --c-campo: var(--k-disco-campo); --c-segno: var(--k-disco-segno);
+  background: radial-gradient(circle at 34% 28%, var(--k-disco-1), var(--k-disco-2) 66%, var(--k-disco-3)); box-shadow: 0 50px 90px -40px rgb(var(--k-disco-ombra) / .5), inset 0 0 0 1px rgb(255 255 255 / .16); }
+html[data-colori] .parole span { color: var(--k-disco-voce); }
+html[data-colori] .parole textarea:focus { border-bottom-color: var(--k-disco-voce); box-shadow: 0 1px 0 var(--k-disco-voce); }
+html[data-colori] .disco .allarme { background: rgb(255 255 255 / .16); border-color: var(--k-disco-segno); }
+html[data-colori] .frasi li:nth-child(4n+1) button, html[data-colori] .frasi li:nth-child(4n+2) button { background: var(--k-riga); }
+html[data-colori] .frasi li:nth-child(n) button[aria-pressed="true"] { background: var(--k-riga-forte); }
+html[data-colori] .risposta { box-shadow: 0 30px 60px -40px rgb(var(--k-ombra) / .35); }
+html[data-colori] .scadenza { background: color-mix(in srgb, var(--mattone) 8%, transparent); }
+html[data-colori] .scadenza.calma { background: var(--k-riga); }
+
+/* tappe, scadenze, frase, liste */
+html[data-colori] .tempo:not(.legge), html[data-colori] .esito .mancano:not(.poco) { color: var(--k-durata); }
+html[data-colori] .legenda span:nth-child(2) i { background: var(--k-durata) !important; }
+html[data-colori] .tappe-treno::after, html[data-colori] .tappa.passata::before { background: var(--k-filo-tappe); }
+html[data-colori] .esito { box-shadow: 0 40px 70px -50px rgb(var(--k-ombra) / .45); }
+html[data-colori] .manifesto-frase span { color: var(--k-spenta); }
+html[data-colori] .manifesto-frase span.accesa { color: var(--inchiostro); }
+html[data-colori] .ef-sfalsata { --ef-bronzo: var(--k-cornice); }
+html[data-colori] .lista-portare li:nth-child(odd), html[data-colori] .posta li:nth-child(odd) { background: var(--k-riga); }
+html[data-colori] .posta .urgente .etich { color: #fff8f2; }
+html[data-colori] .dove-elenco button:hover { background: var(--k-riga-forte); }
+html[data-colori] .piacere-foto > .piacere-piccola { box-shadow: 0 0 0 8px var(--avorio), 0 30px 50px -24px rgb(var(--k-ombra) / .5); }
+
+/* la mappa e i suoi comandi */
+html[data-colori] .mappa-quadro { background: var(--mappa-fondo, #eee6da); }
+html[data-colori] :is(.mappa-dove, .mappa-viste, .mappa-linee, .nome-mappa:not(.qui)) { background: color-mix(in srgb, var(--gesso) 94%, transparent); }
+html[data-colori] .mappa-tasti button { background: color-mix(in srgb, var(--gesso) 96%, transparent); }
+html[data-colori] :is(.mappa-dove, .mappa-tasti, .mappa-viste, .mappa-scheda) { box-shadow: 0 8px 26px -12px rgb(var(--k-ombra) / .45); }
+html[data-colori] .nome-mappa.qui { color: var(--su-noce); background: var(--k-segno-mappa); }
+html[data-colori] .mappa-goccia { box-shadow: 0 6px 16px rgb(var(--k-ombra) / .4); }
+html[data-colori] .mappa-anello { border-color: color-mix(in srgb, var(--bronzo) 70%, transparent); }
+html[data-colori] .mappa-quadro .maplibregl-ctrl-attrib, html[data-colori] .mappa-quadro .maplibregl-ctrl-attrib a { color: var(--tenue); }
+html[data-colori] .mappa-quadro .maplibregl-ctrl-attrib { background: color-mix(in srgb, var(--gesso) 85%, transparent); }
+
+/* la frase sulla costruzione di passaggio, il riquadro dell'impegno, il fondo */
+html[data-colori] .tendina.passaggio .velo-frase { background: linear-gradient(100deg, color-mix(in srgb, var(--avorio) 90%, transparent) 0%, color-mix(in srgb, var(--avorio) 76%, transparent) 34%, transparent 66%); }
+html[data-colori] .impegno { background: var(--k-impegno); color: var(--k-impegno-testo); }
+html[data-colori] .fondo { background: var(--k-fondo); }
+
+@media (max-width: 720px) {
+  /* sul telefono il cerchio tiene solo il titolo: campo e frasi stanno sulla pagina, con i colori della pagina */
+  html[data-colori] .racconta-griglia .disco { background: none; box-shadow: none; --c-testo: var(--inchiostro); --c-tenue: var(--tenue); --c-campo: var(--gesso); --c-segno: var(--linea-forte); }
+  html[data-colori] .disco-cerchio { background: radial-gradient(circle at 34% 28%, var(--k-disco-1), var(--k-disco-2) 66%, var(--k-disco-3)); box-shadow: 0 40px 70px -36px rgb(var(--k-disco-ombra) / .5);
+    color: var(--k-disco-testo); --c-testo: var(--k-disco-testo); --c-tenue: var(--k-disco-tenue); }
+  html[data-colori] .parole span { color: var(--bronzo); }
+  html[data-colori] .parole textarea:focus { border-bottom-color: var(--bronzo); box-shadow: 0 1px 0 var(--bronzo); }
+  html[data-colori] .disco .allarme { background: color-mix(in srgb, var(--mattone) 8%, transparent); border-color: var(--mattone); }
+  html[data-colori] .frasi li:nth-child(n) button { background: transparent; }
+  html[data-colori] .frasi li:nth-child(odd) button { background: var(--k-riga); }
+  html[data-colori] .frasi li:nth-child(n) button[aria-pressed="true"] { background: var(--k-riga-forte); }
+  html[data-colori] .tendina.passaggio .velo-frase { background: linear-gradient(180deg, color-mix(in srgb, var(--avorio) 92%, transparent) 0%, color-mix(in srgb, var(--avorio) 80%, transparent) 50%, color-mix(in srgb, var(--avorio) 10%, transparent) 100%); }
+  html[data-colori] .tocco { background: color-mix(in srgb, var(--gesso) 94%, transparent); }
+}
+
+/* ============ 4. SOLO PER ALCUNE PROVE ============ */
+/* 3 · Notte: i campi da scrivere e i segni che sulla pagina scura cambierebbero senso */
+html[data-colori="3"] :is(.domanda input[type="date"], .modulo input, .modulo select, .modulo textarea) { color-scheme: dark; }
+html[data-colori="3"] body::after { opacity: .3; }
+html[data-colori="3"] .posta .urgente .etich { background: var(--vino-vivo); border-color: var(--vino-vivo); }
+html[data-colori="3"] .materie { border-block: 1px solid var(--bronzo-linea); }   /* dove bordeaux e blu si toccano, un filo d'oro */
+html[data-colori="3"] .impegno { box-shadow: inset 0 0 0 1px var(--bronzo-linea); }
+html[data-colori="3"] .verticale { color: rgb(244 239 229 / .9); }
+/* le costruzioni di gesso al crepuscolo (le foto con le persone restano accese, come finestre) */
+html[data-colori="3"] :is(.apertura-foto, .ch-apertura-foto) .dentro-foto::after, html[data-colori="3"] .tendina.passaggio .tendina-dentro::after { content: ""; position: absolute; inset: 0; z-index: 1; background: #2a3f7c; mix-blend-mode: multiply; opacity: .62; pointer-events: none; }
+html[data-colori="3"] .mappa .maplibregl-canvas { filter: invert(.9) hue-rotate(180deg) saturate(.7) brightness(.95); }   /* per la prova: la mappa «di notte» con un filtro; se vince Notte si rifanno i suoi colori */
+
+/* 4 · Due codici: ogni cosa del civile è blu, ogni cosa del penale è bordeaux */
+html[data-colori="4"] .filtri button::before { transform: none; opacity: .5; }
+html[data-colori="4"] .filtri button[aria-pressed="true"]::before { opacity: 1; }
+html[data-colori="4"] .filtri button[data-area="civile"] { --bronzo-linea: var(--blu-medio); }
+html[data-colori="4"] .filtri button[data-area="penale"] { --bronzo-linea: var(--vino-voce); }
+html[data-colori="4"] .filtri button[data-area="civile"][aria-pressed="true"] { color: var(--blu-medio); }
+html[data-colori="4"] .filtri button[data-area="penale"][aria-pressed="true"] { color: var(--vino-voce); }
+html[data-colori="4"] .frasi li:is([data-k="separazione"], [data-k="eredita"], [data-k="sfratto"], [data-k="incidente"], [data-k="lettera"]) { --bronzo: var(--blu-medio); }
+html[data-colori="4"] .frasi li:is([data-k="denunciato"], [data-k="querela"], [data-k="decreto"]) { --bronzo: var(--vino-voce); }
+html[data-colori="4"] .frasi:has(li:is([data-k="separazione"], [data-k="eredita"], [data-k="sfratto"], [data-k="incidente"], [data-k="lettera"]) button[aria-pressed="true"]) ~ .risposta { --bronzo: var(--blu-medio); --bronzo-linea: var(--blu-medio); --voce: var(--blu-medio); --k-bottone: var(--blu); --k-bottone-sopra: var(--blu-medio); }
+html[data-colori="4"] .frasi:has(li:is([data-k="denunciato"], [data-k="querela"], [data-k="decreto"]) button[aria-pressed="true"]) ~ .risposta { --bronzo: var(--vino-voce); --bronzo-linea: var(--vino-voce); --voce: var(--vino-voce); --k-bottone: var(--vino); --k-bottone-sopra: var(--vino-alto); }
+html[data-colori="4"] .materie { background: var(--blu); --su-noce-tenue: var(--blu-su); transition: background-color .9s; }
+html[data-colori="4"] .materie:has(.interruttore [data-lato="penale"][aria-selected="true"]) { background: var(--vino); --su-noce-tenue: var(--vino-su); }
+html[data-colori="4"] :is(.tappe-fermo, .calcolo, #portare) { --bronzo: var(--blu-medio); --voce: var(--blu-medio); --k-bottone: var(--blu); --k-bottone-sopra: var(--blu-medio); --k-filo-tappe: var(--blu-medio); }
+html[data-colori="4"] .tappe-fermo:has(#schede-tappe button:is([data-k="denunciato"], [data-k="querela"], [data-k="decreto"])[aria-selected="true"]),
+html[data-colori="4"] .calcolo:has(#schede-calcolo button:is([data-c="querela"], [data-c="decreto"], [data-c="indagini"])[aria-selected="true"]),
+html[data-colori="4"] #portare:has(#schede-portare button:is([data-k="denunciato"], [data-k="querela"], [data-k="decreto"])[aria-selected="true"]) { --bronzo: var(--vino-voce); --voce: var(--vino-voce); --k-bottone: var(--vino); --k-bottone-sopra: var(--vino-alto); --k-filo-tappe: var(--vino-voce); }
+html[data-colori="4"] .scadenze { background: var(--blu-carta); }
+html[data-colori="4"] .scadenze:has(#schede-calcolo button:is([data-c="querela"], [data-c="decreto"], [data-c="indagini"])[aria-selected="true"]) { background: var(--vino-carta); }
+html[data-colori="4"] .due-liste > div:nth-child(1) { --bronzo: var(--blu-medio); --bronzo-linea: var(--blu-medio); }
+html[data-colori="4"] .due-liste > div:nth-child(2) { --bronzo: var(--vino-voce); --bronzo-linea: var(--vino-voce); }
+
+/* «Per capire»: pagina senza pannello d'apertura (la testata tiene i colori della pagina); ogni pezzo ha il colore del suo codice */
+html[data-colori] body.senza-pannello .testata:not(.stretta) { --inchiostro: inherit; --tenue: inherit; --linea: inherit; --voce: inherit; color: inherit; }
+html[data-colori] .pc-testa h1 em { color: var(--voce); }
+html[data-colori] .pc-filtri button:hover { background: var(--k-riga-forte); }
+html[data-colori] .giornale { --blu-g: var(--blu-medio); }
+html[data-colori="4"] :is(.pezzo, .pc-filtri button)[data-m="civile"] { --bronzo: var(--blu-medio); --bronzo-linea: var(--blu-medio); }
+html[data-colori="4"] :is(.pezzo, .pc-filtri button)[data-m="penale"] { --bronzo: var(--vino-voce); --bronzo-linea: var(--vino-voce); }
+
+/* ============ 5. I PULSANTI DELLA PROVA (in basso a sinistra, solo con ?colori= nell'indirizzo) ============ */
+.prova-colori { position: fixed; left: 14px; bottom: 14px; z-index: 400; display: flex; align-items: center; gap: 2px; padding: 5px 6px 5px 14px; border-radius: 999px;
+  background: rgb(22 22 26 / .92); color: #e9e6df; font: 600 12px/1 "Manrope", "Segoe UI", system-ui, sans-serif; box-shadow: 0 10px 30px -10px rgb(0 0 0 / .6); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.prova-colori > span { letter-spacing: .14em; text-transform: uppercase; font-size: 10px; color: #a8a49b; margin-right: 6px; }
+.prova-colori button { border: 0; background: transparent; color: inherit; font: inherit; padding: 8px 11px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+.prova-colori button:hover { background: rgb(255 255 255 / .12); }
+.prova-colori button[aria-pressed="true"] { background: #efeae0; color: #17171a; }
+.prova-colori i { width: 1px; height: 18px; background: rgb(255 255 255 / .22); margin: 0 6px; }
+@media (max-width: 720px) { .prova-colori { left: 8px; right: 8px; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); overflow-x: auto; padding-left: 10px; } .prova-colori > span { display: none; } }
+@media print { .prova-colori { display: none; } }

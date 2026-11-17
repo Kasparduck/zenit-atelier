@@ -1,0 +1,1386 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Hora Vera · Visioni</title>
+<!-- Meridiano, atelier di orologeria (di fantasia). Piano «due tempi: adesso e allora», scheda in progetti/struttura-siti/MIX.md.
+     PROVA DEL REGISTRO (ora XV). Ogni orologio è un capitolo: <section class="registro" data-modo="..." data-allora="anno"> con dentro un palco che resta fermo.
+     Montati: il rubino e oro con gli ussari alati (modo «carica», filmato a tutto schermo, l'orologio scende in diagonale), la tigre con lo spadaccino
+     (modo «accanto») e il cronografo cuoio con il volo sulla Manica (modo «fregio», filmato a tutta larghezza). Ogni modo ha la sua traiettoria.
+     Regole di Franco (12/11/2026 sera), valide per ogni orologio che passa su un filmato:
+     - fuori dal filmato l'orologio è pieno; quando entra sul filmato diventa semitrasparente, così il filmato si vede ancora; negli ultimi secondi torna pieno;
+     - le lancette girano all'indietro vorticosamente (le lancette sono quelle vere dell'immagine, staccate con strumenti/lancette-da-immagine.js
+       o lancette-a-sagoma.js; dietro ognuna una scia di copie che partono qualche millisecondo dopo: ferme coincidono, in corsa fanno il ventaglio).
+     I quattro tempi (arriva, corsa, sosta, si riparte) partono a soglie di scorrimento e poi si muovono da soli, con transizioni di transform e opacity.
+     Dopo ogni capitolo l'INTERMEZZO (idea di Franco, scelte sue: A1 e B1): il nome dell'orologio arriva lungo rotte a puntini, poi la confezione socchiusa
+     con il sigillo che sale dal nero e si accende. Le prove con le altre varianti stanno in ../piani/intermezzo.html.
+     Per le foto di controllo: ?stato=s3&fermo=1 (posa finale); ?cap=2&stato=s2&tempo=3000 (il capitolo 2 fermato a 3 secondi dalla partenza della corsa);
+     ?parte=2&tempo=4000 (la parte 2 dell'intermezzo fermata a 4 secondi: 1 e 3 sono i nomi, 2 e 4 le confezioni). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root { --blu: #8fb0ee; --buio: #0a0908; --avorio: #ece5d8; --tenue: #9c9387; --spento: #5d564d; --oro: #d9b08c; --linea: rgb(236 229 216 / .14);
+  --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif; --sans: "Manrope", "Segoe UI", system-ui, sans-serif; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; background: var(--buio); }
+body { margin: 0; background: var(--buio); color: var(--avorio); font: 400 17px/1.6 var(--sans); overflow-wrap: break-word; -webkit-font-smoothing: antialiased; }
+p { margin: 0; }
+
+/* i punti fermi: il nome, la commissione, la scala delle ore */
+.testa { position: fixed; z-index: 30; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: flex-start; padding: 22px clamp(18px, 4.2vw, 70px); pointer-events: none; }
+.testa > * { pointer-events: auto; }
+.marchio { display: inline-block; font: 500 .82rem/1 var(--sans); letter-spacing: .46em; color: var(--avorio); text-decoration: none; }
+.marchio::after { content: ""; display: block; width: 100%; height: 1px; margin-top: 16px; background: var(--oro); opacity: .7; }
+.menu ol { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 9px; transition: opacity .6s; }
+.menu li a { display: inline-flex; align-items: baseline; gap: 16px; padding: 2px 0; font: 300 clamp(1.3rem, 1.9vw, 1.7rem)/1.15 var(--serif); color: var(--avorio); text-decoration: none; transition: color .4s; }
+.menu li a b { min-width: 2.1em; font: 600 .58rem/1 var(--sans); letter-spacing: .22em; color: var(--oro); }
+.menu li a.qui { font-style: italic; color: var(--oro); }
+.menu li a:hover { color: var(--oro); }
+/* dentro i capitoli le tre voci spariscono del tutto e non prendono il mouse: a .16 restavano come scritte sbiadite sopra la data di una scena
+   (Victoria: «N. 049 · VICTORIA» sopra «Visioni», il «1522» accanto a «L'atelier»; trovato dal giudice il 15/11). Resta il marchio, che porta
+   alla prima pagina con il menu intero; in cima alla pagina il menu si vede tutto. */
+body.dentro .menu ol { opacity: 0; pointer-events: none; }
+/* il contenuto di #fine è ancora di prova: si vede solo con ?prova=1 (l'altezza della parte non cambia) */
+html:not(.prova) .coda > :not(.occhio) { visibility: hidden; }
+.commissione { font: 600 .68rem/1 var(--sans); letter-spacing: .22em; text-transform: uppercase; color: var(--avorio); text-decoration: none; border: 1px solid var(--linea); padding: 11px 16px; }
+.scala { position: fixed; z-index: 20; right: clamp(10px, 1.5vw, 26px); top: 50%; transform: translateY(-50%); display: grid; gap: 26px; justify-items: end; font: 400 .92rem/1 var(--serif); color: var(--spento); }
+.scala span { display: flex; align-items: center; gap: 8px; }
+.scala span::after { content: ""; width: 10px; height: 1px; background: currentColor; }
+.scala .qui { color: var(--oro); }
+.scala .qui::after { width: 22px; }
+
+/* il filo dell'attesa (con il motore dello scorrimento): compare a chi spinge contro un'animazione non finita e si riempie finché la pagina riparte.
+   Franco, 16/11/2026, alla lettera: «sulla pagina "Visioni" fammi la righina in basso che scorre un filino più spessa e dello stesso colore di alfa,
+   beta, etc. Inoltre anche lì metti la percentuale di avanzamento del filmato e la parola "SALTA"». Quindi: alto 2 px (era 1), nel blu di α e β
+   (--blu) al posto dell'oro; a destra la percentuale; sotto, «Salta», che si preme. Per farle posto il filo è salito di 20 px. */
+.attesa { position: fixed; z-index: 40; left: 50%; bottom: 46px; width: 132px; height: 2px; margin-left: -66px; background: var(--linea); opacity: 0; transition: opacity .5s; pointer-events: none; }
+.attesa i { position: absolute; inset: 0; background: var(--blu); transform-origin: 0 50%; transform: scaleX(0); }
+.attesa b { position: absolute; left: calc(100% + 12px); top: 50%; transform: translateY(-50%); font: 600 .64rem/1 var(--sans); letter-spacing: .1em; color: var(--blu); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.attesa.si { opacity: 1; }
+.salta-filo { position: fixed; z-index: 41; left: 50%; bottom: 10px; transform: translate(-50%, 6px); padding: 9px 20px; background: none; border: 0; color: var(--blu);
+  font: 600 .6rem/1 var(--sans); letter-spacing: .36em; text-indent: .36em; text-transform: uppercase; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .5s, transform .5s, color .3s; }
+.salta-filo.si { opacity: .9; transform: translate(-50%, 0); pointer-events: auto; }
+.salta-filo:hover, .salta-filo:focus-visible { color: var(--avorio); opacity: 1; outline: none; }
+
+/* LA BARRA NOSTRA (con il motore dello scorrimento, acceso di serie dal 13/11). La barra di Windows la muove il browser e nessuna pagina la può
+   trattenere senza strappi (Franco scorre trascinandola: visto il 13/11). Si nasconde, e al suo posto c'è questa: si trascina e si clicca come quella vera,
+   ma la pagina la segue al suo passo e rallenta dove c'è un'animazione. Il pomo segna dove si trova davvero la pagina. */
+html.motore { scrollbar-width: none; }
+html.motore::-webkit-scrollbar { display: none; }
+/* la zona in cui si prende la barra è larga 76 px (13/11: Franco la cercava dove ci sono le ore, a 40-70 px dal bordo, e con 24 px la mancava) */
+.barra { position: fixed; z-index: 45; top: 0; right: 0; bottom: 0; width: 76px; touch-action: none; }
+.barra::before { content: ""; position: absolute; top: 12px; bottom: 12px; right: 8px; width: 1px; background: var(--linea); }
+.barra i { position: absolute; top: 12px; right: 6px; width: 5px; border-radius: 3px; background: rgb(217 176 140 / .5); transition: background .25s, width .25s, right .25s; will-change: transform; }
+.barra:hover i, .barra.presa i { background: var(--oro); width: 7px; right: 5px; }
+
+/* la soglia del capitolo */
+.soglia { min-height: 100vh; min-height: 100svh; display: grid; place-content: center; text-align: center; padding: 120px 24px 80px; background: radial-gradient(ellipse 70% 60% at 50% 55%, #17130f, var(--buio) 75%); }
+.occhio { font: 600 .7rem/1.4 var(--sans); letter-spacing: .3em; text-transform: uppercase; color: var(--tenue); margin-bottom: 22px; }
+.soglia h1 { font: 300 clamp(3.4rem, 11vw, 9rem)/.95 var(--serif); margin: 0; letter-spacing: -.01em; }
+.soglia .detto { font: 300 clamp(1.25rem, 2.3vw, 1.75rem)/1.4 var(--serif); font-style: italic; color: var(--oro); max-width: 30ch; margin: 30px auto 0; }
+.scorri { margin-top: 64px; font: 600 .64rem/1 var(--sans); letter-spacing: .3em; text-transform: uppercase; color: var(--spento); }
+.scorri::after { content: ""; display: block; width: 1px; height: 46px; margin: 14px auto 0; background: linear-gradient(var(--tenue), transparent); }
+
+/* il registro: ogni orologio è una parte alta, con dentro un palco che resta fermo.
+   --lento = quanto dura lo spostamento dell'orologio; --corsa = quanto durano lancette e data (7,2 secondi quando si torna indietro nel tempo) */
+.registro { position: relative; height: 480vh; }
+.palco { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; isolation: isolate;
+  --x: 96%; --y: 8%; --giro: -30deg; --grande: .26; --vista: 0; --ore: 0deg; --minuti: 0deg; --scena: 0; --lento: 3.8s; --corsa: 2.4s;
+  --presto: cubic-bezier(.3, .05, .15, 1); --tardi: cubic-bezier(.7, 0, .25, 1); }
+/* La scena ha un protagonista, e l'orologio pieno non lo copre mai (Franco, 12/11): data-fuoco dice dov'è nel filmato (in % della larghezza),
+   e la scena si sposta perché cada nella fascia libera, al 64% dello schermo; la maschera è centrata su di lui. */
+.scena { position: absolute; top: 0; left: var(--sx, 14%); width: 108%; height: 100%; object-fit: cover; opacity: var(--scena); transform: scale(1.05); transform-origin: var(--fuoco, 47%) 50%; transition: opacity 3.2s ease, transform 9s ease-out;
+  -webkit-mask-image: radial-gradient(ellipse 48% 94% at var(--fuoco, 47%) 50%, #000 36%, transparent 100%); mask-image: radial-gradient(ellipse 48% 94% at var(--fuoco, 47%) 50%, #000 36%, transparent 100%); }
+.velo { position: absolute; inset: 0; background: radial-gradient(ellipse 40% 56% at var(--vx, 38%) 50%, rgb(217 160 120 / .15), transparent 72%); opacity: 0; transition: opacity 2.6s; pointer-events: none; }
+
+.righe { position: absolute; z-index: 5; left: clamp(18px, 4.2vw, 70px); top: 50%; transform: translateY(-50%); margin: 0; padding: 0; list-style: none; width: min(220px, 15vw); transition: opacity 1.2s; }
+.righe::before { content: "Registro"; display: block; font: 600 .64rem/1 var(--sans); letter-spacing: .3em; text-transform: uppercase; color: var(--tenue); margin-bottom: 16px; }
+.righe li { display: grid; grid-template-columns: 44px 1fr; align-items: baseline; gap: 8px; padding: 9px 0; border-top: 1px solid var(--linea); color: var(--spento); transition: color .8s; }
+.righe li b { font: 600 .62rem/1 var(--sans); letter-spacing: .12em; }
+.righe li span { font: 400 1.08rem/1.15 var(--serif); }
+.righe li.tua span { font-style: italic; }
+.righe li.accesa { color: var(--spento); }
+.palco:not([data-stato="s0"]):not([data-stato="s4"]) .righe li.accesa { color: var(--avorio); }
+.palco:not([data-stato="s0"]):not([data-stato="s4"]) .righe li.accesa b { color: var(--oro); }
+
+/* IL VOLO IN CURVA (Franco, 13/11: «farli entrare da tutti e quattro gli angoli seguendo una specie di curva… ogni orologio entra da un angolo diverso
+   per posizionarsi in quello opposto», «come le tracce curvilinee che si formano intorno alle scritte Ming o Wright»). La curva nasce da due movimenti
+   uno dentro l'altro: .volo porta l'orologio in altezza, lo raddrizza e lo fa crescere con l'andamento approvato (--presto); .orologio lo porta di lato
+   con un andamento che parte dopo (--tardi). Così prima sale o scende sul protagonista, poi scivola verso l'angolo opposto: la freccia della curva
+   è circa il 17-20% del tragitto, come nelle rotte a puntini dei nomi. Gli angoli, in ordine: 1 alto-destra, 2 basso-destra, 3 basso-sinistra, 4 alto-sinistra. */
+.orologio { position: absolute; z-index: 3; left: 44%; top: 50%; height: 150vh; aspect-ratio: var(--forma, 1024 / 1536); opacity: var(--vista);
+  transform: translate(-50%, -50%) translateX(var(--x)); transition: transform var(--lento) var(--tardi), opacity .9s; will-change: transform; }
+.volo { position: absolute; inset: 0; perspective: 1700px; transform: translateY(var(--y)) rotate(var(--giro)) scale(var(--grande)); transition: transform var(--lento) var(--presto); will-change: transform; }
+.corpo { position: absolute; inset: 0; transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .6s ease-out; }
+.corpo img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; user-select: none; -webkit-user-drag: none; }
+.lancetta { transform-origin: var(--perno, 49.76% 44.92%); transition: transform var(--corsa) cubic-bezier(.45, 0, .15, 1) var(--attesa, 0s); will-change: transform; }
+.lancetta.ore { transform: rotate(var(--ore)); }
+.lancetta.minuti { transform: rotate(var(--minuti)); }
+.lancetta.secondi { transform: rotate(var(--secondi, 0deg)); }
+.lancetta.secondi.scia { --passo: 5ms; }
+/* la scia: copie della lancetta che partono un attimo dopo. Ferme stanno esattamente sotto la lancetta; quando gira forte restano indietro e fanno il ventaglio */
+.scia { opacity: calc(.4 - var(--k) * .055); transition-delay: calc(var(--attesa, 0s) + var(--k) * var(--passo, 7ms)); }
+.lancetta.ore.scia { --passo: 15ms; opacity: calc(.4 - var(--k) * .08); }
+.riflesso { position: absolute; inset: 0; -webkit-mask-image: var(--sagoma); mask-image: var(--sagoma); -webkit-mask-size: 100% 100%; mask-size: 100% 100%;
+  background: linear-gradient(104deg, transparent 43%, rgb(255 238 214 / .42) 50%, transparent 57%) no-repeat; background-size: 320% 100%; background-position: 135% 0; opacity: 0; pointer-events: none; }
+.palco[data-stato="s3"] .riflesso { opacity: 1; background-position: -35% 0; transition: background-position 1.9s ease-in-out .5s, opacity .3s; }
+
+.tempo { position: absolute; z-index: 6; right: clamp(40px, 6vw, 110px); top: 50%; transform: translateY(-50%); text-align: right; width: min(17.5vw, 300px); }
+.tempo::before { content: ""; position: absolute; z-index: -1; inset: -70px -60px -70px -40px; background: radial-gradient(ellipse 60% 60% at 62% 50%, rgb(10 9 8 / var(--alone, .62)), transparent 100%); opacity: var(--scena); transition: opacity 2s; pointer-events: none; }
+.tempo .n { font: 600 .66rem/1.4 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: var(--tenue); opacity: 0; transition: opacity .9s; margin-bottom: 12px; }
+.tempo .n b { color: var(--oro); font-weight: 600; }
+.anno { display: flex; justify-content: flex-end; font: 300 clamp(3.4rem, 7.2vw, 7.6rem)/1.2 var(--serif); font-variant-numeric: lining-nums tabular-nums; letter-spacing: .01em; height: 1.2em; overflow: hidden; opacity: 0; transition: opacity .9s; }
+.cifra { display: block; height: 1.2em; overflow: hidden; }
+.nastro { display: block; transition: transform var(--corsa) cubic-bezier(.45, 0, .2, 1) var(--attesa, 0s); will-change: transform; }
+.nastro i { display: block; height: 1.2em; font-style: normal; }
+.luogo { font: 600 .66rem/1.4 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: var(--oro); margin-top: 14px; opacity: 0; transition: opacity 1.4s; }
+.per { font: 300 clamp(1.15rem, 1.55vw, 1.45rem)/1.35 var(--serif); margin-top: 26px; opacity: 0; transform: translateY(10px); transition: opacity 1.4s .5s, transform 1.4s .5s; }
+.per em { font-style: italic; color: var(--oro); }
+.conta { display: none; }
+
+/* i quattro tempi */
+.palco[data-stato="s1"] { --x: 24%; --y: 7%; --giro: -26deg; --grande: .3; --vista: 1; }
+.palco[data-stato="s2"], .palco[data-stato="s3"] { --x: -6vw; --y: 5%; --giro: 0deg; --grande: .84; --vista: 1; --ore: -1440deg; --minuti: -10800deg; --secondi: -16200deg; --corsa: 7.2s; }
+.palco[data-stato="s2"] { --scena: .75; }
+.palco[data-stato="s3"] { --scena: .5; }
+.palco[data-stato="s4"] { --x: -34%; --y: -74%; --giro: 20deg; --grande: .28; --vista: 0; --lento: 1.6s; --corsa: 1.6s; }
+.palco[data-stato="s1"] .n, .palco[data-stato="s2"] .n, .palco[data-stato="s3"] .n,
+.palco[data-stato="s1"] .anno, .palco[data-stato="s2"] .anno, .palco[data-stato="s3"] .anno { opacity: 1; }
+.palco[data-stato="s2"] .scena, .palco[data-stato="s3"] .scena { transform: scale(1); }
+.palco[data-stato="s3"] .velo, .palco[data-stato="s3"] .luogo { opacity: 1; }
+.palco[data-stato="s3"] .per { opacity: 1; transform: none; }
+/* LE SCRITTE PRIMA (Franco, 13/11, su Siviglia e su Padova: «le scritte potrebbero apparire un po' prima nel filmato»): luogo e frase non aspettano
+   più la sosta; arrivano a metà corsa, 3,4 e 4,2 secondi dopo l'inizio, mentre il filmato va e l'orologio è ancora trasparente. Vale per tutte le scene. */
+.palco[data-stato="s2"] .luogo { opacity: 1; transition-delay: 3.4s; }
+.palco[data-stato="s2"] .per { opacity: 1; transform: none; transition-delay: 4.2s, 4.2s; }
+.palco[data-stato="s4"] .orologio { transition: transform 1.6s cubic-bezier(.5, 0, .8, .4), opacity 1s .3s; }
+.palco[data-stato="s4"] .volo { transition: transform 1.6s cubic-bezier(.5, 0, .8, .4); }
+
+@media (min-width: 761px) {
+  /* MODO «ACCANTO» (la tigre), angolo 2: entra dal basso a destra, sale sullo spadaccino facendosi grande e trasparente, poi scivola in alto a sinistra.
+     I tempi e la grandezza sono quelli approvati; di nuovo ci sono solo da dove viene e la posa, 7 centesimi di schermo più in alto. */
+  .palco[data-modo="accanto"] { --x: 50vw; --y: 62vh; --giro: -34deg; --grande: .2; }
+  .palco[data-modo="accanto"][data-stato="s1"] { --x: 33vw; --y: 30vh; --giro: -24deg; --grande: .27; }
+  .palco[data-modo="accanto"][data-stato="s2"], .palco[data-modo="accanto"][data-stato="s3"] { --x: -6vw; --y: .5vh; --giro: 0deg; --grande: .84; }
+  .palco[data-modo="accanto"][data-stato="s4"] { --x: -34vh; --y: -111vh; --giro: 20deg; --grande: .28; }
+}
+
+/* MODO «FREGIO» (la Manica): il filmato è una fascia a tutta larghezza; l'orologio parte piccolo e pieno dal buio in basso a sinistra, sale sul filmato
+   crescendo e facendosi trasparente (l'aereo si vede attraverso), poi si posa a destra dell'aereo e lì torna pieno. Solo sul computer: sul telefono vale lo schema comune. */
+@media (min-width: 761px) {
+  /* angolo 3: dal basso a sinistra, sale sull'aereo, poi scivola in alto a destra (la posa è 7 centesimi di schermo più in alto di prima) */
+  .palco[data-modo="fregio"] { --x: -30vw; --y: 54vh; --giro: 34deg; --grande: .18; --vx: 59%; --alone: .82; }
+  .palco[data-modo="fregio"][data-stato="s1"] { --x: -24vw; --y: 35vh; --giro: 24deg; --grande: .23; --lento: 2.4s; }
+  .palco[data-modo="fregio"][data-stato="s2"], .palco[data-modo="fregio"][data-stato="s3"] { --x: 15vw; --y: -6vh; --giro: 0deg; --grande: .68; --lento: 7.2s;
+    --presto: cubic-bezier(.25, .4, .3, 1); --tardi: cubic-bezier(.6, .05, .3, 1); }
+  .palco[data-modo="fregio"][data-stato="s2"] { --scena: .9; }
+  .palco[data-modo="fregio"][data-stato="s3"] { --scena: .8; }
+  .palco[data-modo="fregio"][data-stato="s4"] { --x: 46vw; --y: -66vh; --giro: 22deg; --grande: .22; --lento: 1.6s; }
+  .palco[data-modo="fregio"] .scena { left: 0; width: 100%; top: 50%; height: min(42.86vw, 72vh); transform: translateY(-50%) scale(1.06); transform-origin: 30% 50%;
+    -webkit-mask-image: linear-gradient(transparent, #000 11%, #000 86%, transparent), linear-gradient(90deg, #000 66%, transparent 97%); -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(transparent, #000 11%, #000 86%, transparent), linear-gradient(90deg, #000 66%, transparent 97%); mask-composite: intersect; }
+  .palco[data-modo="fregio"][data-stato="s2"] .scena, .palco[data-modo="fregio"][data-stato="s3"] .scena { transform: translateY(-50%) scale(1); }
+  .palco[data-modo="fregio"][data-stato="s2"] .righe, .palco[data-modo="fregio"][data-stato="s3"] .righe { opacity: 0; }
+
+  /* MODO «CARICA» (gli ussari alati): il filmato riempie lo schermo e sfuma nel buio a sinistra; l'orologio entra pieno dall'alto a destra, scende in diagonale
+     attraverso i cavalieri facendosi trasparente (il primo cavaliere si vede dentro il quadrante) e si posa pieno a sinistra, sul fumo; la data sta in basso a sinistra. */
+  /* I TEMPI SONO QUELLI DELLA TIGRE, che Franco ha approvato (13/11, dopo due sue bocciature: «sale anzitempo e il filmato quasi non si vede scorrere», poi
+     «più sfasato che mai rispetto agli altri»): niente attese e niente discese lente inventate da me. L'orologio arriva piccolo nel buio (s1), come gli altri;
+     alla corsa (s2) si sposta in 3,8 secondi con la stessa curva della tigre (parte piano: intanto il filmato si è già acceso, in 1,2 secondi e a piena forza,
+     perché è un filmato scuro); esce verso l'alto, come gli altri. Di diverso c'è solo da dove viene: dall'alto a destra, in diagonale.
+     Misurato con lo scorrimento vero: node strumenti/scorri-come-franco.js (gli stati forzati non mostrano i tempi). */
+  /* angolo 1: dall'alto a destra, scende sui cavalieri, poi scivola in basso a sinistra (la posa è 9 centesimi di schermo più in basso di prima) */
+  .palco[data-modo="carica"] { --x: 46vw; --y: -58vh; --giro: 34deg; --grande: .16; --vx: 34%; --alone: .8; }
+  .palco[data-modo="carica"][data-stato="s1"] { --x: 33vw; --y: -31vh; --giro: 24deg; --grande: .22; }
+  .palco[data-modo="carica"][data-stato="s2"], .palco[data-modo="carica"][data-stato="s3"] { --x: -8.5vw; --y: 10vh; --giro: 0deg; --grande: .85; }
+  .palco[data-modo="carica"][data-stato="s2"] { --scena: 1; }
+  .palco[data-modo="carica"][data-stato="s3"] { --scena: .94; }
+  .palco[data-modo="carica"][data-stato="s4"] { --x: -30vw; --y: -74vh; --giro: -20deg; --grande: .24; --lento: 1.6s; }
+  .palco[data-modo="carica"] .scena { left: 0; width: 100%; transition: opacity 1.2s ease, transform 9s ease-out;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 22%), linear-gradient(transparent, #000 12%, #000 88%, transparent); -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(90deg, transparent 0%, #000 22%), linear-gradient(transparent, #000 12%, #000 88%, transparent); mask-composite: intersect; }   /* il filmato arriva fin sotto l'orologio: alla fine sta SULLA scena, non accanto */
+  .palco[data-modo="carica"][data-stato="s2"] .righe, .palco[data-modo="carica"][data-stato="s3"] .righe { opacity: 0; }
+  .palco[data-modo="carica"] .tempo { right: auto; left: clamp(18px, 4.2vw, 70px); top: auto; bottom: 8vh; transform: none; text-align: left; width: min(16vw, 280px); }
+  .palco[data-modo="carica"] .tempo::before { inset: -70px -50px -70px -70px; background: radial-gradient(ellipse 62% 50% at 38% 50%, rgb(10 9 8 / var(--alone, .62)), transparent 100%); }   /* la data è a sinistra: l'alone sfuma verso destra, senza bordo */
+  .palco[data-modo="carica"] .anno { justify-content: flex-start; font-size: clamp(3rem, 6.2vw, 6.6rem); }
+  .palco[data-modo="carica"][data-stato="s1"] .n, .palco[data-modo="carica"][data-stato="s1"] .anno { opacity: 0; }
+
+  /* MODO «POLO» (il Polo Sud, 13/11): il quarto angolo del giro. Il filmato, specchiato, riempie lo schermo (l'esploratore a sinistra, la tenda a destra);
+     l'orologio entra dall'alto a sinistra, scende sull'esploratore facendosi trasparente, poi scivola e si posa in basso a destra, lontano da lui;
+     la data sta in alto a destra, nel cielo, dove l'orologio non passa. Tempi della tigre, come tutti. */
+  .palco[data-modo="polo"] { --x: -46vw; --y: -58vh; --giro: -34deg; --grande: .16; --vx: 66%; --alone: .78; }
+  .palco[data-modo="polo"][data-stato="s1"] { --x: -33vw; --y: -31vh; --giro: -24deg; --grande: .22; }
+  .palco[data-modo="polo"][data-stato="s2"], .palco[data-modo="polo"][data-stato="s3"] { --x: 22vw; --y: 9vh; --giro: 0deg; --grande: .62; }
+  .palco[data-modo="polo"][data-stato="s2"] { --scena: 1; }
+  .palco[data-modo="polo"][data-stato="s3"] { --scena: .94; }
+  .palco[data-modo="polo"][data-stato="s4"] { --x: 34vw; --y: -74vh; --giro: 20deg; --grande: .24; --lento: 1.6s; }
+  .palco[data-modo="polo"] .scena { left: 0; width: 100%; transition: opacity 1.2s ease, transform 9s ease-out;
+    -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); }
+  .palco[data-modo="polo"][data-stato="s2"] .righe, .palco[data-modo="polo"][data-stato="s3"] .righe { opacity: 0; }
+  .palco[data-modo="polo"] .tempo { top: 10vh; transform: none; }   /* in alto a destra, nel cielo: l'orologio entra da sinistra e non ci passa mai */
+  .palco[data-modo="polo"] .anno { font-size: clamp(3rem, 6.2vw, 6.6rem); }
+  .palco[data-modo="polo"][data-stato="s1"] .n, .palco[data-modo="polo"][data-stato="s1"] .anno { opacity: 0; }
+
+  /* MODO «RITORNO» (Siviglia, 8 settembre 1522: torna la nave del primo giro del mondo; 13/11): il quinto orologio, di nuovo dall'angolo 1 (alto-destra).
+     Il filmato non riempie lo schermo: è una fascia larga a destra che sfuma nel buio a sinistra; la nave viene avanti dalla nebbia e cresce verso sinistra
+     (alla fine va dal 43% al 97% dello schermo). L'orologio scende sulla nave facendosi trasparente, poi scivola e si posa in basso a sinistra, sull'acqua,
+     prima della prua; la data sta in alto a sinistra, dove l'orologio non passa. Il filmato va UNA volta e resta sull'ultimo fotogramma (con il giro
+     continuo la nave tornerebbe piccola di colpo nel mezzo della sosta). Tempi della tigre, come tutti. */
+  .palco[data-modo="ritorno"] { --x: 46vw; --y: -58vh; --giro: 34deg; --grande: .16; --vx: 28%; --alone: .8; }
+  .palco[data-modo="ritorno"][data-stato="s1"] { --x: 33vw; --y: -31vh; --giro: 24deg; --grande: .22; }
+  .palco[data-modo="ritorno"][data-stato="s2"], .palco[data-modo="ritorno"][data-stato="s3"] { --x: -17vw; --y: 14vh; --giro: 0deg; --grande: .48; }
+  .palco[data-modo="ritorno"][data-stato="s2"] { --scena: 1; }
+  .palco[data-modo="ritorno"][data-stato="s3"] { --scena: .94; }
+  .palco[data-modo="ritorno"][data-stato="s4"] { --x: -30vw; --y: -74vh; --giro: -20deg; --grande: .24; --lento: 1.6s; }
+  .palco[data-modo="ritorno"] .scena { left: 18vw; width: 82vw; top: 50%; height: min(35.14vw, 80vh); transform: translateY(-50%) scale(1.04); transform-origin: 70% 50%; transition: opacity 1.2s ease, transform 9s ease-out;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%), linear-gradient(transparent, #000 10%, #000 90%, transparent); -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(90deg, transparent, #000 18%), linear-gradient(transparent, #000 10%, #000 90%, transparent); mask-composite: intersect; }
+  .palco[data-modo="ritorno"][data-stato="s2"] .scena, .palco[data-modo="ritorno"][data-stato="s3"] .scena { transform: translateY(-50%) scale(1); }
+  .palco[data-modo="ritorno"][data-stato="s2"] .righe, .palco[data-modo="ritorno"][data-stato="s3"] .righe { opacity: 0; }
+  .palco[data-modo="ritorno"] .tempo { right: auto; left: clamp(18px, 4.2vw, 70px); top: 14vh; transform: none; text-align: left; width: min(14vw, 260px); }
+  .palco[data-modo="ritorno"] .tempo::before { inset: -70px -50px -70px -70px; background: radial-gradient(ellipse 62% 50% at 38% 50%, rgb(10 9 8 / var(--alone, .62)), transparent 100%); }
+  .palco[data-modo="ritorno"] .anno { justify-content: flex-start; font-size: clamp(3rem, 6.2vw, 6.6rem); }
+  .palco[data-modo="ritorno"][data-stato="s1"] .n, .palco[data-modo="ritorno"][data-stato="s1"] .anno { opacity: 0; }
+
+  /* MODO «STUDIO» (Padova, gennaio 1610: Galileo e la luna; 13/11): il sesto orologio, dall'angolo basso-destra come la tigre. Il filmato riempie
+     lo schermo: lo studio buio, a destra la finestra con la luna, Galileo di spalle, il cannocchiale sul treppiede, la candela e la tenda. L'orologio
+     entra dal basso a destra, sale su Galileo facendosi trasparente, poi scivola e si posa in alto a sinistra, nella stanza in ombra, prima della luna;
+     la data sta in basso a sinistra, sulle carte del tavolo. Il filmato va UNA volta e resta sull'ultimo fotogramma (alla fine Galileo si volta verso
+     di noi: col giro continuo tornerebbe di colpo a guardare la luna). Tempi della tigre, come tutti. */
+  .palco[data-modo="studio"] { --x: 50vw; --y: 62vh; --giro: -34deg; --grande: .2; --vx: 26%; --alone: .78; }
+  .palco[data-modo="studio"][data-stato="s1"] { --x: 33vw; --y: 30vh; --giro: -24deg; --grande: .27; }
+  .palco[data-modo="studio"][data-stato="s2"], .palco[data-modo="studio"][data-stato="s3"] { --x: -18vw; --y: -16vh; --giro: 0deg; --grande: .52; }
+  .palco[data-modo="studio"][data-stato="s2"] { --scena: .78; }   /* più trasparente (Franco, 13/11: «un po' più desaturato e in trasparenza»); desaturato nel file */
+  .palco[data-modo="studio"][data-stato="s3"] { --scena: .64; }
+  .palco[data-modo="studio"][data-stato="s4"] { --x: -34vw; --y: -100vh; --giro: 20deg; --grande: .26; --lento: 1.6s; }
+  .palco[data-modo="studio"] .scena { left: 0; width: 100%; transition: opacity 1.2s ease, transform 9s ease-out;
+    -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); }
+  .palco[data-modo="studio"][data-stato="s2"] .righe, .palco[data-modo="studio"][data-stato="s3"] .righe { opacity: 0; }
+  .palco[data-modo="studio"] .tempo { right: auto; left: clamp(18px, 4.2vw, 70px); top: auto; bottom: 6vh; transform: none; text-align: left; width: min(14vw, 250px); }
+  .palco[data-modo="studio"] .tempo::before { inset: -70px -50px -70px -70px; background: radial-gradient(ellipse 62% 50% at 38% 50%, rgb(10 9 8 / var(--alone, .62)), transparent 100%); }
+  .palco[data-modo="studio"] .anno { justify-content: flex-start; font-size: clamp(3rem, 6.2vw, 6.6rem); }
+  .palco[data-modo="studio"][data-stato="s1"] .n, .palco[data-modo="studio"][data-stato="s1"] .anno { opacity: 0; }
+
+  /* MODO «VIALE» (Brescia, 26 marzo 1927: la partenza della prima Mille Miglia; 13/11): il settimo orologio, dall'angolo basso-sinistra. Il filmato
+     riempie lo schermo: un viale di platani spogli nella nebbia, la macchina rossa di spalle che si allontana (grande a sinistra all'inizio, piccola
+     verso il centro alla fine), a destra la pianura. L'orologio entra dal basso a sinistra, sale sulla macchina facendosi trasparente, poi scivola
+     e si posa in alto a destra, nel cielo pallido; la data sta in basso a destra, sulla pianura. Il filmato va UNA volta e resta sull'ultimo
+     fotogramma (col giro continuo la macchina tornerebbe grande di colpo). Tempi della tigre, come tutti. */
+  .palco[data-modo="viale"] { --x: -38vw; --y: 62vh; --giro: 34deg; --grande: .2; --vx: 66%; --alone: .78; }
+  .palco[data-modo="viale"][data-stato="s1"] { --x: -21vw; --y: 30vh; --giro: 24deg; --grande: .27; }
+  .palco[data-modo="viale"][data-stato="s2"], .palco[data-modo="viale"][data-stato="s3"] { --x: 22vw; --y: -12vh; --giro: 0deg; --grande: .52; }
+  .palco[data-modo="viale"][data-stato="s2"] { --scena: 1; }
+  .palco[data-modo="viale"][data-stato="s3"] { --scena: .94; }
+  .palco[data-modo="viale"][data-stato="s4"] { --x: 34vw; --y: -100vh; --giro: -20deg; --grande: .26; --lento: 1.6s; }
+  .palco[data-modo="viale"] .scena { left: 0; width: 100%; transition: opacity 1.2s ease, transform 9s ease-out;
+    -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); }
+  .palco[data-modo="viale"][data-stato="s2"] .righe, .palco[data-modo="viale"][data-stato="s3"] .righe { opacity: 0; }
+  .palco[data-modo="viale"] .tempo { top: auto; bottom: 7vh; transform: none; width: min(15vw, 260px); --alone: .86; }
+  /* il filmato è chiaro: l'alone dietro la data sfuma in tondo dentro il suo riquadro, se no se ne vedono i bordi */
+  .palco[data-modo="viale"] .tempo::before { inset: -80px -70px -70px -90px; background: radial-gradient(ellipse 50% 50% at 50% 50%, rgb(10 9 8 / var(--alone)), rgb(10 9 8 / calc(var(--alone) * .5)) 55%, transparent 100%); }
+  .palco[data-modo="viale"] .anno { font-size: clamp(3rem, 6.2vw, 6.6rem); }
+
+  /* MODO «DECO» (Parigi, estate 1925: l'Esposizione delle arti decorative; 13/11): l'ottavo orologio, dall'angolo alto-sinistra come il Polo.
+     Il filmato riempie lo schermo: a sinistra la donna in abito d'argento accanto alla fontana di vetro, a destra la Senna e il ponte al tramonto,
+     nei colori tenui dell'autocromia. L'orologio (il bianco, verticale come il rubino) entra dall'alto a sinistra, scende sulla donna facendosi
+     trasparente, poi scivola e si posa in basso a destra, sul fiume; la data sta in alto a destra, nel cielo chiaro, con l'alone tondo. Il filmato va
+     UNA volta e resta sull'ultimo fotogramma. Tempi della tigre, come tutti. */
+  .palco[data-modo="deco"] { --x: -46vw; --y: -58vh; --giro: -34deg; --grande: .16; --vx: 66%; --alone: .8; }
+  .palco[data-modo="deco"][data-stato="s1"] { --x: -33vw; --y: -31vh; --giro: -24deg; --grande: .22; }
+  .palco[data-modo="deco"][data-stato="s2"], .palco[data-modo="deco"][data-stato="s3"] { --x: 22vw; --y: 10vh; --giro: 0deg; --grande: .8; }
+  .palco[data-modo="deco"][data-stato="s2"] { --scena: 1; }
+  .palco[data-modo="deco"][data-stato="s3"] { --scena: .94; }
+  .palco[data-modo="deco"][data-stato="s4"] { --x: 34vw; --y: -74vh; --giro: 20deg; --grande: .24; --lento: 1.6s; }
+  .palco[data-modo="deco"] .scena { left: 0; width: 100%; transition: opacity 1.2s ease, transform 9s ease-out;
+    -webkit-mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(transparent, #000 10%, #000 90%, transparent); }
+  .palco[data-modo="deco"][data-stato="s2"] .righe, .palco[data-modo="deco"][data-stato="s3"] .righe { opacity: 0; }
+  .palco[data-modo="deco"] .tempo { top: 8vh; transform: none; width: min(15vw, 260px); --alone: .86; }
+  .palco[data-modo="deco"] .tempo::before { inset: -80px -70px -80px -90px; background: radial-gradient(ellipse 50% 50% at 50% 50%, rgb(10 9 8 / var(--alone)), rgb(10 9 8 / calc(var(--alone) * .5)) 55%, transparent 100%); }
+  .palco[data-modo="deco"] .anno { font-size: clamp(3rem, 6.2vw, 6.6rem); }
+  .palco[data-modo="deco"][data-stato="s1"] .n, .palco[data-modo="deco"][data-stato="s1"] .anno { opacity: 0; }
+}
+
+/* L'INTERMEZZO (idea di Franco, 12/11 notte; scelti da lui A1 «la rotta» e B1 «dal nero, come dall'acqua»): dopo ogni scena il nome dell'orologio
+   arriva lettera per lettera lungo rotte a puntini; poi la confezione nera vista dall'alto: il coperchio scorre e lascia uno scorcio dell'orologio,
+   il sigillo sale dal nero, una luce ne percorre i tratti, e sotto riaffiora il nome. Ogni parte ha un quadro che resta fermo mentre l'effetto si compie.
+   La CONFEZIONE VERA (13/11, scatola in camoscio blu notte fatta da Franco con GPT, la stessa per tutti gli orologi): coperchio e fondo sono ritagli
+   della sua immagine ripulita da simbolo e scritte (strumenti/rifai-trama.js); simbolo, nome e referenza li disegno io, diversi per ogni orologio.
+   La sequenza, alla lettera di Franco: si vede chiusa con le scritte stampate (.stampa); prima di aprirsi le scritte diventano grigie e poi sempre
+   più trasparenti fino a scomparire; il coperchio scorre e scopre lo scorcio dell'orologio; poi simbolo e scritte si ricompongono (.vivente).
+   Senza .vivo: chiusa e stampata; .vivo è lo stato finale (le animazioni ci arrivano). */
+.intermezzo { position: relative; background: var(--buio); }
+.arrivo { height: 170vh; }
+.confezione { height: 200vh; }
+.quadro { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; container-type: inline-size; background: radial-gradient(ellipse 70% 70% at 50% 50%, #14110e, var(--buio) 76%); }
+.arrivo .quadro { --f: min(15cqw, calc(84cqw / (var(--lettere, 4) * .8))); }
+.scritta { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-60%); margin: 0; text-align: center; font: 300 var(--f)/1 var(--serif); letter-spacing: .16em; padding-left: .16em; white-space: nowrap; }
+.scritta span { display: inline-block; opacity: 0; will-change: transform, opacity; }
+.arrivo .rif { position: absolute; left: 0; right: 0; top: calc(50% + var(--f) * .64); text-align: center; font: 600 max(1.05cqw, 9px)/1 var(--sans); letter-spacing: .34em; text-transform: uppercase; color: var(--oro); opacity: 0; }
+.arrivo.vivo .scritta span, .arrivo.vivo .rif { opacity: 1; }
+.tracce { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.tracce .rotta { fill: none; stroke: var(--oro); stroke-width: 1.2; stroke-dasharray: 1.5 8; stroke-linecap: round; opacity: .8; }
+.tracce .tacca { fill: none; stroke: var(--oro); stroke-width: 1; opacity: 0; }
+
+/* la scatola: 1336 x 748 come il ritaglio; il coperchio (cornice d'argento, camoscio e il suo fianco) è alto 719 di 748, sotto resta il fondo */
+.cassa { position: absolute; left: 44%; top: 50%; width: min(62vw, 112vh); aspect-ratio: 1336 / 748; transform: translate(-50%, -50%); container-type: inline-size;
+  background: url(immagini/confezione-fondo.webp) 0 0 / 100% 100% no-repeat; border-radius: 2% / 3.6%; box-shadow: 0 60px 110px -40px #000; }
+/* sotto il coperchio: le pareti della scatola e il letto di velluto blu notte, con lo scorcio dell'orologio */
+.pareti { position: absolute; left: .4%; right: .6%; top: .3%; height: 95.8%; border-radius: 1.2cqw 1.2cqw .4cqw .4cqw; background: linear-gradient(180deg, #131d30, #0b111d 90%, #070b13);
+  box-shadow: inset 0 1px 0 rgb(200 215 240 / .12), inset 1px 0 0 rgb(200 215 240 / .07); }
+.dentro { position: absolute; inset: 1.7cqw 1.6cqw 3.4cqw; border-radius: .5cqw; overflow: hidden; background: linear-gradient(rgb(3 6 12 / .3), rgb(3 6 12 / .3)), url(immagini/confezione-velluto.webp) 0 0 / 70cqw auto; }
+.dentro::after { content: ""; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 1.6cqw 2.4cqw -.8cqw rgb(0 0 0 / .85), inset 0 0 1.8cqw rgb(0 0 0 / .75); }
+/* lo scorcio in cqw (larghezza della scatola), con le misure di data-scorcio pensate per la scatola di prima (interno 96,4 x 56,4 cqw): così ogni orologio
+   resta grande e messo com'era, anche se l'interno della scatola nuova è più basso (13/11: in percentuale i quattro orologi orizzontali si erano spostati) */
+.scorcio { position: absolute; height: var(--sc-h, 134cqw); aspect-ratio: 1024 / 1536; left: var(--sc-x, -20cqw); top: var(--sc-y, -32cqw); transform: rotate(-8deg); }
+.scorcio img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.bagliore { position: absolute; inset: 0; background: radial-gradient(ellipse 36% 84% at 10% 50%, rgb(255 214 170 / .22), transparent 72%); opacity: .6; pointer-events: none; }
+.coperchio { position: absolute; left: 0; top: 0; width: 100%; height: 96.12%; background: url(immagini/confezione-coperchio.webp) 0 0 / 100% 100% no-repeat; border-radius: 1.3cqw 1.3cqw .6cqw .6cqw;
+  transform: translateX(0%); will-change: transform; overflow: hidden; box-shadow: -3.4cqw 0 5cqw -1.2cqw rgb(0 0 0 / .9); }
+/* simbolo, nome e referenza: due strati che coincidono, la stampa (com'è nella scatola chiusa) e quello che si ricompone */
+.incisione { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; text-align: center; gap: 1.2cqw; padding-bottom: 6cqw; }
+.alone { position: absolute; inset: 0; background: radial-gradient(ellipse 30% 46% at 50% 40%, rgb(255 200 140 / .13), transparent 70%); opacity: 0; pointer-events: none; }
+.segno { display: block; width: 17cqw; aspect-ratio: 1; overflow: visible; filter: drop-shadow(0 1px 0 rgb(0 0 0 / .7)); }
+.segno * { fill: none; stroke: #cfa779; stroke-width: 1.55; stroke-linecap: round; stroke-linejoin: round; }
+.sigillo { position: relative; width: 17cqw; aspect-ratio: 1; opacity: 0; }
+.strato { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.strato * { fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.strato.base * { stroke: #6b5540; }
+.strato.luce { filter: drop-shadow(0 0 6px rgb(255 200 140 / .7)); }
+.strato.luce * { stroke: #f3d7ae; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.onda { position: absolute; inset: -6%; border: 1px solid rgb(217 176 140 / .5); border-radius: 50%; opacity: 0; }
+.battesimo { position: relative; margin: 0; font: 400 6cqw/1 var(--serif); letter-spacing: .3em; padding-left: .3em; white-space: nowrap; }
+.battesimo span { display: inline-block; opacity: 0; }
+.incisione .rif { position: relative; margin: 1cqw 0 0; font: 600 max(1.8cqw, 8px)/1 var(--sans); letter-spacing: .32em; padding-left: .32em; text-transform: uppercase; }
+.stampa .battesimo { color: #e3ddd3; text-shadow: 0 1px 1px rgb(0 0 0 / .6); }
+.stampa .rif { color: #c9a06e; text-shadow: 0 1px 1px rgb(0 0 0 / .6); }
+.vivente .rif { color: rgb(217 176 140 / .8); opacity: 0; }
+.confezione.vivo .coperchio { transform: translateX(27%); }
+.confezione.vivo .stampa { opacity: 0; }
+.confezione.vivo .alone, .confezione.vivo .sigillo, .confezione.vivo .battesimo span, .confezione.vivo .vivente .rif { opacity: 1; }
+.confezione.vivo .strato.luce * { stroke-dashoffset: 0; }
+
+/* dopo la prova */
+.coda { min-height: 70vh; display: grid; place-content: center; padding: 100px 24px 120px; text-align: center; border-top: 1px solid var(--linea); }
+.coda h2 { font: 300 clamp(2rem, 4.6vw, 3.4rem)/1.1 var(--serif); margin: 0; }
+.coda ol { list-style: none; counter-reset: c; margin: 34px auto 0; padding: 0; max-width: 520px; text-align: left; border-top: 1px solid var(--linea); }
+.coda li { counter-increment: c; display: grid; grid-template-columns: 44px 1fr; padding: 13px 0; border-bottom: 1px solid var(--linea); color: var(--avorio); }
+.coda li::before { content: counter(c); font: 300 1.7rem/1 var(--serif); color: var(--oro); }
+.coda .nota { color: var(--tenue); font-size: .92rem; max-width: 52ch; margin: 26px auto 0; }
+
+.fermo *, .fermo *::before, .fermo *::after { transition: none !important; }
+/* PROVA DELLO SCORRIMENTO (13/11, Franco: «dammi delle soluzioni migliori… per lo scrolling un po' fastidioso che si blocca»): ?scorri=ora|racconto|carica */
+.prova-scorri { position: fixed; z-index: 60; top: 12px; left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100vw - 340px); display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px;
+  padding: 7px 10px; background: rgb(10 9 8 / .86); border: 1px solid var(--linea); border-radius: 20px; font: 600 .6rem/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; }
+.prova-scorri span { color: var(--tenue); padding: 0 6px 0 4px; }
+.prova-scorri a { color: var(--avorio); text-decoration: none; padding: 7px 11px; border-radius: 14px; border: 1px solid transparent; }
+.prova-scorri a:hover { border-color: var(--linea); }
+.prova-scorri a.qui { color: var(--buio); background: var(--oro); }
+.prova-scorri p { flex-basis: 100%; margin: 5px 6px 2px; max-width: 560px; font: 400 .78rem/1.45 var(--sans); letter-spacing: 0; text-transform: none; color: var(--tenue); text-align: center; }
+/* la carica: sulla barra, oltre al pomo pieno (dove sta la pagina), un pomo vuoto dove vuoi arrivare e un filo d'oro tra i due */
+.barra .voglia { position: absolute; top: 12px; right: 5px; width: 7px; border-radius: 3px; border: 1px solid var(--oro); opacity: 0; transition: opacity .3s; will-change: transform; }
+.barra .carica { position: absolute; top: 12px; right: 8px; width: 1px; height: 1px; background: var(--oro); opacity: 0; transform-origin: 50% 0; transition: opacity .3s; will-change: transform; }
+.barra.carico .voglia { opacity: 1; animation: pulsa 1.4s ease-in-out infinite; }
+.barra.carico .carica { opacity: .75; }
+@keyframes pulsa { 50% { box-shadow: 0 0 0 5px rgb(217 176 140 / .16); } }
+/* il racconto (idea di Franco): finita la scena, le immagini rimpiccioliscono e svaniscono con la rotella, e compaiono le righe sfalsate a sinistra e a destra */
+.quinta { position: absolute; inset: 0; }
+.scorri-racconto .registro { height: 590vh; }
+.scorri-racconto .quinta { scale: calc(1 - var(--via, 0) * .3); opacity: calc(1 - var(--via, 0)); transform-origin: 50% 46%; }
+.racconto { position: absolute; inset: 0; z-index: 30; pointer-events: none; }
+.racconto p { position: absolute; margin: 0; max-width: min(36vw, 560px); font: 300 clamp(1.25rem, 2vw, 1.95rem)/1.32 var(--serif); color: var(--avorio); opacity: 0; filter: blur(6px);
+  transition: opacity 1.1s ease, transform 1.3s cubic-bezier(.2, .7, .2, 1), filter 1.1s ease; }
+.racconto p em { font-style: italic; color: var(--oro); }
+.racconto p:nth-child(odd) { left: 9vw; transform: translateX(-46px); }
+.racconto p:nth-child(even) { right: 11vw; text-align: right; transform: translateX(46px); }
+.racconto p:nth-child(1) { top: 19vh; }
+.racconto p:nth-child(2) { top: 35vh; }
+.racconto p:nth-child(3) { top: 51vh; }
+.racconto p:nth-child(4) { top: 68vh; }
+.racconto p.vista { opacity: 1; transform: none; filter: blur(0); }
+/* LA LANCETTA (idea di Franco, 13/11: «un orologio molto stilizzato, un semplice cerchio bianco o oro, all'interno del quale scorre una sola lancetta,
+   che fa tutto il giro mentre la scena inizia, scorre e finisce… poi può sparire e apparire la scritta continua, su cui basta passare il mouse»).
+   In basso al centro, al posto del filo d'oro; solo nella prova (racconto e carica). Se si spinge mentre gira, il cerchio pulsa appena. */
+.quadrante { position: fixed; z-index: 41; left: 50%; bottom: 46px; width: 46px; height: 46px; margin-left: -23px; opacity: 0; transition: opacity .7s; pointer-events: none; }
+.quadrante.si { opacity: 1; }
+.quadrante svg { display: block; width: 100%; height: 100%; overflow: visible; transition: transform .3s ease-out; }
+.quadrante.spinto svg { transform: scale(1.14); }
+.quadrante .cerchio { fill: rgb(10 9 8 / .35); stroke: rgb(217 176 140 / .6); stroke-width: 1; }
+.quadrante .lancia { stroke: var(--oro); stroke-width: 1.4; stroke-linecap: round; transform-box: view-box; transform-origin: 23px 23px; }
+.quadrante .perno { fill: var(--oro); }
+.quadrante .lancia path { fill: none; }
+/* la percentuale (Franco, 13/11: «si può vedere anche scorrere la percentuale del video o del pezzo, da 0% a 100%») */
+.quadrante .cento { position: absolute; left: calc(100% + 10px); top: 50%; transform: translateY(-50%); font: 600 .64rem/1 var(--sans); letter-spacing: .1em; color: var(--oro); font-variant-numeric: tabular-nums; white-space: nowrap; }
+/* la variante «segno»: la lancetta è il meridiano del simbolo di Meridiano; a fine giro torna dritto e il simbolo è completo */
+.quadrante.segno { width: 64px; height: 64px; margin-left: -32px; bottom: 38px; }
+.quadrante.segno .cerchio { stroke-width: 2.2; }
+.quadrante.segno .lancia { stroke-width: 2.6; }
+.quadrante.compiuto svg { filter: drop-shadow(0 0 7px rgb(255 200 140 / .85)); }
+.quadrante svg { transition: transform .3s ease-out, filter .5s; }
+/* «Salta» (Franco, 14/11: «Invece di continua mettiamo anzi salta, così se uno vuole salta alla sezione successiva»; «La scritta salta sotto
+   l'orologio fin dall'inizio»): compare con l'orologio all'inizio di ogni sezione, sotto di lui; si preme */
+.salta { position: fixed; z-index: 41; left: 50%; bottom: 10px; transform: translate(-50%, 6px); padding: 9px 20px; background: none; border: 0; color: var(--oro);
+  font: 600 .6rem/1 var(--sans); letter-spacing: .36em; text-indent: .36em; text-transform: uppercase; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity .7s, transform .7s, color .3s; }
+.salta.si { opacity: .8; transform: translate(-50%, 0); pointer-events: auto; }
+.salta:hover, .salta:focus-visible { color: var(--avorio); opacity: 1; outline: none; }
+
+@media (max-width: 760px) {
+  .scorri-racconto .registro { height: 480vh; }
+  .racconto { display: none; }
+  .scorri-racconto .quinta { scale: none; opacity: 1; }
+  .prova-scorri { top: auto; bottom: 10px; max-width: calc(100vw - 20px); }
+  .scala, .righe { display: none; }
+  .commissione { padding: 9px 12px; }
+  .conta { display: block; position: absolute; z-index: 6; left: 0; right: 0; top: 74px; text-align: center; font: 600 .62rem/1 var(--sans); letter-spacing: .28em; text-transform: uppercase; color: var(--tenue); }
+  .conta b { color: var(--oro); font-weight: 600; }
+  .orologio { left: 50%; top: 30%; height: 58vh; height: 58svh; }
+  .corpo { -webkit-mask-image: linear-gradient(transparent 5%, #000 17%, #000 70%, transparent 83%); mask-image: linear-gradient(transparent 5%, #000 17%, #000 70%, transparent 83%); }
+  .palco { --x: 80%; --y: -4%; }
+  .palco[data-stato="s1"] { --x: 30%; --y: -8%; --grande: .34; }
+  .palco[data-stato="s2"], .palco[data-stato="s3"] { --x: 0%; --y: 0%; --grande: 1; }
+  .palco[data-stato="s4"] { --x: -70%; --y: -60%; }
+  .scena { left: 0; width: 100%; top: 53%; height: 39%; object-position: var(--fuoco, 47%) 50%; transform-origin: 50% 50%; -webkit-mask-image: linear-gradient(transparent, #000 26%, #000 80%, transparent), linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent); -webkit-mask-composite: source-in; mask-image: linear-gradient(transparent, #000 26%, #000 80%, transparent), linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent); mask-composite: intersect; }
+  .velo { background: radial-gradient(ellipse 80% 34% at 50% 28%, rgb(217 160 120 / .15), transparent 72%); }
+  .tempo { right: 0; left: 0; top: 44.5vh; top: 44.5svh; bottom: auto; transform: none; text-align: center; width: auto; padding: 0 22px; }
+  .tempo::before { display: none; }
+  .tempo .n { display: none; }
+  .anno { justify-content: center; font-size: clamp(3.2rem, 18vw, 4.6rem); }
+  .luogo { margin-top: 2px; }
+  .per { position: absolute; left: 22px; right: 22px; top: 47vh; top: 47svh; margin: 0; font-size: 1.08rem; }
+  .cassa { left: 40%; width: min(74vw, 112vh); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orologio, .volo, .corpo, .lancetta, .nastro, .scena, .velo, .per, .luogo, .riflesso { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="testa">
+  <nav class="menu" aria-label="Le pagine di Hora Vera">
+    <!-- HOME (Franco, 16/11: «in ogni sezione di ogni pagina deve esserci la possibilità di tornare alla HOME… La HOME è la pagina di Presentazione»):
+         questa scritta resta in alto a sinistra in ogni sezione e porta alla presentazione; prima diceva HORA VERA. La voce «L'ora vera» porta
+         invece dritto al contenuto della prima pagina (ora-vera.html#otto), così le due non fanno la stessa cosa. -->
+    <a class="marchio" href="ora-vera.html" aria-label="Home: la presentazione">HOME</a>
+    <ol>
+      <li><a href="ora-vera.html#otto"><b>I</b>L'ora vera</a></li>
+      <li><a class="qui" href="index.html" aria-current="page"><b>II</b>Visioni</a></li>
+      <li><a href="atelier.html"><b>III</b>L'atelier</a></li>
+    </ol>
+  </nav>
+  <!-- «Commissione», il riquadro che stava qui in alto a destra, è stato tolto il 16/11 (Franco: «quella scritta COMMISSIONE non è meglio toglierla?»):
+       portava alla parte #fine, che è ancora di prova. La porta per chi vuole l'orologio si farà alla chiusura del sito. -->
+</header>
+<!-- il filo dell'attesa: il filo che si riempie (i), la percentuale (b) e, fuori, «Salta» (un pulsante vero, che si preme) -->
+<div class="attesa" aria-hidden="true"><i></i><b>0%</b></div>
+<button class="salta-filo" type="button">Salta</button>
+<aside class="scala" aria-hidden="true"><span>VI</span><span>IX</span><span>XII</span><span class="qui">XV</span><span>XVIII</span></aside>
+
+<section class="soglia">
+  <p class="occhio">Ora XV · pomeriggio</p>
+  <h1>Il registro</h1>
+  <p class="detto">Ogni orologio è stato fatto per qualcuno. E porta con sé il tempo da cui quella persona viene.</p>
+  <p class="scorri">Scorri</p>
+</section>
+
+<!-- N. 031 · il rubino e oro · Vienna, 1683, gli ussari alati · modo «carica» -->
+<section class="registro" data-modo="carica" data-allora="1683">
+  <div class="palco" data-modo="carica" data-stato="s0" style="--forma: 938 / 1677; --perno: 49.21% 40.94%; --sagoma: url(immagini/rubino.webp)">
+    <video class="scena" data-fuoco="80" muted playsinline preload="auto" poster="immagini/scena-ussari.jpg" src="immagini/scena-ussari.mp4"></video>
+    <div class="velo"></div>
+
+    <ol class="righe">
+      <li class="accesa"><b>N. 031</b><span>Rubino e oro</span></li>
+      <li><b>N. 036</b><span>La tigre</span></li>
+      <li><b>N. 038</b><span>Cronografo grafite</span></li>
+      <li><b>N. 041</b><span>Verde e diamanti</span></li>
+      <li><b>N. 044</b><span>Cronografo cuoio</span></li>
+      <li><b>N. 049</b><span>Subacqueo blu e oro</span></li>
+      <li><b>N. 052</b><span>Bianco e acciaio</span></li>
+      <li><b>N. 057</b><span>Cronografo blu</span></li>
+      <li class="tua"><b>N. 058</b><span>la tua riga</span></li>
+    </ol>
+    <p class="conta"><b>N. 031</b> · Rubino e oro · 1 di 8</p>
+
+    <div class="orologio">
+      <div class="volo">
+        <div class="corpo">
+          <img src="immagini/rubino.webp" alt="Hora Vera «Rubino e oro»: quadrante rosso rubino a raggi, cassa e bracciale in oro e rubino">
+          <img class="lancetta ore" src="immagini/rubino-ore.webp" alt="">
+          <img class="lancetta minuti" src="immagini/rubino-minuti.webp" alt="">
+          <img class="lancetta secondi" src="immagini/rubino-secondi.webp" alt="">
+          <img src="immagini/rubino-perno.webp" alt="">
+          <div class="riflesso"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tempo">
+      <p class="n"><b>N. 031</b> · Sobieski</p>
+      <div class="anno" aria-label="Dal 2026 al 1683"></div>
+      <p class="luogo">Vienna, 12 settembre 1683</p>
+      <p class="per">Per un allevatore di cavalli. Volgeva l'anno 1683, e <em>la cavalleria scendeva dalla collina</em>.</p>
+    </div>
+  </div>
+</section>
+<section class="intermezzo" data-nome="Sobieski" data-rif="Ref. 1683 · N. 031" data-orologio="rubino" data-lancette="ore minuti secondi" data-forma="938 / 1677" data-sigillo="piume" data-scorcio="208% -9.6% -35.4%"></section>
+
+<!-- N. 036 · la tigre · Cina dei Ming, 1580 · modo «accanto» -->
+<section class="registro" data-modo="accanto" data-allora="1580">
+  <div class="palco" data-modo="accanto" data-stato="s0" style="--perno: 49.76% 44.92%; --sagoma: url(immagini/tigre.webp)">
+    <video class="scena" data-fuoco="47" muted playsinline preload="auto" poster="immagini/scena-spadaccino.jpg" src="immagini/scena-spadaccino.mp4"></video>
+    <div class="velo"></div>
+
+    <ol class="righe">
+      <li><b>N. 031</b><span>Rubino e oro</span></li>
+      <li class="accesa"><b>N. 036</b><span>La tigre</span></li>
+      <li><b>N. 038</b><span>Cronografo grafite</span></li>
+      <li><b>N. 041</b><span>Verde e diamanti</span></li>
+      <li><b>N. 044</b><span>Cronografo cuoio</span></li>
+      <li><b>N. 049</b><span>Subacqueo blu e oro</span></li>
+      <li><b>N. 052</b><span>Bianco e acciaio</span></li>
+      <li><b>N. 057</b><span>Cronografo blu</span></li>
+      <li class="tua"><b>N. 058</b><span>la tua riga</span></li>
+    </ol>
+    <p class="conta"><b>N. 036</b> · La tigre · 2 di 8</p>
+
+    <div class="orologio">
+      <div class="volo">
+        <div class="corpo">
+          <img src="immagini/tigre.webp" alt="Hora Vera «La tigre»: quadrante nero, numeri romani, oro rosa">
+          <img class="lancetta ore" src="immagini/tigre-ore.webp" alt="">
+          <img class="lancetta minuti" src="immagini/tigre-minuti.webp" alt="">
+          <img src="immagini/tigre-perno.webp" alt="">
+          <div class="riflesso"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tempo">
+      <p class="n"><b>N. 036</b> · Wanli</p>
+      <div class="anno" aria-label="Dal 2026 al 1580"></div>
+      <p class="luogo">Cina, dinastia Ming</p>
+      <p class="per">Per un maestro di spada. Volgeva l'anno 1580, e <em>una lama era ancora una disciplina</em>.</p>
+    </div>
+  </div>
+</section>
+<!-- l'intermezzo della tigre: il nome arriva, poi la confezione (il contenuto lo costruisce lo script). data-scorcio = altezza, sinistra e alto dell'orologio nella confezione -->
+<section class="intermezzo" data-nome="Wanli" data-rif="Ref. 1580 · N. 036" data-orologio="tigre" data-sigillo="spada" data-scorcio="238% -21% -57%"></section>
+
+<!-- N. 044 · il cronografo cuoio · la Manica, 2 giugno 1910: andata e ritorno senza scalo con un biplano Wright (Charles Rolls) · modo «fregio».
+     Fino al 12/11 era «25 luglio 1909» (Blériot), ma Blériot aveva un monoplano e nel filmato vola un biplano: cambiata con il sì di Franco. -->
+<section class="registro" data-modo="fregio" data-allora="1910">
+  <div class="palco" data-modo="fregio" data-stato="s0" style="--perno: 49.41% 47.27%; --sagoma: url(immagini/cuoio.webp)">
+    <video class="scena" data-fuoco="24" muted playsinline preload="metadata" poster="immagini/scena-manica.jpg" src="immagini/scena-manica.mp4"></video>
+    <div class="velo"></div>
+
+    <ol class="righe">
+      <li><b>N. 031</b><span>Rubino e oro</span></li>
+      <li><b>N. 036</b><span>La tigre</span></li>
+      <li><b>N. 038</b><span>Cronografo grafite</span></li>
+      <li><b>N. 041</b><span>Verde e diamanti</span></li>
+      <li class="accesa"><b>N. 044</b><span>Cronografo cuoio</span></li>
+      <li><b>N. 049</b><span>Subacqueo blu e oro</span></li>
+      <li><b>N. 052</b><span>Bianco e acciaio</span></li>
+      <li><b>N. 057</b><span>Cronografo blu</span></li>
+      <li class="tua"><b>N. 058</b><span>la tua riga</span></li>
+    </ol>
+    <p class="conta"><b>N. 044</b> · Cronografo cuoio · 5 di 8</p>
+
+    <div class="orologio">
+      <div class="volo">
+        <div class="corpo">
+          <img src="immagini/cuoio.webp" alt="Hora Vera «Cronografo cuoio»: quadrante bruno, tre contatori neri, cinturino in cuoio">
+          <img class="lancetta ore" src="immagini/cuoio-ore.webp" alt="">
+          <img class="lancetta minuti" src="immagini/cuoio-minuti.webp" alt="">
+          <img src="immagini/cuoio-perno.webp" alt="">
+          <div class="riflesso"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tempo">
+      <p class="n"><b>N. 044</b> · Wright</p>
+      <div class="anno" aria-label="Dal 2026 al 1910"></div>
+      <p class="luogo">La Manica, 2 giugno 1910</p>
+      <p class="per">Per un pilota di linea. Volgeva l'anno 1910, e <em>si andava in Francia e si tornava senza posarsi</em>.</p>
+    </div>
+  </div>
+</section>
+<section class="intermezzo" data-nome="Wright" data-rif="Ref. 1910 · N. 044" data-orologio="cuoio" data-sigillo="ali" data-scorcio="183% -11% -36.5%"></section>
+
+<!-- N. 057 · il cronografo blu · Polo Sud, 14 dicembre 1911 · modo «polo» (13/11): il quarto angolo del giro. Il filmato è SPECCHIATO (l'esploratore a sinistra,
+     la tenda a destra), più scuro e freddo come le altre scene; l'orologio entra dall'alto a sinistra, scende sull'esploratore facendosi trasparente e si posa
+     in basso a destra. L'orologio è staccato dall'ardesia con strumenti/scontorna-ia.js (il modello che gira sul computer); girano ore e minuti, il secondi
+     del cronografo resta fermo a mezzogiorno (passa sopra la D di MERIDIANO: ricostruirla sotto la rovinava). Misure in immagini/09-cronografo-blu-lancette.json. -->
+<section class="registro" data-modo="polo" data-allora="1911">
+  <div class="palco" data-modo="polo" data-stato="s0" style="--forma: 1536 / 1024; --perno: 49.87% 46.58%; --sagoma: url(immagini/blu.webp)">
+    <video class="scena" data-fuoco="31" muted playsinline preload="metadata" poster="immagini/scena-polo.jpg" src="immagini/scena-polo.mp4"></video>
+    <div class="velo"></div>
+
+    <ol class="righe">
+      <li><b>N. 031</b><span>Rubino e oro</span></li>
+      <li><b>N. 036</b><span>La tigre</span></li>
+      <li><b>N. 038</b><span>Cronografo grafite</span></li>
+      <li><b>N. 041</b><span>Verde e diamanti</span></li>
+      <li><b>N. 044</b><span>Cronografo cuoio</span></li>
+      <li><b>N. 049</b><span>Subacqueo blu e oro</span></li>
+      <li><b>N. 052</b><span>Bianco e acciaio</span></li>
+      <li class="accesa"><b>N. 057</b><span>Cronografo blu</span></li>
+      <li class="tua"><b>N. 058</b><span>la tua riga</span></li>
+    </ol>
+    <p class="conta"><b>N. 057</b> · Cronografo blu · 8 di 8</p>
+
+    <div class="orologio">
+      <div class="volo">
+        <div class="corpo">
+          <img src="immagini/blu.webp" alt="Hora Vera «Cronografo blu»: quadrante blu a raggi, tre contatori, cassa e bracciale grafite">
+          <img class="lancetta ore" src="immagini/blu-ore.webp" alt="">
+          <img class="lancetta minuti" src="immagini/blu-minuti.webp" alt="">
+          <img src="immagini/blu-perno.webp" alt="">
+          <div class="riflesso"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tempo">
+      <p class="n"><b>N. 057</b> · Polheim</p>
+      <div class="anno" aria-label="Dal 2026 al 1911"></div>
+      <p class="luogo">Polo Sud, 14 dicembre 1911</p>
+      <p class="per">Per una guida alpina. Volgeva l'anno 1911, e <em>si arrivava dove ogni direzione è nord</em>.</p>
+    </div>
+  </div>
+</section>
+<section class="intermezzo" data-nome="Polheim" data-rif="Ref. 1911 · N. 057" data-orologio="blu" data-forma="1536 / 1024" data-sigillo="stella" data-scorcio-cqw="104.80 -55.46 -20.69"></section>
+
+<!-- N. 049 · il subacqueo blu e oro · Siviglia, 8 settembre 1522: torna la nave del primo giro del mondo · modo «ritorno» (13/11): il quinto angolo del giro,
+     di nuovo dall'alto a destra. Nel filmato (Midjourney, 2520×1080, 9 secondi) una nave a tre alberi malridotta, con le vele a brandelli, viene avanti
+     su un fiume calmo nella nebbia, con una torre lontana; sta a destra e cresce. L'orologio è staccato dall'ardesia con strumenti/scontorna-ia.js
+     (con il riempimento dei buchi, «sd»); girano ore, minuti e secondi; il perno è ripulito con strumenti/pulisci-perno.js.
+     Misure in immagini/07-subacqueo-blu-oro-lancette.json. -->
+<section class="registro" data-modo="ritorno" data-allora="1522">
+  <div class="palco" data-modo="ritorno" data-stato="s0" style="--forma: 1536 / 1024; --perno: 49.99% 45.7%; --sagoma: url(immagini/subacqueo.webp)">
+    <video class="scena" data-fuoco="70" muted playsinline preload="metadata" poster="immagini/scena-siviglia.jpg" src="immagini/scena-siviglia.mp4"></video>
+    <div class="velo"></div>
+
+    <ol class="righe">
+      <li><b>N. 031</b><span>Rubino e oro</span></li>
+      <li><b>N. 036</b><span>La tigre</span></li>
+      <li><b>N. 038</b><span>Cronografo grafite</span></li>
+      <li><b>N. 041</b><span>Verde e diamanti</span></li>
+      <li><b>N. 044</b><span>Cronografo cuoio</span></li>
+      <li class="accesa"><b>N. 049</b><span>Subacqueo blu e oro</span></li>
+      <li><b>N. 052</b><span>Bianco e acciaio</span></li>
+      <li><b>N. 057</b><span>Cronografo blu</span></li>
+      <li class="tua"><b>N. 058</b><span>la tua riga</span></li>
+    </ol>
+    <p class="conta"><b>N. 049</b> · Subacqueo blu e oro · 6 di 8</p>
+
+    <div class="orologio">
+      <div class="volo">
+        <div class="corpo">
+          <img src="immagini/subacqueo.webp" alt="Hora Vera «Subacqueo blu e oro»: quadrante blu petrolio a raggi, lunetta nera con i numeri in oro, bracciale in acciaio e oro">
+          <img class="lancetta ore" src="immagini/subacqueo-ore.webp" alt="">
+          <img class="lancetta minuti" src="immagini/subacqueo-minuti.webp" alt="">
+          <img class="lancetta secondi" src="immagini/subacqueo-secondi.webp" alt="">
+          <img src="immagini/subacqueo-perno.webp" alt="">
+          <div class="riflesso"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tempo">
+      <p class="n"><b>N. 049</b> · Victoria</p>
+      <div class="anno" aria-label="Dal 2026 al 1522"></div>
+      <p class="luogo">Siviglia, 8 settembre 1522</p>
+      <p class="per">Per una velista oceanica. Volgeva l'anno 1522, e <em>tornava la nave che aveva fatto il giro del mondo</em>.</p>
+    </div>
+  </div>
+</section>
+<section class="intermezzo" data-nome="Victoria" data-rif="Ref. 1522 · N. 049" data-orologio="subacqueo" data-lancette="ore minuti secondi" data-forma="1536 / 1024" data-sigillo="vela" data-scorcio-cqw="96.94 -49.69 -16.16"></section>
+
+<!-- N. 041 · il cronografo verde · Padova, gennaio 1610: Galileo e la luna · modo «studio» (13/11): il sesto angolo del giro, dal basso a destra.
+     Orologio scelto da Franco il 13/11 (quello con la luna non gli piace). Nel filmato (Midjourney, 1920×1080, 9 secondi, seconda versione del testo:
+     di spalle, chiaroscuro barocco) lo studio buio, la finestra con la luna, Galileo con le mani dietro la schiena, il cannocchiale sul treppiede, la candela.
+     L'orologio è staccato dall'ardesia con strumenti/scontorna-ia.js («sd»); girano ore e minuti, la lancetta sottile del cronografo resta ferma
+     (passa sopra la scritta MERIDIANO), il perno è ripulito con strumenti/pulisci-perno.js. Misure in immagini/08-cronografo-verde-lancette.json. -->
+<section class="registro" data-modo="studio" data-allora="1610">
+  <div class="palco" data-modo="studio" data-stato="s0" style="--forma: 1536 / 1024; --perno: 49.87% 44.36%; --sagoma: url(immagini/verde.webp)">
+    <video class="scena" data-fuoco="62" muted playsinline preload="metadata" poster="immagini/scena-padova.jpg" src="immagini/scena-padova.mp4"></video>
+    <div class="velo"></div>
+
+    <ol class="righe">
+      <li><b>N. 031</b><span>Rubino e oro</span></li>
+      <li><b>N. 036</b><span>La tigre</span></li>
+      <li><b>N. 038</b><span>Cronografo grafite</span></li>
+      <li class="accesa"><b>N. 041</b><span>Verde e diamanti</span></li>
+      <li><b>N. 044</b><span>Cronografo cuoio</span></li>
+      <li><b>N. 049</b><span>Subacqueo blu e oro</span></li>
+      <li><b>N. 052</b><span>Bianco e acciaio</span></li>
+      <li><b>N. 057</b><span>Cronografo blu</span></li>
+      <li class="tua"><b>N. 058</b><span>la tua riga</span></li>
+    </ol>
+    <p class="conta"><b>N. 041</b> · Verde e diamanti · 4 di 8</p>
+
+    <div class="orologio">
+      <div class="volo">
+        <div class="corpo">
+          <img src="immagini/verde.webp" alt="Hora Vera «Verde e diamanti»: cronografo con il quadrante verde a raggi, tre contatori, indici di diamanti, cassa in oro rosa">
+          <img class="lancetta ore" src="immagini/verde-ore.webp" alt="">
+          <img class="lancetta minuti" src="immagini/verde-minuti.webp" alt="">
+          <img src="immagini/verde-perno.webp" alt="">
+          <div class="riflesso"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tempo">
+      <p class="n"><b>N. 041</b> · Patavium</p>
+      <div class="anno" aria-label="Dal 2026 al 1610"></div>
+      <p class="luogo">Padova, gennaio 1610</p>
+      <p class="per">Per un astronomo. Volgeva l'anno 1610, e <em>la luna mostrava le sue montagne</em>.</p>
+    </div>
+  </div>
+</section>
+<section class="intermezzo" data-nome="Patavium" data-rif="Ref. 1610 · N. 041" data-orologio="verde" data-forma="1536 / 1024" data-sigillo="luna" data-scorcio-cqw="93.44 -46.72 -13.32"></section>
+
+<!-- N. 038 · il cronografo grafite · Brescia, 26 marzo 1927: la partenza della prima Mille Miglia · modo «viale» (13/11): il settimo angolo del giro,
+     dal basso a sinistra. Orologio confermato da Franco il 13/11. Nel filmato (Midjourney, 1920×1080, 9 secondi) un viale di platani spogli nella nebbia,
+     una macchina da corsa rosso scuro di spalle che si allontana; a destra la pianura. Leggero a 1440 px (i rami fitti pesano). L'orologio è staccato
+     dall'ardesia con strumenti/scontorna-ia.js («sd»); girano ore e minuti, la lancetta sottile del cronografo resta ferma (verso le 6); il perno è
+     ripulito con strumenti/pulisci-perno.js. Misure in immagini/03-cronografo-grafite-lancette.json. -->
+<section class="registro" data-modo="viale" data-allora="1927">
+  <div class="palco" data-modo="viale" data-stato="s0" style="--forma: 1536 / 1024; --perno: 50.02% 45.63%; --sagoma: url(immagini/grafite.webp)">
+    <video class="scena" data-fuoco="32" muted playsinline preload="metadata" poster="immagini/scena-brescia.jpg" src="immagini/scena-brescia.mp4"></video>
+    <div class="velo"></div>
+
+    <ol class="righe">
+      <li><b>N. 031</b><span>Rubino e oro</span></li>
+      <li><b>N. 036</b><span>La tigre</span></li>
+      <li class="accesa"><b>N. 038</b><span>Cronografo grafite</span></li>
+      <li><b>N. 041</b><span>Verde e diamanti</span></li>
+      <li><b>N. 044</b><span>Cronografo cuoio</span></li>
+      <li><b>N. 049</b><span>Subacqueo blu e oro</span></li>
+      <li><b>N. 052</b><span>Bianco e acciaio</span></li>
+      <li><b>N. 057</b><span>Cronografo blu</span></li>
+      <li class="tua"><b>N. 058</b><span>la tua riga</span></li>
+    </ol>
+    <p class="conta"><b>N. 038</b> · Cronografo grafite · 3 di 8</p>
+
+    <div class="orologio">
+      <div class="volo">
+        <div class="corpo">
+          <img src="immagini/grafite.webp" alt="Hora Vera «Cronografo grafite»: quadrante grigio scuro, indici color rame, tre contatori blu, cassa e bracciale grafite">
+          <img class="lancetta ore" src="immagini/grafite-ore.webp" alt="">
+          <img class="lancetta minuti" src="immagini/grafite-minuti.webp" alt="">
+          <img src="immagini/grafite-perno.webp" alt="">
+          <div class="riflesso"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tempo">
+      <p class="n"><b>N. 038</b> · Brixia</p>
+      <div class="anno" aria-label="Dal 2026 al 1927"></div>
+      <p class="luogo">Brescia, 26 marzo 1927</p>
+      <p class="per">Per un collezionista di automobili. Volgeva l'anno 1927, e <em>da Brescia a Roma e ritorno erano mille miglia</em>.</p>
+    </div>
+  </div>
+</section>
+<section class="intermezzo" data-nome="Brixia" data-rif="Ref. 1927 · N. 038" data-orologio="grafite" data-forma="1536 / 1024" data-sigillo="ruota" data-scorcio-cqw="100.07 -52.00 -17.49"></section>
+
+<!-- N. 052 · il bianco e acciaio · Parigi, estate 1925: l'Esposizione delle arti decorative · modo «deco» (13/11): l'ottavo angolo del giro, dall'alto
+     a sinistra. Orologio fatto da Franco con GPT il 13/11; la scritta «BRAVURA ATELIER» corretta in «MERIDIANO» (lettere prese dalla luna), approvata.
+     Nel filmato (Midjourney, 1920×1080, 9 secondi, stile autocromia) la donna in abito d'argento accanto alla fontana di vetro, la Senna e il ponte al tramonto.
+     Lancette con lancette-a-sagoma.js più strumenti/riempi-quadrante-liscio.js (quadrante bianco) e strumenti/ombra-lancetta.js (l'ombra va con la lancetta);
+     la piccola dei secondi gira intorno al centro del suo quadrantino (transform-origin sulla sua immagine). Misure in immagini/11-bianco-pelle-*.json. -->
+<section class="registro" data-modo="deco" data-allora="1925">
+  <div class="palco" data-modo="deco" data-stato="s0" style="--forma: 938 / 1677; --perno: 49.49% 44.69%; --sagoma: url(immagini/bianco.webp)">
+    <video class="scena" data-fuoco="25" muted playsinline preload="metadata" poster="immagini/scena-parigi.jpg" src="immagini/scena-parigi.mp4"></video>
+    <div class="velo"></div>
+
+    <ol class="righe">
+      <li><b>N. 031</b><span>Rubino e oro</span></li>
+      <li><b>N. 036</b><span>La tigre</span></li>
+      <li><b>N. 038</b><span>Cronografo grafite</span></li>
+      <li><b>N. 041</b><span>Verde e diamanti</span></li>
+      <li><b>N. 044</b><span>Cronografo cuoio</span></li>
+      <li><b>N. 049</b><span>Subacqueo blu e oro</span></li>
+      <li class="accesa"><b>N. 052</b><span>Bianco e acciaio</span></li>
+      <li><b>N. 057</b><span>Cronografo blu</span></li>
+      <li class="tua"><b>N. 058</b><span>la tua riga</span></li>
+    </ol>
+    <p class="conta"><b>N. 052</b> · Bianco e acciaio · 7 di 8</p>
+
+    <div class="orologio">
+      <div class="volo">
+        <div class="corpo">
+          <img src="immagini/bianco.webp" alt="Hora Vera «Bianco e acciaio»: quadrante bianco con i secondi piccoli e la data, cassa in acciaio, cinturino d'alligatore nero">
+          <img class="lancetta secondi" src="immagini/bianco-secondi.webp" alt="" style="transform-origin: 49.55% 52.81%">
+          <img src="immagini/bianco-perno-piccolo.webp" alt="">
+          <img class="lancetta ore" src="immagini/bianco-ore.webp" alt="">
+          <img class="lancetta minuti" src="immagini/bianco-minuti.webp" alt="">
+          <img src="immagini/bianco-perno.webp" alt="">
+          <div class="riflesso"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tempo">
+      <p class="n"><b>N. 052</b> · Déco</p>
+      <div class="anno" aria-label="Dal 2026 al 1925"></div>
+      <p class="luogo">Parigi, estate 1925</p>
+      <p class="per">Per una creatrice di gioielli. Volgeva l'anno 1925, e <em>Parigi metteva in mostra il futuro</em>.</p>
+    </div>
+  </div>
+</section>
+<section class="intermezzo" data-nome="Déco" data-rif="Ref. 1925 · N. 052" data-orologio="bianco" data-lancette="secondi perno-piccolo ore minuti" data-forma="938 / 1677" data-sigillo="ventaglio" data-scorcio-cqw="147.68 -17.33 -37.91"></section>
+
+<section class="coda" id="fine">
+  <p class="occhio">Commissione</p>
+  <h2>Otto orologi su otto.</h2>
+  <ol>
+    <li>L'orologio che sul filmato si fa trasparente e alla fine torna pieno.</li>
+    <li>Le lancette e la data che tornano indietro.</li>
+    <li>Dopo ogni scena: il nome che arriva lungo le sue rotte, poi la confezione.</li>
+  </ol>
+  <p class="nota">Anno, luogo e frase sono segnaposto: si decidono con la scena. Torna su e riscorri per rivederlo.</p>
+</section>
+
+<script>
+(() => {
+  if (new URLSearchParams(location.search).has('prova')) document.documentElement.classList.add('prova');
+  addEventListener('scroll', () => document.body.classList.toggle('dentro', scrollY > innerHeight * .5), { passive: true });
+  const parametri = new URLSearchParams(location.search), forzato = parametri.get('stato'), capForzato = +(parametri.get('cap') || 1) - 1, tempo = parametri.get('tempo');
+  const fermo = !!parametri.get('fermo'), calmo = matchMedia('(prefers-reduced-motion: reduce)').matches, stretto = matchMedia('(max-width: 760px)');
+  if (fermo) document.documentElement.classList.add('fermo');
+  // CORSA = quanto durano lancette e data (come --corsa nel CSS); negli ultimi PIENO millisecondi l'orologio torna pieno; VELATO = quanto è trasparente sul filmato
+  const OGGI = '2026', GIRI = [0, 0, 1, 2], CORSA = 7200, PIENO = 2600, VELATO = .46;
+  // LA PAGINA ASPETTA (Franco, 13/11: «evitare che chi arriva sul sito e scrolla veloce si perde l'animazione… questo non significa che l'animazione
+  // deve andare più veloce»). APPROVATO da Franco il 13/11 («Adesso sei stato superlativo… lavoro eccellente»): acceso di serie, ?aspetta=0 lo spegne.
+  // Ogni animazione ha un «cancello»: il punto della pagina in cui deve essere finita. Il motore dello scorrimento (più sotto) fa arrivare la pagina
+  // al cancello non prima che l'animazione sia finita. Indietro si torna sempre; i collegamenti (Commissione) saltano tutto.
+  // SOSTA = quanto resta il traguardo prima di poter ripartire.
+  const ASPETTA = parametri.get('aspetta') !== '0' && !calmo && !fermo && !forzato, SOSTA = 2400, cancelli = [];
+
+  // PROVA DELLO SCORRIMENTO (13/11, Franco: «dammi delle soluzioni migliori, magari ne valutiamo diverse, per lo scrolling un po' fastidioso che si blocca»;
+  // e la sua idea: «potrebbe avvenire con la rotella del mouse intanto che le immagini rimpiccioliscono e svaniscono… e nel momento in cui svaniscono
+  // possono comparire delle scritte sfalsate sul lato destro e sinistro che raccontano qualcosa»). Si sceglie con ?scorri= o con il pannellino in alto:
+  //   ora      = com'è adesso (approvato): la pagina aspetta ogni animazione;
+  //   racconto = la sua idea: finita la scena le immagini rimpiccioliscono e svaniscono con la rotella e compaiono le righe del racconto, sfalsate;
+  //              nome e confezione seguono la rotella (niente attese); nella corsa e nella sosta la rotella si carica come in «carica»;
+  //   carica   = le attese restano, ma la rotella spinta non va persa: sulla barra un filo d'oro fin dove arriverai, e finita l'animazione la pagina ci va.
+  // Una terza, «la corona» (tutto segue la rotella, senza attese), è stata provata e tolta il 13/11: se si corre, i filmati non si vedono interi
+  // (Franco: «senza perdere la visione intera di filmati o altro»), e scorrendo forte sfarfallava.
+  const MODI = { ora: ["Com'è ora", 'la pagina aspetta che ogni animazione finisca; se spingi, la rotella va persa.'],
+    racconto: ['Con il racconto', 'finita la scena, le immagini rimpiccioliscono e svaniscono e compaiono quattro righe di storia. In basso l\'orologio fa un giro solo per ogni sezione e sotto c\'è «Salta»; finito il giro, la pagina va avanti da sola.'],
+    carica: ['Senza racconto', 'come «Con il racconto», ma finita la scena si passa subito al nome e alla scatola.'] };
+  // 14/11 (Franco: «L'orologio deve fare un solo giro e non due e deve comparire in tutte le sezioni dove il mouse si blocca… Lo scorrimento deve
+  // avvenire da solo quando una sezione è finita… mettiamo "salta"»): nome e confezione non seguono più la rotella (SCORRE spento) ma hanno il loro
+  // tempo, con l'orologio, come le scene; nel racconto anche le righe sono una sezione con il suo giro.
+  const MODO = Object.prototype.hasOwnProperty.call(MODI, parametri.get('scorri')) ? parametri.get('scorri') : 'ora';
+  const SCORRE = false, CARICA = MODO === 'carica' || MODO === 'racconto', PIU = 1;
+  const STILE = parametri.get('lancetta') === 'segno' ? 'segno' : 'cerchio';   // la lancetta: cerchio semplice (Franco) o il simbolo di Meridiano (mia variante)
+  document.documentElement.classList.add('scorri-' + MODO);
+  if (parametri.has('scorri') || parametri.has('prova')) {
+    document.title = 'Hora Vera · prova dello scorrimento';
+    const nav = document.createElement('nav'); nav.className = 'prova-scorri'; nav.setAttribute('aria-label', 'Prova dello scorrimento');
+    const seg = STILE === 'segno' ? '&lancetta=segno' : '';
+    nav.innerHTML = '<span>Scorrimento</span>' + Object.entries(MODI).filter(([k]) => k !== 'ora').map(([k, [nome]]) => `<a href="?scorri=${k}${seg}"${k === MODO ? ' class="qui"' : ''}>${nome}</a>`).join('')
+      + (MODO === 'ora' ? '' : `<span style="margin-left: 14px">Lancetta</span><a href="?scorri=${MODO}"${STILE === 'cerchio' ? ' class="qui"' : ''}>Cerchio</a><a href="?scorri=${MODO}&lancetta=segno"${STILE === 'segno' ? ' class="qui"' : ''}>Segno</a>`)
+      + `<p>${MODI[MODO][0]}: ${MODI[MODO][1]}</p>`;
+    document.body.appendChild(nav);
+  }
+  // i tratti in cui un'animazione segue la rotella (SCORRE): lì la pagina non va più svelta di PIU volte il passo dell'animazione
+  const zone = [];
+  // la lancetta (idea di Franco, 13/11) c'è nel racconto e nella carica; le fermate sono i punti dove «Continua» porta la pagina
+  const LANCETTA = MODO === 'racconto' || MODO === 'carica', fermateExtra = [];
+  const freno = y => { let v = Infinity; for (const z of zone) { const a = z.da(), b = z.a(); if (y >= a - 2 && y < b - 1) v = Math.min(v, (b - a) / (z.dura() / PIU)); } return v; };
+  // il racconto di ogni scena: quattro righe, alternate a sinistra e a destra (date e fatti controllati, come in testi-immagini.md)
+  const RACCONTO = {
+    1683: ['Da due mesi Vienna resiste all\'assedio.', 'All\'alba il re di Polonia, Jan Sobieski, la guarda dall\'alto del Kahlenberg.', 'Verso sera scendono gli ussari, con le ali di piume sulle spalle: <em>la più grande carica di cavalleria della storia</em>.', 'Al tramonto l\'assedio è rotto.'],
+    1580: ['Nella Cina dei Ming la spada non è soltanto un\'arma.', 'È un esercizio: lo stesso gesto, ripetuto ogni mattina prima del sole.', 'Il maestro non insegna a colpire: insegna ad aspettare.', 'Poi <em>un solo movimento</em>, e il silenzio.'],
+    1910: ['Dover, 2 giugno 1910, poco dopo le sei e mezza di sera.', 'Charles Rolls decolla su un biplano Wright di legno e tela.', 'Raggiunge la costa francese, vira e torna indietro senza posarsi.', 'Novantacinque minuti: <em>la prima andata e ritorno sopra la Manica</em>.'],
+    1911: ['Da quasi due mesi camminano sul ghiaccio, con gli sci e con i cani.', 'Sono in cinque: Roald Amundsen e quattro compagni.', 'Il 14 dicembre 1911, nel pomeriggio, <em>ogni direzione è nord</em>.', 'Piantano una tenda e la chiamano Polheim: la casa del Polo.'],
+    1522: ['Tre anni prima erano partite cinque navi, con circa duecentoquaranta uomini.', 'Ne torna una sola, la Victoria, con diciotto sopravvissuti.', 'Juan Sebastián Elcano risale il fiume fino a Siviglia.', 'È la prima nave che <em>ha fatto il giro del mondo</em>.'],
+    1610: ['Un professore di Padova costruisce un cannocchiale che ingrandisce venti volte.', 'Lo punta verso la luna: non è liscia, <em>ha montagne e valli</em>.', 'Il 7 gennaio, accanto a Giove, vede tre piccole stelle che si spostano.', 'A marzo racconta tutto in un libretto: il Sidereus Nuncius.'],
+    1927: ['Brescia, 26 marzo 1927: le automobili partono una dopo l\'altra.', 'Fino a Roma e ritorno, di giorno e di notte: <em>mille miglia</em>.', 'Strade bianche, polvere, i paesi svegli a guardare.', 'Vince una OM costruita a Brescia, in poco più di ventun ore.'],
+    1925: ['Tra il Grand Palais e gli Invalides sorge una città di padiglioni.', 'Al centro, la fontana di vetro di René Lalique, alta quindici metri.', 'Lacca, vetro, geometrie: le arti decorative guardano al futuro.', 'Da quella mostra lo stile prenderà il suo nome: <em>Art Déco</em>.'] };
+
+  const capitoli = [...document.querySelectorAll('.registro')].map((sez, quale) => {
+    const palco = sez.querySelector('.palco'), video = palco.querySelector('video'), anno = palco.querySelector('.anno'), corpo = palco.querySelector('.corpo');
+    // la quinta: tutto ciò che sta sul palco, in un contenitore che il racconto può rimpicciolire e far svanire senza toccare i movimenti approvati
+    const quinta = document.createElement('div'); quinta.className = 'quinta'; quinta.append(...palco.childNodes); palco.appendChild(quinta);
+    let racconto = null;
+    if (MODO === 'racconto' && RACCONTO[sez.dataset.allora]) { racconto = document.createElement('div'); racconto.className = 'racconto'; racconto.innerHTML = RACCONTO[sez.dataset.allora].map(t => '<p>' + t + '</p>').join(''); palco.appendChild(racconto); }
+    // nel racconto il capitolo è più lungo di 110vh (CSS): lì le immagini svaniscono e restano le righe; soglie e cancelli si contano sulla lunghezza di prima
+    const extra = () => racconto && !stretto.matches ? innerHeight * 1.1 : 0;
+    // la data: ogni cifra è un nastro che parte dalla cifra di oggi e scende all'indietro fino a quella di allora
+    const ALLORA = sez.dataset.allora;
+    const nastri = [...OGGI].map((c, k) => {
+      const passi = (+c - +ALLORA[k] + 10) % 10 + GIRI[k] * 10; let cifre = '';
+      for (let n = 0; n <= passi; n++) cifre += '<i>' + ((+c - n) % 10 + 10) % 10 + '</i>';
+      const cella = document.createElement('span'); cella.className = 'cifra'; cella.innerHTML = '<span class="nastro">' + cifre + '</span>';
+      anno.appendChild(cella);
+      return { el: cella.firstChild, passi };
+    });
+    const data = indietro => nastri.forEach(n => { n.el.style.transform = 'translateY(' + (indietro ? -n.passi * 1.2 : 0) + 'em)'; });
+
+    // la scia delle lancette: sei copie dietro quella dei minuti, quattro dietro quella delle ore
+    if (!calmo) palco.querySelectorAll('.lancetta').forEach(l => {
+      for (let k = l.classList.contains('minuti') ? 6 : 4; k >= 1; k--) { const s = l.cloneNode(); s.classList.add('scia'); s.style.setProperty('--k', k); l.before(s); }
+    });
+
+    // il protagonista della scena va nella fascia libera tra l'orologio e la data (al 64% dello schermo): la scena, larga il 108%, si sposta di conseguenza
+    const fuoco = +(video.dataset.fuoco || 50);
+    palco.style.setProperty('--fuoco', fuoco + '%');
+    palco.style.setProperty('--sx', (64 - fuoco * 1.08).toFixed(1) + '%');
+
+    // sul filmato l'orologio si fa trasparente e negli ultimi secondi della corsa torna pieno; se si esce prima, torna pieno subito
+    let velo = null;
+    function trasparente(su) {
+      const ora = velo ? +getComputedStyle(corpo).opacity : 1;
+      if (velo) { velo.cancel(); velo = null; }
+      // data-attesa: per quanto il filmato resta da solo prima che l'orologio parta (lo stesso tempo di --attesa nel CSS); intanto l'orologio è pieno
+      if (su && !calmo && !fermo && !stretto.matches) velo = corpo.animate([{ opacity: ora, easing: 'ease-out' }, { opacity: VELATO, offset: .15 }, { opacity: VELATO, offset: 1 - PIENO / CORSA, easing: 'ease-in-out' }, { opacity: 1 }], { duration: CORSA, delay: +(sez.dataset.attesa || 0) });
+      else if (ora < .99) velo = corpo.animate([{ opacity: ora }, { opacity: 1 }], { duration: 500, easing: 'ease-out' });
+    }
+
+    // IL TRAGUARDO (Franco, 13/11: «manca ancora il bersaglio finale in cui l'orologio è completamente opaco sulla scena ancora visibile»).
+    // Misurato con lo scorrimento vero: chi scorre svelto arrivava all'uscita mentre l'orologio era ancora trasparente. Ora la sosta (s3) È il traguardo:
+    // quando ci si arriva, se la corsa non è finita la si porta in fondo in un secondo (orologio pieno, lancette e data ferme), qualunque sia il passo.
+    function traguardo() {
+      if (calmo || fermo) return;
+      if (velo && velo.playState === 'running') { const ora = +getComputedStyle(corpo).opacity; velo.cancel(); velo = corpo.animate([{ opacity: ora }, { opacity: 1 }], { duration: 900, easing: 'ease-out' }); }
+      palco.getAnimations({ subtree: true }).forEach(a => {
+        const el = a.effect && a.effect.target;
+        if (!el || a.transitionProperty !== 'transform' || !el.matches('.lancetta, .nastro, .orologio, .volo')) return;
+        const resta = a.effect.getComputedTiming().endTime - (a.currentTime || 0);
+        if (resta > 1000) a.playbackRate = resta / 1000;
+      });
+    }
+
+    // i due cancelli del capitolo: non si passa alla sosta finché la corsa non è finita, e non si lascia la sosta prima di SOSTA millisecondi
+    let stato = '', spegni = 0, partito = false, eraAllora = false, finoCorsa = Infinity, finoSosta = Infinity;
+    const cima = () => sez.getBoundingClientRect().top + scrollY, lunga = () => sez.offsetHeight - extra() - innerHeight;
+    // da = dove stava la pagina quando l'animazione è partita (più un tratto per frenare): da lì al cancello la pagina avanza al più col passo dell'animazione
+    const cancelloCorsa = { y: () => cima() + lunga() * .5 - 4, fine: () => finoCorsa, dura: CORSA, da: 0, tipo: 'corsa' }, cancelloSosta = { y: () => cima() + lunga() * .86 - 4, fine: () => finoSosta, dura: SOSTA, da: 0, tipo: 'sosta' };
+    cancelli.push(cancelloCorsa, cancelloSosta);
+    // LE SEZIONI (14/11): ciò che Franco vede come un pezzo solo ha un giro solo dell'orologio. La scena è la corsa più la sosta.
+    cancelloCorsa.gruppo = cancelloSosta.gruppo = { cancelli: [cancelloCorsa, cancelloSosta] };
+    // il racconto è una sezione sua: arrivati in fondo alla sosta, la pagina avanza al passo di RACC (le immagini svaniscono e le righe compaiono,
+    // perché seguono la posizione della pagina), poi resta ferma LETTURA millisecondi per leggerle; un giro dell'orologio per tutto
+    const RACC = 7000, LETTURA = 4500;
+    let finoRacc = Infinity, primaY = scrollY;
+    const yRacc = () => cima() + lunga() * .9 + innerHeight * .62, attaccoRacc = () => cima() + lunga() * .87;
+    const cancRacc = { y: yRacc, fine: () => finoRacc, dura: RACC, da: 0, tipo: 'racconto' }, cancLettura = { y: yRacc, fine: () => finoRacc + LETTURA, dura: LETTURA, da: 0, tipo: 'lettura' };
+    if (racconto) { cancRacc.gruppo = cancLettura.gruppo = { cancelli: [cancRacc, cancLettura] }; cancelli.push(cancRacc, cancLettura); }
+    function imposta(s) {
+      stato = s; palco.dataset.stato = s;
+      if (s === 's0') cancelloCorsa.saltato = cancelloSosta.saltato = false;   // tornati sopra la scena: «Salta» non vale più, rientrando si riguarda
+      const allora = s === 's2' || s === 's3';
+      data(allora);
+      if (allora !== eraAllora) {
+        trasparente(allora);
+        const attesa = +(sez.dataset.attesa || 0);
+        finoCorsa = allora ? performance.now() + CORSA + attesa : Infinity;
+        if (allora) { cancelloCorsa.dura = CORSA + attesa; cancelloCorsa.da = Math.min(cancelloCorsa.y(), scrollY + innerHeight * .15); }
+      }
+      eraAllora = allora;
+      if (s === 's3') { traguardo(); finoSosta = performance.now() + SOSTA; cancelloSosta.da = Math.min(cancelloSosta.y(), scrollY + innerHeight * .15); } else if (s !== 's4') finoSosta = Infinity;
+      clearTimeout(spegni);
+      // il filmato va una volta sola (Franco, 13/11: «su alcuni filmati hai lasciato il loop, tipo su Galileo e su Déco»): un filmato già FINITO è fermo,
+      // e play() lo faceva ripartire da capo passando dalla corsa alla sosta. Ora riparte da capo solo rientrando nella scena (da sopra o da sotto).
+      if (s === 's0' || s === 's4') partito = false;
+      if (allora || (s === 's1' && sez.dataset.filmSubito)) {   // data-film-subito: il filmato parte già all'arrivo
+        if (!partito) { partito = true; if (video.currentTime > 0) video.currentTime = 0; video.play().catch(() => {}); }
+        else if (video.paused && !video.ended) video.play().catch(() => {});
+      }
+      else spegni = setTimeout(() => video.pause(), 3300);   // si ferma quando è già tornata nel buio
+    }
+    function aggiorna() {
+      const r = sez.getBoundingClientRect(), corsa = r.height - extra() - innerHeight, p = Math.max(0, Math.min(1, -r.top / corsa));
+      // soglie approvate da Franco con la tigre: non si toccano (nel racconto la sosta resta finché le immagini non sono svanite)
+      let s = r.top > innerHeight * .45 ? 's0' : p < .2 ? 's1' : p < .5 ? 's2' : p < .86 ? 's3' : racconto && !stretto.matches ? 's3' : 's4';
+      if (forzato && quale === capForzato) s = forzato;
+      if (s !== stato) imposta(s);
+      if (racconto && !stretto.matches) {   // la sezione del racconto parte quando la pagina, scendendo, passa la fine della sosta
+        const y = scrollY, a = attaccoRacc();
+        if (!isFinite(finoRacc) && primaY < a && y >= a && y < yRacc()) { finoRacc = performance.now() + RACC; cancRacc.da = y; cancLettura.da = yRacc(); }
+        else if (isFinite(finoRacc) && (y < a - innerHeight * .5 || r.bottom < 0)) { finoRacc = Infinity; cancRacc.saltato = cancLettura.saltato = false; }
+        primaY = y;
+      }
+      if (racconto) {   // la sua idea: le immagini rimpiccioliscono e svaniscono con la rotella, e mentre svaniscono compaiono le righe, sfalsate
+        const via = stretto.matches ? 0 : Math.max(0, Math.min(1, (-r.top - corsa * .9) / (innerHeight * .6)));
+        quinta.style.setProperty('--via', via.toFixed(3));
+        racconto.querySelectorAll('p').forEach((l, k) => l.classList.toggle('vista', via >= .3 + k * .2));
+      }
+    }
+
+    // l'orologio si inclina appena seguendo il mouse (solo con un mouse vero)
+    if (matchMedia('(pointer: fine)').matches && !calmo) {
+      let mosso = false, mx = 0, my = 0;
+      palco.addEventListener('pointermove', e => {
+        mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5;
+        if (mosso) return; mosso = true;
+        requestAnimationFrame(() => { mosso = false; corpo.style.setProperty('--ry', (mx * 9).toFixed(2) + 'deg'); corpo.style.setProperty('--rx', (-my * 7).toFixed(2) + 'deg'); });
+      });
+      palco.addEventListener('pointerleave', () => { corpo.style.setProperty('--ry', '0deg'); corpo.style.setProperty('--rx', '0deg'); });
+    }
+    return { sez, video, aggiorna, base: corpo.querySelector('img') };
+  });
+
+  // ---------- L'INTERMEZZO: il nome che arriva (la rotta) e la confezione (dal nero, come dall'acqua) ----------
+  const NS = 'http://www.w3.org/2000/svg';
+  const sv = (tag, attr, padre) => { const e = document.createElementNS(NS, tag); for (const k in attr) e.setAttribute(k, attr[k]); if (padre) padre.appendChild(e); return e; };
+  const A = (el, tappe, durata, ritardo = 0, andamento = 'ease') => el.animate(tappe, { duration: durata, delay: ritardo, easing: andamento, fill: 'both' });
+  // i sigilli: il cerchio e il meridiano sono il segno fisso di Meridiano; ogni orologio ci aggiunge il suo (provvisori, a filo)
+  const FISSO = '<circle cx="60" cy="60" r="36" pathLength="1"/><path d="M60 9V111" pathLength="1"/><path d="M60 3l5 7-5 7-5-7z" pathLength="1"/>';
+  const SIGILLI = { spada: '<path d="M46 84h28" pathLength="1"/><circle cx="60" cy="114" r="3.2" pathLength="1"/>', ali: '<path d="M27 50h66" pathLength="1"/><path d="M27 68h66" pathLength="1"/><path d="M37 50v18M83 50v18" pathLength="1"/>',
+    piume: '<path d="M47 32q-15 28 0 56" pathLength="1"/><path d="M73 32q15 28 0 56" pathLength="1"/>',
+    stella: '<path d="M60 41l4.2 14.8L79 60l-14.8 4.2L60 79l-4.2-14.8L41 60l14.8-4.2z" pathLength="1"/>',   // il Polo Sud: la rosa dei venti
+    vela: '<path d="M44 39q10 16.5 0 33h32q10-16.5 0-33z" pathLength="1"/><path d="M37 86q5.75 4 11.5 0t11.5 0t11.5 0t11.5 0" pathLength="1"/>',
+    luna: '<path d="M70 44a16 16 0 0 0 0 32a22 22 0 0 1 0-32z" pathLength="1"/>',   // Padova: la falce di luna che Galileo disegnò
+    ruota: '<circle cx="60" cy="60" r="15" pathLength="1"/><path d="M45 60h30" pathLength="1"/><path d="M49.4 49.4l21.2 21.2M49.4 70.6l21.2-21.2" pathLength="1"/>',   // Brescia: la ruota a raggi
+    ventaglio: '<path d="M42 72a18 18 0 0 1 36 0z" pathLength="1"/><path d="M60 72l-9-15.6M60 72l9-15.6M60 72L44.4 63M60 72l15.6-9" pathLength="1"/>' };   // Parigi: il ventaglio Art Déco   // Siviglia: la vela sul meridiano, che fa da albero, e l'onda
+  let maschere = 0;
+  // A1 · la rotta: ogni lettera arriva da un punto diverso fuori dallo schermo lungo una curva, crescendo, e si lascia dietro la sua rotta a puntini
+  function rotta(parte) {
+    const q = parte.querySelector('.quadro'), r = q.getBoundingClientRect(), W = r.width, H = r.height, svg = q.querySelector('.tracce');
+    svg.replaceChildren(); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    const defs = sv('defs', {}, svg), R = Math.hypot(W, H) * .56, N = 26, DUR = 2100, PASSO = 210;
+    const L = [...q.querySelectorAll('.scritta span')].map(s => { const b = s.getBoundingClientRect(), sp = parseFloat(getComputedStyle(s).letterSpacing) || 0; return { s, x: b.left - r.left + (b.width - sp) / 2, y: b.top - r.top + b.height / 2, h: b.height }; });
+    const n = L.length;
+    L.forEach((l, i) => {
+      const a = (-205 + i * (230 / Math.max(1, n - 1))) * Math.PI / 180;
+      const S = [W / 2 + R * Math.cos(a), H / 2 + R * .82 * Math.sin(a)], E = [l.x, l.y], k = (i % 2 ? -1 : 1) * .34;
+      const C = [(S[0] + E[0]) / 2 - (E[1] - S[1]) * k, (S[1] + E[1]) / 2 + (E[0] - S[0]) * k];
+      const d = `M${S[0].toFixed(1)} ${S[1].toFixed(1)}Q${C[0].toFixed(1)} ${C[1].toFixed(1)} ${E[0].toFixed(1)} ${E[1].toFixed(1)}`;
+      const id = 'rotta-' + (++maschere), maschera = sv('mask', { id, maskUnits: 'userSpaceOnUse', x: 0, y: 0, width: W, height: H }, defs);
+      const mp = sv('path', { d, fill: 'none', stroke: '#fff', 'stroke-width': 10, pathLength: 1, 'stroke-dasharray': 1 }, maschera);
+      const tr = sv('path', { d, class: 'rotta', mask: `url(#${id})` }, svg), lunga = tr.getTotalLength(), fl = [], fm = [];
+      for (let j = 0; j <= N; j++) {
+        const e = 1 - Math.pow(1 - j / N, 3), pt = tr.getPointAtLength(e * lunga);
+        fl.push({ transform: `translate(${(pt.x - E[0]).toFixed(1)}px, ${(pt.y - E[1]).toFixed(1)}px) scale(${(.5 + .5 * e).toFixed(3)})`, opacity: Math.min(1, j / 4) });
+        fm.push({ strokeDashoffset: 1 - e });
+      }
+      const quando = 250 + i * PASSO;
+      A(l.s, fl, DUR, quando, 'linear'); A(mp, fm, DUR, quando, 'linear');
+      A(tr, [{ opacity: .8 }, { opacity: 0 }], 900, quando + DUR + 500);
+      const tacca = sv('path', { d: `M${E[0].toFixed(1)} ${(l.y + l.h * .6).toFixed(1)}v${(l.h * .14).toFixed(1)}`, class: 'tacca' }, svg);
+      A(tacca, [{ opacity: 0 }, { opacity: .9, offset: .2 }, { opacity: .9, offset: .7 }, { opacity: 0 }], 1500, quando + DUR - 150);
+    });
+    A(q.querySelector('.rif'), [{ opacity: 1, clipPath: 'inset(0 100% 0 0)' }, { opacity: 1, clipPath: 'inset(0 0% 0 0)' }], 900, 250 + (n - 1) * PASSO + DUR + 150, 'steps(18)');
+  }
+  // B1 · dal nero, come dall'acqua: il coperchio scorre, il sigillo sale sfocato e va a fuoco con due cerchi, una luce ne percorre i tratti, il nome affiora
+  // Prima (Franco, 13/11): la scatola chiusa con le scritte stampate; le scritte diventano grigie, poi sempre più trasparenti fino a scomparire;
+  // solo dopo il coperchio scorre. Il resto è la sequenza di prima, spostata di T.
+  function acqua(parte) {
+    const c = sel => parte.querySelector(sel), lettere = [...parte.querySelectorAll('.vivente .battesimo span')], T = 2200;
+    A(c('.stampa'), [{ filter: 'grayscale(0) brightness(1)', opacity: 1 }, { filter: 'grayscale(1) brightness(.6)', opacity: 1, offset: .45 }, { filter: 'grayscale(1) brightness(.6)', opacity: 0 }], 1900, 500, 'ease-in-out');
+    A(c('.coperchio'), [{ transform: 'translateX(0%)' }, { transform: 'translateX(27%)' }], 1500, 250 + T, 'cubic-bezier(.3,.05,.15,1)');
+    A(c('.sigillo'), [{ opacity: 0, filter: 'blur(10px)', transform: 'translateY(22%) scale(.9)' }, { opacity: 1, filter: 'blur(0px)', transform: 'none' }], 1800, 1500 + T, 'cubic-bezier(.2,.7,.2,1)');
+    parte.querySelectorAll('.onda').forEach((o, i) => A(o, [{ opacity: 0, transform: 'scale(.35)' }, { opacity: .55, transform: 'scale(.7)', offset: .2 }, { opacity: 0, transform: 'scale(2.3)' }], 1700, 2000 + T + i * 480, 'ease-out'));
+    parte.querySelectorAll('.strato.luce *').forEach((t, i) => A(t, [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], 1100, 3500 + T + i * 110, 'ease-in-out'));
+    A(c('.strato.luce'), [{ filter: 'drop-shadow(0 0 0px rgb(255 200 140 / 0))' }, { filter: 'drop-shadow(0 0 14px rgb(255 200 140 / .95))', offset: .6 }, { filter: 'drop-shadow(0 0 6px rgb(255 200 140 / .7))' }], 1900, 3500 + T);
+    A(c('.alone'), [{ opacity: 0 }, { opacity: 1 }], 1500, 3700 + T);
+    lettere.forEach((s, i) => A(s, [{ opacity: 0, filter: 'blur(8px)', transform: 'translateY(60%)' }, { opacity: 1, filter: 'blur(0px)', transform: 'none' }], 750, 4900 + T + i * 100, 'ease-out'));
+    A(c('.vivente .rif'), [{ opacity: 0 }, { opacity: 1 }], 900, 5200 + T + lettere.length * 100);
+  }
+  const parti = [...document.querySelectorAll('.intermezzo')].flatMap(sez => {
+    const nome = sez.dataset.nome, o = 'immagini/' + sez.dataset.orologio, [sh, sx, sy] = sez.dataset.scorcioCqw ? sez.dataset.scorcioCqw.split(' ') : sez.dataset.scorcio.split(' ').map((v, k) => (parseFloat(v) * [.564, .964, .564][k] - [0, .2, .07][k]).toFixed(2)), tratti = FISSO + (SIGILLI[sez.dataset.sigillo] || '');
+    const lettere = [...nome.toUpperCase()].map(c => '<span aria-hidden="true">' + c + '</span>').join('');
+    sez.innerHTML = `<div class="arrivo"><div class="quadro" style="--lettere: ${nome.length}"><svg class="tracce" aria-hidden="true"></svg><h2 class="scritta" aria-label="${nome}">${lettere}</h2><p class="rif">${sez.dataset.rif}</p></div></div>
+      <div class="confezione"><div class="quadro"><div class="cassa"><div class="pareti"><div class="dentro"><div class="scorcio" style="--sc-h: ${sh}cqw; --sc-x: ${sx}cqw; --sc-y: ${sy}cqw; aspect-ratio: ${sez.dataset.forma || '1024 / 1536'}"><img src="${o}.webp" alt="">${(sez.dataset.lancette || 'ore minuti').split(' ').map(l => `<img src="${o}-${l}.webp" alt="">`).join('')}<img src="${o}-perno.webp" alt=""></div><div class="bagliore"></div></div></div>
+      <div class="coperchio"><div class="alone"></div>
+      <div class="incisione stampa" aria-hidden="true"><svg class="segno" viewBox="0 0 120 120">${tratti}</svg><p class="battesimo">${nome.toUpperCase()}</p><p class="rif">${sez.dataset.rif}</p></div>
+      <div class="incisione vivente"><div class="sigillo"><i class="onda"></i><i class="onda"></i><svg class="strato base" viewBox="0 0 120 120" aria-hidden="true">${tratti}</svg><svg class="strato luce" viewBox="0 0 120 120" aria-hidden="true">${tratti}</svg></div>
+      <p class="battesimo" aria-label="${nome}">${lettere}</p><p class="rif">${sez.dataset.rif}</p></div></div></div></div></div>`;
+    return [...sez.children].map(el => {
+      const gioca = el.classList.contains('arrivo') ? rotta : acqua;
+      let vivo = false;
+      if (calmo || fermo) { el.classList.add('vivo'); return { el, gioca, aggiorna() {} }; }
+      // il cancello della parte: a metà del tratto in cui il quadro resta fermo; si apre quando nome o confezione hanno finito
+      let fino = Infinity;
+      const cancello = { y: () => el.getBoundingClientRect().top + scrollY + (el.offsetHeight - innerHeight) * .5, fine: () => fino, dura: 5000, da: 0, tipo: 'parte' };
+      cancelli.push(cancello);
+      cancello.gruppo = { cancelli: [cancello] };   // il nome, e poi la confezione: ognuno è una sezione con il suo giro dell'orologio
+      // racconto: nome e confezione seguono la rotella, dal punto in cui partono fino al punto del cancello (mai più svelti del loro passo)
+      const cimaParte = () => el.getBoundingClientRect().top + scrollY;
+      if (SCORRE) zone.push({ da: () => cimaParte() - innerHeight * .35, a: () => cimaParte() + (el.offsetHeight - innerHeight) * .5, dura: () => cancello.dura });
+      return { el, gioca, aggiorna() {
+        const r = el.getBoundingClientRect();
+        if (!vivo && r.top < innerHeight * .35 && r.bottom > innerHeight * .6) {
+          vivo = true; el.classList.add('vivo'); gioca(el);
+          cancello.dura = Math.max(0, ...el.getAnimations({ subtree: true }).map(a => a.effect.getComputedTiming().endTime)); fino = performance.now() + cancello.dura;
+          cancello.da = Math.min(cancello.y(), scrollY + innerHeight * .15);
+          if (SCORRE) el.getAnimations({ subtree: true }).forEach(a => a.pause());
+        }
+        else if (vivo && (r.top > innerHeight || r.bottom < 0)) {   // uscita del tutto: si rimette com'era, così rientrando riparte
+          vivo = false; fino = Infinity; cancello.saltato = false; el.getAnimations({ subtree: true }).forEach(a => a.cancel());
+          const svg = el.querySelector('.tracce'); if (svg) svg.replaceChildren();
+          el.classList.remove('vivo');
+        }
+        if (vivo && SCORRE) {
+          const q = Math.max(0, Math.min(1, (innerHeight * .35 - r.top) / (innerHeight * .35 + (el.offsetHeight - innerHeight) * .5)));
+          el.getAnimations({ subtree: true }).forEach(a => { a.currentTime = q * cancello.dura; });
+        }
+      } };
+    });
+  });
+
+  const tutti = () => { capitoli.forEach(c => c.aggiorna()); parti.forEach(p => p.aggiorna()); };
+  // chi scende oltre un cancello ancora chiuso viene riportato lì (solo scendendo; un collegamento o il tasto Fine saltano tutto)
+  const filo = document.querySelector('.attesa'), filoDentro = filo.firstElementChild, filoCento = filo.querySelector('b'), saltaFilo = document.querySelector('.salta-filo');
+  let ultimoY = scrollY, salto = 0, inAttesa = null, filoGira = false, motore = null;
+  function trattieni() {
+    const y = scrollY, ora = performance.now(); let chiuso = null;
+    // con il motore la pagina non viene MAI riportata indietro: questa rete resta solo per la prova ?vecchia=1
+    if (ASPETTA && !motore && ora > salto && y > ultimoY) for (const c of cancelli.sort((a, b) => a.y() - b.y())) {
+      if (c.saltato) continue;   // una sezione saltata con «Salta» non trattiene più
+      const l = c.y();
+      if (ultimoY <= l && y > l && ora < c.fine()) { scrollTo(0, l); chiuso = c; break; }
+    }
+    ultimoY = scrollY;
+    return chiuso;
+  }
+  // IL FILO DELL'ATTESA in basso (il modo di serie, quello a cui porta il menu; nella prova c'è l'orologio): compare a chi spinge contro un'animazione
+  // non finita. Rifatto il 16/11/2026 con le parole di Franco, alla lettera, da spuntare sugli scatti:
+  //   1. «sulla pagina "Visioni" fammi la righina in basso che scorre un filino più spessa»
+  //   2. «e dello stesso colore di alfa, beta, etc.»
+  //   3. «Inoltre anche lì metti la percentuale di avanzamento del filmato»
+  //   4. «e la parola "SALTA"».
+  // COME È FATTO: il filo è alto 2 px (era 1) e blu (--blu); accanto, a destra, la percentuale; sotto, «Salta», che si preme. Filo e percentuale
+  // segnano la SEZIONE come la vede lui (la scena = corsa più sosta; il nome; la confezione), non il singolo cancello: prima il filo si riempiva due
+  // volte per scena (misurato il 16/11; è la lezione del 14/11 sull'orologio: «deve fare un solo giro e non due»). Quando il cancello che trattiene
+  // si apre il filo svanisce, e alla sosta riprende da dov'era (dal 75%). «Salta» apre i cancelli della sezione e porta alla fermata dopo, come
+  // nell'orologio della prova; tornando sopra la sezione vale di nuovo l'attesa.
+  // Prova: SEGNO="document.querySelector('.attesa.si') && document.querySelector('.salta-filo.si')" node strumenti/scorri-come-franco.js <questa pagina> <cartella>
+  function puntoGruppo(g, t) {   // a che punto è una sezione: il tempo passato sul tempo di tutti i suoi cancelli, e se uno sta ancora andando
+    let fatto = 0, tot = 0, corre = false;
+    for (const c of g.cancelli) { const d = c.dura || 1, f = c.fine(); tot += d; if (c.saltato) { fatto += d; continue; } if (isFinite(f)) { fatto += Math.max(0, Math.min(d, t - (f - d))); if (t < f) corre = true; } }
+    return { p: Math.min(1, fatto / tot), corre };
+  }
+  function spegniAttesa() { inAttesa = null; filo.classList.remove('si'); saltaFilo.classList.remove('si'); delete document.body.dataset.attesa; }
+  function giroAttesa() {
+    const g = inAttesa; if (!g) { filoGira = false; return; }
+    const s = puntoGruppo(g, performance.now()), n = Math.floor(s.p * 100) + '%';
+    filoDentro.style.transform = 'scaleX(' + s.p.toFixed(4) + ')'; if (filoCento.textContent !== n) filoCento.textContent = n;
+    if (!s.corre) { spegniAttesa(); filoGira = false; return; }   // il cancello si è aperto (o si è tornati sopra): la pagina è libera
+    requestAnimationFrame(giroAttesa);
+  }
+  function mostraAttesa(c) {
+    if (LANCETTA) return;   // nella prova c'è la lancetta al suo posto
+    const resta = c.fine() - performance.now(), g = c.gruppo || (c.gruppo = { cancelli: [c] });
+    if (g === inAttesa || c.saltato || !(resta > 0) || !isFinite(resta)) return;
+    inAttesa = g; filo.classList.add('si'); saltaFilo.classList.add('si'); document.body.dataset.attesa = 'ASPETTA';
+    if (!filoGira) { filoGira = true; giroAttesa(); }
+  }
+  saltaFilo.addEventListener('click', () => {
+    const g = inAttesa; if (!g) return;
+    g.cancelli.forEach(c => { c.saltato = true; });
+    spegniAttesa();
+    if (motore) { motore.avanti(); return; }
+    // senza il motore (il telefono): alla prossima fermata con lo scorrimento del browser
+    const t = performance.now(), ys = cancelli.filter(c => !c.saltato && !(t >= c.fine())).map(c => c.y()).filter(y => y > scrollY + 30).sort((a, b) => a - b);
+    scrollTo({ top: ys.length ? ys[0] : document.documentElement.scrollHeight, behavior: 'smooth' });
+  });
+  addEventListener('click', e => { if (e.target.closest && e.target.closest('a[href^="#"]')) salto = performance.now() + 1500; }, true);
+  addEventListener('keydown', e => { if (e.key === 'End' || e.key === 'Home') salto = performance.now() + 1500; });
+  // IL MOTORE DELLO SCORRIMENTO (13/11, terza strada, dopo «sfarfalla tutto» e «niente, non ce la facciamo»).
+  // Che cosa non andava: Franco scorre TRASCINANDO LA BARRA (visto con strumenti/rotella-vera.js). La barra di Windows la muove il browser: le due versioni
+  // di prima fermavano solo la rotella, e contro la barra la rete di riserva riportava indietro la pagina mentre lui la tirava avanti (35 lampi, fino a 4000 px).
+  // Come fanno i siti premium (Lenis e simili): la pagina non scorre mai da sola. Rotella, tastiera e una BARRA NOSTRA (quella di Windows si nasconde)
+  // danno solo una «voglia» (dove si vuole andare); il motore porta la pagina verso la voglia, morbido, un passo a ogni fotogramma.
+  // Davanti a un'animazione non finita c'è un LIMITE che avanza con l'animazione: parte da dove si era quando l'animazione è cominciata e arriva al cancello
+  // esattamente quando l'animazione finisce. Chi scorre piano non lo sente; chi scorre svelto vede la pagina farsi pesante e non perde niente.
+  // Niente muri e niente ritorni: la pagina non viene MAI riportata indietro, e ciò che il motore non governa (collegamenti, cerca nella pagina, dito)
+  // si lascia fare e si segue. Solo con mouse o touchpad (pointer: fine); sul telefono lo scorrimento resta quello del telefono, per ora senza attese.
+  // Controlli: strumenti/rotella-vera.js (la rotella vera di Windows; MODO=barra trascina la barra nostra) e strumenti/prova-sfarfallio.js.
+  const MORBIDO = .14;   // quanta della strada che manca si fa in un fotogramma (a 60 al secondo): la pagina scivola invece di saltare
+  if (ASPETTA && !parametri.get('vecchia') && matchMedia('(pointer: fine)').matches) motore = (() => {
+    const radice = document.documentElement, fondo = () => Math.max(0, radice.scrollHeight - innerHeight);
+    radice.classList.add('motore');
+    let voglia = scrollY, meta = scrollY, ora = scrollY, mio = scrollY, gira = false, prima = 0, trascina = false;
+    const attivo = c => !c.saltato;   // una sezione saltata con «Salta» non trattiene più
+    let quadrante = null, lancia = null, saltaBtn = null, cento = null, spintoT = 0;   // l'orologio e «Salta» (più sotto)
+    // fin dove può arrivare la pagina in questo istante: il limite più vicino tra i cancelli chiusi davanti
+    function limite(t) {
+      let L = Infinity, chi = null;
+      if (t < salto) return { L, chi };   // dopo un collegamento (Commissione) si salta tutto
+      for (const c of cancelli) {
+        if (!attivo(c)) continue;
+        const G = c.y(), fine = c.fine();
+        if (!(t < fine) || G < ora - 2) continue;   // cancello aperto, o già alle spalle
+        const l = isFinite(fine) ? G - Math.max(0, G - c.da) * Math.min(1, (fine - t) / (c.dura || 1)) : G;   // animazione non ancora partita: si sta prima del cancello
+        if (l < L) { L = l; chi = c; }
+      }
+      return { L, chi };
+    }
+    function passo(t) {
+      const dt = prima ? Math.min(64, t - prima) : 16.7; prima = t;
+      const { L, chi } = limite(performance.now()), tetto = Math.max(L, ora), tenuto = voglia > tetto + .5;
+      meta = tenuto ? tetto : voglia;
+      // la rotella spinta oltre il limite non si accumula (finita l'animazione, la pagina non parte da sola); nella carica si tiene, fino a uno schermo e mezzo
+      if (tenuto && !trascina) voglia = CARICA ? Math.min(voglia, tetto + innerHeight * 1.5) : tetto;
+      const resta = meta - ora;
+      let dopo = Math.abs(resta) < .3 ? meta : ora + resta * (1 - Math.pow(1 - MORBIDO, dt / 16.7));
+      if (SCORRE) { const v = freno(ora); if (v < Infinity) dopo = ora + Math.max(-v * dt, Math.min(v * dt, dopo - ora)); }   // dove un'animazione segue la rotella
+      ora = dopo;
+      scrollTo(0, ora); mio = scrollY;
+      if (tenuto && chi) mostraAttesa(chi);
+      if (tenuto && quadrante) { quadrante.classList.add('spinto'); clearTimeout(spintoT); spintoT = setTimeout(() => quadrante.classList.remove('spinto'), 280); }   // ti vedo: aspetta la lancetta
+      disegna();
+      // con la carica il motore resta acceso finché la pagina non è arrivata dove si voleva: segue il limite e, finita l'animazione, ci va da sola
+      if (Math.abs(meta - ora) > .3 || ((trascina || CARICA) && voglia > ora + .5)) requestAnimationFrame(passo); else { gira = false; prima = 0; }
+    }
+    const avvia = () => { if (!gira) { gira = true; prima = 0; requestAnimationFrame(passo); } };
+    // la pagina spostata da altro (un collegamento, cerca nella pagina, il dito): il motore la segue, non la contrasta
+    function segui() { if (!gira || Math.abs(scrollY - mio) > 3) { ora = meta = voglia = mio = scrollY; } disegna(); }
+    function spingi(d) { if (!gira) ora = meta = voglia = mio = scrollY; voglia = Math.max(0, Math.min(fondo(), voglia + d)); avvia(); }
+    function vai(y) { if (!gira) ora = meta = mio = scrollY; voglia = Math.max(0, Math.min(fondo(), y)); avvia(); }
+    addEventListener('wheel', e => {
+      if (e.ctrlKey) return;   // con Ctrl la rotella fa lo zoom: resta del browser
+      e.preventDefault();      // OGNI scatto, anche il primo: così Chrome lascia governare alla pagina tutta la serie di scatti
+      spingi(e.deltaMode === 1 ? e.deltaY * 40 : e.deltaMode === 2 ? e.deltaY * innerHeight : e.deltaY);
+    }, { passive: false });
+    addEventListener('keydown', e => {
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]'))) return;
+      const pagina = innerHeight * .88, k = e.key;
+      const d = k === 'ArrowDown' ? 100 : k === 'ArrowUp' ? -100 : k === 'PageDown' || (k === ' ' && !e.shiftKey) ? pagina : k === 'PageUp' || (k === ' ' && e.shiftKey) ? -pagina : 0;
+      if (d) { e.preventDefault(); spingi(d); }
+    });
+    addEventListener('mousedown', e => { if (e.button === 1) e.preventDefault(); });   // niente scorrimento automatico con la rotella premuta: passerebbe sopra le attese
+
+    // LA BARRA NOSTRA: il pomo segna dove si trova davvero la pagina; trascinandolo, o cliccando sulla barra, si dice dove si vuole andare
+    const barra = document.createElement('div');
+    barra.className = 'barra'; barra.setAttribute('aria-hidden', 'true'); barra.innerHTML = '<i></i>';
+    document.body.appendChild(barra);
+    const pomo = barra.firstChild, BORDO = 12;
+    // prova dello scorrimento: un pomo vuoto dove vuoi arrivare e un filo d'oro dal pomo fin lì (non nel modo di adesso)
+    const fantasma = document.createElement('b'), filoCarica = document.createElement('b');
+    fantasma.className = 'voglia'; filoCarica.className = 'carica';
+    if (MODO !== 'ora') barra.append(filoCarica, fantasma);
+    let alto = 40, giroPomo = 1, presa = 0;
+    function misura() { const H = innerHeight - 2 * BORDO; alto = Math.max(40, Math.round(H * innerHeight / Math.max(innerHeight, radice.scrollHeight))); giroPomo = Math.max(1, H - alto); pomo.style.height = fantasma.style.height = alto + 'px'; disegna(); }
+    function disegna() {
+      const f = fondo(), y = f ? Math.min(1, scrollY / f) * giroPomo : 0;
+      pomo.style.transform = 'translateY(' + y.toFixed(1) + 'px)';
+      if (MODO === 'ora') return;
+      const yv = f ? Math.min(1, voglia / f) * giroPomo : 0, avanti = yv - y > 4;
+      barra.classList.toggle('carico', avanti);
+      if (avanti) { fantasma.style.transform = 'translateY(' + yv.toFixed(1) + 'px)'; filoCarica.style.transform = 'translateY(' + (y + alto).toFixed(1) + 'px) scaleY(' + Math.max(0, yv - y - alto).toFixed(1) + ')'; }
+    }
+    const tira = e => vai(Math.max(0, Math.min(1, (e.clientY - BORDO - presa) / giroPomo)) * fondo());
+    barra.addEventListener('pointerdown', e => {
+      if (e.button !== 0) return;
+      e.preventDefault(); barra.setPointerCapture(e.pointerId); barra.classList.add('presa'); trascina = true;
+      const r = pomo.getBoundingClientRect();
+      presa = e.clientY >= r.top && e.clientY <= r.bottom ? e.clientY - r.top : alto / 2;   // preso il pomo: resta preso in quel punto; cliccato più in là: il pomo va lì
+      tira(e);
+    });
+    barra.addEventListener('pointermove', e => { if (trascina) tira(e); });
+    const lascia = () => { if (!trascina) return; trascina = false; barra.classList.remove('presa'); avvia(); };
+    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(n => barra.addEventListener(n, lascia));
+    addEventListener('resize', misura);
+    misura();
+    // L'OROLOGIO IN BASSO (la lancetta, idea di Franco del 13/11), rifatto il 14/11 con le sue parole, alla lettera:
+    //   «L'orologio deve fare un solo giro e non due e l'orologio deve comparire in tutte le sezioni dove il mouse si blocca, come anche la scritta
+    //   continua. Lo scorrimento deve avvenire da solo quando una sezione è finita. Invece di continua mettiamo anzi "salta", così se uno vuole salta
+    //   alla sezione successiva»; «La scritta salta sotto l'orologio fin dall'inizio».
+    // Una SEZIONE è un gruppo di cancelli che Franco vede come un pezzo solo (la scena = corsa e sosta; il racconto = le righe e il tempo per leggerle;
+    // il nome; la confezione). L'orologio fa UN giro per sezione: a ogni fotogramma segna il tempo già passato sul tempo di tutta la sezione.
+    // Tra due cancelli della stessa sezione, e a sezione finita, la pagina va avanti da sola alla fermata dopo. «Salta» sta sotto l'orologio fin
+    // dall'inizio: apre i cancelli della sezione e porta alla fermata dopo. Si preme (passarci sopra non basta, così non si salta una scena per sbaglio).
+    // Prova automatica: node strumenti/prova-lancetta.js (un giro per sezione, orologio e «Salta» in vista ogni volta che la pagina aspetta).
+    let gruppo = null, giroVa = false;
+    if (LANCETTA) {
+      quadrante = document.createElement('div'); quadrante.className = 'quadrante' + (STILE === 'segno' ? ' segno' : ''); quadrante.setAttribute('aria-hidden', 'true');
+      quadrante.innerHTML = (STILE === 'segno'
+        ? '<svg viewBox="0 0 120 120"><circle class="cerchio" cx="60" cy="60" r="36"/><g class="lancia" style="transform-origin: 60px 60px"><path d="M60 9V111"/><path d="M60 3l5 7-5 7-5-7z"/></g></svg>'
+        : '<svg viewBox="0 0 46 46"><circle class="cerchio" cx="23" cy="23" r="21"/><line class="lancia" x1="23" y1="23" x2="23" y2="6"/><circle class="perno" cx="23" cy="23" r="1.6"/></svg>') + '<span class="cento">0%</span>';
+      cento = quadrante.querySelector('.cento');
+      saltaBtn = document.createElement('button'); saltaBtn.type = 'button'; saltaBtn.className = 'salta'; saltaBtn.textContent = 'Salta';
+      document.body.append(quadrante, saltaBtn);
+      lancia = quadrante.querySelector('.lancia');
+      saltaBtn.addEventListener('click', () => {
+        if (!gruppo) return;
+        gruppo.cancelli.forEach(c => { c.saltato = true; });
+        spegniGiro(); avanza(prossima());
+      });
+    }
+    // le fermate: i cancelli non ancora aperti; finito tutto, il fondo della pagina
+    const fermate = () => { const t = performance.now(); return cancelli.filter(c => attivo(c) && !(t >= c.fine())).map(c => c.y()); };
+    function prossima() { const ys = fermate().filter(y => y > ora + 30).sort((a, b) => a - b); return ys.length ? Math.min(ys[0], fondo()) : fondo(); }
+    function avanza(y) { if (!gira) ora = meta = mio = voglia = scrollY; voglia = Math.max(voglia, Math.min(fondo(), y)); avvia(); }
+    function inCorso(t) { let chi = null; for (const c of cancelli) { if (!attivo(c)) continue; const f = c.fine(); if (!(isFinite(f) && t < f) || c.y() < ora - 2) continue; if (!chi || c.y() < chi.y()) chi = c; } return chi; }
+    // a che punto è la sezione: quanto tempo è passato sul totale, se è finita, se un suo cancello sta andando, se è cominciata
+    function puntoSezione(g, t) {
+      let fatto = 0, tot = 0, finita = true, corre = false, cominciata = false;
+      for (const c of g.cancelli) {
+        const d = c.dura || 1, f = c.fine(); tot += d;
+        if (c.saltato) { fatto += d; cominciata = true; continue; }
+        if (isFinite(f)) { cominciata = true; fatto += Math.max(0, Math.min(d, t - (f - d))); if (t < f) { finita = false; corre = true; } } else finita = false;
+      }
+      return { p: Math.min(1, fatto / tot), finita, corre, cominciata };
+    }
+    const vicino = g => { const ys = g.cancelli.map(c => c.y()); return ora > Math.min(...ys) - innerHeight * 3 && ora < Math.max(...ys) + innerHeight * .6; };
+    function segna(s) { lancia.style.transform = 'rotate(' + (s.p * 360).toFixed(1) + 'deg)'; const n = Math.floor(s.p * 100) + '%'; if (cento.textContent !== n) cento.textContent = n; }
+    function spegniGiro() { gruppo = null; quadrante.classList.remove('si', 'compiuto'); saltaBtn.classList.remove('si'); }
+    function aggiornaLancetta() {
+      if (!quadrante) return;
+      const c = inCorso(performance.now());
+      if (c && c.gruppo && c.gruppo !== gruppo) {   // comincia una sezione: compaiono l'orologio e, sotto, «Salta»
+        gruppo = c.gruppo; segna(puntoSezione(gruppo, performance.now()));   // subito, se no per un fotogramma resta la lancetta della sezione prima, al 100%
+        quadrante.classList.remove('compiuto'); quadrante.classList.add('si'); saltaBtn.classList.add('si');
+        if (!giroVa) { giroVa = true; requestAnimationFrame(giro); }
+      }
+    }
+    function giro() {
+      if (!gruppo) { giroVa = false; return; }
+      const t = performance.now(), g = gruppo, s = puntoSezione(g, t);
+      segna(s);
+      if (!s.cominciata || !vicino(g)) { spegniGiro(); giroVa = false; return; }   // tornati indietro, o andati altrove: l'orologio si spegne
+      if (s.finita) {   // giro compiuto: un attimo di luce, l'orologio svanisce e la pagina va da sola alla sezione dopo
+        gruppo = null; giroVa = false; cento.textContent = '100%'; quadrante.classList.add('compiuto'); saltaBtn.classList.remove('si');
+        setTimeout(() => { if (!gruppo) quadrante.classList.remove('si', 'compiuto'); }, 650);
+        avanza(prossima());
+        return;
+      }
+      if (!s.corre && !gira) avanza(prossima());   // tra due cancelli della stessa sezione (finita la corsa, prima della sosta): avanti da sola
+      requestAnimationFrame(giro);
+    }
+    return { segui, aggiornaLancetta, avanti: () => avanza(prossima()) };   // avanti: «Salta» del filo d'attesa (il modo di serie)
+  })();
+  let atteso = false;
+  addEventListener('scroll', () => { if (motore) motore.segui(); if (atteso) return; atteso = true; requestAnimationFrame(() => { atteso = false; const c = trattieni(); tutti(); if (c) mostraAttesa(c); if (motore) motore.aggiornaLancetta(); }); }, { passive: true });
+  addEventListener('resize', tutti);
+  const scelto = capitoli[capForzato] || capitoli[0];
+  if (forzato) scrollTo(0, scelto.sez.offsetTop + innerHeight * .6);   // per le foto di controllo: il palco in vista, nel tempo chiesto
+  // per le foto del volo: ?da=s1 mette prima il capitolo nello stato di partenza, senza movimento, così ?tempo= mostra il tragitto vero (da s1 a s2)
+  const da = parametri.get('da');
+  if (forzato && da) { const p = scelto.sez.querySelector('.palco'), h = document.documentElement; h.classList.add('fermo'); p.dataset.stato = da; p.getBoundingClientRect(); h.classList.remove('fermo'); p.getBoundingClientRect(); }
+  tutti();
+  // per le foto di controllo: ?tempo=3000 ferma tutto a 3 secondi dalla partenza (lancette, data, orologio, trasparenza e filmato)
+  if (forzato && tempo) setTimeout(() => {
+    document.getAnimations().forEach(a => { a.pause(); a.currentTime = +tempo; });
+    scelto.video.pause(); scelto.video.currentTime = +tempo / 1000;
+    document.body.classList.add('posato');
+  }, 150);
+
+  // per le foto di controllo dell'intermezzo: ?parte=2&tempo=4000 (parti in ordine: 1 nome della tigre, 2 la sua confezione, 3 e 4 quelle della Manica)
+  const quale = +parametri.get('parte');
+  if (quale && parti[quale - 1] && tempo) document.fonts.ready.then(() => setTimeout(() => {
+    scrollTo(0, parti[quale - 1].el.getBoundingClientRect().top + scrollY + innerHeight * .15); tutti();
+    setTimeout(() => { document.getAnimations().forEach(a => { a.pause(); a.currentTime = +tempo; }); document.body.classList.add('posato'); }, 250);
+  }, 300));
+
+  let caricate = 0;
+  const pronta = () => { if (++caricate === capitoli.length) document.body.classList.add('pronto'); };
+  capitoli.forEach(c => { if (c.base.complete) pronta(); else { c.base.addEventListener('load', pronta); c.base.addEventListener('error', pronta); } });
+})();
+</script>
+</body>
+</html>

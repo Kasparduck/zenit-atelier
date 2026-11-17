@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Per capire · Studio Legale Angelicata</title>
+<meta name="description" content="Avv. Angela Angelicata, Milano: approfondimenti brevi di diritto civile e penale, con parole semplici. Progetto dimostrativo con dati di fantasia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@400;500;600;700&family=Source+Serif+4:wght@400;700;800&display=swap">
+<style>
+/* Pagina «Chi sono» (9/11/2026). Franco: «inizia a sinistra una voce… cliccando su una voce appaia la pagina su cui scorrendo entra la solita costruzione
+   da sinistra a destra. Sotto ci sono le foto di una avvocatessa sui 40 anni molto bella che in ambienti diversi parla con persone… togli il superfluo
+   per un avvocato penalista e civilista di Milano… le foto con persone e ambienti falle duotone… con un tocco di colore qua e là»; «ha anche una foto sua
+   a parte sorridente». Ritmo preso dalla pagina About di TRINITI (apertura con la costruzione e l'angolo arrotondato, foto grande, tre colonne con tre foto,
+   percorso con le voci non attive sfocate, quattro principi, foto con testo, riquadro scuro, saluto finale), testi e identità nostri. */
+:root {
+  --avorio: #f6f1e9; --avorio-2: #efe6da; --gesso: #fbf8f3; --nocciola: #e3d2ba; --sabbia: #d8c4a6;
+  --bronzo: #8f6b47; --bronzo-linea: #b8946b; --bronzo-chiaro: #d2b088;
+  --inchiostro: #1f1a16; --tenue: #685e54; --linea: rgb(70 50 30 / .15); --linea-forte: rgb(70 50 30 / .32);
+  --noce: #2a2420; --su-noce: #f2ebe1; --su-noce-tenue: #b9ad9d; --linea-noce: rgb(242 235 225 / .15);
+  --salvia: #5f8159;
+  --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif; --sans: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --gutter: clamp(16px, 4.2vw, 64px); --largo: 1360px; --alto: 64px;
+  --bordo-sx: max(var(--gutter), calc((100vw - var(--largo)) / 2));
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+@view-transition { navigation: auto; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+body { margin: 0; background: var(--avorio); color: var(--inchiostro); font: 400 16px/1.6 var(--sans); overflow-x: clip; -webkit-font-smoothing: antialiased; }
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 200; opacity: .55; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .27 0 0 0 0 .18 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+h1, h2, h3, h4 { margin: 0; font-weight: 400; text-wrap: balance; }
+p { margin: 0; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+img { display: block; max-width: 100%; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outline-offset: 3px; }
+.contenitore { width: min(100% - 2 * var(--gutter), var(--largo)); margin-inline: auto; }
+.occhio { font: 600 .68rem/1.4 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: var(--tenue); }
+.occhio::before { content: ""; display: inline-block; width: 22px; height: 1px; background: var(--bronzo-linea); vertical-align: middle; margin-right: 12px; }
+.titolo { font: 300 clamp(2.5rem, 4.8vw, 4.6rem)/1.02 var(--serif); letter-spacing: -.01em; }
+.titolo em { font-style: italic; color: var(--bronzo); }
+.bottone { display: inline-flex; align-items: center; gap: 14px; background: var(--inchiostro); color: var(--gesso); text-decoration: none; font: 600 .95rem var(--sans); padding: 17px 28px; border: 0; border-radius: 999px; cursor: pointer; transition: background .3s, transform .35s cubic-bezier(.2,.7,.2,1); }
+.bottone:hover { background: #3a3029; }
+.pillola { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; justify-self: start; border: 1px solid var(--bronzo-linea); color: var(--bronzo); text-decoration: none; font: 500 .93rem var(--sans); padding: 10px 22px; border-radius: 999px; transition: background .3s, color .3s; }
+.pillola:hover { background: var(--bronzo); color: var(--gesso); }
+.sez { padding-block: clamp(80px, 12vh, 140px); }
+
+/* ---------- testata (uguale alla home; sotto, l'indice di questa pagina) ---------- */
+.testata { position: fixed; top: 0; left: 0; right: 0; z-index: 80; transition: background .45s, box-shadow .45s; }
+.testata-riga { display: flex; align-items: center; gap: 26px; height: 78px; transition: height .45s cubic-bezier(.2,.7,.2,1); }
+.marchio { display: flex; align-items: center; gap: 14px; text-decoration: none; color: var(--inchiostro); flex: none; }
+.monogramma { width: 44px; height: 44px; flex: none; }
+.marchio-linea { width: 1px; height: 30px; background: var(--bronzo-linea); transition: opacity .3s; }
+.marchio-nome { display: grid; line-height: 1.1; overflow: hidden; max-width: 260px; white-space: nowrap; transition: max-width .5s cubic-bezier(.2,.7,.2,1), opacity .35s; }
+.marchio-nome b { font: 500 1.42rem var(--serif); letter-spacing: .03em; }
+.marchio-nome small { font: 600 .6rem var(--sans); letter-spacing: .3em; text-transform: uppercase; color: var(--tenue); margin-top: 3px; }
+.menu { margin-left: auto; display: flex; gap: 22px; }
+.menu a { position: relative; text-decoration: none; font: 500 .9rem var(--sans); color: var(--tenue); padding: 6px 0; white-space: nowrap; transition: color .3s; }
+.menu a::after { content: ""; position: absolute; left: 0; bottom: 0; width: 100%; height: 1.5px; background: var(--bronzo-linea); transform: scaleX(0); transform-origin: left; transition: transform .45s cubic-bezier(.2,.7,.2,1); }
+.menu a:hover, .menu a.attiva { color: var(--inchiostro); }
+.menu a.attiva::after { transform: none; }
+.aperto { display: inline-flex; align-items: center; gap: 8px; font: 500 .78rem var(--sans); color: var(--tenue); white-space: nowrap; }
+.aperto i { width: 7px; height: 7px; border-radius: 50%; background: var(--salvia); }
+.aperto.chiuso i { background: var(--sabbia); }
+@media (prefers-reduced-motion: no-preference) { .aperto:not(.chiuso) i { animation: respira 2.4s ease-out infinite; } @keyframes respira { 0% { box-shadow: 0 0 0 0 rgb(95 129 89 / .5); } 100% { box-shadow: 0 0 0 7px rgb(95 129 89 / 0); } } }
+.tel { font: 600 .9rem var(--sans); text-decoration: none; white-space: nowrap; }
+.apri-menu { display: none; width: 44px; height: 44px; background: none; border: 0; cursor: pointer; position: relative; }
+.apri-menu span { position: absolute; left: 11px; right: 11px; height: 1.5px; background: var(--inchiostro); }
+.apri-menu span:first-child { top: 17px; } .apri-menu span:last-child { top: 26px; }
+.testata-sotto { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .45s cubic-bezier(.2,.7,.2,1), opacity .3s; }
+.testata-sotto > div { overflow: hidden; }
+.testata-sotto .contenitore { display: flex; align-items: center; justify-content: space-between; gap: 20px; border-top: 1px solid var(--linea); }
+.sottomenu { display: flex; gap: 24px; flex-wrap: wrap; }
+.sottomenu a { position: relative; text-decoration: none; font: 500 .88rem var(--sans); color: var(--tenue); padding: 12px 0; transition: color .3s; }
+.sottomenu a::before { content: ""; position: absolute; left: 0; top: 0; width: 18px; height: 1.5px; background: var(--bronzo-linea); transform: scaleX(0); transform-origin: left; transition: transform .4s; }
+.sottomenu a.attiva { color: var(--inchiostro); }
+.sottomenu a.attiva::before { transform: none; }
+.dimostra { font: 500 .72rem var(--sans); color: var(--tenue); letter-spacing: .04em; }
+.testata.stretta { background: rgb(246 241 233 / .8); -webkit-backdrop-filter: blur(14px) saturate(1.1); backdrop-filter: blur(14px) saturate(1.1); box-shadow: 0 1px 0 var(--linea); }
+.testata.stretta .testata-riga { height: var(--alto); }
+.testata.stretta .marchio-nome { max-width: 0; opacity: 0; }
+.testata.stretta .marchio-linea { opacity: 0; }
+.testata.stretta .testata-sotto { grid-template-rows: 0fr; opacity: 0; }
+.velo-menu { position: fixed; inset: 0; z-index: 110; background: rgb(31 26 22 / .22); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); opacity: 0; visibility: hidden; transition: opacity .4s, visibility .4s; }
+.pannello-menu { position: fixed; top: 0; right: 0; bottom: 0; z-index: 120; width: min(420px, 100%); background: var(--gesso); transform: translateX(100%); transition: transform .5s cubic-bezier(.65,.05,.35,1); display: flex; flex-direction: column; gap: 28px; padding: 22px var(--gutter) 36px; overflow-y: auto; }
+.pannello-menu nav { display: grid; gap: 4px; }
+.pannello-menu nav a { font: 300 2.2rem/1.25 var(--serif); text-decoration: none; }
+.pannello-menu nav a.attiva { font-style: italic; color: var(--bronzo); }
+.pannello-menu .chiudi-menu { align-self: flex-end; background: none; border: 1px solid var(--linea-forte); border-radius: 999px; padding: 8px 18px; cursor: pointer; font: 500 .9rem var(--sans); }
+.menu-aperto .velo-menu { opacity: 1; visibility: visible; }
+.menu-aperto .pannello-menu { transform: none; }
+
+/* ---------- foto con la tendina (come nella home) ---------- */
+.tendina { position: relative; margin: 0; overflow: hidden; }
+/* dove la foto non c'è ancora: un riquadro liscio nei colori della bicromia (grigio per il ritratto in bianco e nero), niente disegni */
+.tendina > .tendina-dentro { position: absolute; inset: 0; overflow: hidden; background: linear-gradient(140deg, #22332f 0%, #4f4a3e 50%, #a57b50 100%); }
+.tendina.bn > .tendina-dentro { background: linear-gradient(140deg, #262626 0%, #5c5c5c 55%, #b5b5b5 100%); }
+.tendina > .tendina-dentro > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.tendina > .tendina-filo { position: absolute; top: 0; bottom: 0; left: 0; width: 1px; background: var(--bronzo-linea); opacity: 0; pointer-events: none; z-index: 2; }
+@media (prefers-reduced-motion: no-preference) {
+  .tendina > .tendina-dentro { clip-path: inset(0 100% 0 0); transition: clip-path 1.3s cubic-bezier(.77,0,.18,1) var(--ritardo, 0s); }
+  .tendina > .tendina-dentro > * { transform: scale(1.1); transition: transform 2s cubic-bezier(.2,.7,.2,1) var(--ritardo, 0s); }
+  .tendina.vista > .tendina-dentro { clip-path: inset(0); }
+  .tendina.vista > .tendina-dentro > * { transform: none; }
+  .tendina.vista > .tendina-filo { animation: filo 1.3s cubic-bezier(.77,0,.18,1) var(--ritardo, 0s) forwards; }
+  @keyframes filo { 0% { left: 0; opacity: 1; } 88% { left: 100%; opacity: 1; } 100% { left: 100%; opacity: 0; } }
+}
+.ef-sfalsata { --ef-bronzo: #b49e82; --ef-spessore: 3px; --ef-fuori: 9px; --ef-sale: 26px; --ef-stacco: 16px; position: relative; }
+.ef-sfalsata::before, .ef-sfalsata::after { content: ""; position: absolute; pointer-events: none; z-index: 3; }
+.ef-sfalsata::before { inset: calc(-1 * var(--ef-fuori)); border-right: var(--ef-spessore) solid var(--ef-bronzo); border-bottom: var(--ef-spessore) solid var(--ef-bronzo);
+  background: linear-gradient(var(--ef-bronzo), var(--ef-bronzo)) var(--ef-stacco) 0 / calc(100% - var(--ef-stacco)) var(--ef-spessore) no-repeat; }
+.ef-sfalsata::after { left: calc(-1 * var(--ef-fuori)); top: calc(-1 * (var(--ef-fuori) + var(--ef-sale))); bottom: calc(-1 * var(--ef-fuori)); width: var(--ef-spessore); background: var(--ef-bronzo); }
+
+/* ---------- 1. apertura: titolo a sinistra, la costruzione a destra con l'angolo arrotondato in basso ---------- */
+.ch-apertura { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); min-height: min(90svh, 880px); }
+.ch-apertura-testo { padding: calc(130px + 6vh) clamp(24px, 5vw, 84px) 9vh var(--bordo-sx); display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+.ch-apertura h1 { font: 300 clamp(3.6rem, 7.6vw, 7.6rem)/.95 var(--serif); letter-spacing: -.015em; }
+.ch-apertura h1 em { font-style: italic; color: var(--bronzo); }
+.ch-apertura-testo p:not(.occhio) { color: var(--tenue); font-size: 1.06rem; max-width: 50ch; }
+.ch-apertura-foto { position: relative; margin: 0; overflow: hidden; background: var(--avorio-2); border-bottom-left-radius: clamp(110px, 14vw, 240px); }
+.ch-apertura-foto .dentro-foto { position: absolute; inset: 0; }
+.ch-apertura-foto::after { content: ""; position: absolute; inset: 0 0 auto 0; height: 180px; z-index: 2; pointer-events: none; background: linear-gradient(rgb(246 241 233 / .9), rgb(246 241 233 / .55) 55%, rgb(246 241 233 / 0)); }
+.ch-apertura-foto .dentro-foto > * { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.riga { display: block; overflow: hidden; padding-bottom: .07em; margin-bottom: -.07em; }
+.riga > span { display: inline-block; }
+@media (prefers-reduced-motion: no-preference) {
+  .riga > span { transform: translateY(108%); transition: transform 1.15s cubic-bezier(.2,.75,.15,1); }
+  .riga:nth-child(2) > span { transition-delay: .12s; }
+  .entrata .riga > span { transform: none; }
+  .ch-apertura-testo > p { opacity: 0; transform: translateY(14px); transition: opacity .9s .45s, transform .9s .45s cubic-bezier(.2,.7,.2,1); }
+  .entrata .ch-apertura-testo > p { opacity: 1; transform: none; }
+  .ch-apertura-foto .dentro-foto { clip-path: inset(0 100% 0 0); transition: clip-path 1.7s cubic-bezier(.77,0,.18,1) .15s; }
+  .ch-apertura-foto .dentro-foto > * { transform: scale(1.12); transition: transform 2.4s cubic-bezier(.2,.7,.2,1) .15s; }
+  .entrata .ch-apertura-foto .dentro-foto { clip-path: inset(0); }
+  .entrata .ch-apertura-foto .dentro-foto > * { transform: none; }
+}
+
+/* ---------- 2. piacere: la sua foto sorridente ---------- */
+.piacere { display: grid; grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr); gap: 48px 7vw; align-items: center; }
+.piacere-foto { aspect-ratio: 4 / 5; max-width: 460px; margin-left: 12px; }
+.piacere-foto > .tendina { position: absolute; inset: 0; }
+/* la seconda foto di casa, piccola, appoggiata sull'angolo (Franco 9/11: «due casalinghe e il resto») */
+.piacere-foto > .piacere-piccola { inset: auto; right: -16%; bottom: -12%; width: 50%; aspect-ratio: 1; z-index: 4; box-shadow: 0 0 0 8px var(--avorio), 0 30px 50px -24px rgb(60 40 20 / .45); }
+@media (max-width: 720px) { .piacere-foto { margin-bottom: 44px; } .piacere-foto > .piacere-piccola { right: -4px; bottom: -40px; width: 44%; } }
+.piacere-testo { display: grid; gap: 20px; }
+.piacere-testo p:not(.occhio) { color: var(--tenue); font-size: 1.04rem; line-height: 1.75; max-width: 58ch; }
+.firmetta { display: grid; gap: 2px; margin-top: 6px; }
+.firmetta b { font: italic 400 2rem var(--serif); color: var(--bronzo); }
+.firmetta span { font-size: .84rem; color: var(--tenue); }
+
+/* ---------- 3. il mio lavoro: due colonne e la foto grande con l'angolo in alto a destra ---------- */
+.ch-due { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 6vw; align-items: start; }
+.ch-due .attacco { font: 400 1.25rem/1.5 var(--serif); font-style: italic; color: var(--bronzo); margin-bottom: 14px; }
+.ch-due p:not(.attacco) { color: var(--tenue); font-size: 1.04rem; line-height: 1.75; }
+.foto-grande { margin-top: clamp(48px, 8vh, 90px); margin-right: var(--bordo-sx); aspect-ratio: 21 / 9; border-top-right-radius: clamp(90px, 12vw, 200px); }
+
+/* ---------- 4. la mia storia: tre colonne di testo e tre foto ---------- */
+.storia-testi { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px clamp(24px, 4vw, 72px); border-top: 1px solid var(--linea); padding-top: 30px; margin-top: 30px; }
+.storia-testi p { color: var(--tenue); font-size: 1rem; line-height: 1.75; }
+.storia-foto { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 4vw, 72px); margin-top: clamp(48px, 8vh, 90px); }
+.storia-foto .tendina { aspect-ratio: 4 / 5; }
+.storia-foto .tendina:nth-child(2) { --ritardo: .15s; } .storia-foto .tendina:nth-child(3) { --ritardo: .3s; }
+
+/* ---------- 5. il percorso: le voci non attive restano sfocate ---------- */
+.percorso-lista { list-style: none; margin: 40px 0 0; padding: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(250px, 1fr); overflow-x: auto; scrollbar-width: none; }
+.percorso-lista::-webkit-scrollbar { display: none; }
+.percorso-lista li { }
+.percorso-lista button { width: 100%; height: 100%; display: grid; grid-template-rows: 1fr auto auto; text-align: left; background: none; border: 0; padding: 0; cursor: pointer; }
+.percorso-lista p { padding: 0 30px 28px 0; color: var(--inchiostro); font-size: 1rem; line-height: 1.65; filter: blur(4px); opacity: .5; transition: filter .6s, opacity .6s; }
+.percorso-lista button:hover p { filter: blur(1.5px); opacity: .75; }
+.percorso-lista .segno { display: block; height: 1px; background: var(--linea-forte); transition: background .5s, transform .5s; transform-origin: center; }
+.percorso-lista .anno { padding-top: 16px; font: 300 clamp(1.7rem, 2.4vw, 2.2rem)/1 var(--serif); color: var(--tenue); transition: color .5s; }
+.percorso-lista li.attiva p { filter: none; opacity: 1; }
+.percorso-lista li.attiva .segno { background: var(--bronzo-linea); transform: scaleY(3); }
+.percorso-lista li.attiva .anno { color: var(--inchiostro); }
+/* 9/11, Franco: «è tagliato il testo sotto 2008»: sei colonne da 250px non entravano e l'ultima restava tagliata sul bordo. Sul computer stanno tutte nello schermo */
+@media (min-width: 1200px) { .percorso-lista { grid-auto-columns: minmax(0, 1fr); overflow: visible; } .percorso-lista p { padding-right: 24px; font-size: .96rem; } }
+
+/* ---------- 6. come lavoro: quattro principi ---------- */
+.come-griglia { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(24px, 4vw, 64px); margin-top: 30px; }
+.come-griglia > div { border-top: 1px solid var(--linea); padding: 34px 0 44px; display: grid; gap: 12px; align-content: start; }
+.come-griglia h3 { font: 400 clamp(1.7rem, 2.5vw, 2.3rem)/1.1 var(--serif); }
+.come-griglia p { color: var(--tenue); font-size: 1rem; line-height: 1.75; max-width: 44ch; }
+
+/* ---------- 7. lo studio: foto a sinistra con l'angolo in basso a destra ---------- */
+.ch-studio { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px 6vw; align-items: center; }
+.ch-studio .tendina { aspect-ratio: 5 / 6; border-bottom-right-radius: clamp(90px, 12vw, 200px); }
+.ch-studio-testo { display: grid; gap: 20px; padding-right: var(--bordo-sx); }
+.ch-studio-testo h3 { font: 300 clamp(2rem, 3.4vw, 3.2rem)/1.08 var(--serif); }
+.ch-studio-testo p { color: var(--tenue); font-size: 1.03rem; line-height: 1.75; max-width: 52ch; }
+
+/* ---------- 8. il mio impegno: riquadro scuro ---------- */
+.impegno { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); background: var(--noce); color: var(--su-noce); }
+.impegno > * { padding: clamp(36px, 6vw, 88px); }
+.impegno h2 { font: 300 clamp(2rem, 3.2vw, 3rem)/1.1 var(--serif); color: var(--bronzo-chiaro); display: grid; place-items: center; text-align: center; }
+.impegno p { border-left: 1px solid var(--linea-noce); font: 300 clamp(1.4rem, 2.1vw, 1.95rem)/1.4 var(--serif); }
+
+/* ---------- 9. il saluto ---------- */
+.grazie h2 { font: 300 clamp(2.3rem, 4.6vw, 4.5rem)/1.1 var(--serif); letter-spacing: -.01em; }
+.grazie p { font: 300 clamp(2.3rem, 4.6vw, 4.5rem)/1.1 var(--serif); letter-spacing: -.01em; color: var(--bronzo-linea); margin-top: 8px; }
+.grazie a { color: var(--bronzo); text-decoration: none; border-bottom: 1px solid var(--bronzo-linea); }
+.grazie a:hover { color: var(--inchiostro); }
+
+/* ---------- fondo (uguale alla home) ---------- */
+.fondo { background: var(--noce); color: var(--su-noce); padding-top: clamp(80px, 12vh, 130px); overflow: hidden; }
+.fondo-griglia { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 1fr); gap: 36px; }
+.fondo h3 { font: 600 .64rem var(--sans); letter-spacing: .24em; text-transform: uppercase; color: var(--bronzo-chiaro); margin-bottom: 14px; }
+.fondo p, .fondo li, .fondo dd { font-size: .92rem; color: var(--su-noce-tenue); line-height: 1.65; }
+.fondo .nome-f { font: 400 1.7rem var(--serif); color: var(--su-noce); margin-bottom: 8px; }
+.fondo dl { margin: 0; display: grid; gap: 10px; }
+.fondo dt { font-weight: 600; font-size: .86rem; color: var(--su-noce); }
+.fondo dd { margin: 0; }
+.fondo ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.fondo a { color: var(--su-noce); }
+.firma-giro { overflow: hidden; margin-top: clamp(60px, 10vh, 110px); }
+.firma { font: 300 clamp(3rem, 13.2vw, 13rem)/.86 var(--serif); letter-spacing: -.025em; white-space: nowrap; color: var(--su-noce); opacity: .92; padding-bottom: .1em; }
+.firma em { font-style: italic; color: var(--bronzo-chiaro); }
+@media (prefers-reduced-motion: no-preference) { .firma { transform: translateY(70%); transition: transform 1.6s cubic-bezier(.2,.75,.15,1); } .firma-giro.vista .firma { transform: none; } }
+@media (prefers-reduced-motion: no-preference) { .entra-sx { opacity: 0; transform: translateX(-60px); transition: opacity 1.1s cubic-bezier(.2,.7,.2,1) .2s, transform 1.4s cubic-bezier(.2,.7,.2,1) .2s; } .entra-sx.vista { opacity: 1; transform: none; } } /* 9/11, Franco: le scritte accanto alle foto entrano da sinistra verso destra */
+/* costruzione di passaggio verso la fine della pagina (9/11, Franco: «se ne vuoi mettere di più perché viene meglio fallo. Differenzia bene»):
+   larga fino al bordo destro, angolo arrotondato in alto a sinistra, eco dell'apertura; ogni pagina ne ha una diversa dalle altre */
+.tendina.passaggio { height: clamp(300px, 46vw, 600px); margin: clamp(40px, 6vh, 80px) 0 0 var(--bordo-sx); }
+.tendina.passaggio > .tendina-dentro { border-top-left-radius: clamp(90px, 14vw, 220px); }
+@media (max-width: 720px) { .tendina.passaggio { height: 64vw; margin-left: var(--gutter); } }
+/* 9/11, Franco: una frase di Shakespeare sulla costruzione di passaggio, che affiora dalla sabbia lettera per lettera («emergendo per affioramento») */
+.tendina.passaggio .velo-frase { background: linear-gradient(100deg, rgb(246 241 233 / .9) 0%, rgb(246 241 233 / .76) 34%, rgb(246 241 233 / 0) 66%); }
+.passaggio-frase { position: absolute; z-index: 3; left: clamp(28px, 6vw, 96px); top: 50%; transform: translateY(-50%); width: min(560px, 80%); margin: 0; display: grid; gap: 18px; }
+.passaggio-frase p { font: 300 clamp(1.7rem, 3.1vw, 2.9rem)/1.18 var(--serif); color: var(--inchiostro); margin: 0; }
+.passaggio-frase cite { font: 500 .76rem var(--sans); font-style: normal; letter-spacing: .12em; text-transform: uppercase; color: var(--bronzo); }
+.passaggio-frase .p { display: inline-block; white-space: nowrap; } .passaggio-frase .l { display: inline-block; }
+.passaggio-frase .solo-lettori { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (prefers-reduced-motion: no-preference) {
+  .passaggio-frase .l { opacity: 0; filter: blur(9px); transform: translateY(.45em); transition: opacity 1.1s ease, filter 1.4s ease, transform 1.5s cubic-bezier(.2,.7,.2,1); transition-delay: calc(1s + var(--i) * 24ms); }
+  .passaggio-frase.vista .l { opacity: 1; filter: none; transform: none; }
+  .passaggio-frase cite { opacity: 0; transition: opacity 1s ease 3.4s; } .passaggio-frase.vista cite { opacity: 1; }
+}
+@media (max-width: 720px) {
+  .tendina.passaggio { height: 118vw; }
+  .tendina.passaggio .velo-frase { background: linear-gradient(180deg, rgb(246 241 233 / .92) 0%, rgb(246 241 233 / .8) 50%, rgb(246 241 233 / .1) 100%); }
+  .passaggio-frase { top: 30px; transform: none; left: 22px; right: 22px; width: auto; }
+  .passaggio-frase p { font-size: 1.6rem; }
+}
+.riga-fine { border-top: 1px solid var(--linea-noce); padding-block: 20px 28px; display: flex; flex-wrap: wrap; gap: 8px 26px; font-size: .8rem; color: var(--su-noce-tenue); }
+.tocco { display: none; }
+
+@media (max-width: 1400px) { .tel { display: none; } }
+@media (max-width: 1220px) { .menu, .tel { display: none; } .aperto { margin-left: auto; } .apri-menu { display: block; } }
+@media (max-width: 980px) {
+  :root { --alto: 60px; }
+  .apertura-foto::after, .ch-apertura-foto::after { display: none; }
+  .ch-apertura { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+  .ch-apertura-testo { padding: 150px var(--gutter) 48px; }
+  .ch-apertura-foto { height: min(70vw, 520px); margin-left: var(--gutter); }
+  .piacere, .ch-due, .ch-studio, .impegno { grid-template-columns: minmax(0, 1fr); }
+  .piacere-foto { max-width: 400px; }
+  .storia-testi, .storia-foto { grid-template-columns: minmax(0, 1fr); }
+  .storia-foto { grid-auto-flow: column; grid-auto-columns: min(72vw, 360px); grid-template-columns: none; overflow-x: auto; scrollbar-width: none; margin-right: calc(-1 * var(--gutter)); padding-right: var(--gutter); }
+  .storia-foto .tendina { }
+  .foto-grande { aspect-ratio: 4 / 3; }
+  .ch-studio .tendina { aspect-ratio: 4 / 3; margin-right: var(--gutter); }
+  .ch-studio-testo { padding-inline: var(--gutter); }
+  .impegno p { border-left: 0; border-top: 1px solid var(--linea-noce); }
+  .fondo-griglia { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+@media (max-width: 720px) {
+  body { padding-bottom: calc(62px + env(safe-area-inset-bottom, 0px)); }
+  .testata-riga { height: 66px; gap: 14px; }
+  .monogramma { width: 38px; height: 38px; }
+  .marchio-nome b { font-size: 1.22rem; }
+  .aperto, .dimostra { display: none; }
+  .apri-menu { margin-left: auto; }
+  .sottomenu { gap: 16px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .sottomenu a { white-space: nowrap; }
+  .ch-apertura-testo { padding-top: 140px; }
+  .ch-apertura h1 { font-size: clamp(3.2rem, 16vw, 4.4rem); }
+  .percorso-lista { grid-auto-columns: 78vw; }
+  .percorso-lista p { filter: none; opacity: 1; }
+  .come-griglia, .fondo-griglia { grid-template-columns: minmax(0, 1fr); }
+  .tocco { display: grid; grid-template-columns: 1fr 1fr; position: fixed; left: 0; right: 0; bottom: 0; z-index: 70; padding-bottom: env(safe-area-inset-bottom, 0px); background: rgb(251 248 243 / .94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--linea-forte); }
+  .tocco a { padding: 17px 10px; text-align: center; font-weight: 600; text-decoration: none; background: var(--gesso); }
+  .tocco a + a { background: var(--inchiostro); color: var(--gesso); }
+}
+
+/* ---------- Per capire (16/11/2026): la forma è quella del sito dell'Angelelli; qui gli approfondimenti sono di fantasia ---------- */
+.pc-testa { padding: calc(150px + 4vh) 0 clamp(36px, 6vh, 64px); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 24px 48px; }
+.pc-testa > div { display: grid; gap: 18px; }
+.pc-testa h1 { font: 300 clamp(3.4rem, 7vw, 6.8rem)/.95 var(--serif); letter-spacing: -.015em; }
+.pc-testa h1 em { font-style: italic; color: var(--bronzo); }
+.pc-testa p:not(.occhio) { color: var(--tenue); font-size: 1.06rem; max-width: 46ch; }
+.pc-filtri { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+.pc-filtri button { border: 1px solid var(--bronzo-linea); background: none; color: var(--bronzo); border-radius: 999px; padding: 9px 18px; font: 500 .9rem var(--sans); cursor: pointer; transition: background .25s, color .25s; }
+.pc-filtri button:hover { background: rgb(143 107 71 / .08); }
+.pc-filtri button[aria-pressed="true"] { background: var(--bronzo); color: var(--gesso); }
+.lista { border-bottom: 1px solid var(--linea); margin-bottom: clamp(70px, 12vh, 130px); }
+.pezzo { display: grid; grid-template-columns: 208px minmax(0, 1fr) auto; gap: 14px clamp(18px, 3vw, 40px); align-items: center; padding: 26px 0; border-top: 1px solid var(--linea); }
+.pezzo[hidden] { display: none; }
+.pezzo > img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; }
+/* 17/11/2026 (Franco: «facciamola più grande»): nella lista la foto è il doppio; aperto il pezzo, cresce e il testo le sta accanto. Ferma, senza filmati. */
+.pezzo.grande { grid-template-columns: minmax(0, 44%) minmax(0, 1fr) auto; grid-template-rows: auto 1fr; align-items: start; }
+.pezzo.grande > img { grid-column: 1; grid-row: 1 / span 2; }
+.etichetta { font: 600 .66rem/1.3 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--bronzo); }
+.pezzo h2 { font: 300 clamp(1.7rem, 3vw, 2.6rem)/1.1 var(--serif); margin-top: 8px; }
+.pezzo .fonte { color: var(--tenue); font-size: .9rem; margin-top: 8px; }
+.apri { border: 0; background: none; padding: 8px 0; font: 600 .9rem var(--sans); color: var(--bronzo); cursor: pointer; white-space: nowrap; }
+.apri:hover { color: var(--inchiostro); }
+.apri span { display: inline-block; transition: transform .35s cubic-bezier(.2,.7,.2,1); }
+.apri[aria-expanded="true"] span { transform: rotate(90deg); }
+.dentro { grid-column: 2 / -1; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 10px 0 8px; }
+.dentro[hidden] { display: none; }
+.dentro p { color: var(--tenue); line-height: 1.75; max-width: 58ch; font-size: 1.04rem; }
+.dentro blockquote { margin: 0 0 6px; font: italic 300 clamp(1.4rem, 2.2vw, 1.9rem)/1.3 var(--serif); color: var(--inchiostro); max-width: 30ch; }
+.dentro .firma-pezzo { font: italic 400 1.2rem var(--serif); color: var(--bronzo); }
+/* il pezzo aperto sale piano. Parte già leggibile (mai da invisibile): nel Chrome nascosto delle prove l'animazione restava ferma all'inizio e il testo non si vedeva (16/11) */
+@media (prefers-reduced-motion: no-preference) { .dentro:not([hidden]) > * { animation: affiora .6s cubic-bezier(.2,.7,.2,1); }
+  @keyframes affiora { from { opacity: .35; transform: translateY(10px); } to { opacity: 1; transform: none; } } }
+/* la pagina di giornale ricomposta con lettere vere (come nel sito dell'Angelelli) */
+.giornale { --carta-g: #fffdf8; --nero-g: #1c1a18; --blu-g: #24508f; --grigio-g: #625c56; --riga-g: #ddd5ca; max-width: 1060px; background: var(--carta-g); color: var(--nero-g); padding: clamp(18px, 4vw, 46px); border-radius: 3px; box-shadow: 0 10px 34px rgba(0,0,0,.14); font-family: "Source Serif 4", Georgia, serif; }
+.giornale p { color: inherit; max-width: none; margin: 0; }
+.giornale-testata { display: flex; justify-content: space-between; align-items: flex-end; gap: 6px 16px; flex-wrap: wrap; padding-bottom: 8px; border-bottom: 3px solid var(--blu-g); }
+.giornale-testata .g-sezione { font: 700 clamp(1rem, 1.8vw, 1.25rem)/1.1 var(--sans); color: var(--blu-g); }
+.giornale-testata .g-sezione b { color: var(--nero-g); font-size: 1.3em; margin-right: 12px; }
+.giornale-testata .g-sezione i { font-style: normal; opacity: .55; }
+.giornale-testata .data { font: 600 .66rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--grigio-g); text-align: right; }
+.giornale-testata .data b { display: block; font: 700 .95rem/1.2 "Source Serif 4", Georgia, serif; letter-spacing: .04em; color: var(--nero-g); }
+.giornale-titolo { font: 700 clamp(2rem, 5.4vw, 3.7rem)/1.04 "Source Serif 4", Georgia, serif; letter-spacing: -.02em; text-align: center; margin: 24px 0 16px; color: var(--nero-g); }
+.giornale .giornale-sommario { font: 400 clamp(1.05rem, 1.9vw, 1.32rem)/1.38 var(--sans); }
+.giornale-sommario b { color: var(--blu-g); }
+.giornale .giornale-citazione { font: 400 clamp(1rem, 1.6vw, 1.16rem)/1.4 var(--sans); color: #3a3530; margin-top: 6px; padding-bottom: 20px; border-bottom: 1px solid var(--riga-g); }
+.giornale-griglia { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); gap: 44px; margin-top: 24px; align-items: start; }
+.giornale .giornale-firma { font: 600 .68rem/1.5 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--grigio-g); margin-bottom: 14px; }
+.giornale-firma b { display: block; color: var(--nero-g); font-weight: 800; }
+.giornale-corpo { max-width: 66ch; }
+.giornale-corpo p { font-size: 1.1rem; line-height: 1.66; text-indent: 1.4em; }
+.giornale-corpo p:first-child { text-indent: 0; }
+.giornale-lato { position: sticky; top: 92px; display: grid; gap: 22px; }
+.giornale-lato figure { margin: 0; }
+.giornale-lato figure img { display: block; width: 100%; height: auto; border-radius: 2px; }
+.giornale-lato figcaption { font: 700 .76rem/1.4 var(--sans); margin-top: 7px; }
+.giornale .giornale-nota { font: 400 .78rem/1.5 var(--sans); color: var(--grigio-g); padding-top: 18px; border-top: 1px solid var(--riga-g); }
+@media (max-width: 860px) { .giornale-griglia { grid-template-columns: minmax(0, 1fr); gap: 26px; } .giornale-lato { position: static; order: -1; } .giornale-testata .data { text-align: left; } }
+.vuoto { padding: 34px 0; border-top: 1px solid var(--linea); color: var(--tenue); font: italic 300 1.5rem/1.4 var(--serif); }
+.vuoto a { color: var(--bronzo); }
+.vuoto[hidden] { display: none; }
+@media (max-width: 720px) {
+  .pezzo, .pezzo.grande { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
+  .pezzo > img, .pezzo.grande > img { max-width: 480px; grid-row: auto; }
+  .apri { grid-column: 1; justify-self: start; }
+  .dentro { grid-column: 1 / -1; }
+  .pc-testa { padding-top: 120px; }
+}
+</style>
+<!-- prove dei colori (16/11/2026): senza ?colori= nell'indirizzo non fanno niente; si tolgono quando Franco ha scelto -->
+<link rel="stylesheet" href="colori.css">
+<script src="colori.js"></script>
+</head>
+<body class="senza-pannello">
+
+<header class="testata" id="testata">
+  <div class="contenitore testata-riga">
+    <a class="marchio" href="index.html" aria-label="Avv. Angela Angelicata, torna alla home">
+      <svg class="monogramma" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22.5" fill="none" stroke="#b8946b" stroke-width="1"/><text x="7.5" y="32" font-family="Cormorant Garamond, Georgia, serif" font-size="25" fill="#1f1a16">A</text><text x="22.5" y="34.5" font-family="Cormorant Garamond, Georgia, serif" font-size="25" font-style="italic" fill="#8f6b47">A</text></svg>
+      <i class="marchio-linea" aria-hidden="true"></i>
+      <span class="marchio-nome"><b>Angela Angelicata</b><small>Avvocata · Milano</small></span>
+    </a>
+    <nav class="menu" aria-label="Pagine">
+      <a href="chi-sono.html">Chi sono</a><a href="per-capire.html" class="attiva" aria-current="page">Per capire</a><a href="index.html#metodo">Il metodo</a><a href="index.html#materie">Materie</a><a href="index.html#tappe">Le tappe</a><a href="index.html#scadenze">Scadenze</a><a href="index.html#scrivi">Contatti</a>
+    </nav>
+    <span class="aperto" id="aperto"><i aria-hidden="true"></i><span>Orari dello studio</span></span>
+    <a class="tel" href="tel:+390200000000">02 0000 0000</a>
+    <button type="button" class="apri-menu" aria-label="Apri il menu" aria-expanded="false" aria-controls="pannello-menu"><span></span><span></span></button>
+  </div>
+  <div class="testata-sotto">
+    <div>
+      <div class="contenitore">
+        <span></span>
+        <span class="dimostra">Progetto dimostrativo · nomi e dati di fantasia</span>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="velo-menu" aria-hidden="true"></div>
+<aside class="pannello-menu" id="pannello-menu" aria-label="Menu" inert>
+  <button type="button" class="chiudi-menu">Chiudi</button>
+  <nav aria-label="Pagine"><a href="chi-sono.html">Chi sono</a><a href="per-capire.html" class="attiva" aria-current="page">Per capire</a><a href="index.html#metodo">Il metodo</a><a href="index.html#materie">Materie</a><a href="index.html#tappe">Le tappe</a><a href="index.html#scadenze">Scadenze</a><a href="index.html#scrivi">Contatti</a></nav>
+  <a class="bottone" href="tel:+390200000000">Chiama 02 0000 0000</a>
+  <p class="dimostra" style="display:block">Progetto dimostrativo · nomi e dati di fantasia</p>
+</aside>
+
+<main class="contenitore">
+  <section class="pc-testa" aria-labelledby="t-capire">
+    <div><p class="occhio">Per capire</p><h1 id="t-capire">Per <em>capire.</em></h1></div>
+    <p>Articoli brevi, divisi tra civile e penale. Si parte dalla domanda, con parole semplici.</p>
+  </section>
+
+  <div class="pc-filtri" role="group" aria-label="Scegli tra civile e penale">
+    <button type="button" aria-pressed="true" data-m="tutto">Tutto</button><button type="button" aria-pressed="false" data-m="civile">Civile</button><button type="button" aria-pressed="false" data-m="penale">Penale</button>
+  </div>
+
+  <div class="lista">
+    <article class="pezzo" data-m="civile">
+      <img src="immagini/capire-1.jpg" alt="" loading="lazy">
+      <div><p class="etichetta">Articolo · Civile · Famiglia · 2 minuti</p><h2>Ci separiamo d'accordo: serve per forza il tribunale?</h2></div>
+      <button type="button" class="apri" aria-expanded="false" aria-controls="p1">Leggi <span aria-hidden="true">→</span></button>
+      <div class="dentro" id="p1" hidden>
+        <blockquote>Se siete d'accordo su casa, figli e soldi, in tribunale potete non entrare mai.</blockquote>
+        <p>Si chiama negoziazione assistita. Ognuno dei due ha il suo avvocato, ci si siede allo stesso tavolo e si scrive l'accordo: chi resta nella casa, con chi stanno i figli e in quali giorni, quanto versa uno all'altro.</p>
+        <p>L'accordo firmato va in procura entro dieci giorni. Se ci sono figli, lo legge un pubblico ministero e lo approva. Poi arriva al Comune, e da quel giorno siete separati. Dopo sei mesi si può chiedere il divorzio, per la stessa strada.</p>
+        <p>Se l'accordo non si trova, resta il tribunale. Ma conviene provarci prima: quello che vi scrivete voi lo conoscete meglio di qualunque giudice.</p>
+        <p class="firma-pezzo">Angela Angelicata</p>
+      </div>
+    </article>
+    <article class="pezzo" data-m="penale">
+      <img src="immagini/capire-2.jpg" alt="" loading="lazy">
+      <div><p class="etichetta">Articolo · Penale · 2 minuti</p><h2>Mi è arrivato un decreto penale. Pago e chiudo?</h2></div>
+      <button type="button" class="apri" aria-expanded="false" aria-controls="p2">Leggi <span aria-hidden="true">→</span></button>
+      <div class="dentro" id="p2" hidden>
+        <blockquote>Pagare sembra la via più corta. È anche una rinuncia.</blockquote>
+        <p>Il decreto penale è una condanna a una somma di denaro, decisa senza processo e senza averti sentito. Dal giorno in cui te lo notificano hai quindici giorni per fare opposizione: lo dice l'articolo 461 del codice di procedura penale.</p>
+        <p>Se paghi entro quei quindici giorni la somma scende di un quinto. Ma pagando rinunci all'opposizione, cioè a dire la tua davanti a un giudice.</p>
+        <p>Conviene opporsi? Dipende da che cosa c'è nelle carte. Per questo la prima cosa è portarmi il decreto con la sua busta: i giorni si contano dalla data della notifica, e quella sta scritta lì.</p>
+        <p class="firma-pezzo">Angela Angelicata</p>
+      </div>
+    </article>
+    <article class="pezzo" data-m="penale">
+      <img src="immagini/capire-3.jpg" alt="" loading="lazy">
+      <div><p class="etichetta">Domanda e risposta · Penale · 1 minuto</p><h2>Quanto tempo ho per fare una querela?</h2></div>
+      <button type="button" class="apri" aria-expanded="false" aria-controls="p3">Leggi <span aria-hidden="true">→</span></button>
+      <div class="dentro" id="p3" hidden>
+        <blockquote>Tre mesi, dal giorno in cui hai saputo del fatto.</blockquote>
+        <p>È l'articolo 124 del codice penale. Per gli atti persecutori e per la violenza sessuale i mesi sono dodici. Molti reati, poi, non hanno bisogno di querela: si procede anche senza.</p>
+        <p>Intanto salva tutto: messaggi, foto, i nomi di chi ha visto. Fanne una copia fuori dal telefono. E scrivi una cronologia, anche a mano: date, luoghi, parole dette.</p>
+        <p>Non aspettare l'ultima settimana. Più passa il tempo, più i ricordi si confondono e le prove spariscono.</p>
+        <p class="firma-pezzo">Angela Angelicata</p>
+      </div>
+    </article>
+    <article class="pezzo" data-m="civile">
+      <img src="immagini/capire-4.jpg" alt="" loading="lazy">
+      <div><p class="etichetta">Articolo · Civile · Eredità · 2 minuti</p><h2>È morto papà e non c'è testamento. Da dove si comincia?</h2></div>
+      <button type="button" class="apri" aria-expanded="false" aria-controls="p4">Leggi <span aria-hidden="true">→</span></button>
+      <div class="dentro" id="p4" hidden>
+        <blockquote>Dall'elenco. Case, conti, debiti: prima di firmare qualunque cosa.</blockquote>
+        <p>Senza testamento, chi eredita e quanto lo decide la legge. La scadenza da segnare è una: la dichiarazione di successione, da presentare all'Agenzia delle Entrate entro dodici mesi dalla morte.</p>
+        <p>Non serve se gli eredi sono il coniuge e i figli, non ci sono case o terreni e l'eredità non supera i 100.000 euro.</p>
+        <p>Anche i debiti si ereditano, ed è il motivo per cui non si firma niente in fretta. E se in un cassetto salta fuori un testamento, non apritelo voi: si porta dal notaio, che lo pubblica.</p>
+        <p class="firma-pezzo">Angela Angelicata</p>
+      </div>
+    </article>
+    <article class="pezzo" data-m="penale">
+      <img src="immagini/capire-5.jpg" alt="" loading="lazy">
+      <div><p class="etichetta">Rassegna stampa · Penale</p><h2>«Il primo errore è parlare»</h2><p class="fonte">La Voce dei Navigli (testata di fantasia), 12 marzo 2026</p></div>
+      <button type="button" class="apri" aria-expanded="false" aria-controls="p5">Leggi <span aria-hidden="true">→</span></button>
+      <div class="dentro con-pagina" id="p5" hidden>
+        <article class="giornale">
+          <div class="giornale-testata"><span class="g-sezione"><b>12</b>Cronaca <i>di Milano</i></span><span class="data"><b>La Voce dei Navigli</b>Giovedì 12 marzo 2026</span></div>
+          <h3 class="giornale-titolo">«Il primo errore è parlare»</h3>
+          <p class="giornale-sommario"><b>Milano.</b> L'avvocata Angela Angelicata spiega che cosa fare, e che cosa non fare, quando a casa arriva un atto della procura</p>
+          <p class="giornale-citazione">«Chi riceve un avviso ha paura e vuole spiegarsi subito, con tutti. È il momento in cui si fa più danno»</p>
+          <div class="giornale-griglia">
+          <div class="giornale-testo">
+          <p class="giornale-firma">Milano<b>Marta Colombo</b></p>
+          <div class="giornale-corpo">
+            <p>La busta verde arriva di mattina, di solito. Dentro c'è un foglio con un numero di procedimento e un articolo del codice che quasi nessuno ha mai sentito. «La prima telefonata è al cognato, la seconda a un collega. All'ora di pranzo lo sa mezza famiglia», racconta Angela Angelicata, penalista con lo studio a due passi dal Palazzo di Giustizia.</p>
+            <p>Il consiglio che dà è sempre lo stesso, e lo ripete piano: non parlare dei fatti con nessuno. «Nemmeno al telefono, nemmeno in chat. Una frase detta male e riportata da un altro, in un fascicolo, pesa più di dieci dette bene».</p>
+            <p>Poi viene il calendario. Con l'avviso di conclusione delle indagini la legge dà venti giorni: per leggere gli atti, depositare una memoria, chiedere di essere sentiti. «Venti giorni sono pochi. Chi arriva da me al diciottesimo ne ha ancora due. Chi arriva al ventunesimo ha perso un'occasione».</p>
+            <p>In studio la prima ora passa quasi tutta ad ascoltare. «Chiedo di raccontarmi la giornata, non il reato. Dov'eri, chi c'era, che cosa hai firmato. Le carte le leggo dopo, da sola».</p>
+            <p>E la paura? «Resta. Però cambia forma quando uno sa che cosa succede il mese dopo. Come finirà non lo posso dire. Posso dire qual è il prossimo passo».</p>
+          </div>
+          </div>
+          <div class="giornale-lato">
+            <figure><img src="immagini/ritratto.jpg" alt="L'Avv. Angela Angelicata nel suo studio" width="960" height="1200" loading="lazy"><figcaption>L'avvocata Angela Angelicata nel suo studio di Milano</figcaption></figure>
+            <p class="giornale-nota">Giornale, giornalista e articolo sono di fantasia, come tutto il sito: mostrano come lo studio può riportare un'intervista uscita sulla stampa. In un articolo vero i nomi degli assistiti non compaiono mai.</p>
+          </div>
+          </div>
+        </article>
+      </div>
+    </article>
+    <article class="pezzo" data-m="civile">
+      <img src="immagini/capire-6.jpg" alt="" loading="lazy">
+      <div><p class="etichetta">Articolo · Civile · Casa · 2 minuti</p><h2>L'inquilino non paga da mesi: quanto ci vuole per riavere la casa?</h2></div>
+      <button type="button" class="apri" aria-expanded="false" aria-controls="p6">Leggi <span aria-hidden="true">→</span></button>
+      <div class="dentro" id="p6" hidden>
+        <blockquote>Dipende dal tribunale. I passaggi, invece, sono sempre gli stessi.</blockquote>
+        <p>Prima guardo il contratto: deve essere registrato, altrimenti la strada cambia. Poi preparo l'atto e lo notifichiamo all'inquilino. Tra la notifica e l'udienza devono passare almeno venti giorni.</p>
+        <p>All'udienza, se l'inquilino non si oppone, il giudice convalida lo sfratto. Se chiede tempo per pagare, può dargli fino a novanta giorni.</p>
+        <p>Se alla data fissata la casa non è libera, interviene l'ufficiale giudiziario: di solito qualche mese. All'incontro porta le ricevute e l'elenco dei mesi non pagati, anche scritto a mano.</p>
+        <p class="firma-pezzo">Angela Angelicata</p>
+      </div>
+    </article>
+    <p class="vuoto" hidden>Qui sto preparando i primi approfondimenti. Se hai una domanda, <a href="index.html#scrivi">scrivimi</a>.</p>
+  </div>
+</main>
+
+<footer class="fondo">
+  <div class="contenitore fondo-griglia">
+    <div>
+      <p class="nome-f">Studio Legale Angelicata</p>
+      <p>Avv. Angela Angelicata<br>Via Luciano Manara 13, 20122 Milano (indirizzo d'esempio)</p>
+      <p style="margin-top:12px">Telefono 02 0000 0000<br>studio@avvangelicata.example<br>PEC angelicata@pec.example</p>
+    </div>
+    <div>
+      <h3>Dati dello studio</h3>
+      <dl>
+        <dt>Avvocata</dt><dd>Avv. Angela Angelicata, iscritta all'Ordine degli Avvocati di Milano n. 00000. Titolo di avvocato conseguito in Italia.</dd>
+        <dt>Dati fiscali</dt><dd>Avv. Angela Angelicata · P.IVA 00000000000</dd>
+        <dt>Assicurazione professionale</dt><dd>Polizza di responsabilità civile n. 0000 con Compagnia Esempio S.p.A., Via Esempio 1, Milano · copertura: Unione europea</dd>
+        <dt>Regole professionali</dt><dd>Rispetto il <a href="https://www.consiglionazionaleforense.it/codice-deontologico-forense" target="_blank" rel="noopener">Codice deontologico forense</a>, consultabile sul sito del Consiglio nazionale forense.</dd>
+      </dl>
+    </div>
+    <div>
+      <h3>Link utili</h3>
+      <ul>
+        <li><a href="https://www.consiglionazionaleforense.it" target="_blank" rel="noopener">Consiglio nazionale forense</a></li>
+        <li><a href="https://www.giustizia.it" target="_blank" rel="noopener">Ministero della Giustizia</a></li>
+        <li><a href="https://www.garanteprivacy.it" target="_blank" rel="noopener">Garante privacy</a></li>
+        <li><a href="https://www.1522.eu" target="_blank" rel="noopener">1522, numero antiviolenza</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="contenitore firma-giro"><p class="firma" aria-hidden="true">Angela <em>Angelicata</em></p></div>
+  <div class="contenitore riga-fine"><span>Privacy</span><span>Il sito non usa cookie di profilazione, per questo non c'è il banner</span><span>Accessibilità</span><span>Progetto dimostrativo: nomi, numeri e dati sono di fantasia.</span></div>
+</footer>
+
+<nav class="tocco" aria-label="Contatto rapido"><a href="tel:+390200000000">Chiama</a><a href="index.html#scrivi">Scrivimi</a></nav>
+
+<script>
+const $ = (s, el = document) => el.querySelector(s), $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const MUOVI = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- orari dello studio (come nelle altre pagine) ---------- */
+function aperto() {
+  const d = new Date(), g = d.getDay(), m = d.getHours() * 60 + d.getMinutes(), feriale = g >= 1 && g <= 5;
+  const fasce = [[540, 780], [870, 1110]], f = feriale && fasce.find(([a, b]) => m >= a && m < b), hh = x => Math.floor(x / 60) + ':' + String(x % 60).padStart(2, '0');
+  let testo;
+  if (f) testo = 'Aperto adesso · fino alle ' + hh(f[1]);
+  else {
+    let dopo;
+    if (feriale && m < 540) dopo = 'alle 9:00'; else if (feriale && m >= 780 && m < 870) dopo = 'alle 14:30';
+    else { const nomi = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato']; let k = (g + 1) % 7; while (k === 0 || k === 6) k = (k + 1) % 7; dopo = (k === (g + 1) % 7 ? 'domani' : nomi[k]) + ' alle 9:00'; }
+    testo = 'Chiuso · riapre ' + dopo;
+  }
+  const el = $('#aperto'); el.classList.toggle('chiuso', !f); $('span', el).textContent = testo;
+}
+aperto(); setInterval(aperto, 60000);
+
+/* ---------- testata che si stringe ---------- */
+const testata = $('#testata');
+let inCoda = false;
+addEventListener('scroll', () => { if (inCoda) return; inCoda = true; requestAnimationFrame(() => { inCoda = false; testata.classList.toggle('stretta', scrollY > 40); }); }, { passive: true });
+
+/* ---------- Tutto · Civile · Penale filtrano l'elenco; parte dalla scelta fatta nella home ---------- */
+function filtra(m) {
+  $$('.pc-filtri button').forEach(x => x.setAttribute('aria-pressed', x.dataset.m === m));
+  let visti = 0;
+  $$('.pezzo').forEach(p => { const si = m === 'tutto' || p.dataset.m === m; p.hidden = !si; if (si) visti++; });
+  $('.vuoto').hidden = visti > 0;
+}
+$$('.pc-filtri button').forEach(b => b.addEventListener('click', () => filtra(b.dataset.m)));
+try { const a = localStorage.getItem('avv-area'); if (a === 'civile' || a === 'penale') filtra(a); } catch (e) {}
+
+/* ---------- «Leggi» apre il pezzo sotto la sua riga ---------- */
+/* 17/11/2026: aperto il pezzo la foto cresce accanto al testo (classe «grande»; «aperto» no: nel sito è già l'orario in testata e porta con sé il «non andare a capo»); il giornale resta com'è, è lui l'immagine.
+   Il passaggio è morbido: misuro dove stanno foto, titolo e pulsante prima e dopo, e li faccio scivolare da lì a qui. */
+$$('.apri').forEach(b => b.addEventListener('click', () => {
+  const d = document.getElementById(b.getAttribute('aria-controls')), apri = d.hidden, pezzo = b.closest('.pezzo');
+  const mossi = [pezzo.querySelector(':scope > img'), pezzo.querySelector(':scope > div:not(.dentro)'), b].filter(Boolean);
+  const prima = mossi.map(x => x.getBoundingClientRect());
+  d.hidden = !apri; b.setAttribute('aria-expanded', apri);
+  if (!d.classList.contains('con-pagina')) pezzo.classList.toggle('grande', apri);
+  if (!MUOVI || !mossi[0].animate) return;
+  mossi.forEach((x, i) => { const a = prima[i], q = x.getBoundingClientRect(); if (!a.width || !q.width) return;
+    const scala = x.tagName === 'IMG' ? ` scale(${a.width / q.width}, ${a.height / q.height})` : '';
+    if (Math.abs(a.left - q.left) + Math.abs(a.top - q.top) + Math.abs(a.width - q.width) < 1) return;
+    x.animate([{ transformOrigin: '0 0', transform: `translate(${a.left - q.left}px, ${a.top - q.top}px)${scala}` }, { transformOrigin: '0 0', transform: 'none' }], { duration: 900, easing: 'cubic-bezier(.2,.7,.2,1)' }); });
+}));
+
+/* ---------- firma nel piede ---------- */
+const giro = $('.firma-giro');
+if (giro) { if (!MUOVI || !('IntersectionObserver' in window)) giro.classList.add('vista');
+  else { const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { giro.classList.add('vista'); io.disconnect(); } })); io.observe(giro); } }
+
+/* ---------- menu del telefono ---------- */
+function menu(apri) { document.body.classList.toggle('menu-aperto', apri); $('.apri-menu').setAttribute('aria-expanded', apri); $('#pannello-menu').inert = !apri; }
+$('.apri-menu').addEventListener('click', () => menu(!document.body.classList.contains('menu-aperto')));
+$('.velo-menu').addEventListener('click', () => menu(false));
+$('.chiudi-menu').addEventListener('click', () => menu(false));
+$$('#pannello-menu a').forEach(a => a.addEventListener('click', () => menu(false)));
+addEventListener('keydown', e => { if (e.key === 'Escape') menu(false); });
+</script>
+<script>/* dentro la vetrina: il tasto Esc riporta al telescopio; da solo non fa niente */ if (parent !== window) addEventListener("keydown", e => { if (e.key === "Escape") parent.postMessage({ esci: 1 }, "*"); });</script>
+</body>
+</html>

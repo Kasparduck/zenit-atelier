@@ -285,6 +285,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
   .tocco a + a { background: var(--inchiostro); color: var(--gesso); }
 }
 </style>
+<!-- prove dei colori (16/11/2026): senza ?colori= nell'indirizzo non fanno niente; si tolgono quando Franco ha scelto -->
+<link rel="stylesheet" href="colori.css">
+<script src="colori.js"></script>
 </head>
 <body>
 
@@ -296,7 +299,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
       <span class="marchio-nome"><b>Angela Angelicata</b><small>Avvocata · Milano</small></span>
     </a>
     <nav class="menu" aria-label="Pagine">
-      <a href="chi-sono.html" class="attiva" aria-current="page">Chi sono</a><a href="index.html#metodo">Il metodo</a><a href="index.html#materie">Materie</a><a href="index.html#tappe">Le tappe</a><a href="index.html#scadenze">Scadenze</a><a href="index.html#scrivi">Contatti</a>
+      <a href="chi-sono.html" class="attiva" aria-current="page">Chi sono</a><a href="per-capire.html">Per capire</a><a href="index.html#metodo">Il metodo</a><a href="index.html#materie">Materie</a><a href="index.html#tappe">Le tappe</a><a href="index.html#scadenze">Scadenze</a><a href="index.html#scrivi">Contatti</a>
     </nav>
     <span class="aperto" id="aperto"><i aria-hidden="true"></i><span>Orari dello studio</span></span>
     <a class="tel" href="tel:+390200000000">02 0000 0000</a>
@@ -314,7 +317,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
 <div class="velo-menu" aria-hidden="true"></div>
 <aside class="pannello-menu" id="pannello-menu" aria-label="Menu" inert>
   <button type="button" class="chiudi-menu">Chiudi</button>
-  <nav aria-label="Pagine"><a href="chi-sono.html" class="attiva" aria-current="page">Chi sono</a><a href="index.html#metodo">Il metodo</a><a href="index.html#materie">Materie</a><a href="index.html#tappe">Le tappe</a><a href="index.html#scadenze">Scadenze</a><a href="index.html#scrivi">Contatti</a></nav>
+  <nav aria-label="Pagine"><a href="chi-sono.html" class="attiva" aria-current="page">Chi sono</a><a href="per-capire.html">Per capire</a><a href="index.html#metodo">Il metodo</a><a href="index.html#materie">Materie</a><a href="index.html#tappe">Le tappe</a><a href="index.html#scadenze">Scadenze</a><a href="index.html#scrivi">Contatti</a></nav>
   <a class="bottone" href="tel:+390200000000">Chiama 02 0000 0000</a>
   <p class="dimostra" style="display:block">Progetto dimostrativo · nomi e dati di fantasia</p>
 </aside>
@@ -345,7 +348,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
         <h2 class="titolo" id="t-piacere">Sono Angela, <em>e ti ascolto.</em></h2>
         <p>Ho scelto questo lavoro perché credo che nessuno debba affrontare da solo il momento in cui la legge gli cambia la vita. Una separazione, un'eredità che divide una famiglia, una denuncia arrivata all'improvviso: in quei giorni servono competenza e calma, e qualcuno che ti spieghi con parole semplici cosa sta succedendo.</p>
         <p>Quando chiudo lo studio torno alle cose semplici: gioco con il mio cane, che mi aspetta sempre alla porta, e la sera metto un disco e lascio che la musica chiuda la giornata.</p>
-        <div class="firmetta"><b>Angela Angelicata</b><span>Avvocata, Ordine degli Avvocati di Milano n. 00000 (di fantasia)</span></div>
+        <div class="firmetta"><b>Angela Angelicata</b><span>Avvocata, Ordine degli Avvocati di Milano n. 00000</span></div>
       </div>
     </div>
   </section>
@@ -356,7 +359,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
       <h2 class="titolo" id="t-lavoro">Andare <em>avanti</em></h2>
       <div><p class="attacco">Ti aiuto a uscire da un momento difficile con un piano chiaro.</p><p>Seguo cause civili e procedimenti penali davanti al Tribunale e alla Corte d'Appello di Milano e, quando serve, davanti alla Corte di Cassazione. Ogni pratica la studio io, scrivo io gli atti e vengo io in udienza.</p></div>
     </div>
-    <figure class="tendina foto-grande"><div class="tendina-dentro"><img src="immagini/chi-avanti.jpg" alt="Sotto un portico, l'avvocata cammina e parla con una signora" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+    <figure class="tendina foto-grande"><div class="tendina-dentro"><img src="immagini/chi-avanti.jpg" style="object-position: 50% 0; transform-origin: 50% 0" alt="Sotto un portico, l'avvocata cammina e parla con una signora" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
   </section>
 
   <!-- 4. la mia storia -->
@@ -369,9 +372,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
         <p>Oggi mi occupo di separazioni e figli, eredità, casa e risarcimenti, e di difesa penale, sia per chi è accusato sia per chi ha subito un reato. Sono iscritta all'elenco dei difensori d'ufficio.</p>
       </div>
       <div class="storia-foto">
-        <figure class="tendina"><div class="tendina-dentro"><img src="immagini/chi-storia-1.jpg" style="object-position: 62% 50%" alt="Al tavolo dello studio una signora firma un documento accanto al marito, l'avvocata segue in piedi" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+        <figure class="tendina"><div class="tendina-dentro"><img src="immagini/chi-storia-1.jpg" style="object-position: 76% 50%" alt="Al tavolo dello studio una signora firma un documento, l'avvocata segue in piedi" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
         <figure class="tendina"><div class="tendina-dentro"><img src="immagini/chi-storia-2.jpg" alt="In un capannone, l'avvocata ascolta un artigiano davanti al grande portone di legno" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
-        <figure class="tendina"><div class="tendina-dentro"><img src="immagini/chi-storia-3.jpg" alt="Con le cuffie, l'avvocata riascolta una registrazione insieme a una consulente" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
+        <figure class="tendina"><div class="tendina-dentro"><img src="immagini/chi-storia-3.jpg" style="object-position: 82% 50%" alt="Seduta in poltrona, con le cuffie, l'avvocata riascolta una registrazione" loading="lazy" onerror="this.remove()"></div><i class="tendina-filo" aria-hidden="true"></i></figure>
       </div>
     </div>
   </section>

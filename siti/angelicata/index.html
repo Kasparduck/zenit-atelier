@@ -582,10 +582,13 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .mappa-quadro { min-height: 460px; }
 }
 </style>
+<!-- prove dei colori (16/11/2026): senza ?colori= nell'indirizzo non fanno niente; si tolgono quando Franco ha scelto -->
+<link rel="stylesheet" href="colori.css">
+<script src="colori.js"></script>
 </head>
 <body>
 
-<header class="testata" id="testata">
+<header class="testata zenit-tieni" id="testata">
   <div class="contenitore testata-riga">
     <a class="marchio" href="#inizio" aria-label="Avv. Angela Angelicata, torna all'inizio">
       <svg class="monogramma" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22.5" fill="none" stroke="#b8946b" stroke-width="1"/><text x="7.5" y="32" font-family="Cormorant Garamond, Georgia, serif" font-size="25" fill="#1f1a16">A</text><text x="22.5" y="34.5" font-family="Cormorant Garamond, Georgia, serif" font-size="25" font-style="italic" fill="#8f6b47">A</text></svg>
@@ -596,7 +599,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
       <button type="button" data-area="tutto" aria-pressed="true">Tutto</button><button type="button" data-area="civile" aria-pressed="false">Civile</button><button type="button" data-area="penale" aria-pressed="false">Penale</button>
     </div>
     <nav class="menu" aria-label="Sezioni">
-      <a href="chi-sono.html">Chi sono</a><a href="#metodo">Il metodo</a><a href="#materie">Materie</a><a href="#tappe">Le tappe</a><a href="#scadenze">Scadenze</a><a href="#scrivi">Contatti</a>
+      <a href="chi-sono.html">Chi sono</a><a href="per-capire.html">Per capire</a><a href="#metodo">Il metodo</a><a href="#materie">Materie</a><a href="#tappe">Le tappe</a><a href="#scadenze">Scadenze</a><a href="#scrivi">Contatti</a>
     </nav>
     <span class="aperto" id="aperto"><i aria-hidden="true"></i><span>Orari dello studio</span></span>
     <a class="tel" href="tel:+390200000000">02 0000 0000</a>
@@ -617,7 +620,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 <div class="velo-menu" aria-hidden="true"></div>
 <aside class="pannello-menu" id="pannello-menu" aria-label="Menu" inert>
   <button type="button" class="chiudi-menu">Chiudi</button>
-  <nav aria-label="Sezioni"><a href="chi-sono.html">Chi sono</a><a href="#metodo">Il metodo</a><a href="#materie">Materie</a><a href="#tappe">Le tappe</a><a href="#scadenze">Scadenze</a><a href="#scrivi">Contatti</a></nav>
+  <nav aria-label="Sezioni"><a href="chi-sono.html">Chi sono</a><a href="per-capire.html">Per capire</a><a href="#metodo">Il metodo</a><a href="#materie">Materie</a><a href="#tappe">Le tappe</a><a href="#scadenze">Scadenze</a><a href="#scrivi">Contatti</a></nav>
   <a class="bottone" href="tel:+390200000000">Chiama 02 0000 0000</a>
   <p class="dimostra" style="display:block">Progetto dimostrativo · nomi e dati di fantasia</p>
 </aside>
@@ -625,7 +628,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 <main id="inizio">
   <!-- 1. apertura -->
   <section class="apertura" aria-labelledby="t-apertura">
-    <div class="apertura-pannello">
+    <div class="apertura-pannello zenit-tieni"><!-- zenit-tieni (17/11): uscendo dalla lente della vetrina il sito passa in scuro; il pannello è già scuro (petrolio) e NON si rovescia, se no diventa azzurro chiaro (Franco: «adesso appare tutto bianco»). Lo stesso per la testata, che ci sta sopra con le scritte chiare. -->
       <p class="occhio">Avvocata · civile e penale · Milano</p>
       <h1 id="t-apertura"><span class="riga"><span>Ti ascolto.</span></span><span class="riga"><span>Ti spiego.</span></span><span class="riga"><span><em>Ti difendo.</em></span></span></h1>
       <p class="apertura-sotto">Sono Angela Angelicata. Seguo persone e famiglie nelle cause civili e nei processi penali: dal primo incontro all'ultima udienza parli sempre con me.</p>
@@ -803,7 +806,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
       <div class="chi-testo">
         <p class="occhio">Chi ti segue</p>
         <h2 id="t-chi">Avv. Angela Angelicata</h2>
-        <p class="ordine">Avvocata dal 2008, iscritta all'Ordine degli Avvocati di Milano con il n. 00000 (di fantasia) e all'elenco dei difensori d'ufficio. Il numero si controlla sull'albo pubblico.</p>
+        <p class="ordine">Avvocata dal 2008, iscritta all'Ordine degli Avvocati di Milano con il n. 00000 e all'elenco dei difensori d'ufficio. Il numero si controlla sull'albo pubblico.</p>
         <p class="chi-frase">Un'avvocata sola, dall'inizio alla fine: sai sempre con chi parli.</p>
         <div class="due-liste">
           <div><h4>Diritto civile</h4><ul><li>Separazioni e divorzi</li><li>Eredità e testamenti</li><li>Affitti e sfratti</li><li>Risarcimento dei danni</li></ul></div>
@@ -868,17 +871,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
             <li><span class="etich">Querela</span><b>Querela · fatti di ottobre</b><span>«un ex socio mi ha diffamato su Facebook…»</span></li>
           </ul>
           <p class="spiega">Le richieste con una scadenza vicina o con parole come «udienza», «notifica» o «decreto» salgono in cima con l'etichetta Urgente; le altre si dividono per materia. Le ordina una regola automatica, le legge sempre una persona.</p>
-        </div>
-      </div>
-      <div class="crescere">
-        <h3>Il sito può crescere, <em>quando lo studio vuole</em></h3>
-        <div class="arrivo">
-          <div class="prossimo"><span class="stato">In arrivo</span><b>Prenota il primo incontro</b><p>Giorno e ora tra quelli liberi, in studio o in video, con promemoria il giorno prima.</p></div>
-          <div class="prossimo"><span class="stato">In arrivo</span><b>Area clienti</b><p>Documenti e stato della pratica in un servizio protetto collegato al sito.</p></div>
-          <div class="prossimo"><span class="stato gia">Già qui</span><b>Le email in ordine</b><p>Le richieste arrivano con materia, scadenza e urgenza già scritte.</p></div>
-          <div class="prossimo"><span class="stato">In arrivo</span><b>Altri calcoli</b><p>Quote di un'eredità senza testamento, termini per l'appello, interessi di legge.</p></div>
-          <div class="prossimo"><span class="stato">In arrivo</span><b>Moduli prima dell'incontro</b><p>Uno per pratica: i dati arrivano prima, l'incontro dura meno.</p></div>
-          <div class="prossimo"><span class="stato">In arrivo</span><b>Domande frequenti</b><p>«Cos'è un avviso di garanzia?», «Posso ritirare una querela?»: risposte brevi, scritte dall'avvocata.</p></div>
         </div>
       </div>
     </div>

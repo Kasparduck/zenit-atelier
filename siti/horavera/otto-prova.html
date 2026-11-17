@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Otto meridiani — prova del modulo</title>
+<!-- Pagina di prova: contiene solo il modulo «Otto meridiani» (otto.css + otto.js), con le stesse variabili e gli stessi caratteri della pagina vera.
+     Parametri: ?citta=venezia&s=5 ferma il modulo a 5 secondi del filmato di Venezia (s negativo = la carta) e mette la classe «posato» sul body. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root { --buio: #0a0908; --avorio: #ece5d8; --tenue: #9c9387; --spento: #5d564d; --oro: #d9b08c; --blu: #8fb0ee; --linea: rgb(236 229 216 / .14);
+  --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif; --sans: "Manrope", "Segoe UI", system-ui, sans-serif; }
+html { background: var(--buio); }
+body { margin: 0; background: var(--buio); color: var(--avorio); font: 400 17px/1.6 var(--sans); overflow-wrap: break-word; -webkit-font-smoothing: antialiased; }
+</style>
+<link rel="stylesheet" href="otto.css">
+</head>
+<body>
+<section id="otto" class="otto"></section>
+<script src="otto.js"></script>
+<script>
+  (() => { const q = new URLSearchParams(location.search); if (!q.has('citta')) return;
+    const via = () => { if (!window.OTTO || !OTTO.pronta) return setTimeout(via, 100);
+      OTTO.vaiA(q.get('citta'), +(q.get('s') || 0)).then(() => document.body.classList.add('posato')); };
+    via(); })();
+</script>
+</body>
+</html>

@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Zenit Atelier</title>
-<meta name="description" content="Zenit Atelier, la vetrina: un telescopio con i siti dentro la lente e le loro pagine intorno.">
+<title>Web Retold</title>
+<meta name="description" content="Web Retold, la vetrina: un telescopio con i siti dentro la lente e le loro pagine intorno.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Newsreader:opsz,wght@6..72,400&display=swap">
@@ -13,7 +13,7 @@
 /* VETRINA, FASE 1 (9/11/2026): il telescopio da solo. Franco: «facciamo un telescopio con la lente puntata verso chi guarda; se si attiva un regolatore
    si fa uno zooming in, se si gira dall'altra parte uno zooming out, diversamente il sito resta a una grandezza ottimizzata; se il telescopio gira un po'
    di lato anche la pagina del sito scorre». Ghiera esterna con i nomi dei siti, ghiera zigrinata dello zoom, diaframma a lamelle. Dall'11/11 (Franco: «più moderno»): metallo nero, luci di taglio rame e azzurra, fondo blu notte.
-   Base e ispirazioni: ../ispirazioni/obys.md, ../ispirazioni/eminente.md; piano a fasi in ../SCHEDA.md. */
+   Base e ispirazioni: ../ispirazioni/obys.md, ../../struttura-siti/siti/eminente.md; piano a fasi in ../SCHEDA.md. */
 :root {
   --carbone: #05080d; --carbone-2: #0e1622; --luce: rgb(120 160 220 / .07);   /* 11/11: blu notte (prima carbone caldo #15120f) */
   --bronzo-scuro: #1d2530; --bronzo: #b8703f; --bronzo-chiaro: #e0935c; --avorio: #eef1f5; --tenue: #8d97a5;   /* i nomi restano, i colori ora sono acciaio e rame */
@@ -62,6 +62,24 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; opac
 .voce { cursor: pointer; }
 .voce.sopra .piastra { opacity: 1; }
 .voce.sopra .nome-sito { fill: #141210; }
+/* IL RICHIAMO SUL NOME IN ALTO (17/11/2026, Franco: «Sul telescopio pure bisogna forse attirare l'attenzione sul fatto che il sito è cliccabile quando si
+   trova in alto sulla ghiera»). Tra tre modi (piastrina, freccetta, tacca) ha scelto la piastrina: «Ok, la 1». Ogni 6 secondi, sotto il nome in alto (classe
+   «in-alto», da disegnaNomi), si accende per un attimo la piastrina di platino che esce con il mouse: fa vedere da sola che cosa succede se ci si va sopra. */
+.voce.in-alto:not(.sopra) .piastra { animation: piastra-respira 6s ease-in-out infinite; }
+.voce.in-alto:not(.sopra) .nome-sito { animation: nome-respira 6s ease-in-out infinite; }
+/* 17/11, Franco: «anche quando HORA VERA sale deve avere l'effetto 1 che compare quando è in alto»: il giro comincia con la piastrina accesa, così si accende
+   appena un nome arriva in alto (prima arrivava dopo 4 secondi, a sito già aperto) */
+@keyframes piastra-respira { 0%, 3%, 30%, 100% { opacity: 0; } 9%, 20% { opacity: 1; } }
+@keyframes nome-respira { 0%, 3%, 30%, 100% { fill: #f5f7fa; } 9%, 20% { fill: #141210; } }
+.voce.in-alto.lampo .piastra, .voce.lampo .piastra { animation: piastra-lampo 2s ease-in-out; }   /* nome a parte: cambiando nome l'animazione riparte da capo */
+.voce.in-alto.lampo .nome-sito, .voce.lampo .nome-sito { animation: nome-lampo 2s ease-in-out; }
+@keyframes piastra-lampo { 0%, 9%, 90%, 100% { opacity: 0; } 27%, 60% { opacity: 1; } }
+@keyframes nome-lampo { 0%, 9%, 90%, 100% { fill: #f5f7fa; } 27%, 60% { fill: #141210; } }
+body.aperto .voce.in-alto .piastra, body.aperto .voce.in-alto .nome-sito, body.aperto .voce .piastra, body.aperto .voce .nome-sito { animation: none; }
+/* PUNTO 7 (17/11/2026, Franco: «Quando si clicca o si passa semplicemente sulla scritta col mouse… vorrei che ci fosse anche una qualche attivazione (vediamo
+   di che tipo) sulla pagina satura che porta il nome del sito»): passando sul nome, la sua pagina piena si accende. Due modi in prova (?attiva=a|b). */
+.pv.chiamata .targhetta::after { background: #141210; }
+@media (prefers-reduced-motion: reduce) { .voce .piastra, .voce .nome-sito { animation: none !important; } }
 /* I SITI INTORNO ALLA LENTE (11/11/2026, idea di Franco, immagini in ../ispirazioni/franco-siti-intorno-*.jpg): «i siti… li volevo disporre in un modo un tantino
    diverso e non lasciandoli grigi come su Obys: desaturati la maggior parte e saturo uno solo, quello scelto dal cliente cliccando sul nome. Cliccando sul nome
    il sito, presente anche fuori dall'obiettivo, prende tutta la pagina e si compone in modo dinamico, in modo che ci si possa navigare, mentre l'obiettivo sparisce».
@@ -77,7 +95,40 @@ body.pronto .strisce.cambia { opacity: 0; transition: opacity .35s; }
 .carta { flex: none; display: block; height: 100%; aspect-ratio: 16 / 10; margin-right: var(--vuoto); border-radius: clamp(6px, .6vw, 11px); background: #10151d center / cover no-repeat; box-shadow: inset 0 0 0 1px rgb(255 240 220 / .09); }
 /* spente (non grigie: resta un filo di colore) e, per il sito scelto, a colori */
 .spenta { filter: saturate(.36) brightness(.5); transition: filter 1s cubic-bezier(.3,.6,.2,1); }
-.spenta.accesa { filter: saturate(1) brightness(.84); }   /* a colori ma un filo sotto la lente: la più luminosa resta lei */
+.spenta.accesa { filter: saturate(.48) brightness(.66); }   /* il sito scelto: appena più vive delle altre, ma spente (17/11, Franco: «Quelle dello STUDIO ANGELICATA mi sembrano poco desaturate»; prima saturate(1) brightness(.84), e la pagina piena non spiccava) */
+/* LA PAGINA SATURA (17/11/2026, Franco: «Vorrei poi che le pagine fossero desaturate in parte (forse lo sono già e allora va bene così) ma se ne vedesse una
+   sempre satura per sito che cambia posizione (satura al punto giusto non ipersatura)»). Il colore spento è un filtro su tutta la striscia, e una carta dentro
+   non può toglierselo: sopra le strisce c'è un secondo piano uguale, senza filtro e vuoto, che scorre insieme (stessi tempi); lì si accende una carta sola per
+   sito, e ogni tanto passa a un'altra (codice: «la pagina satura»). I nomi sono diversi apposta (le prove contano .striscia, .carta e .binario-v). */
+.striscia-viva { flex: none; width: 100%; height: calc(var(--carta-w) / 1.6); overflow: hidden; }
+.scorre-viva { display: flex; width: max-content; height: 100%; animation: scorre var(--durata, 150s) linear infinite var(--verso, normal); }
+.pv { flex: none; display: block; height: 100%; aspect-ratio: 16 / 10; margin-right: var(--vuoto); border-radius: clamp(6px, .6vw, 11px); background: center / cover no-repeat; opacity: 0; transition: opacity 1.6s cubic-bezier(.3,.6,.2,1); }
+/* il bordo della pagina piena è un filo di RAME, non chiaro (17/11, Franco: «il bianchino intorno al nero non sta tanto bene»); passando sul nome o sulla
+   pagina diventa una cornice di rame piena («La cornice di rame la preferirei») */
+.pv.ha { filter: saturate(1.14) brightness(1.1); box-shadow: inset 0 0 0 1px rgb(224 147 92 / .5), 0 0 30px rgb(0 0 0 / .45) !important; transition: opacity 1.6s cubic-bezier(.3,.6,.2,1), box-shadow .35s; }
+.pv.ha.chiamata, .pv.ha.sopra { box-shadow: inset 0 0 0 2px #e0935c, 0 0 30px rgb(0 0 0 / .45) !important; }   /* piena e un filo più accesa (17/11: «più accese le pagine sature») */
+.pv.su { opacity: 1; }
+/* IL NOME SULLA PAGINA PIENA (17/11/2026, Franco: «Sulla pagina più satura si legge il nome del sito che è cliccabile (poi vediamo come fare il colore e
+   trasmettere subito ad occhio che è una zona cliccabile)». Tra tre modi già fatti (targhetta, mirino, titolo) ha scelto la targhetta: «Meglio la 1. È più
+   chiaro». «Attento solo alla freccettina gialla che è fatta male»: la freccia è DISEGNATA (tratto sottile, punta aperta), non il carattere → della scrittura.
+   Con il mouse sopra la pagina la targhetta diventa di platino, come i nomi sulla ghiera; il clic apre il sito (codice: «il clic sulla pagina piena»). */
+.pv { position: relative; }
+.targhetta { position: absolute; left: 30%; top: 86%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: .9em; padding: .72em .95em .72em 1.2em; border-radius: 8px; background: rgb(9 13 19 / .84); border: 1px solid rgb(224 147 92 / .45);
+  color: #f5f7fa; font: normal 500 clamp(9px, calc(var(--carta-w) * .025), 12px)/1 "Manrope", sans-serif; letter-spacing: .32em; text-transform: uppercase; white-space: nowrap; transition: left 1.6s linear, top 1.6s linear, background .35s, color .35s, border-color .35s; }   /* scivola lungo la pagina per restare dove si legge: postoTarga() */
+.targhetta::after { content: ""; flex: none; width: 1.85em; height: .78em; background: #e0935c; animation: freccia 4s ease-in-out infinite; transition: background .35s;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 10'%3E%3Cpath d='M1 5h21M17.6 1.2 22 5l-4.4 3.8' fill='none' stroke='black' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 10'%3E%3Cpath d='M1 5h21M17.6 1.2 22 5l-4.4 3.8' fill='none' stroke='black' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat; }
+/* 17/11, Franco: «andando sulle pagine col mouse, non diventa bianco intorno alla scritta, ma argentato come nell'obiettivo»: lo stesso argento della
+   piastrina della ghiera (gradiente #platino: scuro ai lati, chiaro al centro) */
+.pv.sopra .targhetta, .pv.chiamata .targhetta { background: linear-gradient(90deg, #80858a, #d8dce0 22%, #fbfcfd 50%, #ced2d6 78%, #7c8186); color: #141210; border-color: transparent; }
+.pv.sopra .targhetta::after { background: #141210; }
+@keyframes freccia { 0%, 68%, 100% { transform: translateX(0); } 82% { transform: translateX(.45em); } }
+@media (prefers-reduced-motion: reduce) { .targhetta::after { animation: none; } }
+.colonna-viva { flex: none; width: 31%; height: 100%; overflow: hidden; }
+.viene-viva { display: flex; flex-direction: column; animation: viene var(--durata, 170s) linear infinite; }
+.colonna-viva .pv { width: 100%; height: auto; margin: 0 0 var(--vuoto); }
+body.coperto .scorre-viva, body.coperto .viene-viva, body.esce-pronta .scorre-viva, body.esce-pronta .viene-viva { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .scorre-viva, .viene-viva { animation: none; } }
 /* la scalinata (immagine di Franco con le due colonne ai lati): un piano steso per terra che si allontana verso l'alto, con due colonne di pagine */
 .strisce[data-disp="scalinata"] { perspective: 1500px; perspective-origin: 50% -18%; }
 .pavimento { position: absolute; left: 50%; bottom: -4%; width: 104vw; height: 200vh; transform-origin: 50% 100%; transform: translateX(-50%) rotateX(58deg); display: flex; justify-content: space-between; }
@@ -86,9 +137,11 @@ body.pronto .strisce.cambia { opacity: 0; transition: opacity .35s; }
 @keyframes viene { from { transform: translateY(-50%); } to { transform: translateY(0); } }
 .colonna .carta { width: 100%; height: auto; margin: 0 0 var(--vuoto); }
 /* il silenzio intorno alla lente: un'ombra che stacca l'obiettivo dalle carte, e i bordi dello schermo più scuri sotto le scritte */
-.strisce::after { content: ""; position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgb(5 8 12 / .92) calc(var(--d) * .5), rgb(5 8 12 / 0) calc(var(--d) * .5 + 13vmin)),
-    radial-gradient(ellipse 78% 78% at 50% 50%, rgb(5 8 12 / 0) 58%, rgb(5 8 12 / .82) 100%),
+.strisce::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgb(5 8 12 / .92) calc(var(--d) * .5), rgb(5 8 12 / 0) calc(var(--d) * .5 + 13vmin)); }
+/* 17/11/2026, Franco: «più accese le pagine sature… Trova tu un modo»: il buio dei bordi sta in un velo a parte, SOTTO il piano delle pagine piene
+   (spegne le altre, non loro); sopra tutto resta solo l'ombra intorno all'obiettivo */
+.velo-bordi { position: absolute; inset: 0;
+  background: radial-gradient(ellipse 78% 78% at 50% 50%, rgb(5 8 12 / 0) 58%, rgb(5 8 12 / .82) 100%),
     radial-gradient(ellipse 34vw 30vh at 0 0, rgb(5 8 12 / .9), rgb(5 8 12 / 0)),
     linear-gradient(to bottom, rgb(5 8 12 / .55), rgb(5 8 12 / 0) 14%, rgb(5 8 12 / 0) 84%, rgb(5 8 12 / .6)); }
 /* la riga in basso a sinistra sta sopra le carte: una targhetta scura la tiene leggibile */
@@ -122,6 +175,7 @@ body.esce-pronta .binario, body.esce-pronta .binario-v { animation-play-state: p
 body.esce .sito { opacity: 0; transition: opacity .6s ease-out, transform 1.1s cubic-bezier(.3,0,.3,1); }
 body.esce .vetro { background: transparent; }
 body.esce .tubo, body.esce .cattura { visibility: hidden; }
+body.esce #nomi { opacity: 0; transition: opacity .6s ease-out; }   /* 17/11: i nomi bianchi, rimpiccioliti, facevano un filo chiaro intorno all'obiettivo */
 .torna { position: fixed; left: 50%; bottom: 18px; z-index: 7; transform: translate(-50%, 16px); opacity: 0; pointer-events: none; transition: opacity .5s, transform .5s;
   display: inline-flex; align-items: center; gap: 10px; padding: 9px 16px 9px 14px; border-radius: 999px; border: 1px solid rgb(255 240 220 / .22); background: rgb(9 13 19 / .88); color: var(--avorio);
   font: 500 .82rem var(--sans); letter-spacing: .04em; cursor: pointer; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgb(0 0 0 / .35); }
@@ -136,6 +190,9 @@ body.aperto .torna { opacity: 1; transform: translate(-50%, 0); pointer-events: 
 .modi button[aria-pressed="true"] { color: var(--avorio); border-bottom-color: var(--bronzo-chiaro); }
 /* sul telefono in basso c'è la riga che spiega: lì le voci restano in alto, sotto la busta */
 @media (max-aspect-ratio: 5/4) { .modi { right: 12px; top: 74px; bottom: auto; gap: 14px; padding: 0; background: none; border: 0; font-size: .74rem; } }
+/* 17/11/2026, sul telefono l'invito sotto la targa finiva sopra i tre modi e non si leggeva: i modi scendono sotto l'invito, e l'invito ha un'ombra scura che lo
+   stacca dalle pagine dietro */
+@media (max-aspect-ratio: 5/4) { .modi { top: 124px; padding: 5px 12px 6px; border-radius: 10px; background: rgb(9 13 19 / .9); border: 1px solid rgb(255 240 220 / .07); } .invito { font-size: .66rem; text-shadow: 0 0 10px #05080c, 0 0 4px #05080c, 0 0 2px #05080c; } }
 
 /* CONTATTI (11/11/2026 sera, Franco, con due immagini fatte con GPT: ../ispirazioni/franco-contatti-busta.webp e franco-contatti-pagina.jpg): «in alto a destra
    metterei "Contatti" (prendi direttamente la busta allegata e piazzala in alto a destra). Quando si clicca sulla busta si apre una pagina che non mette le
@@ -144,7 +201,14 @@ body.aperto .torna { opacity: 1; transform: translate(-50%, 0); pointer-events: 
 .busta { all: unset; position: fixed; right: 20px; top: 14px; z-index: 3; width: clamp(128px, 11.4vw, 192px); cursor: pointer; filter: drop-shadow(0 10px 20px rgb(0 0 0 / .5));
   transition: opacity .6s, transform .45s cubic-bezier(.2,.7,.2,1), filter .45s; }
 .busta img { display: block; width: 100%; height: auto; -webkit-user-drag: none; }
-.busta:hover, .busta:focus-visible { transform: translateY(-3px); filter: drop-shadow(0 16px 24px rgb(0 0 0 / .55)) brightness(1.2); }
+/* 17/11/2026, Franco: «la busta con scritto contatti non si vede bene. Puoi fare una righina sottile gialla sul bordo in alto ma dentro la busta ancora e lo stesso in basso?» */
+.busta::before, .busta::after { content: ""; position: absolute; left: 7%; right: 7%; height: 1px; background: linear-gradient(90deg, transparent, #e8c45a 10%, #e8c45a 90%, transparent); pointer-events: none; }
+.busta::before { top: 8%; } .busta::after { bottom: 9%; }
+.busta:hover, .busta:focus-visible { transform: translateY(-3px); filter: drop-shadow(0 16px 24px rgb(0 0 0 / .55)); }
+/* 17/11/2026, Franco: «quando uno va sulla busta dei contatti diventa argentata, così sa che è attiva e clicca»: la busta (una foto scura con la scritta chiara)
+   si rovescia in argento chiaro e la scritta diventa scura, come il nome sulla piastrina di platino dell'obiettivo */
+.busta img { transition: filter .4s; }
+.busta:hover img, .busta:focus-visible img { filter: grayscale(1) invert(.8) contrast(1.25); }
 .contatti { --c-fondo: #212120; --c-crema: #f6ead9; position: fixed; inset: 0; z-index: 8; display: grid; grid-template-columns: 62.2% 1fr; background: var(--c-fondo); color: var(--c-crema);
   opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .45s, visibility 0s .45s; }
 body.contatti-aperti .contatti { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity .45s; }
@@ -155,6 +219,10 @@ body.contatti-aperti .c-foto { clip-path: inset(0); transition: clip-path 1.15s 
 .c-foto img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: left top; transform-origin: 0 0; transform: scale(1.06); transition: transform 0s .5s; }
 body.contatti-aperti .c-foto img { transform: none; transition: transform 2.4s cubic-bezier(.2,.7,.2,1) .1s; }
 .c-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(33 33 32 / 0) 84%, var(--c-fondo) 100%); pointer-events: none; }
+/* il nome sulla foto (17/11/2026): la foto di Franco diceva «Zenit Atelier», scritta tolta dalla foto (venature del legno rifatte) e il nome nuovo scritto qui,
+   nello stesso punto e con un carattere simile */
+.c-foto { container-type: inline-size; }
+.c-marca { position: absolute; left: 3.3cqw; top: 2.1cqw; z-index: 1; font: 400 max(17px, 3.25cqw)/1 "Newsreader", Georgia, serif; letter-spacing: .005em; color: #efe4d0; pointer-events: none; }
 .c-pannello { position: relative; min-width: 0; display: flex; flex-direction: column; justify-content: center; padding: 9vh 4.9vw 5vh 0; }
 .c-chiudi { all: unset; position: absolute; right: clamp(14px, 1.9vw, 34px); top: clamp(12px, 2.2vh, 24px); width: 44px; height: 44px; display: grid; place-items: center; cursor: pointer; color: var(--c-crema); transition: transform .45s cubic-bezier(.2,.7,.2,1), color .3s; }
 .c-chiudi svg { width: 22px; height: 22px; }
@@ -179,13 +247,12 @@ body.contatti-aperti .c-e { opacity: 1; transform: none; transition: opacity .7s
 .c-invia svg { width: 1.3em; height: auto; transition: transform .35s cubic-bezier(.2,.7,.2,1); }
 .c-invia:hover, .c-invia:focus-visible { background: #fff; }
 .c-invia:hover svg, .c-invia:focus-visible svg { transform: translateX(6px); }
-.c-invia:focus-visible, .c-chiudi:focus-visible, .c-allega:focus-within { outline: 2px solid #e0935c; outline-offset: 4px; }
-.c-allega { display: inline-flex; align-items: center; gap: 13px; cursor: pointer; font: 400 clamp(.98rem, 1.25vw, 1.3rem)/1.2 var(--sans); transition: color .3s; }
-.c-allega svg { flex: none; width: 1.5em; height: 1.5em; }
-.c-allega:hover { color: #fff; }
-.c-allega input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.c-invia:focus-visible, .c-chiudi:focus-visible { outline: 2px solid #e0935c; outline-offset: 4px; }
+.c-bastano { margin: 0; max-width: 17em; font: italic 400 clamp(.98rem, 1.2vw, 1.22rem)/1.35 "Newsreader", Georgia, serif; color: rgb(246 234 217 / .82); }
 .c-nota { min-height: 1.5em; margin: 14px 0 0; font-size: .88rem; color: #f0a877; }
 .c-privato { margin: 2px 0 0; font-size: .78rem; color: rgb(246 234 217 / .5); }
+.c-privato a { color: rgb(246 234 217 / .78); text-underline-offset: 3px; text-decoration-color: #e0935c; }
+.c-privato a:hover { color: #f6eada; }
 .c-grazie p { margin: 0 0 clamp(18px, 3.4vh, 30px); max-width: 30ch; font: 400 clamp(1.05rem, 1.4vw, 1.4rem)/1.5 var(--sans); }
 .c-grazie .c-prova { max-width: 44ch; font-size: .82rem; color: #f0a877; }
 @media (max-aspect-ratio: 5/4), (max-width: 820px) {
@@ -234,14 +301,23 @@ body.contatti-aperti .c-e { opacity: 1; transform: none; transition: opacity .7s
 .targa i:last-child { bottom: -7px; }
 .didascalia { z-index: 3; }
 /* 12/11: la vetrina va online prima di essere finita (Franco: «affinché possano subito arrivarci sopra e vedere, anche se il sito è in costruzione»): lo dice una riga piccola sotto il nome */
-.cantiere { display: block; margin: 14px 0 0 4px; font: 500 .68rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--tenue); }
-.cantiere::before { content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 9px 1px 0; border-radius: 50%; background: var(--bronzo-chiaro); vertical-align: middle; }
+/* L'INVITO (17/11/2026, mossa tattica di Franco: «Siccome sono all'inizio… Pensavo a una scritta lampeggiante da qualche parte (non gialla) che dica qualcosa
+   tipo: SIAMO IN COSTRUZIONE, SEGUITECI E RACCONTEREMO IL WEB IN MODO NUOVO CON VOI. O: CON LE VOSTRE PAGINE»). Tra le versioni ha scelto «Un sito alla volta.
+   Il prossimo può essere il tuo.» (il numero dei siti no: «sa di poverelli che hanno solo due siti»). Bianca, puntino azzurro, lampeggia piano; un clic apre
+   i contatti. Sta al posto di «Vetrina in costruzione». */
+.invito { display: block; margin: 14px 0 0 4px; padding: 0; border: 0; background: none; text-align: left; font: 600 .72rem/1.75 var(--sans); letter-spacing: .22em; text-transform: uppercase; color: #f5f7fa; cursor: pointer; pointer-events: auto; animation: invito 2.6s ease-in-out infinite; }
+.invito::before { content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 10px 1px 0; border-radius: 50%; background: #a9c6ff; box-shadow: 0 0 9px rgb(169 198 255 / .7); vertical-align: middle; }
+.invito span { display: block; padding-left: 16px; }
+.invito:hover, .invito:focus-visible { animation: none; color: #fff; outline: none; }
+body.aperto .invito { pointer-events: none; }
+@keyframes invito { 0%, 40% { opacity: 1; } 55%, 85% { opacity: .22; } 100% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .invito { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .telescopio, .inclina { transition: none; } }
 @media (max-width: 720px) { .nome-sito { font-size: 19px; letter-spacing: 5px; } .tacca-num { font-size: 14px; } .incisione { font-size: 12px; } .didascalia span { font-size: .76rem; } .firma { left: 12px; top: 12px; } .targa { font-size: 1.08rem; padding: 9px 14px 10px; border-radius: 8px; } .targa::before { inset: 5px; } }
 </style>
 </head>
 <body>
-<p class="firma"><span class="targa"><i></i><b>Zenit</b> Atelier<i></i></span><small class="cantiere">Vetrina in costruzione</small></p>
+<p class="firma"><span class="targa"><i></i><b>Web</b> Retold<i></i></span><button type="button" class="invito" id="invito">Un sito alla volta. <span>Il prossimo può essere il tuo.</span></button></p>
 <div class="strisce" id="strisce" aria-hidden="true"></div>
 
 <main class="scena" aria-label="Un telescopio puntato verso di te: nella lente si vede un sito vero">
@@ -279,7 +355,7 @@ body.contatti-aperti .c-e { opacity: 1; transform: none; transition: opacity .7s
         <circle r="444.3" fill="none" stroke="#000" stroke-opacity="0" stroke-width="32" pointer-events="stroke"/>
         <g id="nomi"></g>
       </g>
-      <path d="M -10,-513 L 10,-513 L 0,-494 Z" fill="url(#rame)" pointer-events="none"/>
+      <path id="tacca-nomi" d="M -10,-513 L 10,-513 L 0,-494 Z" fill="url(#rame)" pointer-events="none"/>
     </svg>
 
 <div class="cattura" id="cattura" role="img" aria-label="Lente: trascina o usa la rotella per muoverti nel sito; frecce della tastiera per scorrere"></div>
@@ -300,24 +376,24 @@ body.contatti-aperti .c-e { opacity: 1; transform: none; transition: opacity .7s
 <button class="busta" id="busta" type="button" aria-label="Contatti" aria-haspopup="dialog"><img src="contatti-busta.webp" alt="" draggable="false"></button>
 
 <section class="contatti" id="contatti" role="dialog" aria-modal="true" aria-label="Contatti: parliamo del tuo sito" aria-hidden="true">
-  <figure class="c-foto"><img data-src="contatti-foto.jpg" alt="Zenit Atelier"></figure>
+  <figure class="c-foto"><img data-src="contatti-foto.jpg" alt="Web Retold"><figcaption class="c-marca" aria-hidden="true">Web Retold</figcaption></figure>
   <div class="c-pannello">
     <button class="c-chiudi" id="c-chiudi" type="button" aria-label="Chiudi i contatti"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M2 2l18 18M20 2L2 20"/></svg></button>
     <h2 class="c-titolo"><span><i style="--k:0">Parliamo</i></span><span><i style="--k:1">del tuo sito.</i></span></h2>
     <form class="c-modulo" id="c-modulo" novalidate>
+      <input name="_honey" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
       <label class="c-riga c-e" style="--k:0"><span>Nome</span><input name="nome" type="text" autocomplete="name"></label>
       <label class="c-riga c-e" style="--k:1"><span>Email</span><input name="email" type="email" autocomplete="email" inputmode="email"></label>
       <label class="c-riga c-e" style="--k:2"><span>Raccontami il tuo progetto</span><textarea name="progetto" placeholder="Che lavoro fai, che cosa deve fare il sito, entro quando ti serve."></textarea></label>
       <div class="c-azioni c-e" style="--k:3">
         <button class="c-invia" type="submit">Invia <svg viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M1 10h31M24 2l8 8-8 8"/></svg></button>
-        <label class="c-allega"><input type="file" id="c-file" name="file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg><span id="c-file-nome">Allega un file</span></label>
+        <p class="c-bastano">Per ora bastano due righe: al resto pensiamo insieme.</p>
       </div>
       <p class="c-nota c-e" id="c-nota" style="--k:4" role="status"></p>
-      <p class="c-privato c-e" style="--k:4">Uso i tuoi dati solo per risponderti.</p>
+      <p class="c-privato c-e" style="--k:4">Uso i tuoi dati solo per risponderti. <a href="privacy.html" target="_blank" rel="noopener">Informativa privacy</a></p>
     </form>
     <div class="c-grazie" id="c-grazie" hidden>
       <p>Grazie, <b id="c-grazie-nome"></b>. Ho letto tutto: ti rispondo entro un giorno, a <span id="c-grazie-email"></span>.</p>
-      <p class="c-prova">In prova: il messaggio non è ancora partito. Prima di andare online si sceglie dove farlo arrivare.</p>
       <button class="c-invia" id="c-fatto" type="button">Torna alla vetrina <svg viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M1 10h31M24 2l8 8-8 8"/></svg></button>
     </div>
   </div>
@@ -336,12 +412,25 @@ const qs = new URLSearchParams(location.search);   // per le prove: ?zoom=2&diaf
    Meridiano (la boutique fatta da Franco) è un segnaposto al posto del poliambulatorio, finché non c'è il secondo sito nuovo. */
 const serie = (nome, da, a) => Array.from({ length: a - da + 1 }, (_, k) => nome + '-' + String(da + k).padStart(2, '0') + '.jpg');
 const SITI = [
-  { nome: 'STUDIO LEGALE ANGELICATA · MILANO', src: 'siti/angelicata/index.html', fondo: '#f4ede3', fa: "Studio legale · calcola le scadenze, capisce le parole della gente, mette in ordine le richieste",
+  { nome: 'STUDIO ANGELICATA', src: 'siti/angelicata/index.html', fondo: '#f4ede3', esce: '#f6efe5', fa: "Studio legale · calcola le scadenze, capisce le parole della gente, mette in ordine le richieste",
     carte: [serie('angelicata', 1, 8), serie('angelicata', 9, 15)] },
-  { nome: 'MERIDIANO · BOUTIQUE DI OROLOGI', src: 'siti/meridiano/meridiano.html', fondo: '#0e100d', fa: "Boutique di orologi · la collezione con i filtri, il confronto, l'appuntamento in boutique",
-    carte: [serie('meridiano', 1, 6)] }
+  { nome: 'HORA VERA', src: 'siti/horavera/ora-vera.html', fondo: '#0a0908', spenta: ['hora-', 'hora-g-'], fa: "Orologi d'autore · racconta il tempo come un film: otto città dall'alba alla sera, quattro tempi, l'atelier",
+    carte: [serie('hora', 1, 8), serie('hora', 9, 14)] }
 ];
 const PASSO_NOMI = 360 / SITI.length;
+/* 17/11/2026, Franco: «Le pagine del sito HORA VERA sono troppo scure e risultano quasi invisibili». Le pagine di un sito SCURO nelle strisce non si
+   abbassano come le altre: più luce, i neri un filo sollevati (così il rettangolo della pagina si vede sul fondo scuro) e un bordo chiaro. */
+(() => { const css = SITI.map((s, i) => { const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(s.fondo || '');
+    if (!m || parseInt(m[1], 16) * .299 + parseInt(m[2], 16) * .587 + parseInt(m[3], 16) * .114 > 90) return '';
+    /* 17/11, Franco: «Per le pagine di HORA VERA non ha senso la desaturazione… perché sono nere. Al limite le si può fare più trasparenti o sul grigio, non so.
+       Basta che l'effetto estetico non faccia schifo». Tre prove di filtro bocciate («Nessuna delle 3 mi convince»); poi la sua immagine di GPT, la pagina
+       di L'atelier su fondo grigio ardesia: «Puoi usare questa di GPT come riferimento?». Fatto così: ogni pagina di Hora Vera è fotografata dal sito vero due
+       volte nello stesso punto, nera (hora-NN.jpg) e su grigio (hora-g-NN.jpg; campo «spenta» in SITI). Nelle strisce scorrono le grigie; la pagina scelta
+       è la nera, piena. Un sito scuro SENZA le sorelle grigie resta com'era (più luce e neri sollevati). */
+    if (s.spenta) return `.spenta[data-sito="${i}"] { filter: saturate(.8) brightness(.7); } .spenta.accesa[data-sito="${i}"] { filter: saturate(1) brightness(.92); } [data-sito="${i}"] .carta { box-shadow: inset 0 0 0 1px rgb(255 240 220 / .12); } .pv.ha[data-s="${i}"] { filter: saturate(1.1) brightness(1.42); box-shadow: inset 0 0 0 1px rgb(255 240 220 / .45), 0 0 26px rgb(0 0 0 / .5); }`;
+    const [giu, su] = ['saturate(.55) contrast(.8) brightness(1.2)', 'saturate(1.05) contrast(.86) brightness(1.55)'];
+    return `.spenta[data-sito="${i}"] { filter: ${giu}; } .spenta.accesa[data-sito="${i}"] { filter: ${su}; } [data-sito="${i}"] .carta { box-shadow: inset 0 0 0 1px rgb(255 240 220 / .3); } .pv.ha[data-s="${i}"] { filter: saturate(1.12) contrast(.92) brightness(1.8); box-shadow: inset 0 0 0 1px rgb(255 240 220 / .4); }`; }).join('');
+  if (css) document.head.appendChild(Object.assign(document.createElement('style'), { textContent: css })); })();
 
 /* ---------- disegno: tubo, nomi, lamelle. Dall'11/11 il metallo è la foto dell'obiettivo scelto da Franco (obiettivo-anello.webp): qui si disegna solo
    ciò che cambia o si muove. RN è il raggio della fascia dei nomi, in millesimi del lato. ---------- */
@@ -355,8 +444,7 @@ const RN = 444.3;
     // 9/11, Franco: «manca un po' la sensibilità quando si tocca la scritta, a volte parte, a volte no»: una fascia invisibile larga intorno al nome
     el('path', { class: 'presa-nome', fill: 'none', stroke: '#000', 'stroke-opacity': 0, 'stroke-width': 44, 'stroke-linecap': 'round', 'pointer-events': 'stroke' }, v);
     el('path', { class: 'piastra', fill: 'none', stroke: 'url(#platino)', 'stroke-width': 27, 'stroke-linecap': 'round' }, v);
-    const t = el('text', { class: 'nome-sito', 'data-i': i }, v);
-    const tp = el('textPath', { href: '#giro-nomi', startOffset: ((180 + i * PASSO_NOMI) / 720 * 100) + '%', 'text-anchor': 'middle', 'dominant-baseline': 'central' }, t); tp.textContent = s.nome;
+    const t = el('text', { class: 'nome-sito', 'data-i': i }, v);    const tp = el('textPath', { href: '#giro-nomi', startOffset: ((180 + i * PASSO_NOMI) / 720 * 100) + '%', 'text-anchor': 'middle', 'dominant-baseline': 'central' }, t); tp.textContent = s.nome;
     // un puntino di rame a metà tra un nome e l'altro
     const a = (i + .5) * PASSO_NOMI * Math.PI / 180; el('circle', { class: 'puntino', cx: Math.sin(a) * RN, cy: -Math.cos(a) * RN, r: 2.6, fill: '#e0935c' }, n);
   });
@@ -393,6 +481,7 @@ function disegnaZoom() {
 }
 function disegnaNomi() {
   $('#ghiera-nomi').setAttribute('transform', `rotate(${angNomi})`);
+  document.querySelectorAll('.voce').forEach(v => { const a = (((+v.dataset.i * PASSO_NOMI + angNomi) % 360) + 360) % 360; v.classList.toggle('in-alto', a < 8 || a > 352); });
   // 11/11: un nome che sta nella metà bassa della ghiera si gira e si legge dritto, da sinistra a destra (prima era capovolto). Cambia verso quando passa
   // da un fianco (a ore 3 o a ore 9), con un po' di margine perché non sfarfalli sul confine
   document.querySelectorAll('.nome-sito textPath').forEach(tp => {
@@ -521,19 +610,27 @@ function giro() {
    Ogni striscia è UN sito con le sue pagine in fila. I tre modi di guardare scelti da Franco l'11/11 tra le sue immagini («queste tre modalità sono quelle che
    mi piacciono di più», ../ispirazioni/franco-modo-*.jpg): la diagonale che sale, la diagonale che scende, la scalinata. Si scelgono in alto a destra. ---------- */
 const strisce = $('#strisce');
-let sopraNome = null, disposizione = '';
-const carta = f => `<i class="carta" style="background-image:url('carte/${f}')"></i>`;
+let sopraNome = null, disposizione = '', salita = null, salendo = false, chiusoAlle = -1e9;
+// la carta che scorre nelle strisce: per un sito che ha le sorelle grigie (campo «spenta» in SITI) è la grigia; la nera vera si accende nel piano di sopra
+const spentaDi = (s, f) => SITI[s] && SITI[s].spenta ? f.replace(SITI[s].spenta[0], SITI[s].spenta[1]) : f;
+const carta = (f, s) => `<i class="carta" style="background-image:url('carte/${spentaDi(s, f)}')"></i>`;
+SITI.forEach(s => { if (s.spenta) s.carte.flat().forEach(f => { new Image().src = 'carte/' + f; }); });   // le nere pronte prima che tocchi a loro, se no compaiono di colpo
+const viva = (s, f) => `<i class="pv" data-s="${s}" data-f="${f}"></i>`;   // il posto vuoto, nel piano di sopra, della stessa pagina: si accende quando tocca a lei
 // quante carte servono per coprire un tratto lungo «lungo» con carte di passo «passo»: solo quelle, per non disegnare carte che non si vedono mai
 const giroDi = (una, lungo, passo) => { const serve = Math.ceil(lungo / passo) + 1; let giro = una; while (giro.length < serve) giro = giro.concat(una); return giro.concat(giro); };
 const vuoto = () => Math.min(20, Math.max(12, innerWidth * .011));
 function fila(sito, k, verso, durata, sfasa) {   // una striscia: le pagine di un sito in fila, due volte, per girare senza fine
   const tutte = SITI[sito].carte, base = tutte[k % tutte.length], n = sfasa % base.length;
   const giro = giroDi(base.slice(n).concat(base.slice(0, n)), Math.max(innerWidth, innerHeight) * 1.5, Math.min(520, Math.max(270, innerWidth * .27)) + vuoto());
-  return `<div class="striscia spenta" data-sito="${sito}"><div class="binario" style="--durata:${durata}s;--verso:${verso > 0 ? 'normal' : 'reverse'}">${giro.map(carta).join('')}</div></div>`;
+  const tempi = `style="--durata:${durata}s;--verso:${verso > 0 ? 'normal' : 'reverse'}"`;
+  // due versioni della stessa striscia: quella spenta con le pagine, e quella vuota del piano di sopra, dove si accende la pagina satura
+  return [`<div class="striscia spenta" data-sito="${sito}"><div class="binario" ${tempi}>${giro.map(f => carta(f, sito)).join('')}</div></div>`,
+    `<div class="striscia-viva"><div class="scorre-viva" ${tempi}>${giro.map(f => viva(sito, f)).join('')}</div></div>`];
 }
 // 11/11, Franco: «quando la diagonale… si inverte… non si inverte il verso con cui i siti scendono»: la discesa è lo specchio della salita, quindi ogni
 // striscia lì scorre al contrario (specchio = -1): quella che in salita scende verso sinistra, in discesa scende verso destra
-const diagonale = (gradi, specchio = 1) => `<div class="piano" style="--inclina:${gradi}deg">${Array.from({ length: 7 }, (_, r) => fila(r % SITI.length, Math.floor(r / SITI.length), (r % 2 ? -1 : 1) * specchio, 190 + r * 14, r * 3)).join('')}</div>`;
+const diagonale = (gradi, specchio = 1) => { const file = Array.from({ length: 7 }, (_, r) => fila(r % SITI.length, Math.floor(r / SITI.length), (r % 2 ? -1 : 1) * specchio, 190 + r * 14, r * 3));
+  return [0, 1].map(k => `<div class="piano" style="--inclina:${gradi}deg">${file.map(f => f[k]).join('')}</div>`).join('<div class="velo-bordi"></div>'); };
 const DISPOSIZIONI = {
   // la diagonale che sale verso destra e quella che scende: strisce parallele, un sito per striscia, a turno
   sale: () => diagonale(-17),
@@ -543,37 +640,173 @@ const DISPOSIZIONI = {
   scalinata: () => {
     const lati = [[], []]; SITI.forEach((_, i) => lati[i % 2].push(i));
     const passo = innerWidth * 1.04 * .31 / 1.6 + vuoto(), lungo = innerHeight * 2;
+    const sopra = [];   // le stesse colonne, vuote, per il piano di sopra (la pagina satura)
     return `<div class="pavimento">${lati.map((siti, lato) => {
-      if (!siti.length) return '<div class="colonna"></div>';
+      if (!siti.length) { sopra.push('<div class="colonna-viva"></div>'); return '<div class="colonna"></div>'; }
       // le pagine dei siti di questa colonna, una per sito a turno
       const liste = siti.map(s => SITI[s].carte.flat().map(f => [s, f])), una = []; for (let k = 0; k < Math.max(...liste.map(l => l.length)); k++) liste.forEach(l => { if (l[k]) una.push(l[k]); });
       // 11/11, Franco: «la scalinata di destra scende più lenta di quella di sinistra e si crea una asimmetria»: le due colonne hanno un numero diverso di pagine,
       // e con un tempo fisso andavano a velocità diverse. Il tempo si conta a pagina (11,5 secondi l'una): stessa velocità, e le file restano allineate
-      const giro = giroDi(una, lungo, passo), solo = siti.length === 1;
-      return `<div class="colonna${solo ? ' spenta' : ''}"${solo ? ` data-sito="${siti[0]}"` : ''}><div class="binario-v" style="--durata:${(giro.length / 2 * 11.5).toFixed(1)}s">${giro.map(([s, f]) => solo ? carta(f) : `<i class="carta spenta" data-sito="${s}" style="background-image:url('carte/${f}')"></i>`).join('')}</div></div>`;
-    }).join('')}</div>`;
+      const giro = giroDi(una, lungo, passo), solo = siti.length === 1, durata = (giro.length / 2 * 11.5).toFixed(1);
+      sopra.push(`<div class="colonna-viva"><div class="viene-viva" style="--durata:${durata}s">${giro.map(([s, f]) => viva(s, f)).join('')}</div></div>`);
+      return `<div class="colonna${solo ? ' spenta' : ''}"${solo ? ` data-sito="${siti[0]}"` : ''}><div class="binario-v" style="--durata:${durata}s">${giro.map(([s, f]) => solo ? carta(f, s) : `<i class="carta spenta" data-sito="${s}" style="background-image:url('carte/${spentaDi(s, f)}')"></i>`).join('')}</div></div>`;
+    }).join('')}</div><div class="velo-bordi"></div><div class="pavimento">${sopra.join('')}</div>`;
   }
 };
 const PRIMO_MODO = 'sale';
-function accendi() { const s = sopraNome ?? attivo; strisce.querySelectorAll('[data-sito]').forEach(e => e.classList.toggle('accesa', +e.dataset.sito === s)); }
+function accendi() { const s = sopraNome ?? attivo; strisce.querySelectorAll('[data-sito]').forEach(e => e.classList.toggle('accesa', +e.dataset.sito === s));
+  strisce.querySelectorAll('.pv').forEach(c => c.classList.toggle('chiamata', sopraNome !== null && +c.dataset.s === sopraNome)); }   // punto 7: la pagina piena del nome sotto il mouse
+if (qs.get('attiva')) document.body.classList.add('attiva-' + qs.get('attiva'));
+/* ---------- la pagina satura (17/11/2026; parole di Franco nello stile, sopra .striscia-viva): per ogni sito UNA pagina a colori pieni, che ogni tanto cambia
+   posto. Si sceglie tra le pagine che in quel momento si vedono bene (dentro lo schermo, fuori dall'obiettivo e dalla sua ombra, non sotto le scritte),
+   possibilmente lontano da quella di prima e con un'altra immagine. Se quella accesa scivola dietro l'obiettivo, si passa subito a un'altra.
+   Per le prove: window.SATURA.adesso() dice quali sono e quanto si vedono (da 0 a 1); window.SATURA.cambia(sito) ne sceglie un'altra subito. ---------- */
+const T_SATURA = 9000;
+let vive = SITI.map(() => []), quandoSatura = SITI.map(() => 0), targaVoto = SITI.map(() => 0);
+function doveSiVede() {
+  const t = document.querySelector('.telescopio').getBoundingClientRect();
+  return { x: t.left + t.width / 2, y: t.top + t.height / 2, r: t.width / 2 + Math.min(innerWidth, innerHeight) * .07,
+    ingombri: [...document.querySelectorAll('.didascalia, .firma, .modi, .busta')].map(e => e.getBoundingClientRect()) };
+}
+function inVista(x, y, d) {   // un punto dello schermo: una pagina, lì, si vede?
+  if (x < innerWidth * .02 || x > innerWidth * .98 || y < innerHeight * .09 || y > innerHeight * .91) return false;   // i bordi, più scuri
+  if (Math.hypot(x - d.x, y - d.y) < d.r) return false;                                                               // l'obiettivo e la sua ombra
+  if ((x / (innerWidth * .3)) ** 2 + (y / (innerHeight * .26)) ** 2 < 1) return false;                                 // l'angolo scuro del nome, in alto a sinistra
+  return !d.ingombri.some(q => x > q.left - 8 && x < q.right + 8 && y > q.top - 8 && y < q.bottom + 8);               // le scritte e i pulsanti
+}
+// dov'è una carta sullo schermo: centro, misure vere, inclinazione, e quanti pixel al secondo si sposta (le strisce scorrono lungo la loro inclinazione).
+// Nella scalinata si prende il rettangolo com'è, senza previsione. «mem» ricorda il moto di ogni striscia, per non rimisurarlo a ogni carta.
+function postoDi(c, mem) {
+  const r = c.getBoundingClientRect(), piano = c.closest('.piano'), b = c.parentNode;
+  if (!piano) return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: r.width, h: r.height, cos: 1, sin: 0, vx: 0, vy: 0 };
+  let m = mem && mem.get(b);
+  if (!m) { const a = parseFloat(piano.style.getPropertyValue('--inclina')) * Math.PI / 180, st = getComputedStyle(b), v = MUOVI ? b.scrollWidth / 2 / parseFloat(st.animationDuration) * (st.animationDirection === 'reverse' ? 1 : -1) : 0;
+    m = { cos: Math.cos(a), sin: Math.sin(a), v: isFinite(v) ? v : 0 }; if (mem) mem.set(b, m); }
+  return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: c.offsetWidth, h: c.offsetHeight, cos: m.cos, sin: m.sin, vx: m.v * m.cos, vy: m.v * m.sin };
+}
+function quantoSiVede(c, d, ms = 0, p = postoDi(c)) {   // da 0 a 1: quindici punti della carta, quanti stanno in vista (adesso, o fra «ms» millisecondi)
+  let n = 0;
+  for (let i = 0; i < 5; i++) for (let j = 0; j < 3; j++) { const lx = p.w * ((i + .5) / 5 - .5), ly = p.h * ((j + .5) / 3 - .5);
+    if (inVista(p.cx + p.vx * ms / 1000 + lx * p.cos - ly * p.sin, p.cy + p.vy * ms / 1000 + lx * p.sin + ly * p.cos, d)) n++; }
+  return n / 15;
+}
+// LA TARGHETTA RESTA IN VISTA (17/11/2026): le pagine piene non si vedono mai intere (l'obiettivo è grande, ai lati restano due fasce strette) e intanto
+// scorrono: una targhetta ferma in un angolo della pagina finiva mezza fuori dallo schermo o sotto l'obiettivo. Quindi la targhetta scivola piano lungo
+// la pagina e resta dove si legge: a ogni giro (1,5 s) si cerca, sul bordo basso o alto della pagina, il punto in cui i suoi tre punti si vedono adesso
+// e fra 1,5 secondi. Voto da 0 a 6. «ora» è il posto di adesso: non si salta senza motivo.
+const largaTarga = (s, p) => (SITI[s].nome.length * .8 + 5.5) * Math.min(12, Math.max(9, p.w * .025));   // stima, prima che la targhetta esista
+function postoTarga(p, d, larga, ora) {
+  const mezzo = Math.max(0, p.w / 2 - larga / 2 - p.w * .035); let meglio = null;
+  for (const riga of [1, -1]) for (let k = 0; k <= 8; k++) {
+    const lx = -mezzo + 2 * mezzo * k / 8, ly = riga * p.h * .36; let n = 0;
+    for (const ms of [0, 1500]) for (const q of [-.46, 0, .46]) { const x = lx + q * larga; if (inVista(p.cx + p.vx * ms / 1000 + x * p.cos - ly * p.sin, p.cy + p.vy * ms / 1000 + x * p.sin + ly * p.cos, d)) n++; }
+    const vicino = ora ? -Math.abs(lx - ora.lx) / p.w - (Math.sign(ly) !== Math.sign(ora.ly) ? .6 : 0) : (riga === 1 ? .1 : 0) - Math.abs(lx) / p.w * .1;
+    if (!meglio || n + vicino > meglio.n + meglio.vicino) meglio = { lx, ly, n, vicino };
+  }
+  return { lx: meglio.lx, ly: meglio.ly, voto: meglio.n };
+}
+function mettiTarga(c, p, t, subito) {
+  const e = c.firstElementChild; if (!e) return;
+  if (subito) e.style.transition = 'none';
+  e.style.left = (50 + t.lx / p.w * 100).toFixed(2) + '%'; e.style.top = (50 + t.ly / p.h * 100).toFixed(2) + '%';
+  if (subito) { void e.offsetWidth; e.style.transition = ''; }
+  c._targa = t;
+}
+function scegliSatura(s) {
+  const d = doveSiVede(), mem = new Map(), prima = vive[s][0], pr = prima && prima.isConnected ? prima.getBoundingClientRect() : null;
+  let scelte = [...strisce.querySelectorAll(`.pv[data-s="${s}"]`)].filter(c => !vive[s].includes(c)).map(c => { const p = postoDi(c, mem); return { c, p, v: Math.min(quantoSiVede(c, d, 0, p), quantoSiVede(c, d, T_SATURA, p)) }; }).filter(x => x.v > 0);
+  if (!scelte.length) return;
+  const soglia = Math.min(.6, Math.max(...scelte.map(x => x.v))); scelte = scelte.filter(x => x.v >= soglia);
+  scelte.forEach(x => { x.targa = postoTarga(x.p, d, largaTarga(s, x.p)); });
+  for (const minimo of [6, 5, 4]) { const conNome = scelte.filter(x => x.targa.voto >= minimo); if (conNome.length) { scelte = conNome; break; } }   // prima quelle dove il nome si legge tutto
+  if (prima) { const altre = scelte.filter(x => x.c.dataset.f !== prima.dataset.f); if (altre.length) scelte = altre; }
+  if (pr && scelte.length > 1) {   // tra le buone, la metà più lontana da quella di prima: cambia davvero posto
+    const lontano = x => Math.hypot(x.p.cx - pr.left - pr.width / 2, x.p.cy - pr.top - pr.height / 2);
+    scelte = scelte.sort((a, b) => lontano(b) - lontano(a)).slice(0, Math.ceil(scelte.length / 2));
+  }
+  const scelta = scelte[Math.floor(Math.random() * scelte.length)], c = scelta.c, fratelli = [...c.parentNode.children], gemella = fratelli[(fratelli.indexOf(c) + fratelli.length / 2) % fratelli.length];
+  const nuove = gemella && gemella !== c ? [c, gemella] : [c];   // la fila è scritta due volte per girare senza fine: si accende anche la gemella
+  nuove.forEach(x => { x.style.backgroundImage = `url('carte/${x.dataset.f}')`; x.innerHTML = `<b class="targhetta">${SITI[s].nome}</b>`; mettiTarga(x, scelta.p, scelta.targa, true); x.classList.add('ha'); void x.offsetWidth; x.classList.add('su'); });
+  vive[s].forEach(x => { x.classList.remove('su', 'sopra'); setTimeout(() => { if (!x.classList.contains('su')) { x.classList.remove('ha'); x.style.backgroundImage = ''; x.innerHTML = ''; } }, 1900); });
+  if (sopraViva === s) { sopraViva = -1; scena.style.cursor = ''; }
+  vive[s] = nuove; quandoSatura[s] = performance.now(); targaVoto[s] = scelta.targa.voto;
+}
+function saturaDaCapo() { vive = SITI.map(() => []); SITI.forEach((_, s) => { scegliSatura(s); quandoSatura[s] = performance.now() - s * T_SATURA / SITI.length; }); }   // i siti cambiano a turno, non insieme
+setInterval(() => {
+  if (!partito || document.hidden || document.body.classList.contains('coperto')) return;
+  const d = doveSiVede(), ora = performance.now();
+  SITI.forEach((_, s) => { const l = vive[s].filter(c => c.isConnected && c.firstElementChild); if (!l.length) return;   // la targhetta resta dove si legge
+    const mem = new Map(), posti = l.map(c => postoDi(c, mem)), k = posti.length > 1 && quantoSiVede(l[1], d, 0, posti[1]) > quantoSiVede(l[0], d, 0, posti[0]) ? 1 : 0;
+    const t = postoTarga(posti[k], d, l[k].firstElementChild.offsetWidth, l[k]._targa); targaVoto[s] = t.voto; l.forEach((c, i) => mettiTarga(c, posti[i], t)); });
+  SITI.forEach((_, s) => { const c = vive[s][0]; if (s === sopraViva) return;   // con il mouse sopra non scappa via
+    if (!c || !c.isConnected || ora - quandoSatura[s] > T_SATURA || Math.max(...vive[s].map(x => quantoSiVede(x, d))) < .34) scegliSatura(s); });
+}, 1500);
+/* ---------- il clic sulla pagina piena (17/11/2026): le strisce stanno SOTTO la scena e il mouse non le tocca; quindi a ogni movimento si guarda a mano
+   se il puntatore è sopra una pagina piena (dentro il suo rettangolo, raddrizzato dell'inclinazione delle strisce). Sopra: targhetta di platino, mano,
+   e il sito si prepara a tutta pagina come quando si passa sul nome della ghiera. Clic: il sito si apre come sempre. Per le prove: window.SATURA.dove(). ---------- */
+let sopraViva = -1;
+const scenaLibera = e => !presa && !aperto && !contattiAperti && partito && (e.target === scena || e.target === document.body || e.target === document.documentElement);
+function vivaSotto(x, y) {
+  for (let s = 0; s < SITI.length; s++) for (const c of vive[s]) {
+    if (!c.isConnected || !c.classList.contains('su')) continue;
+    const r = c.getBoundingClientRect(); if (x < r.left || x > r.right || y < r.top || y > r.bottom) continue;
+    const piano = c.closest('.piano'); if (!piano) return s;   // nella scalinata basta il rettangolo
+    const a = -parseFloat(piano.style.getPropertyValue('--inclina')) * Math.PI / 180, dx = x - (r.left + r.width / 2), dy = y - (r.top + r.height / 2);
+    if (Math.abs(dx * Math.cos(a) - dy * Math.sin(a)) <= c.offsetWidth / 2 && Math.abs(dx * Math.sin(a) + dy * Math.cos(a)) <= c.offsetHeight / 2) return s;
+  }
+  return -1;
+}
+addEventListener('pointermove', e => {
+  if (e.pointerType === 'touch') return;
+  const s = scenaLibera(e) ? vivaSotto(e.clientX, e.clientY) : -1; if (s === sopraViva) return;
+  if (sopraViva >= 0) vive[sopraViva].forEach(c => c.classList.remove('sopra'));
+  sopraViva = s; scena.style.cursor = s >= 0 ? 'pointer' : '';
+  if (s >= 0) { vive[s].forEach(c => c.classList.add('sopra')); preparaTraPoco(s, 150); }
+});
+addEventListener('click', e => { if (!scenaLibera(e)) return; const s = vivaSotto(e.clientX, e.clientY); if (s >= 0) { primoGesto(); preparaTraPoco(s, 0); saliEApri(s); } });   // punto 8: prima si accende il nome sull'obiettivo
+window.SATURA = { adesso: () => { const d = doveSiVede(); return vive.map((l, s) => ({ sito: SITI[s].nome, pagina: l[0] ? l[0].dataset.f : null, accese: strisce.querySelectorAll(`.pv.su[data-s="${s}"]`).length, vede: l.length ? Math.max(...l.map(x => quantoSiVede(x, d))) : 0 })); }, cambia: s => scegliSatura(s),
+  dove: () => vive.map((l, s) => { const c = l.find(x => x.isConnected && x.classList.contains('su')); if (!c) return null; const r = c.getBoundingClientRect(); return { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2), targa: (c.firstChild && c.firstChild.className) || '', voto: targaVoto[s], sotto: (document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2) || {}).className || '' }; }) };
 function disponi(nome, subito) {
   if (!DISPOSIZIONI[nome]) nome = PRIMO_MODO;
   if (nome === disposizione && !subito) return; disposizione = nome;
   document.querySelectorAll('#modi button').forEach(b => b.setAttribute('aria-pressed', b.dataset.disp === nome));
-  const metti = () => { strisce.dataset.disp = nome; strisce.innerHTML = DISPOSIZIONI[nome](); accendi(); strisce.classList.remove('cambia'); };
+  const metti = () => { strisce.dataset.disp = nome; strisce.innerHTML = DISPOSIZIONI[nome](); accendi(); saturaDaCapo(); strisce.classList.remove('cambia'); };
   if (subito) metti(); else { strisce.classList.add('cambia'); setTimeout(metti, 380); }
 }
 $('#modi').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { primoGesto(); disponi(b.dataset.disp); } });
 let rifai = null; addEventListener('resize', () => { clearTimeout(rifai); rifai = setTimeout(() => { if (partito) disponi(disposizione, true); }, 220); });   // cambiando la finestra cambiano le carte che servono
+// IL NOME SALE, SI ACCENDE, IL SITO SI APRE (17/11/2026). Un nome in basso: la ghiera gira e lo porta sotto la tacca, senza piastrina mentre gira; arrivato
+// in alto la piastrina di platino si accende (l'effetto 1, Franco: «anche quando HORA VERA sale deve avere l'effetto 1 che compare quando è in alto»), poi il
+// sito si apre. Un nome già in alto: solo la piastrina, poi il sito. Lo usano il mouse fermo sul nome in basso e il clic sulla pagina piena (punto 8, Franco:
+// «quando si clicca la scritta sulla pagina satura vorrei che la pagina si aprisse come sempre, ma prima lampeggiasse… la scritta sull'obiettivo»).
+function saliEApri(i) {
+  if (salendo || aperto) return;
+  const v = document.querySelector(`.voce[data-i="${i}"]`); salendo = true; v.classList.remove('sopra', 'lampo');
+  let giro = Promise.resolve();
+  if (v.classList.contains('in-alto')) { void v.getBBox(); v.classList.add('lampo'); }   // la piastrina riparte da capo: si accende adesso
+  else { let meta = -i * PASSO_NOMI; while (meta - angNomi > 180) meta -= 360; while (meta - angNomi < -180) meta += 360; giro = anima(angNomi, meta, 1100, a => { angNomi = a; disegnaNomi(); }); }
+  giro.then(() => attesa(1150)).then(() => { salendo = false; v.classList.remove('lampo'); if (!aperto) apriSito(i); });
+}
 // passando sopra un nome: piastrina di platino e le sue strisce a colori (un assaggio); cliccandolo, il sito prende tutta la pagina
 document.querySelectorAll('.voce').forEach(v => {
   v.addEventListener('pointerenter', e => {
     if (presa || aperto || e.pointerType === 'touch') return;
     document.querySelectorAll('.voce.sopra').forEach(x => x !== v && x.classList.remove('sopra'));
     v.classList.add('sopra'); sopraNome = +v.dataset.i; accendi();
+    // 17/11/2026, Franco: «Rendi cliccabile subito anche quello in basso, ma nel senso che se uno ci va sopra col mouse ruota e va in alto e poi il sito si
+    // apre». Il nome che NON sta in alto: con il mouse sopra la ghiera gira piano e lo porta sotto la tacca, poi il sito si apre. Parte dopo un quarto di
+    // secondo (chi attraversa lo schermo con il mouse non apre niente per sbaglio); una volta partito va fino in fondo.
+    clearTimeout(salita);
+    // appena chiuso un sito il mouse è ancora dove stava, e sotto ora c'è l'altro nome: per 2,5 secondi non parte niente (si riaprirebbe da solo)
+    // 17/11, Franco: «non farlo tornare un'altra volta in basso a quel punto, lascialo in alto»: mentre un nome sale, sotto il mouse passa l'altro, che
+    // partiva a salire a sua volta e riportava giù il primo. Mentre uno sale (e finché il sito è aperto) nessun altro parte.
+    if (partito && !salendo && !aperto && !v.classList.contains('in-alto') && performance.now() - chiusoAlle > 2500) salita = setTimeout(() => {
+      if (aperto || presa || salendo || !v.classList.contains('sopra')) return;
+      saliEApri(+v.dataset.i);
+    }, 250);
     if (partito) preparaTraPoco(sopraNome, 150);   // chi passa su un nome sta per cliccarlo: il suo sito si prepara a tutta pagina
   });
-  v.addEventListener('pointerleave', () => { v.classList.remove('sopra'); sopraNome = null; accendi(); });
+  v.addEventListener('pointerleave', () => { v.classList.remove('sopra'); sopraNome = null; accendi(); clearTimeout(salita); });
 });
 
 /* ---------- il sito a tutta pagina. 12/11/2026, Franco: «vorrei che l'obiettivo rimpicciolisse sempre di più e si chiudesse nel frattempo con il meccanismo a
@@ -610,7 +843,9 @@ function preparaPieno(i) {
     pieno.contentWindow.postMessage({ rovescio: 1, foto: scuro(i) ? 1 : .6 }, '*');
     sonno = setTimeout(() => { if (pienoDi === i && !aperto) paginaPiena.classList.add('dorme'); }, 4500);   // fatta la sua entrata, il sito nascosto si ferma
   };
-  misure(); cerchio.style.background = rovescioDi(SITI[i].fondo); pieno.src = SITI[i].src;
+  // (17/11) «esce»: il colore intorno al sito mentre esce, per i siti che NON escono capovolti ma con una veste loro (lo studio esce chiaro, come
+  // nell'immagine di Franco, e poi diventa petrolio: la veste sta nel suo colori.css). Senza «esce» resta il fondo capovolto, come sempre.
+  misure(); cerchio.style.background = SITI[i].esce || rovescioDi(SITI[i].fondo); pieno.src = SITI[i].src;
 }
 const preparaTraPoco = (i, ms) => { clearTimeout(preparo); preparo = setTimeout(() => { if (!aperto) preparaPieno(i); }, ms); };
 // pronto = caricato e rovesciato. Un sito senza il pezzo del rovescio non risponde: mezzo secondo dopo il caricamento si parte lo stesso, ed esce com'è
@@ -649,13 +884,16 @@ async function apriSito(i) {
   document.body.classList.add('esce');
   if (qs.has('fermo')) {   // per le prove: ?apri=0&dopo=7000&fermo=0.4 ferma l'uscita a quel punto, da fotografare
     const p = +qs.get('fermo'), facile = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
-    metti(facile(p)); disegnaDiaframma(apertura * (1 - facile(Math.min(1, p / .6)))); scena.style.opacity = p < .78 ? 1 : Math.max(0, 1 - (p - .78) / .2); return document.body.classList.add('fermo');
+    metti(facile(p)); disegnaDiaframma(apertura * (1 - facile(Math.min(1, p / .6)))); scena.style.opacity = p < .5 ? 1 : Math.max(0, 1 - (p - .5) / .35); return document.body.classList.add('fermo');
   }
   if (MUOVI) {
     void cerchio.offsetWidth;   // la partenza è scritta: da qui parte la transizione
     sito.style.setProperty('--s', (s0 * 1.5).toFixed(4));
     cerchio.style.transition = pieno.style.transition = `transform ${T_ESCE}ms ${FACILE}`;
-    scena.style.transition = `transform ${T_ESCE}ms ${FACILE}, opacity ${Math.round(T_ESCE * .2)}ms linear ${Math.round(T_ESCE * .78)}ms`;
+    // 17/11, Franco: «l'obiettivo che rimpicciolisce e sparisce mi sembra abbia un leggero contorno bianco che mi dà fastidio». Verificato negli scatti:
+    // da piccolo, i riflessi chiari del metallo e i nomi bianchi si schiacciano in un filo chiaro. Ora l'obiettivo comincia a sfumare a metà corsa
+    // (prima solo alla fine, quand'era già un punto) e i nomi spariscono subito (regola «body.esce #nomi»).
+    scena.style.transition = `transform ${T_ESCE}ms ${FACILE}, opacity ${Math.round(T_ESCE * .35)}ms linear ${Math.round(T_ESCE * .5)}ms`;
     metti(1); scena.style.opacity = 0;
     anima(apertura, 0, T_ESCE * .6, v => { if (mio === giroUscita) disegnaDiaframma(v); });
     await attesa(T_ESCE + 60);
@@ -667,7 +905,7 @@ async function apriSito(i) {
   copre = setTimeout(() => { if (aperto && mio === giroUscita && pieno.contentWindow) pieno.contentWindow.postMessage({ rovescio: 0, ms: MUOVI ? T_LUCE : 0 }, '*'); }, MUOVI ? T_FERMO : 0);
 }
 function chiudiSito() {
-  if (!aperto) return; aperto = false; const mio = ++giroUscita;
+  if (!aperto) return; aperto = false; const mio = ++giroUscita; chiusoAlle = performance.now(); clearTimeout(salita);
   clearTimeout(copre); torna.tabIndex = -1; torna.blur();
   document.querySelectorAll('.voce.sopra').forEach(v => v.classList.remove('sopra'));
   document.body.classList.remove('coperto', 'esce', 'aperto', 'fermo'); disegnaZoom();   // tornano le strisce, le scritte e, nel vetro, il sito della lente
@@ -690,7 +928,7 @@ addEventListener('message', e => {
    la foto entra da sinistra, il titolo sale, i campi arrivano uno dopo l'altro. Si chiude con la X o con Esc.
    IN PROVA: «Invia» controlla i campi e mostra il grazie, ma NON spedisce niente e il file scelto non va da nessuna parte. Prima di andare online va scelto
    dove arrivano i messaggi (vedi ../SCHEDA.md); allora si tolgono la riga «In prova» e questo avviso. ---------- */
-const contatti = $('#contatti'), modulo = $('#c-modulo'), grazie = $('#c-grazie'), cNota = $('#c-nota'), busta = $('#busta'), campoFile = $('#c-file'), nomeFile = $('#c-file-nome');
+const contatti = $('#contatti'), modulo = $('#c-modulo'), grazie = $('#c-grazie'), cNota = $('#c-nota'), busta = $('#busta');
 let contattiAperti = false, copreContatti = null;
 // la foto pesa 280 kB: si carica quando ci si avvicina alla busta (o poco dopo l'avvio), non insieme al telescopio
 const caricaFotoContatti = () => { const f = contatti.querySelector('img[data-src]'); if (f) { f.src = f.dataset.src; f.removeAttribute('data-src'); } };
@@ -708,20 +946,35 @@ function chiudiContatti() {
   document.activeElement && document.activeElement.blur && document.activeElement.blur();
   document.body.classList.remove('contatti-aperti', 'coperto'); contatti.setAttribute('aria-hidden', 'true');
   // dopo un invio, alla prossima apertura il modulo è di nuovo vuoto
-  setTimeout(() => { if (!contattiAperti && !grazie.hidden) { modulo.reset(); nomeFile.textContent = 'Allega un file'; cNota.textContent = ''; grazie.hidden = true; modulo.hidden = false; } }, 500);
+  setTimeout(() => { if (!contattiAperti && !grazie.hidden) { modulo.reset(); cNota.textContent = ''; grazie.hidden = true; modulo.hidden = false; } }, 500);
 }
 busta.addEventListener('click', apriContatti);
+$('#invito').addEventListener('click', apriContatti);   // l'invito sotto la targa porta ai contatti
 busta.addEventListener('pointerenter', caricaFotoContatti); busta.addEventListener('focus', caricaFotoContatti);
 $('#c-chiudi').addEventListener('click', chiudiContatti); $('#c-fatto').addEventListener('click', chiudiContatti);
-campoFile.addEventListener('change', () => { const f = campoFile.files[0]; nomeFile.textContent = f ? (f.name.length > 30 ? f.name.slice(0, 27) + '…' : f.name) : 'Allega un file'; });
 modulo.addEventListener('input', () => { cNota.textContent = ''; });
+// dove arrivano i messaggi (FormSubmit, attivato da Franco il 17/11/2026): il codice al posto dell'email, così l'email non si legge nella pagina.
+// I messaggi arrivano alla sua Gmail da submissions@formsubmit.co. Il servizio accetta solo pagine online (kasparduck.github.io): sul computer non parte.
+const INVIO = 'https://formsubmit.co/ajax/95039e79d64823ced44a1382391d8212';
 modulo.addEventListener('submit', e => {
   e.preventDefault();
   const c = modulo.elements, nome = c.nome.value.trim(), email = c.email.value.trim(), racconto = c.progetto.value.trim();
   const manca = !nome ? ['nome', 'Scrivimi il tuo nome.'] : !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) ? ['email', 'Controlla l’email: mi serve per risponderti.'] : racconto.length < 10 ? ['progetto', 'Due righe sul progetto: che lavoro fai e che cosa ti serve.'] : null;
   if (manca) { cNota.textContent = manca[1]; c[manca[0]].focus(); return; }
-  $('#c-grazie-nome').textContent = nome.split(/\s+/)[0]; $('#c-grazie-email').textContent = email;
-  modulo.hidden = true; grazie.hidden = false; $('#c-fatto').focus({ preventScroll: true });
+  if (c._honey && c._honey.value) return;   // il campo trappola: lo riempiono solo i programmi che mandano spam
+  // «INVIA» SPEDISCE DAVVERO (17/11/2026, Franco: «vai»): il messaggio parte con FormSubmit (gratuito, senza account) e arriva alla sua email.
+  // Il file allegato va con il messaggio. Se non parte, lo si dice e si può riprovare; i dati scritti restano.
+  const dati = new FormData(); dati.append('Nome', nome); dati.append('Email', email); dati.append('Progetto', racconto);
+  dati.append('_subject', 'Web Retold: scrive ' + nome); dati.append('_replyto', email); dati.append('_template', 'box'); dati.append('_captcha', 'false');
+  const bottone = modulo.querySelector('.c-invia'); bottone.disabled = true; cNota.textContent = 'Invio in corso…';
+  fetch(INVIO, { method: 'POST', body: dati, headers: { Accept: 'application/json' } })
+    .then(r => r.json().catch(() => ({})).then(j => { if (!r.ok || j.success === false || j.success === 'false') throw new Error(j.message || r.status); }))
+    .then(() => {
+      cNota.textContent = ''; $('#c-grazie-nome').textContent = nome.split(/\s+/)[0]; $('#c-grazie-email').textContent = email;
+      modulo.hidden = true; grazie.hidden = false; $('#c-fatto').focus({ preventScroll: true });
+    })
+    .catch(() => { cNota.textContent = 'Il messaggio non è partito: controlla la connessione e premi di nuovo Invia.'; })
+    .finally(() => { bottone.disabled = false; });
 });
 
 /* ---------- partenza: il telescopio arriva un poco di tre quarti e si gira verso chi guarda, poi il diaframma si apre ---------- */

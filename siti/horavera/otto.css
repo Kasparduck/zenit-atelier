@@ -1,0 +1,90 @@
+/* OTTO MERIDIANI — modulo della prima pagina di HORA VERA (15/11/2026). Tutto sotto .otto, classi ot-…; colori e caratteri dalle variabili della pagina.
+   Si innesta con: <link rel="stylesheet" href="otto.css">  <section id="otto" class="otto"></section>  <script src="otto.js"></script> */
+.otto { position: relative; min-height: 100vh; display: grid; align-items: center; padding: clamp(22px, 4vh, 48px) clamp(16px, 2.4vw, 40px);
+  background: var(--buio); color: var(--avorio); font-family: var(--sans); overflow: hidden; overflow-wrap: break-word; box-sizing: border-box; }
+.otto *, .otto *::before, .otto *::after { box-sizing: border-box; }
+.ot-palco { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(16px, 2vw, 34px); align-items: center; width: 100%; max-width: 1760px; margin: 0 auto; }
+
+/* il quadrato dei nove orologi e, sotto, l'ora che si compone */
+.ot-colonna { display: grid; justify-items: center; gap: 14px; min-width: 0; }
+.ot-ruota { position: relative; width: var(--D, 560px); height: var(--D, 560px); }
+.ot-cella { position: absolute; left: 0; top: 0; width: var(--S, 186px); height: var(--S, 186px); border: 1px solid rgb(236 229 216 / .09); background: #100e0c;
+  overflow: hidden; cursor: pointer; transform: translate(var(--x, 0), var(--y, 0)); transition: transform 1.3s cubic-bezier(.6, 0, .2, 1), border-color .6s; outline: none; }
+.ot-cella.ot-attiva, .ot-cella.ot-fissa { cursor: default; }
+.ot-cella.ot-attiva { border-color: rgb(217 176 140 / .62); }
+.ot-cella:not(.ot-attiva):not(.ot-fissa):hover, .ot-cella:focus-visible { border-color: rgb(217 176 140 / .38); }
+.ot-luce { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; }
+.ot-cella .ot-orologio { position: absolute; inset: 7%; transition: opacity .9s ease, transform .9s ease; }
+.ot-nome { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 2px; padding: 6px; opacity: 0; transition: opacity .9s ease; }
+.ot-nome b { font: 500 clamp(1rem, 1.5vw, 1.45rem)/1.05 var(--serif); letter-spacing: .14em; text-transform: uppercase; }
+.ot-nome span { font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; color: var(--tenue); }
+.ot-nome i { font-style: normal; font-size: .82rem; color: var(--blu); font-variant-numeric: tabular-nums; }
+.ot-cella.ot-solo-nome .ot-orologio { opacity: 0; transform: scale(.94); }
+.ot-cella.ot-solo-nome .ot-nome { opacity: 1; }
+.ot-bollo { position: absolute; left: 6px; bottom: 6px; padding: 2px 6px 1px; background: rgb(10 9 8 / .74); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--blu); opacity: 0; transition: opacity .4s; text-shadow: 0 0 8px #000; }
+
+/* (16/11: qui c'erano le cifre grandi sotto il quadrato; tolte, l'ora sta dentro il filmato: .ot-ora più sotto) */
+
+/* a destra: la città (carta, poi il filmato al centro con i fermo immagine) e sotto l'orologio grande con le scritte */
+.ot-lato { display: grid; gap: 18px; align-content: center; min-width: 0; }
+.ot-scena { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: var(--buio); }
+.ot-scena canvas.ot-carta { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
+.ot-film { position: absolute; left: 26%; top: 26%; width: 48%; height: 48%; object-fit: cover; opacity: 0; z-index: 3; background: #0b0a09;
+  box-shadow: 0 0 0 1px var(--linea), 0 18px 46px rgb(0 0 0 / .55); }
+/* L'ORA DENTRO IL FILMATO (idea di Franco del 16/11, approvata sulla prova piani/ora-nel-filmato.html): un riquadro esattamente sopra il filmato, con
+   il mezzo orologio (arco e lancetta, in SVG), il tondino e la città con la stagione. Le misure sono in centesimi della larghezza del filmato (cqw):
+   su uno schermo da 1672 il filmato è largo 468 punti e il tondino (15cqw) 70, cioè un centimetro e mezzo. Si accende e si spegne con il filmato. */
+.ot-ora { position: absolute; left: 26%; top: 26%; width: 48%; height: 48%; z-index: 4; opacity: 0; overflow: hidden; pointer-events: none; container-type: inline-size; }
+.ot-ora svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: hidden; }
+.ot-ora svg * { vector-effect: non-scaling-stroke; fill: none; stroke-linecap: round; }
+.ot-ora .ot-ombra { stroke: rgb(10 9 8 / .5); stroke-width: 4px; }   /* sotto il tratto d'oro, più largo e scuro: si legge anche sopra un filmato chiaro */
+.ot-ora .ot-oro { stroke: #e9c57e; stroke-width: 1.7px; }
+/* la lancetta: una riga d'oro con il bordo scuro, dal perno (metà del lato basso) all'arco; la girano e la allungano i transform scritti da otto.js */
+.ot-lancetta { position: absolute; left: 50%; bottom: 0; width: 1.7px; height: 100%; margin-left: -.85px; background: #e9c57e; box-shadow: 0 0 0 1.15px rgb(10 9 8 / .5); border-radius: 1px;
+  transform-origin: 50% 100%; transform: rotate(-90deg) scaleY(.887); opacity: 0; will-change: transform, opacity; }
+/* il tondino: amaranto e bordeaux, numeri dorati, bordo oro spesso, in alto a destra a filo dei due lati (parole di Franco in otto.js) */
+.ot-tondo { contain: layout paint; position: absolute; right: 0; top: 0; width: max(15cqw, 46px); height: max(15cqw, 46px); border: max(.8cqw, 2px) solid #e9c57e; border-radius: 50%; display: grid; place-items: center;
+  background: radial-gradient(circle at 36% 30%, #a02742 0%, #8c1c33 38%, #5a0f20 100%); box-shadow: 0 .6cqw 2.2cqw rgb(0 0 0 / .5); color: #e9c57e;
+  font: 600 max(12px, 4.2cqw)/1 var(--serif); font-variant-numeric: lining-nums tabular-nums; letter-spacing: .01em; text-shadow: 0 0 .5cqw rgb(40 4 12 / .8); }
+/* la città e la stagione, in basso al centro, in bianco («colore visibile, se bianco meglio»): un fondo appena scuro perché si legga anche sulla neve */
+.ot-luogo { position: absolute; left: 50%; bottom: 2cqw; transform: translateX(-50%); padding: .58em 1.05em .58em 1.3em; border-radius: 2em; background: rgb(10 9 8 / .42);
+  font: 600 max(12px, 2.6cqw)/1 var(--sans); letter-spacing: .24em; text-transform: uppercase; color: #fff; text-shadow: 0 0 .5em rgb(10 9 8 / .9), 0 .08em .2em rgb(10 9 8 / .9); white-space: nowrap; }
+.ot-fermo { position: absolute; width: 20%; height: 20%; object-fit: cover; opacity: 0; transform: translateY(10px); z-index: 1;
+  transition: opacity 1.8s ease, transform 1.8s ease; pointer-events: none; }
+.ot-fermo.ot-si { opacity: .46; transform: none; }
+.ot-etichetta { position: absolute; left: 0; top: 0; z-index: 4; transform: translate(14px, -50%); white-space: nowrap; opacity: 0; pointer-events: none; }
+.ot-etichetta b { display: block; font: 500 clamp(1rem, 1.7vw, 1.6rem)/1 var(--serif); letter-spacing: .2em; text-transform: uppercase; text-shadow: 0 0 10px #000; }
+.ot-etichetta span { font-size: .78rem; letter-spacing: .1em; color: var(--blu); text-shadow: 0 0 8px #000; }
+.ot-meridiano { position: absolute; left: 0; top: 0; z-index: 4; font-size: .75rem; letter-spacing: .14em; color: var(--blu); opacity: 0; white-space: nowrap; text-shadow: 0 0 8px #000; pointer-events: none; }
+
+.ot-sotto { display: grid; grid-template-columns: minmax(140px, 210px) 1fr; gap: 22px; align-items: center; }
+.ot-grande { position: relative; width: 100%; aspect-ratio: 1; }
+.ot-grande .ot-orologio { position: absolute; inset: 0; }
+.ot-didascalia { display: grid; gap: 6px; min-width: 0; }
+.ot-n { font-size: .76rem; letter-spacing: .22em; text-transform: uppercase; color: var(--blu); }
+.ot-citta { margin: 0; font: 500 clamp(2.1rem, 3.2vw, 3.1rem)/1 var(--serif); letter-spacing: .01em; color: var(--avorio); }
+.ot-didascalia p { margin: 0; color: var(--tenue); font-size: .9rem; line-height: 1.5; }
+.ot-didascalia p b { color: var(--avorio); font-weight: 500; }
+.ot-tempi { display: flex; gap: 14px; flex-wrap: wrap; font-size: .84rem; color: var(--tenue); font-variant-numeric: tabular-nums; }
+.ot-tempi span::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; background: var(--c); }
+.ot-evento { min-height: 3.2em; font: 400 1.32rem/1.25 var(--serif); color: var(--blu); opacity: 0; transition: opacity .6s ease; }
+.ot-evento.ot-si { opacity: 1; }
+.ot-evento small { display: block; font: 400 .82rem/1.5 var(--sans); color: var(--tenue); letter-spacing: .04em; }
+
+/* un orologio: la foto scontornata e le sue lancette, ognuna sul suo perno; il vetro sopra */
+.ot-orologio .ot-tela { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+.ot-orologio .ot-tela img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.ot-orologio .ot-vetro { position: absolute; border-radius: 50%; pointer-events: none; }
+
+/* fermo per le prove (OTTO.vaiA): niente transizioni, tutto al suo stato */
+.otto.ot-fermo-tutto *, .otto.ot-fermo-tutto *::before { transition: none !important; }
+
+@media (max-width: 860px) {
+  .ot-palco { grid-template-columns: 1fr; }
+  .ot-sotto { grid-template-columns: 120px 1fr; gap: 16px; }
+  .ot-nome b { font-size: .8rem; letter-spacing: .08em; }
+  .ot-nome span { display: none; }
+  .ot-citta { font-size: 1.9rem; }
+  .ot-evento { font-size: 1.1rem; }
+}
+@media (prefers-reduced-motion: reduce) { .ot-cella, .ot-cella .ot-orologio, .ot-nome, .ot-fermo { transition-duration: .01s !important; } }
