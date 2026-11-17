@@ -526,6 +526,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
 
 <nav class="tocco" aria-label="Contatto rapido"><a href="tel:+390200000000">Chiama</a><a href="index.html#scrivi">Scrivimi</a></nav>
 
+<!-- L'INGLESE CON UN CLIC (17/11/2026, passo 5.2): il vocabolario e il motore, gli stessi della home. Qui niente linguetta: la pagina segue la lingua scelta
+     nella home (o ?lang=en nell'indirizzo). -->
+<script src="lingua-en.js"></script>
+<script src="lingua.js"></script>
 <script>
 const $ = (s, el = document) => el.querySelector(s), $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const MUOVI = !matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -218,6 +218,13 @@ body.aperto .torna { opacity: 1; transform: translate(-50%, 0); pointer-events: 
    si rovescia in argento chiaro e la scritta diventa scura, come il nome sulla piastrina di platino dell'obiettivo */
 .busta img { transition: filter .4s; }
 .busta:hover img, .busta:focus-visible img { filter: grayscale(1) invert(.8) contrast(1.25); }
+/* LA BUSTA IN INGLESE (17/11/2026, Franco: «metti Contact tu»): la parola «Contatti» sta dentro la sua immagine e non si traduce. In inglese la busta
+   è la stessa immagine senza la parola (contatti-busta-vuota.webp, fatta con strumenti/togli-scritta.js tenendo la trasparenza) e «Contact» è scritto
+   sopra, vivo, nello stesso punto e con lo stesso chiaro; con il mouse sopra diventa scuro come nell'originale. In italiano resta la sua immagine. */
+.busta-scritta { display: none; position: absolute; left: 0; right: 0; top: 29.6%; transform: translateY(-50%); text-align: center; color: #efe7da; font: 500 calc(clamp(128px, 11.4vw, 192px) * .09)/1 "Manrope", sans-serif; pointer-events: none; transition: color .4s; }
+.busta.in-inglese .busta-scritta { display: block; }
+.busta:hover .busta-scritta, .busta:focus-visible .busta-scritta { color: #1b1917; }
+@media (max-aspect-ratio: 5/4), (max-width: 820px) { .busta-scritta { font-size: 9.7px; } }
 .contatti { --c-fondo: #212120; --c-crema: #f6ead9; position: fixed; inset: 0; z-index: 8; display: grid; grid-template-columns: 62.2% 1fr; background: var(--c-fondo); color: var(--c-crema);
   opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .45s, visibility 0s .45s; }
 body.contatti-aperti .contatti { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity .45s; }
@@ -395,7 +402,7 @@ body.aperto .invito { pointer-events: none; }
   <button type="button" data-disp="scalinata">A scalinata</button>
 </div>
 
-<button class="busta" id="busta" type="button" aria-label="Contatti" aria-haspopup="dialog"><img src="contatti-busta.webp" alt="" draggable="false"></button>
+<button class="busta" id="busta" type="button" aria-label="Contatti" aria-haspopup="dialog"><img src="contatti-busta.webp" alt="" draggable="false"><span class="busta-scritta" aria-hidden="true">Contact</span></button>
 
 <section class="contatti" id="contatti" role="dialog" aria-modal="true" aria-label="Contatti: parliamo del tuo sito" aria-hidden="true">
   <figure class="c-foto"><img data-src="contatti-foto.jpg" alt="Web Retold"><figcaption class="c-marca" aria-hidden="true">Web Retold</figcaption></figure>
@@ -433,6 +440,8 @@ const qs = new URLSearchParams(location.search);   // per le prove: ?zoom=2&diaf
    11/11: lo studio legale è la versione di FANTASIA (Angela Angelicata, in progetti/esempi): il sito vero dell'avvocata non entra in vetrina finché lei non dice sì.
    Meridiano (la boutique fatta da Franco) è un segnaposto al posto del poliambulatorio, finché non c'è il secondo sito nuovo. */
 const serie = (nome, da, a) => Array.from({ length: a - da + 1 }, (_, k) => nome + '-' + String(da + k).padStart(2, '0') + '.jpg');
+// 17/11/2026: quando la vetrina e in inglese, anche il sito nella lente e a tutta pagina si apre in inglese (?lang=en; un sito che non lo conosce lo ignora)
+const inLingua = src => document.documentElement.lang === 'en' ? src + (src.includes('?') ? '&' : '?') + 'lang=en' : src;
 const SITI = [
   { nome: 'STUDIO ANGELICATA', src: 'siti/angelicata/index.html', fondo: '#f4ede3', esce: '#f6efe5', fa: "Studio legale · calcola le scadenze, capisce le parole della gente, mette in ordine le richieste",
     carte: [serie('angelicata', 1, 8), serie('angelicata', 9, 15)] },
@@ -567,7 +576,7 @@ async function mostraSito(i, primo) {
   const lamelle = v => { if (!aperto) disegnaDiaframma(v); };
   if (!primo) await anima(apertura, 0, MUOVI ? 650 : 1, lamelle);
   const carico = new Promise(r => { cornice.onload = () => r(); setTimeout(r, 6000); });
-  caricato = attivo; cornice.src = SITI[attivo].src; await carico;
+  caricato = attivo; cornice.src = inLingua(SITI[attivo].src); await carico;
   await new Promise(r => setTimeout(r, primo ? 900 : 350));   // il sito disegna la sua apertura
   if (!aperto) { panX = 0; disegnaZoom(); }
   await anima(aperto ? apertura : 0, 1, MUOVI ? 1400 : 1, lamelle);
@@ -941,7 +950,7 @@ function preparaPieno(i) {
   };
   // (17/11) «esce»: il colore intorno al sito mentre esce, per i siti che NON escono capovolti ma con una veste loro (lo studio esce chiaro, come
   // nell'immagine di Franco, e poi diventa petrolio: la veste sta nel suo colori.css). Senza «esce» resta il fondo capovolto, come sempre.
-  misure(); cerchio.style.background = SITI[i].esce || rovescioDi(SITI[i].fondo); pieno.src = SITI[i].src;
+  misure(); cerchio.style.background = SITI[i].esce || rovescioDi(SITI[i].fondo); pieno.src = inLingua(SITI[i].src);
 }
 const preparaTraPoco = (i, ms) => { clearTimeout(preparo); preparo = setTimeout(() => { if (!aperto) preparaPieno(i); }, ms); };
 // pronto = caricato e rovesciato. Un sito senza il pezzo del rovescio non risponde: mezzo secondo dopo il caricamento si parte lo stesso, ed esce com'è
@@ -957,7 +966,7 @@ async function apriSito(i) {
   if (i !== attivo) {   // il nome cliccato va sotto la tacca e il suo sito nella lente: al ritorno si ritrova quello
     let meta = -i * PASSO_NOMI; while (meta - angNomi > 180) meta -= 360; while (meta - angNomi < -180) meta += 360;
     anima(angNomi, meta, 500, v => { angNomi = v; disegnaNomi(); });
-    attivo = caricato = i; cornice.src = SITI[i].src; panX = 0; disegnaZoom(); $('#cosa-fa').textContent = SITI[i].fa;
+    attivo = caricato = i; cornice.src = inLingua(SITI[i].src); panX = 0; disegnaZoom(); $('#cosa-fa').textContent = SITI[i].fa;
   }
   sopraNome = null; accendi();
   document.body.classList.add('aperto');   // le scritte intorno sfumano subito
@@ -1088,24 +1097,83 @@ if (MUOVI && !qs.has('gira')) {
   tel.classList.add('intro', 'gira'); tel.style.setProperty('--iry', '-28deg'); tel.style.setProperty('--irx', '6deg');
   requestAnimationFrame(() => requestAnimationFrame(() => { tel.classList.remove('gira'); tel.style.transition = 'transform 1.8s cubic-bezier(.2,.7,.2,1)'; tel.style.setProperty('--iry', '0deg'); tel.style.setProperty('--irx', '0deg'); setTimeout(() => { tel.style.transition = ''; tel.classList.remove('intro'); requestAnimationFrame(giro); }, 1850); }));
 } else requestAnimationFrame(giro);
-if (qs.get('diaframma') !== null) { cornice.src = SITI[attivo].src; $('#cosa-fa').textContent = SITI[attivo].fa; pronto(); }
+if (qs.get('diaframma') !== null) { cornice.src = inLingua(SITI[attivo].src); $('#cosa-fa').textContent = SITI[attivo].fa; pronto(); }
 else mostraSito(attivo, true).then(() => {
   pronto();
   // la ghiera dello zoom gira un poco da sola, per far capire che si tocca
   if (!MUOVI) return;
   setTimeout(async () => { if (toccato) return; await anima(1, 1.6, 900, v => { zoom = zoomMeta = v; disegnaZoom(); }); await new Promise(r => setTimeout(r, 500)); await anima(1.6, 1, 900, v => { zoom = zoomMeta = v; disegnaZoom(); }); if (!DUE_ANELLI || toccato) return; await new Promise(r => setTimeout(r, 400)); await anima(0, -24, 900, mettiGiro); await new Promise(r => setTimeout(r, 400)); await anima(-24, 0, 900, mettiGiro); }, 1200);
 });
+/* L'INGLESE CON UN CLIC (17/11/2026, passo 5.2; Franco: «cliccandovi sopra immediatamente il sito viene tradotto»). Niente pagina doppia: un vocabolario
+   (EN: la frase italiana → la frase inglese) e una passata sulle scritte delle zone della vetrina (testi, e gli attributi che si leggono: aria-label,
+   placeholder, title, alt). Ogni scritta ricorda il suo italiano, così si torna indietro. Le scritte che nascono dopo dal codice (la didascalia del sito,
+   gli avvisi del modulo) le prende un osservatore: il resto del codice non sa niente della lingua. La scelta si ricorda (localStorage) e si può dare
+   dall'indirizzo (?lang=en). Una frase nuova nella pagina = una riga nuova in EN; quelle rimaste in italiano le dice window.LINGUA.mancanti().
+   La busta ha la sua immagine senza parola per l'inglese (vedi «LA BUSTA IN INGLESE» nello stile). Resta in italiano, per ora: la pagina dell'informativa privacy. */
+const EN = {
+  'Un sito alla volta.': 'One site at a time.', 'Il prossimo può essere il tuo.': 'The next one could be yours.',
+  'Un telescopio puntato verso di te: nella lente si vede un sito vero': 'A telescope pointed at you: a real website shows in the lens',
+  'Il sito dentro la lente': 'The website inside the lens', 'Il sito a tutta pagina': 'The website, full screen',
+  'Lente: trascina o usa la rotella per muoverti nel sito; frecce della tastiera per scorrere': 'Lens: drag or use the wheel to move around the site; arrow keys to scroll',
+  'Clicca un nome sulla ghiera per aprire il sito a tutta pagina · gira la ghiera per cambiare sito · la ghiera zigrinata avvicina · afferra la lente e trascina per muoverti': 'Click a name on the ring to open the site full screen · turn the ring to change site · the knurled ring zooms in · grab the lens and drag to move around',
+  'Clicca un nome sulla ghiera per aprire il sito a tutta pagina · gira la ghiera per cambiare sito · la ghiera zigrinata avvicina il sito · il bordo esterno ingrandisce l\'obiettivo · afferra la lente e trascina per muoverti': 'Click a name on the ring to open the site full screen · turn the ring to change site · the knurled ring zooms the site · the outer rim enlarges the lens · grab the lens and drag to move around',
+  'Come disporre i siti intorno alla lente': 'How to arrange the sites around the lens', 'In salita': 'Rising', 'In discesa': 'Falling', 'A scalinata': 'Staircase',
+  'Contatti': 'Contact', 'Contatti: parliamo del tuo sito': 'Contact: let\u2019s talk about your website', 'Chiudi i contatti': 'Close the contact page',
+  'Parliamo': 'Let\u2019s talk', 'del tuo sito.': 'about your site.', 'Nome': 'Name', 'Email': 'Email', 'Raccontami il tuo progetto': 'Tell me about your project',
+  'Che lavoro fai, che cosa deve fare il sito, entro quando ti serve.': 'What you do, what the site should do, when you need it by.',
+  'Invia': 'Send', 'Per ora bastano due righe: al resto pensiamo insieme.': 'A couple of lines will do for now: we\u2019ll work out the rest together.',
+  'Uso i tuoi dati solo per risponderti.': 'I use your details only to reply to you.', 'Informativa privacy': 'Privacy notice',
+  'Grazie,': 'Thank you,', '. Ho letto tutto: ti rispondo entro un giorno, a': '. I\u2019ve read it all: I\u2019ll reply within a day, at', 'Torna alla vetrina': 'Back to the showcase',
+  '← Torna al telescopio': '← Back to the telescope',
+  'Studio legale · calcola le scadenze, capisce le parole della gente, mette in ordine le richieste': 'Law firm · works out the deadlines, understands people\u2019s own words, puts requests in order',
+  "Orologi d'autore · racconta il tempo come un film: otto città dall'alba alla sera, quattro tempi, l'atelier": 'Fine watchmaking · tells time like a film: eight cities from dawn to dusk, four measures of time, the atelier',
+  'Scrivimi il tuo nome.': 'Please tell me your name.', 'Controlla l\u2019email: mi serve per risponderti.': 'Check the email address: I need it to reply to you.',
+  'Due righe sul progetto: che lavoro fai e che cosa ti serve.': 'A couple of lines about the project: what you do and what you need.',
+  'Invio in corso…': 'Sending…', 'Il messaggio non è partito: controlla la connessione e premi di nuovo Invia.': 'The message didn\u2019t go through: check your connection and press Send again.' };
+let lingua = 'it';
+const LINGUA = window.LINGUA = (() => {
+  const ZONE = '.firma, .scena, .didascalia, #modi, #busta, #contatti, #pagina-piena, #torna', ATTR = ['aria-label', 'placeholder', 'title', 'alt'];
+  const inglese = it => it.replace(it.trim(), EN[it.trim()]);
+  // una scritta (v = com'è adesso, it = l'italiano che ricordava): dice l'italiano da ricordare e come deve essere
+  const volta = (v, it) => { if (EN[v.trim()] !== undefined) it = v; else if (it === undefined || v !== inglese(it)) return [undefined, v]; return [it, lingua === 'en' ? inglese(it) : it]; };
+  function passa(radice) {
+    const giro = document.createTreeWalker(radice, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT); let n = radice;
+    do {
+      if (n.nodeType === 3) { if (n.nodeValue.trim()) { const [it, come] = volta(n.nodeValue, n._it); n._it = it; if (n.nodeValue !== come) n.nodeValue = come; } }
+      else if (n.nodeType === 1) for (const a of ATTR) { const v = n.getAttribute(a); if (!v) continue; n._ita = n._ita || {}; const [it, come] = volta(v, n._ita[a]); n._ita[a] = it; if (v !== come) n.setAttribute(a, come); }
+    } while ((n = giro.nextNode()));
+  }
+  const zone = () => [...document.querySelectorAll(ZONE)];
+  function metti(l) {
+    const prima = lingua; lingua = l === 'en' ? 'en' : 'it'; document.documentElement.lang = lingua; zone().forEach(passa);
+    if (prima !== lingua && partito && caricato >= 0) { cornice.src = inLingua(SITI[caricato].src); if (!aperto) { pienoDi = -1; pieno.src = 'about:blank'; preparaTraPoco(attivo, 900); } }   // il sito nella lente si riapre nella lingua nuova
+    const b = document.querySelector('#lingua'); if (b) { b.textContent = lingua === 'en' ? 'Italiano' : 'English'; b.setAttribute('aria-label', lingua === 'en' ? 'Leggi il sito in italiano' : 'Read this site in English'); }
+    const bu = document.querySelector('#busta'), im = bu && bu.querySelector('img'), vuole = lingua === 'en' ? 'contatti-busta-vuota.webp' : 'contatti-busta.webp';   // la busta: in inglese l'immagine senza parola e «Contact» scritto sopra
+    if (im) { bu.classList.toggle('in-inglese', lingua === 'en'); if (im.getAttribute('src') !== vuole) im.setAttribute('src', vuole); }
+    try { localStorage.setItem('webretold-lingua', lingua); } catch (e) {}
+  }
+  new MutationObserver(cambi => { if (lingua !== 'en') return; for (const c of cambi) { if (c.type === 'characterData') passa(c.target); else c.addedNodes.forEach(n => (n.nodeType === 1 || n.nodeType === 3) && passa(n)); } })
+    .observe(document.body, { subtree: true, childList: true, characterData: true });
+  // le scritte delle zone rimaste senza inglese (per il controllo: deve tornare un elenco vuoto, a parte i nomi dei siti)
+  const mancanti = () => { const fuori = new Set(); zone().forEach(z => { const giro = document.createTreeWalker(z, NodeFilter.SHOW_TEXT); let n; while ((n = giro.nextNode())) { const s = n.nodeValue.trim(), p = n.parentElement;
+    if (s.length > 2 && /[a-zà-ù]{3}/i.test(s) && EN[s] === undefined && !Object.values(EN).includes(s) && n._it === undefined && p && !p.closest('script, style, #nomi, kbd, .targa, .c-marca, #c-grazie-nome, #c-grazie-email, #strisce')) fuori.add(s); } }); return [...fuori]; };
+  return { metti, mancanti, adesso: () => lingua };
+})();
+{ let scelta = qs.get('lang'); if (!scelta) { try { scelta = localStorage.getItem('webretold-lingua'); } catch (e) {} } if (scelta === 'en' && qs.get('lingua') !== 'no') LINGUA.metti('en'); }   // di serie dal 18/11/2026 (?lingua=no spegne linguetta e inglese); prima l'inglese non partiva da solo
 /* LA SCRITTA «ENGLISH», PROVA DEL POSTO (17/11/2026, passo 5.2; Franco: «vorrei che uno vedesse ad esempio la scritta deutsch o english già su un lato
    del sito e che cliccandovi sopra immediatamente il sito viene tradotto»; solo nella home, su un lato). IL POSTO, scelto da lui tra tre («scelgo
    la 1»): una linguetta in piedi sul bordo destro, a metà altezza. IL CONTORNO: «ENGLISH lo voglio contornato in amaranto metallico che si veda
    bene»: 3 px di amaranto con i riflessi del metallo (scuro, acceso, chiaro, acceso, scuro), niente bagliore. Con il mouse sopra il fondo diventa
-   d'argento, come le targhette. Per ora la scritta non traduce e si accende solo con ?lingua: va di serie quando l'inglese c'è. */
-if (qs.get('lingua')) {
+   d'argento, come le targhette. Cliccata, la vetrina passa in inglese e la linguetta dice ITALIANO per tornare (LINGUA.metti, qui sopra). Si accende ancora solo con ?lingua: va di serie
+   quando parlano inglese anche lo Studio Angelicata e Hora Vera, con il sì di Franco. */
+if (qs.get('lingua') !== 'no') {   // la linguetta di serie dal 18/11/2026: i tre siti parlano inglese (Franco ha scelto il posto anche su Hora Vera, «Va bene la soluzione 1»)
   const b = document.body.appendChild(Object.assign(document.createElement('button'), { id: 'lingua', type: 'button', textContent: 'English' }));
   const AMARANTO = 'linear-gradient(172deg, #8a1535, #c2284f 16%, #f3a1b3 33%, #c2284f 50%, #8a1535 68%, #d85173 85%, #8a1535) border-box';
   const SCURO = 'linear-gradient(#090d13, #090d13) padding-box, ' + AMARANTO, ARGENTO = 'linear-gradient(90deg, #80858a, #d8dce0 22%, #fbfcfd 50%, #ced2d6 78%, #7c8186) padding-box, ' + AMARANTO;
   b.style.cssText = 'position:fixed;z-index:6;right:0;top:50%;transform:translateY(-50%);margin:0;cursor:pointer;writing-mode:vertical-rl;padding:24px 12px 24px 13px;border:4px solid transparent;border-right:0;border-radius:11px 0 0 11px;color:#fff;font:600 14px/1 Manrope,sans-serif;letter-spacing:.3em;text-transform:uppercase;white-space:nowrap;box-shadow:0 0 22px rgb(0 0 0 / .55);transition:color .3s;';
   b.style.background = SCURO;
+  b.addEventListener('click', () => LINGUA.metti(lingua === 'en' ? 'it' : 'en'));
+  LINGUA.metti(lingua);
   b.addEventListener('pointerenter', () => { b.style.background = ARGENTO; b.style.color = '#141210'; });
   b.addEventListener('pointerleave', () => { b.style.background = SCURO; b.style.color = '#fff'; });
 }

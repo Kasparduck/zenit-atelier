@@ -787,7 +787,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   <section class="sez manifesto" id="prima" aria-labelledby="t-prima">
     <div class="contenitore">
       <p class="occhio" id="t-prima">Prima di cominciare</p>
-      <p class="manifesto-frase" id="manifesto">Quello che mi racconti resta tra noi. Prima di cominciare sai quanto spendi, per scritto. E se non puoi pagare, in molti casi l'avvocato lo paga lo Stato.</p>
+      <p class="manifesto-frase" id="manifesto" data-lingua="pagina">Quello che mi racconti resta tra noi. Prima di cominciare sai quanto spendi, per scritto. E se non puoi pagare, in molti casi l'avvocato lo paga lo Stato.</p>
       <div class="quattro">
         <div><span class="n">01</span><h3>Il primo incontro</h3><p>Un'ora, in studio o in videochiamata. Leggiamo insieme i documenti e ti spiego le strade possibili e i rischi di ognuna.</p></div>
         <div><span class="n">02</span><h3>Il preventivo, per scritto</h3><p>Prima di iniziare ricevi un preventivo scritto, voce per voce. Lo chiede la legge, e lo faccio sempre.</p></div>
@@ -840,7 +840,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   </section>
 
   <!-- costruzione di passaggio (9/11) -->
-  <figure class="tendina passaggio" id="frase"><div class="tendina-dentro"><img src="immagini/passaggio-home.jpg" style="object-position: 25% 75%" alt="Un ponte di noce sospeso tra volumi di gesso sotto il cielo, con una galleria illuminata e una freccia incisa sulla rampa" loading="lazy" onerror="this.remove()"><i class="velo-frase" aria-hidden="true"></i></div><i class="tendina-filo" aria-hidden="true"></i><blockquote class="passaggio-frase"><p>Dagli abiti stracciati si vedono anche i vizi piccoli; toghe e pellicce nascondono tutto.</p><cite>William Shakespeare, Re Lear</cite></blockquote></figure>
+  <figure class="tendina passaggio" id="frase"><div class="tendina-dentro"><img src="immagini/passaggio-home.jpg" style="object-position: 25% 75%" alt="Un ponte di noce sospeso tra volumi di gesso sotto il cielo, con una galleria illuminata e una freccia incisa sulla rampa" loading="lazy" onerror="this.remove()"><i class="velo-frase" aria-hidden="true"></i></div><i class="tendina-filo" aria-hidden="true"></i><blockquote class="passaggio-frase"><p data-lingua="pagina">Dagli abiti stracciati si vedono anche i vizi piccoli; toghe e pellicce nascondono tutto.</p><cite>William Shakespeare, Re Lear</cite></blockquote></figure>
 
   <!-- 10. scrivimi -->
   <section class="sez scrivi" id="scrivi" aria-labelledby="t-scrivi">
@@ -952,6 +952,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 <nav class="tocco" aria-label="Contatto rapido"><a href="tel:+390200000000">Chiama</a><a href="#scrivi">Scrivimi</a></nav>
 
+<!-- L'INGLESE CON UN CLIC (17/11/2026, passo 5.2): lingua-en.js è il vocabolario, lingua.js il motore (uno solo per le tre pagine) e, solo qui nella home,
+     la linguetta ENGLISH sul bordo destro. Stanno prima degli altri script: con ?lang=en la pagina è già in inglese mentre la mappa si carica.
+     I pezzi con data-lingua="pagina" (la frase che si accende, la frase di Shakespeare) se li riscrive lo script qui sotto. -->
+<script src="lingua-en.js"></script>
+<script src="lingua.js" data-linguetta></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
 <script src="mappa-metro.js"></script>
 <script>
@@ -1149,15 +1154,17 @@ function scegli(k, daTesto) {
   if (PORTARE[k] && vale(k)) mostraLista(k);
   $('#m-materia').value = k;
 }
+/* 17/11/2026: in inglese chi scrive usa parole inglesi. Gli elenchi inglesi stanno nel vocabolario (lingua-en.js); in italiano non cambia niente. */
+const inInglese = () => (window.LINGUA && LINGUA.adesso() === 'en' && window.LINGUA_EN) || null;
 function capisci(testo) {
-  const t = pulisci(testo), avviso = $('#allarme'), esito = $('#capito');
-  const pericolo = PERICOLO.some(g => g.every(p => t.includes(p))), subito = SUBITO.some(g => g.every(p => t.includes(p)));
+  const t = pulisci(testo), avviso = $('#allarme'), esito = $('#capito'), en = inInglese();
+  const pericolo = (en ? en.pericolo : PERICOLO).some(g => g.every(p => t.includes(p))), subito = (en ? en.subito : SUBITO).some(g => g.every(p => t.includes(p)));
   if (pericolo) avviso.innerHTML = '<b>Se sei in pericolo, chiama subito il <a href="tel:112">112</a>.</b> Il <a href="tel:1522">1522</a> è il numero antiviolenza: gratuito, anonimo, 24 ore su 24.';
   else if (subito) avviso.innerHTML = '<b>Sembra una cosa di queste ore: non scrivere, telefona.</b> <a href="tel:+390200000000">02 0000 0000</a>. Chi viene arrestato ha diritto a parlare subito con un avvocato.';
   avviso.hidden = !(pericolo || subito);
   if (testo.trim().length < 4) { esito.textContent = ''; return; }
   let meglio = null, punti = 0;
-  for (const [k, parole] of Object.entries(PAROLE)) { const n = parole.filter(p => t.includes(p)).length; if (n > punti) { punti = n; meglio = k; } }
+  for (const [k, parole] of Object.entries(en ? en.parole : PAROLE)) { const n = parole.filter(p => t.includes(p)).length; if (n > punti) { punti = n; meglio = k; } }
   if (meglio) { esito.textContent = 'Ho capito: ' + CASI[meglio].materia.toLowerCase() + '. Ecco da dove cominciare.'; if (!vale(meglio)) impostaArea('tutto'); scegli(meglio, testo.trim()); }
   else esito.textContent = 'Non ho capito bene. Prova con altre parole, oppure chiamami: 02 0000 0000.';
   const m = $('#m-racconto'); if (!m.dataset.toccato) m.value = testo;
@@ -1258,7 +1265,7 @@ $('#modulo').addEventListener('submit', e => {
   const f = new FormData(e.target), k = f.get('materia'), racconto = (f.get('racconto') || '').trim(), scad = f.get('scadenza');
   const t = pulisci(racconto); let giorni = null;
   if (scad) { const [y, m, g] = scad.split('-').map(Number); giorni = Math.round((new Date(y, m - 1, g) - oggi()) / 864e5); }
-  const urgente = (giorni !== null && giorni <= 7) || k === 'decreto' || /udienza|notific|scade|decreto|arrest|ufficiale giudiziario/.test(t);
+  const urgente = (giorni !== null && giorni <= 7) || k === 'decreto' || (inInglese() ? inInglese().urgente : /udienza|notific|scade|decreto|arrest|ufficiale giudiziario/).test(t);
   const quando = giorni === null ? 'nessuna scadenza indicata' : giorni < 0 ? 'scadenza passata' : giorni === 0 ? 'scade oggi' : 'scade tra ' + giorni + ' giorni';
   const esc = s => s.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
   const nome = NOMI[k] || 'Altro', li = document.createElement('li'); li.className = 'tua arriva' + (urgente ? ' urgente' : '');
@@ -1296,9 +1303,12 @@ function scorriLastre() {
   const vh = innerHeight, a = ALTO(), ps = lastre.map(l => Math.min(1, Math.max(0, (l.getBoundingClientRect().top - a) / (vh - a))));
   lastre.forEach((l, i) => { const d = l.firstElementChild; d.style.setProperty('--p', ps[i].toFixed(3)); d.style.setProperty('--q', i < lastre.length - 1 ? (1 - ps[i + 1]).toFixed(3) : '0'); });
 }
-const frase = $('#manifesto');
-frase.innerHTML = frase.textContent.trim().split(/\s+/).map(w => `<span>${w}</span>`).join(' ');
-const paroleFrase = $$('span', frase);
+/* 17/11/2026: la frase è spezzata in parole, quindi in inglese la riscrivo qui (LINGUA.t dà la frase nella lingua scelta) e la rifaccio quando la lingua cambia */
+const frase = $('#manifesto'), fraseIt = frase.textContent.trim();
+let paroleFrase = [];
+function scriviFrase() { frase.innerHTML = (window.LINGUA ? LINGUA.t(fraseIt) : fraseIt).split(/\s+/).map(w => `<span>${w}</span>`).join(' '); paroleFrase = $$('span', frase); }
+scriviFrase();
+document.addEventListener('lingua', () => { scriviFrase(); scorriFrase(); });
 function scorriFrase() {
   if (!MUOVI) { paroleFrase.forEach(s => s.classList.add('accesa')); return; }
   const r = frase.getBoundingClientRect(), vh = innerHeight, p = Math.min(1, Math.max(0, (vh * .85 - r.top) / (r.height + vh * .35))), n = Math.round(p * paroleFrase.length);
@@ -1319,11 +1329,14 @@ const vedi = 'IntersectionObserver' in window && MUOVI ? new IntersectionObserve
 $$('.tendina').forEach(el => vedi ? vedi.observe(el) : el.classList.add('vista'));
 /* 9/11, Franco: «fai entrare anche le scritte accanto alle foto nel senso opposto, ovvero da sinistra verso destra»: stesso segnale delle tendine */
 /* 9/11: la frase sulla costruzione di passaggio affiora lettera per lettera; i lettori di schermo leggono la frase intera */
-$$('.passaggio-frase p').forEach(el => { const t = el.textContent.trim(); el.textContent = ''; let i = 0;
+/* 17/11/2026: la frase è spezzata in lettere, quindi in inglese la riscrivo qui (il verso originale, da lingua-en.js) e la rifaccio quando la lingua cambia */
+$$('.passaggio-frase p').forEach(el => { const it = el.textContent.trim();
+  const scrivi = () => { const t = window.LINGUA ? LINGUA.t(it) : it; el.textContent = ''; let i = 0;
   const sr = document.createElement('span'); sr.className = 'solo-lettori'; sr.textContent = t; el.appendChild(sr);
   t.split(' ').forEach((w, k, a) => { const p = document.createElement('span'); p.className = 'p'; p.setAttribute('aria-hidden', 'true');
     for (const ch of w) { const l = document.createElement('span'); l.className = 'l'; l.textContent = ch; l.style.setProperty('--i', i++); p.appendChild(l); }
-    el.appendChild(p); if (k < a.length - 1) el.appendChild(document.createTextNode(' ')); }); });
+    el.appendChild(p); if (k < a.length - 1) el.appendChild(document.createTextNode(' ')); }); };
+  scrivi(); document.addEventListener('lingua', scrivi); });
 $$('.passaggio-frase').forEach(el => vedi ? vedi.observe(el) : el.classList.add('vista'));
 $$('.lastra-testo, .chi-testo, .orari, .dove-pannello').forEach(el => { el.classList.add('entra-sx'); vedi ? vedi.observe(el) : el.classList.add('vista'); });
 /* la firma sta in fondo alla pagina: scatta appena se ne vede un filo */

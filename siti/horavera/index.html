@@ -455,6 +455,10 @@ html.motore::-webkit-scrollbar { display: none; }
   .orologio, .volo, .corpo, .lancetta, .nastro, .scena, .velo, .per, .luogo, .riflesso { transition: none !important; }
 }
 </style>
+<!-- L'INGLESE CON UN CLIC (18/11/2026): il vocabolario e il motore stanno in testa, così la lingua si decide prima di disegnare. Qui non c'è la
+     linguetta (sta solo nella HOME): la pagina segue la lingua scelta. Come funziona: in testa a lingua.js. -->
+<script src="lingua-en.js"></script>
+<script src="lingua.js"></script>
 </head>
 <body>
 
@@ -849,6 +853,8 @@ html.motore::-webkit-scrollbar { display: none; }
   <p class="nota">Anno, luogo e frase sono segnaposto: si decidono con la scena. Torna su e riscorri per rivederlo.</p>
 </section>
 
+<!-- la lingua: in inglese le scritte ferme si traducono qui, prima che parta il codice della pagina (lingua.js) -->
+<script>window.LINGUA && LINGUA.parti();</script>
 <script>
 (() => {
   if (new URLSearchParams(location.search).has('prova')) document.documentElement.classList.add('prova');

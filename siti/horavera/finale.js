@@ -49,15 +49,19 @@
   const calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ---------- la costruzione: le righe stanno già al loro posto, nell'ordine di lettura (così le legge anche chi non vede il movimento) ----------
+  // IN INGLESE (18/11/2026, l'inglese con un clic): ogni riga si scrive nella lingua scelta. L'inglese è quello di voce/testi-en.md, approvato da Franco,
+  // e sta in lingua-en.js riga per riga (le parole in grigio: hours, clock, rhythm, slowed, slow, long ago); la frase la dà LINGUA.t() (lingua.js).
+  // Il blocco è data-lingua="pagina": lo scrive questo file, il motore della lingua non lo tocca. Senza lingua.js resta l'italiano.
+  const T = s => window.LINGUA ? window.LINGUA.t(s) : s, veste = r => T(r).replace(/\{([^}]+)\}/g, '<i class="fi-t">$1</i>');
   radice.setAttribute('aria-label', 'Il messaggio');
   radice.textContent = '';
-  const blocco = document.createElement('div'); blocco.className = 'fi-testo'; radice.appendChild(blocco);
+  const blocco = document.createElement('div'); blocco.className = 'fi-testo'; blocco.dataset.lingua = 'pagina'; radice.appendChild(blocco);
   const righe = [];
   for (const strofa of TESTO) { const p = document.createElement('p'); blocco.appendChild(p);
     for (const r of strofa) { const riga = document.createElement('span'), x = document.createElement('span'), y = document.createElement('span');
       riga.className = 'fi-riga'; x.className = 'fi-x'; y.className = 'fi-y';
-      y.innerHTML = r.replace(/\{([^}]+)\}/g, '<i class="fi-t">$1</i>');
-      x.appendChild(y); riga.appendChild(x); p.appendChild(riga); righe.push({ riga, x, y }); } }
+      y.innerHTML = veste(r);
+      x.appendChild(y); riga.appendChild(x); p.appendChild(riga); righe.push({ riga, x, y, r }); } }
   const DURATA = PARTE + (righe.length - 1) * OGNI + VIAGGIO;
 
   // ---------- il viaggio ----------
@@ -106,6 +110,14 @@
     Promise.all(anim.map(a => a.finished)).then(() => { if (partito) radice.classList.add('fi-composto'); }).catch(() => {});
   }
   function azzera() { const vecchie = anim; anim = []; partito = false; vecchie.forEach(a => a.cancel()); radice.classList.remove('fi-composto'); }
+  // la lingua cambia (la linguetta sta sulla presentazione, quindi di solito il finale non è sullo schermo): le righe si riscrivono; se il testo si
+  // stava componendo o era composto, torna alle frasi sparse e riparte da capo nella lingua nuova (le misure del viaggio sono quelle delle righe nuove)
+  document.addEventListener('lingua', () => {
+    const andava = partito && !fermo;
+    if (!calmo && !fermo) azzera();
+    righe.forEach(o => { o.y.innerHTML = veste(o.r); });
+    if (andava) parti();
+  });
 
   // ---------- va da solo: parte quando metà della sezione è nello schermo; uscita del tutto, torna alle frasi sparse e rientrando riparte ----------
   if (calmo) radice.classList.add('fi-composto');

@@ -34,6 +34,10 @@
   const lim = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), dolce = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2, esce = u => 1 - Math.pow(1 - u, 3);
   const fase = (t, a, b) => lim((t - a) / (b - a));
   const OTTO = window.OTTO = { pronta: false };
+  // IN INGLESE (18/11/2026, l'inglese con un clic): questo file continua a scrivere in italiano; le scritte le traduce il motore della lingua (lingua.js)
+  // quando compaiono, con il vocabolario di lingua-en.js (città, stagioni, «mezzogiorno vero» → «true noon»). Solo la scritta riscritta a ogni
+  // fotogramma (il bollo) chiede qui la sua parola, così in inglese non viene riscritta due volte a fotogramma. Senza lingua.js resta l'italiano.
+  const FRASE = s => window.LINGUA ? window.LINGUA.t(s) : s;
 
   // ---------- il sole di oggi (formule NOAA): minuti dalla mezzanotte UTC di oggi ----------
   const adesso = new Date(), BASE_UTC = Date.UTC(adesso.getUTCFullYear(), adesso.getUTCMonth(), adesso.getUTCDate());
@@ -150,6 +154,7 @@
   CITTA.forEach(c => { const d = el('div', 'ot-cella' + (c.fisso ? ' ot-fissa' : ''), ruota);
     const luce = el('div', 'ot-luce', d), o = orologio(c.orologio, d, false);
     const nm = el('div', 'ot-nome', d, `<b>${c.nome}</b><span>${c.titolo}</span><i></i>`), bollo = el('div', 'ot-bollo', d);
+    bollo.dataset.lingua = 'pagina';   // il bollo si riscrive a ogni fotogramma finché è acceso: la parola la chiede lui a FRASE(), il motore della lingua non lo tocca
     if (!c.fisso) { d.tabIndex = 0; d.setAttribute('role', 'button'); d.setAttribute('aria-label', c.nome + ', ' + c.titolo);
       const scegli = () => { if (c !== att && avviato) vai(c, true); };
       d.addEventListener('click', scegli); d.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); scegli(); } }); }
@@ -394,7 +399,7 @@
     let ultimo = null; const accese = new Set();
     for (const ev of ciclo.eventi) { const x = eEff - ev.e;
       const fo = x < 0 ? 0 : x < 300 ? x / 300 : x < 1500 ? 1 : x < 2900 ? 1 - (x - 1500) / 1400 : 0;
-      if (fo > 0) { const ce = celle[ev.o.k]; if (ce) { accese.add(ev.o.k); ce.luce.style.opacity = (.85 * fo).toFixed(3); ce.luce.style.background = luceDi(ev); ce.bollo.textContent = ev.tipo === 'sole' ? 'sole' : ev.tipo; ce.bollo.style.opacity = fo; } }
+      if (fo > 0) { const ce = celle[ev.o.k]; if (ce) { accese.add(ev.o.k); ce.luce.style.opacity = (.85 * fo).toFixed(3); ce.luce.style.background = luceDi(ev); ce.bollo.textContent = FRASE(ev.tipo === 'sole' ? 'sole' : ev.tipo); ce.bollo.style.opacity = fo; } }
       if (x >= 0 && x < 3600) ultimo = ev; }
     for (const k in celle) if (!accese.has(k)) { celle[k].luce.style.opacity = 0; celle[k].bollo.style.opacity = 0; }
     if (ultimo) { const riga = ultimo.tipo === 'sole' ? `Qui tramonta; al Polo Sud il sole non tramonta.<small>sono le ${hhmm(ultimo.tau)} a ${c.nome}</small>` :

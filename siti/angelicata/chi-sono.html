@@ -430,7 +430,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
   </section>
 
   <!-- costruzione di passaggio (9/11) -->
-  <figure class="tendina passaggio" id="frase"><div class="tendina-dentro"><img src="immagini/passaggio-chi.jpg" style="object-position: 70% 72%" alt="Dune di gesso all'aperto, con un ponte di noce in diagonale che entra in una galleria illuminata e una freccia incisa nel terreno" loading="lazy" onerror="this.remove()"><i class="velo-frase" aria-hidden="true"></i></div><i class="tendina-filo" aria-hidden="true"></i><blockquote class="passaggio-frase"><p>La clemenza non si impone: cade come la pioggia gentile dal cielo.</p><cite>William Shakespeare, Il mercante di Venezia</cite></blockquote></figure>
+  <figure class="tendina passaggio" id="frase"><div class="tendina-dentro"><img src="immagini/passaggio-chi.jpg" style="object-position: 70% 72%" alt="Dune di gesso all'aperto, con un ponte di noce in diagonale che entra in una galleria illuminata e una freccia incisa nel terreno" loading="lazy" onerror="this.remove()"><i class="velo-frase" aria-hidden="true"></i></div><i class="tendina-filo" aria-hidden="true"></i><blockquote class="passaggio-frase"><p data-lingua="pagina">La clemenza non si impone: cade come la pioggia gentile dal cielo.</p><cite>William Shakespeare, Il mercante di Venezia</cite></blockquote></figure>
 
   <!-- 9. il saluto -->
   <section class="sez grazie" aria-labelledby="t-grazie">
@@ -473,6 +473,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
 
 <nav class="tocco" aria-label="Contatto rapido"><a href="tel:+390200000000">Chiama</a><a href="index.html#scrivi">Scrivimi</a></nav>
 
+<!-- L'INGLESE CON UN CLIC (17/11/2026, passo 5.2): il vocabolario e il motore, gli stessi della home. Qui niente linguetta: la pagina segue la lingua scelta
+     nella home (o ?lang=en nell'indirizzo). La frase di Shakespeare (data-lingua="pagina") se la riscrive lo script qui sotto. -->
+<script src="lingua-en.js"></script>
+<script src="lingua.js"></script>
 <script>
 const $ = (s, el = document) => el.querySelector(s), $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const MUOVI = !matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -575,11 +579,14 @@ osserva('.tendina', { rootMargin: '0px 0px -12% 0px', threshold: .15 });
 osserva('.firma-giro', { threshold: 0 });
 /* 9/11, Franco: «fai entrare anche le scritte accanto alle foto nel senso opposto, ovvero da sinistra verso destra»: stesso segnale delle tendine */
 /* 9/11: la frase sulla costruzione di passaggio affiora lettera per lettera; i lettori di schermo leggono la frase intera */
-$$('.passaggio-frase p').forEach(el => { const t = el.textContent.trim(); el.textContent = ''; let i = 0;
+/* 17/11/2026: la frase è spezzata in lettere, quindi in inglese la riscrivo qui (il verso originale, da lingua-en.js) e la rifaccio quando la lingua cambia */
+$$('.passaggio-frase p').forEach(el => { const it = el.textContent.trim();
+  const scrivi = () => { const t = window.LINGUA ? LINGUA.t(it) : it; el.textContent = ''; let i = 0;
   const sr = document.createElement('span'); sr.className = 'solo-lettori'; sr.textContent = t; el.appendChild(sr);
   t.split(' ').forEach((w, k, a) => { const p = document.createElement('span'); p.className = 'p'; p.setAttribute('aria-hidden', 'true');
     for (const ch of w) { const l = document.createElement('span'); l.className = 'l'; l.textContent = ch; l.style.setProperty('--i', i++); p.appendChild(l); }
-    el.appendChild(p); if (k < a.length - 1) el.appendChild(document.createTextNode(' ')); }); });
+    el.appendChild(p); if (k < a.length - 1) el.appendChild(document.createTextNode(' ')); }); };
+  scrivi(); document.addEventListener('lingua', scrivi); });
 osserva('.passaggio-frase', { rootMargin: '0px 0px -12% 0px', threshold: .3 });
 $$('.piacere-testo, .ch-due, .storia-testi, .ch-studio-testo').forEach(el => el.classList.add('entra-sx'));
 osserva('.entra-sx', { rootMargin: '0px 0px -12% 0px', threshold: .15 });

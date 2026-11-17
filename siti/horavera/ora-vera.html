@@ -196,6 +196,10 @@ body.torna .casa-velo { opacity: 1; }
 </style>
 <link rel="stylesheet" href="otto.css">
 <link rel="stylesheet" href="finale.css">
+<!-- L'INGLESE CON UN CLIC (18/11/2026): il vocabolario e il motore stanno qui in testa, così la lingua si decide prima di disegnare. La linguetta
+     ENGLISH / ITALIANO c'è solo in questa pagina (data-linguetta). Come funziona: in testa a lingua.js. -->
+<script src="lingua-en.js"></script>
+<script src="lingua.js" data-linguetta></script>
 </head>
 <body>
 
@@ -211,9 +215,9 @@ body.torna .casa-velo { opacity: 1; }
          stato tolto il 16/11: di «HORA VERA» ce n'è una sola, la scritta grande in basso (Franco, 15/11: «una sola avrebbe senso fosse attiva»).
          Il codice mette ogni lettera di <b> e di .nome in uno <span class="l">, per darle il tono giusto sul fondo che cambia. -->
     <ol>
-      <li style="--i: 0"><a class="qui" href="#otto" aria-current="page" data-entra><b>I</b><span class="nome">L'ora vera</span></a></li>
-      <li style="--i: 1"><a href="index.html"><b>II</b><span class="nome">Visioni</span></a></li>
-      <li style="--i: 2"><a href="atelier.html"><b>III</b><span class="nome">L'atelier</span></a></li>
+      <li style="--i: 0"><a class="qui" href="#otto" aria-current="page" data-entra><b>I</b><span class="nome" data-lingua="pagina">L'ora vera</span></a></li>
+      <li style="--i: 1"><a href="index.html"><b>II</b><span class="nome" data-lingua="pagina">Visioni</span></a></li>
+      <li style="--i: 2"><a href="atelier.html"><b>III</b><span class="nome" data-lingua="pagina">L'atelier</span></a></li>
     </ol>
   </nav>
   <!-- «Commissione», il riquadro che stava qui in alto a destra, è stato tolto il 16/11 (Franco: «quella scritta COMMISSIONE non è meglio toglierla?»):
@@ -269,6 +273,8 @@ body.torna .casa-velo { opacity: 1; }
   <section id="finale" class="finale" aria-label="Il messaggio"></section>
 </main>
 
+<!-- la lingua: in inglese le scritte ferme si traducono qui, prima che il codice le spezzi in lettere (lingua.js) -->
+<script>window.LINGUA && LINGUA.parti();</script>
 <script>
 (() => {
   const Q = new URLSearchParams(location.search);
@@ -392,9 +398,17 @@ void main() {
   // le lettere: quelle delle voci (numeri e nomi) e quelle della scritta grande, una per <span class="l">
   const lettere = [], titolo = [], grande = document.querySelector('.grande.pos'), grandeNeg = document.querySelector('.grande.neg');
   const unaLettera = c => { const s = document.createElement('span'); s.className = 'l'; s.textContent = c; return s; };
+  // (18/11/2026, l'inglese con un clic) il nome di una voce si scrive nella lingua scelta: la frase la dà LINGUA.t() (lingua.js), l'italiano resta in
+  // data-it. Quando la lingua cambia (evento «lingua», più sotto) il nome si riscrive lettera per lettera, sul posto, senza toccare il filmato.
+  const FRASE = s => window.LINGUA ? window.LINGUA.t(s) : s;
+  function scriviVoce(el, testo) {
+    for (let i = lettere.length - 1; i >= 0; i--) if (lettere[i].p === el) lettere.splice(i, 1);
+    el.textContent = '';
+    for (const c of testo) { if (c === ' ') { el.append(' '); continue; } const s = unaLettera(c); el.append(s); lettere.push({ e: s, p: el, x: 0, y: 0, dx: 0, s: false }); }
+  }
   document.querySelectorAll('.menu li a b, .menu li a .nome').forEach(el => {
-    const testo = el.textContent; el.textContent = '';
-    for (const c of testo) { if (c === ' ') { el.append(' '); continue; } const s = unaLettera(c); el.append(s); lettere.push({ e: s, x: 0, y: 0, dx: 0, s: false }); } });
+    if (!el.classList.contains('nome')) { scriviVoce(el, el.textContent); return; }
+    el.dataset.it = el.textContent; scriviVoce(el, FRASE(el.dataset.it)); });
   'HORA VERA'.split(' ').forEach((parola, p) => [...parola].forEach((c, k) => {
     const s = unaLettera(c), n = unaLettera(c); if (p && !k) { s.classList.add('parola'); n.classList.add('parola'); } grande.append(s); grandeNeg.append(n);
     titolo.push({ e: s, n, x: 0, y: 0, dx: 0, j: titolo.length, op: -1, sp: -1, k: -1 }); }));   // e = la copia avorio, n = il negativo
@@ -505,6 +519,18 @@ void main() {
   addEventListener('resize', () => { misura(); if (!seguita) disegna(adesso()); rimisura(); });
   addEventListener('load', rimisura);
   if (document.fonts) document.fonts.ready.then(rimisura);
+  // LA LINGUA CAMBIA (clic sulla linguetta): i nomi delle voci si riscrivono. Le lettere nuove nascono già del tono del fondo che hanno dietro adesso
+  // (senza il passaggio di colore) e non rifanno il bagliore finale: cambia la parola, nient'altro si muove.
+  document.addEventListener('lingua', () => {
+    const nomi = [...document.querySelectorAll('.menu li a .nome')], nuova = o => o.p && nomi.includes(o.p);
+    nomi.forEach(el => scriviVoce(el, FRASE(el.dataset.it)));
+    misuraLettere();
+    const t = window.pronta ? adesso() : 0, fatte = document.body.classList.contains('scritte');
+    lettere.forEach(o => { if (!nuova(o)) return; o.s = scuroIn(o.x, o.y, t) > .5; o.e.style.transition = 'none'; if (fatte) o.e.style.animation = 'none'; o.e.classList.toggle('s', o.s); });
+    void document.body.offsetWidth;
+    lettere.forEach(o => { if (nuova(o)) o.e.style.transition = ''; });
+    rimisura();
+  });
 
   // prova: porta la pagina a un istante preciso (millisecondi) e la lascia ferma
   window.vaiA = async ms => {
@@ -711,6 +737,7 @@ void main() {
   }
   addEventListener('scroll', () => { if (scrollY > 8) B.classList.add('sceso'); B.classList.toggle('giu', scrollY > innerHeight * .92); if (largo()) sveglia(); else scegliTel(); }, { passive: true });
   addEventListener('resize', misura);
+  document.addEventListener('lingua', misura);   // cambiata la lingua le scritte hanno un'altra lunghezza: le misure si rifanno (18/11)
   TEL.addEventListener('change', () => { accendi(-1); mostra = 0; misura(); });
   misura();
   addEventListener('load', misura);

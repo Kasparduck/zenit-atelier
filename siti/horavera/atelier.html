@@ -231,6 +231,10 @@ html.motore::-webkit-scrollbar { display: none; }
   .capitolo.legge .testi.tecnico, .capitolo.legge .testi.lirico { transform: none; }
 }
 </style>
+<!-- L'INGLESE CON UN CLIC (18/11/2026): il vocabolario e il motore stanno in testa, così la lingua si decide prima di disegnare. Qui non c'è la
+     linguetta (sta solo nella HOME): la pagina segue la lingua scelta. Come funziona: in testa a lingua.js. -->
+<script src="lingua-en.js"></script>
+<script src="lingua.js"></script>
 </head>
 <body>
 
@@ -381,6 +385,8 @@ html.motore::-webkit-scrollbar { display: none; }
   </section>
 </main>
 
+<!-- la lingua: in inglese le scritte ferme si traducono qui, prima che il codice le spezzi in righe (lingua.js) -->
+<script>window.LINGUA && LINGUA.parti();</script>
 <script>
 (() => {
   const SM = 'immagini/smontato/', IMG = 'immagini/';
@@ -389,6 +395,11 @@ html.motore::-webkit-scrollbar { display: none; }
   const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; };
   const NS = 'http://www.w3.org/2000/svg', sv = (tag, at = {}, padre) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (padre) padre.append(e); return e; };
   const CALMO = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // IN INGLESE (18/11/2026, l'inglese con un clic): le scritte ferme e quelle create una volta le traduce il motore della lingua (lingua.js). I commenti
+  // riscritti a ogni fotogramma (le righe con il filo, la nota della lente, la marcia) chiedono qui la frase a T(): così in inglese non vengono
+  // riscritti due volte a fotogramma; i loro riquadri sono data-lingua="pagina" (li scrive la pagina, il motore non li tocca). In questa pagina la
+  // lingua è quella con cui si apre: un cambio la ricarica. Senza lingua.js resta l'italiano.
+  const T = s => window.LINGUA ? window.LINGUA.t(s) : s, INGLESE = !!window.LINGUA && window.LINGUA.adesso() === 'en';
   // LE FASI di ogni capitolo (frazioni del suo scorrimento): entra, la prova, si allontana oscurandosi, i testi
   const FASI = { entra: [0, .06], prova: [.07, .6], via: [.62, .79], testi: [.75, .93] };
 
@@ -396,6 +407,7 @@ html.motore::-webkit-scrollbar { display: none; }
   const PEZZI = [[1,37,1061,245,166,159,1143],[2,93,1021,13,20,99,1030],[3,112,1030,25,33,124,1043],[4,87,1007,25,20,99,1016],[5,122,933,171,122,208,991],[6,296,973,68,78,329,1011],[7,358,984,102,69,409,1018],[8,225,729,320,243,385,853],[9,369,398,525,405,629,587],[10,668,291,314,149,804,360],[11,697,219,176,85,784,261],[12,936,263,94,51,983,288],[13,873,156,14,24,879,168],[14,874,161,126,100,937,213],[15,866,145,26,18,879,153],[16,897,136,10,22,901,147],[17,902,135,9,23,906,146],[18,891,123,26,18,903,132],[19,993,230,91,49,1037,254],[20,1018,197,13,22,1024,208],[21,1042,203,13,22,1048,214],[22,1035,192,27,18,1048,200],[23,943,86,135,51,1010,111],[24,942,124,218,81,1067,156],[25,1038,59,34,22,1054,69],[26,1086,43,136,91,1153,94],[27,1170,20,25,34,1182,34]];
   const ORDINE = [[8, .8], [10, 1.25], [12, 1.6], [19, 1.85], [7, 2.3], [6, 2.6], [5, 2.95], [14, 3.5], [16, 3.6], [17, 3.6], [18, 3.65], [13, 3.7], [15, 3.7], [23, 4.2], [24, 4.45], [20, 4.5], [21, 4.5], [22, 4.55], [26, 5.0], [25, 5.1], [27, 5.15], [11, 5.7], [1, 6.4], [2, 6.7], [3, 6.75], [4, 6.8]];
   const DETTI = { 8: ['La platina e i ponti', "tagliati da una barra d'ottone · 9 giorni"], 10: ['Il bariletto', 'la molla che lo carica per 72 ore'], 5: ['Il bilanciere', 'regolato a mano per tre settimane, in sei posizioni'], 24: ['Le leve del cronografo', 'limate e lucidate a mano · 31 ore'], 1: ['Il fondello', 'inciso con il numero del registro'] };
+  for (const k in DETTI) DETTI[k] = DETTI[k].map(T);
   const K = 56.25 / 1254, CASSA = [629, 587], DIAG = [0.6878, -0.7259];
   const A = { T: 9.4 };
   A.monta = p => {
@@ -413,7 +425,7 @@ html.motore::-webkit-scrollbar { display: none; }
     A.lampo.style.webkitMaskImage = A.lampo.style.maskImage = 'url(' + SM + 'pezzo-09.webp)'; banco.append(A.lampo);
     const conta = el('div', 'conta', '<small>Giorno</small><div class="cifre"></div>'); p.append(conta);
     A.colonne = [0, 1, 2].map(() => { const s = el('span'); s.innerHTML = '<i>0</i><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i><i>0</i>'; conta.lastChild.append(s); return s; });
-    A.passo = el('div', 'passo', '<strong></strong><span></span>'); p.append(A.passo);
+    A.passo = el('div', 'passo', '<strong></strong><span></span>'); A.passo.dataset.lingua = 'pagina'; p.append(A.passo);
     p.insertAdjacentHTML('beforeend', '<svg class="fili" viewBox="0 0 100 56.25" preserveAspectRatio="none"><path d=""/><circle r=".32" cx="-9" cy="-9"/></svg>');
     A.filo = p.querySelector('.fili path'); A.punto = p.querySelector('.fili circle');
   };
@@ -454,6 +466,7 @@ html.motore::-webkit-scrollbar { display: none; }
     { x: 622, y: 842, nome: 'Il bilanciere', riga: "batte 21.600 volte l'ora; regolato a mano per tre settimane" },
     { x: 395, y: 650, nome: 'I ponti', riga: 'satinati e con gli spigoli smussati a mano: 14 ore di lima' },
   ];
+  PUNTI.forEach(z => { z.nome = T(z.nome); z.riga = T(z.riga); });
   const sx = x => QX + x * QL / 1254, sy = y => QY + y * QL / 1254;
   const B = { mx: null, my: null, lx: 50, ly: 28, ultimo: -9, trovati: new Set() };
   const quadranteHTML = () => `<img src="${IMG}scheletrato.webp" alt=""><svg viewBox="0 0 1254 1254"><g transform="rotate(-15 800 640)"><text class="luce-inciso" x="754" y="645.7">E. Ferri · 058</text><text class="inciso" x="754" y="645">E. Ferri · 058</text></g></svg>`;
@@ -463,7 +476,7 @@ html.motore::-webkit-scrollbar { display: none; }
     B.dentro = B.lente.querySelector('.vetro .quadrante'); B.dentro.style.transform = `scale(${M})`;
     p.insertAdjacentHTML('beforeend', '<svg class="fili" viewBox="0 0 100 56.25" preserveAspectRatio="none"><line x1="0" y1="0" x2="0" y2="0"/></svg>');
     B.linea = p.querySelector('.fili line');
-    B.nota = el('div', 'nota', '<small>Trovato</small><strong></strong><span></span>'); p.append(B.nota);
+    B.nota = el('div', 'nota', '<small>Trovato</small><strong></strong><span></span>'); B.nota.children[1].dataset.lingua = B.nota.children[2].dataset.lingua = 'pagina'; p.append(B.nota);
     B.conta = el('div', 'trovati'); p.append(B.conta); B.contatore();
     p.addEventListener('pointermove', e => { const r = p.getBoundingClientRect(); B.mx = (e.clientX - r.left) / r.width * 100; B.my = (e.clientY - r.top) / r.width * 100; B.ultimo = performance.now(); });
   };
@@ -516,7 +529,7 @@ html.motore::-webkit-scrollbar { display: none; }
     // i commenti: la marcia e una riga con il filo d'oro
     C.marcia = el('div', 'marcia', '<small>Marcia</small><div class="grande">+18,0</div><span class="unita">secondi al giorno</span>'); p.append(C.marcia);
     C.grande = C.marcia.querySelector('.grande'); C.scritto = '';
-    C.passo = el('div', 'passo', '<strong></strong><span></span>'); p.append(C.passo);
+    C.passo = el('div', 'passo', '<strong></strong><span></span>'); C.passo.dataset.lingua = 'pagina'; p.append(C.passo);
     p.insertAdjacentHTML('beforeend', '<svg class="fili" viewBox="0 0 100 56.25" preserveAspectRatio="none"><path d=""/><circle r=".32" cx="-9" cy="-9"/></svg>');
     C.filo = p.querySelector('.fili path'); C.punto = p.querySelector('.fili circle');
   };
@@ -537,14 +550,14 @@ html.motore::-webkit-scrollbar { display: none; }
     const dentro = lisc5(passo(q, .16, .32)) * (1 - lisc5(passo(q, .8, .94)));
     const dx = 420 + (cima[0] + 2 - G.PUNTA[0] - 420) * dentro, dy = (cima[1] - 3 - G.PUNTA[1]) * dentro;
     C.punta.style.transform = `translate(${(dx * k).toFixed(3)}cqw, ${(dy * k).toFixed(3)}cqw)`;
-    const marcia = '+' + (1.2 + 16.8 * (1 - spinta)).toFixed(1).replace('.', ',');
+    const marcia = '+' + (1.2 + 16.8 * (1 - spinta)).toFixed(1).replace('.', INGLESE ? '.' : ',');   // in inglese i decimali hanno il punto
     if (marcia !== C.scritto) { C.scritto = marcia; C.grande.textContent = marcia; C.grande.classList.toggle('ok', spinta > .97); }
     // i commenti: prima il bilanciere, poi il regolatore
     const fin = (a, z) => passo(q, a, a + .03) * (1 - passo(q, z - .03, z));
     const d1 = fin(.04, .22), d2 = fin(.24, .9);
     let detto = null;
-    if (d1 > 0) detto = ['Il bilanciere', "qui al rallentatore: dal vero va e viene tre volte al secondo, ventunmilaseicento battiti l'ora", d1, [754, 476]];
-    else if (d2 > 0) detto = ['Il regolatore', 'la punta sposta l\'ago di un decimo di millimetro: la marcia cambia di secondi al giorno', d2, cima];
+    if (d1 > 0) detto = [T('Il bilanciere'), T("qui al rallentatore: dal vero va e viene tre volte al secondo, ventunmilaseicento battiti l'ora"), d1, [754, 476]];
+    else if (d2 > 0) detto = [T('Il regolatore'), T('la punta sposta l\'ago di un decimo di millimetro: la marcia cambia di secondi al giorno'), d2, cima];
     if (detto) {
       const [titolo, riga, a, [x, y]] = detto;
       if (C.passo.firstChild.textContent !== titolo) { C.passo.firstChild.textContent = titolo; C.passo.lastChild.textContent = riga; }
@@ -574,7 +587,7 @@ html.motore::-webkit-scrollbar { display: none; }
     misura(); addEventListener('resize', misura); D.misura = misura;
     D.conta = el('div', 'marcia', '<small>Solchi</small><div class="grande">00 / 24</div><span class="unita">un giro, un solco</span>'); p.append(D.conta);
     D.grande = D.conta.querySelector('.grande'); D.scritto = '';
-    D.riga = el('div', 'passo', '<strong></strong><span></span>'); p.append(D.riga);
+    D.riga = el('div', 'passo', '<strong></strong><span></span>'); D.riga.dataset.lingua = 'pagina'; p.append(D.riga);
     p.insertAdjacentHTML('beforeend', '<svg class="fili" viewBox="0 0 100 56.25" preserveAspectRatio="none"><path d=""/><circle r=".32" cx="-9" cy="-9"/></svg>');
     D.filo = p.querySelector('.fili path'); D.punto = p.querySelector('.fili circle');
   };
@@ -675,8 +688,8 @@ html.motore::-webkit-scrollbar { display: none; }
     const fin = (a, z) => passo(q, a, a + .03) * (1 - passo(q, z - .03, z));
     const d1 = fin(.03, .2), d2 = fin(.22, .82);
     let detto = null;
-    if (d1 > 0) detto = ['Il tornio a rosa', 'di fine Ottocento: la punta resta ferma, il quadrante gira', d1];
-    else if (d2 > 0) detto = ['La punta', 'un solco a ogni giro, a otto centesimi di millimetro dal precedente', d2];
+    if (d1 > 0) detto = [T('Il tornio a rosa'), T('di fine Ottocento: la punta resta ferma, il quadrante gira'), d1];
+    else if (d2 > 0) detto = [T('La punta'), T('un solco a ogni giro, a otto centesimi di millimetro dal precedente'), d2];
     if (detto) {
       const [titolo, riga, a] = detto, k = 56.25 / 1254;
       if (D.riga.firstChild.textContent !== titolo) { D.riga.firstChild.textContent = titolo; D.riga.lastChild.textContent = riga; }
