@@ -29,9 +29,9 @@ body { margin: 0; overflow: hidden; background: radial-gradient(ellipse 70% 60% 
 body::after { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .32; z-index: 4;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .45 0 0 0 0 .4 0 0 0 .12 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
-.scena { position: fixed; inset: 0; display: grid; place-items: center; perspective: 1600px; z-index: 2; }
-.alone { position: absolute; width: calc(var(--d) * 1.5); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle calc(var(--d) * .26) at 25% 19%, rgb(255 140 70 / .17), transparent), radial-gradient(circle calc(var(--d) * .26) at 80% 28%, rgb(110 165 255 / .13), transparent), radial-gradient(circle calc(var(--d) * .22) at 77% 80%, rgb(255 140 70 / .09), transparent), radial-gradient(circle, var(--luce), transparent 62%); pointer-events: none; }
-.telescopio { position: relative; width: var(--d); aspect-ratio: 1; perspective: 1600px; }
+.scena { position: fixed; inset: 0; display: grid; grid-template: 100% / 100%; place-items: center; perspective: 1600px; z-index: 2; }   /* una casella sola grande come lo schermo: l'obiettivo ingrandito (--g) esce uguale da tutti i lati e resta al centro */
+.alone { position: absolute; width: calc(var(--d) * var(--g, 1) * 1.5); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle calc(var(--d) * var(--g, 1) * .26) at 25% 19%, rgb(255 140 70 / .17), transparent), radial-gradient(circle calc(var(--d) * var(--g, 1) * .26) at 80% 28%, rgb(110 165 255 / .13), transparent), radial-gradient(circle calc(var(--d) * var(--g, 1) * .22) at 77% 80%, rgb(255 140 70 / .09), transparent), radial-gradient(circle, var(--luce), transparent 62%); pointer-events: none; }
+.telescopio { position: relative; width: calc(var(--d) * var(--g, 1)); aspect-ratio: 1; perspective: 1600px; }
 /* 9/11, Franco: «il sito tende a sfocarsi»: inclinare la lente ridisegna il sito storto e le scritte si ammorbidiscono. Si inclinano solo anelli e tubo; la lente resta dritta */
 .inclina { transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .35s cubic-bezier(.2,.7,.2,1); }
 .telescopio.intro { transform-style: preserve-3d; transform: rotateX(var(--irx, 0deg)) rotateY(var(--iry, 0deg)); }
@@ -54,6 +54,9 @@ body::after { content: ""; position: fixed; inset: 0; pointer-events: none; opac
 /* gli anelli disegnati */
 .anelli { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .anelli .presa { cursor: grab; }
+#ghiera-grande { display: none; } body.due-anelli #ghiera-grande { display: inline; }   /* il secondo anello: solo in prova */
+.tacche line { stroke: rgb(255 240 220 / .55); stroke-width: 1.4; stroke-linecap: round; transition: stroke .25s; }
+body.due-anelli .presa:hover .tacche line { stroke: #f2ad7b; }   /* con il mouse sopra un anello le sue tacche diventano di rame: si capisce che lì si prende */   /* le tacche incise che fanno vedere che un anello gira */
 .anelli .presa:active { cursor: grabbing; }
 .anelli text { font-family: var(--sans); }
 .nome-sito { font-weight: 500; font-size: 20.5px; letter-spacing: 9px; fill: #f5f7fa; transition: fill .35s; }
@@ -143,7 +146,7 @@ body.coperto .scorre-viva, body.coperto .viene-viva, body.esce-pronta .scorre-vi
 @keyframes viene { from { transform: translateY(-50%); } to { transform: translateY(0); } }
 .colonna .carta { width: 100%; height: auto; margin: 0 0 var(--vuoto); }
 /* il silenzio intorno alla lente: un'ombra che stacca l'obiettivo dalle carte, e i bordi dello schermo più scuri sotto le scritte */
-.strisce::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgb(5 8 12 / .92) calc(var(--d) * .5), rgb(5 8 12 / 0) calc(var(--d) * .5 + 13vmin)); }
+.strisce::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgb(5 8 12 / .92) calc(var(--d) * var(--g, 1) * .5), rgb(5 8 12 / 0) calc(var(--d) * var(--g, 1) * .5 + 13vmin)); }
 /* 17/11/2026, Franco: «più accese le pagine sature… Trova tu un modo»: il buio dei bordi sta in un velo a parte, SOTTO il piano delle pagine piene
    (spegne le altre, non loro); sopra tutto resta solo l'ombra intorno all'obiettivo */
 .velo-bordi { position: absolute; inset: 0;
@@ -355,7 +358,13 @@ body.aperto .invito { pointer-events: none; }
       </defs>
       <g id="ghiera-zoom" class="presa" data-presa="zoom">
         <circle r="402" fill="none" stroke="#000" stroke-opacity="0" stroke-width="38" pointer-events="stroke"/>
+        <g id="tacche-zoom" class="tacche"></g>
         <line x1="0" y1="-388" x2="0" y2="-416.5" stroke="url(#rame)" stroke-width="2.4" stroke-linecap="round"/>
+      </g>
+      <g id="ghiera-grande" class="presa" data-presa="grande">
+        <circle r="480" fill="none" stroke="#000" stroke-opacity="0" stroke-width="36" pointer-events="stroke"/>
+        <g id="tacche-grande" class="tacche"></g>
+        <line x1="0" y1="-466" x2="0" y2="-486" stroke="url(#rame)" stroke-width="2.4" stroke-linecap="round"/>
       </g>
       <g id="ghiera-nomi" class="presa" data-presa="nomi">
         <circle r="444.3" fill="none" stroke="#000" stroke-opacity="0" stroke-width="32" pointer-events="stroke"/>
@@ -479,8 +488,42 @@ let zoom = +(qs.get('zoom') || 1), angNomi = 0, attivo = +(qs.get('sito') || 0),
 const tel = $('#telescopio'), sito = $('#sito'), cornice = $('#cornice'), vetro = document.querySelector('.vetro');
 const scala = () => vetro.clientWidth / 1280 * 1.06;   // a 1× il sito riempie la lente (gli angoli restano fuori dal cerchio)
 
+/* IL SECONDO ANELLO (17/11/2026 sera, punto 6 di Franco: «Vorrei che ci fossero due anelli che ruotano, uno che ha effetto sul sito dentro l'obiettivo
+   come è già adesso, un altro che ha effetto sull'obiettivo che può essere ingrandito fino a un certo punto (rimpicciolito no)»). DUE anelli, alla lettera:
+   la ghiera zigrinata ingrandisce e rimpicciolisce il SITO nel vetro, com'era; il BORDO LUCIDO ESTERNO (fuori dai nomi, 462–490) fa crescere l'OBIETTIVO
+   intero. La prima prova (una ghiera sola, la zigrinata, per l'obiettivo) toglieva l'ingrandimento del sito: bocciata («non so perché adesso la ghiera
+   esterna non fa più rimpicciolire e ingrandire il sito»). «Peccato che non si vede la ghiera che gira»: la zigrinatura è una foto ferma, quindi su
+   ognuno dei due anelli girano 23 tacche incise e un segno di rame, e la rotella non fa più saltare l'anello: lo porta alla meta in un terzo di secondo.
+   APPROVATO il 17/11 e da allora di serie (?anello=no lo spegne). Cresce la misura vera
+   (--g moltiplica il diametro), non un ingrandimento della foto: il sito nel vetro resta nitido. Mai sotto 1; limite: il vetro riempie il lato corto.
+   «QUELLA ESTERNA NON FA NULLA» (Franco, alla seconda prova): con il mouse vero (strumenti/prova-anelli.js) 1) crescendo, il bordo scappava da sotto il
+   puntatore e dalla seconda tacca la rotella finiva sui nomi; 2) da fermo, la rotella indietro e il giro verso destra non facevano niente. Quindi:
+   il bordo ha un GIRO con il segno («giroBordo», in gradi): a riposo il segno di rame sta in alto, girato da una parte O dall'altra l'obiettivo cresce
+   (grande = e^(|giro|/300)); tornando a riposo la rotella si ferma lì finché non si smette di girarla; e un gesto di rotella cominciato sul bordo
+   resta suo anche quando il bordo si è spostato (finché le tacche si seguono a meno di 0,9 s e il puntatore non si sposta di 80 px). */
+const DUE_ANELLI = qs.get('anello') !== 'no';   // di serie dal 17/11/2026 (Franco, provati con il suo mouse: «A posto. E' tutto ok»); ?anello=no lo spegne
+let grande = 1, zoomMeta = zoom, giroBordo = 0, giroMeta = 0, fermoFino = 0, versoId = 0;
+const posGrande = g => 300 * Math.log(g);   // gradi del bordo esterno a quella grandezza (tutta la corsa in un quarto di giro circa)
+const maxGrande = () => Math.max(1, Math.min(1.5, +qs.get('max') || Math.min(innerWidth, innerHeight) / (.74 * tel.offsetWidth / grande)));
+const stringi = g => Math.max(1, Math.min(maxGrande(), g));
+function mettiGrande(g) { grande = stringi(g); document.documentElement.style.setProperty('--g', grande.toFixed(4)); disegnaZoom(); }
+const stringiGiro = a => { const m = posGrande(maxGrande()); return Math.max(-m, Math.min(m, a)); };
+function mettiGiro(a) { giroBordo = stringiGiro(a); mettiGrande(Math.exp(Math.abs(giroBordo) / 300)); }
+// la rotella dà la meta; gli anelli ci arrivano girando (un settimo della strada a ogni fotogramma), così si vedono girare
+function versoMeta() { versoId = 0; const dz = zoomMeta - zoom, dg = giroMeta - giroBordo;
+  if (Math.abs(dz) < .003 && Math.abs(dg) < .15) { zoom = zoomMeta; mettiGiro(giroMeta); return; }
+  zoom += dz * .14; mettiGiro(giroBordo + dg * .14); versoId = requestAnimationFrame(versoMeta); }
+const versoLeMete = () => { if (!versoId) versoId = requestAnimationFrame(versoMeta); };
+window.ANELLO = { adesso: () => ({ zoom: +zoom.toFixed(3), grande: +grande.toFixed(3), max: +maxGrande().toFixed(3), lato: tel.offsetWidth, vetro: Math.round(vetro.getBoundingClientRect().width), zigrinata: $('#ghiera-zoom').getAttribute('transform'), bordo: $('#ghiera-grande').getAttribute('transform') }), metti: g => { giroMeta = -posGrande(stringi(g)); mettiGiro(giroMeta); }, rotella: (quale, dy) => $('#ghiera-' + quale + ' circle').dispatchEvent(new WheelEvent('wheel', { deltaY: dy, bubbles: true, cancelable: true })) };
+if (DUE_ANELLI) {
+  document.body.classList.add('due-anelli');
+  const tacche = (r1, r2, lungo) => Array.from({ length: 24 }, (_, i) => i).filter(i => i).map(i => { const a = i * 15 * Math.PI / 180, s = Math.sin(a), c = -Math.cos(a), k = i % 6 === 0 ? lungo : 0;
+    return `<line x1="${(s * (r1 - k)).toFixed(1)}" y1="${(c * (r1 - k)).toFixed(1)}" x2="${(s * (r2 + k)).toFixed(1)}" y2="${(c * (r2 + k)).toFixed(1)}"/>`; }).join('');
+  $('#tacche-zoom').innerHTML = tacche(396, 408, 5); $('#tacche-grande').innerHTML = tacche(471, 481, 4);
+  $('#aiuto').textContent = 'Clicca un nome sulla ghiera per aprire il sito a tutta pagina · gira la ghiera per cambiare sito · la ghiera zigrinata avvicina il sito · il bordo esterno ingrandisce l\'obiettivo · afferra la lente e trascina per muoverti';
+}
 function disegnaZoom() {
-  $('#ghiera-zoom').setAttribute('transform', `rotate(${-posZoom(zoom)})`);
+  $('#ghiera-zoom').setAttribute('transform', `rotate(${-posZoom(zoom)})`); $('#ghiera-grande').setAttribute('transform', `rotate(${giroBordo.toFixed(2)})`);
   const s = scala() * zoom, maxPan = Math.max(0, (1280 * s - vetro.clientWidth) / 2) + vetro.clientWidth * .3;   // 9/11: di lato ci si muove sempre, anche senza zoom, fino a portare i bordi del sito al centro della lente
   panX = Math.max(-maxPan, Math.min(maxPan, panX));
   sito.style.setProperty('--s', s.toFixed(4)); sito.style.setProperty('--px', panX.toFixed(1) + 'px');
@@ -539,7 +582,8 @@ $('#anelli').addEventListener('pointerdown', e => {
 addEventListener('pointermove', e => {
   if (!presa) return;
   let d = angolo(e) - angPrima; if (d > 180) d -= 360; if (d < -180) d += 360; angPrima += d;
-  if (presa === 'zoom') { zoom = Math.max(.6, Math.min(3, Math.exp((posZoom(zoom) - d) / 101))); disegnaZoom(); }
+  if (presa === 'grande') { giroMeta = stringiGiro(giroBordo + d); mettiGiro(giroMeta); }
+  else if (presa === 'zoom') { zoom = zoomMeta = Math.max(.6, Math.min(3, Math.exp((posZoom(zoom) - d) / 101))); disegnaZoom(); }
   else { girato += Math.abs(d); angNomi += d; disegnaNomi(); }
 });
 addEventListener('pointercancel', () => { presa = null; });
@@ -557,10 +601,27 @@ addEventListener('pointerup', e => {
 });
 $('#anelli').addEventListener('wheel', e => {
   const g = e.target.closest('.presa'); if (!g) return; e.preventDefault(); primoGesto();
-  if (g.dataset.presa === 'zoom') { zoom = Math.max(.6, Math.min(3, zoom * Math.exp(-e.deltaY * .0012))); disegnaZoom(); }
+  if (g.dataset.presa === 'grande') return;   // il bordo esterno ha la sua rotella, qui sotto
+  else if (g.dataset.presa === 'zoom') { zoomMeta = Math.max(.6, Math.min(3, zoomMeta * Math.exp(-e.deltaY * .0012))); versoLeMete(); }
   else { angNomi -= Math.sign(e.deltaY) * PASSO_NOMI; disegnaNomi(); mostraSito(attivo + Math.sign(e.deltaY)); }
 }, { passive: false });
-$('#cattura').addEventListener('dblclick', () => { anima(zoom, 1, 600, v => { zoom = v; disegnaZoom(); }); });
+// LA ROTELLA SUL BORDO ESTERNO (il secondo anello). Ascolta prima di tutti (cattura): così il gesto cominciato sul bordo resta suo anche quando,
+// crescendo, il bordo è scappato da sotto il puntatore e lì sotto adesso ci sono i nomi o la zigrinata.
+let ruotaBordo = 0, ruotaDove = [0, 0];
+addEventListener('wheel', e => {
+  if (!DUE_ANELLI || document.body.classList.contains('aperto')) return;
+  const ora = performance.now(), g = e.target.closest ? e.target.closest('.presa') : null;
+  const sopra = !!g && g.dataset.presa === 'grande', ancora = ora - ruotaBordo < 900 && Math.hypot(e.clientX - ruotaDove[0], e.clientY - ruotaDove[1]) < 80;
+  if (!sopra && !ancora) return;
+  e.preventDefault(); e.stopPropagation(); primoGesto();
+  if (!ancora) ruotaDove = [e.clientX, e.clientY];
+  ruotaBordo = ora;
+  if (ora < fermoFino) { fermoFino = ora + 450; return; }   // appena tornato a riposo: resta lì finché la rotella non si ferma
+  const prima = giroMeta; giroMeta = stringiGiro(giroMeta + e.deltaY * .18);   // una tacca di rotella = 18 gradi di bordo; sei tacche = tutta la corsa
+  if (prima && Math.sign(giroMeta) !== Math.sign(prima)) { giroMeta = 0; fermoFino = ora + 450; }
+  versoLeMete();
+}, { capture: true, passive: false });
+$('#cattura').addEventListener('dblclick', () => { zoomMeta = 1; giroMeta = 0; versoLeMete(); });   // doppio clic sulla lente: sito e obiettivo tornano alla misura di partenza
 
 /* ---------- la lente (9/11, Franco: «i movimenti alto, basso, sinistra, destra non li controllo tanto»): prima scorreva da sola avvicinando il puntatore al bordo.
    Ora si afferra la lente e si trascina: il sito segue la mano, il telescopio si inclina dalla parte in cui si tira, lasciando il sito scivola ancora un poco e si ferma.
@@ -587,7 +648,8 @@ addEventListener('keydown', e => {
   if (aperto) return;
   const k = { ArrowDown: [0, 160], ArrowUp: [0, -160], PageDown: [0, 600], PageUp: [0, -600], ArrowLeft: [40, 0], ArrowRight: [-40, 0] }[e.key];
   if (k) { e.preventDefault(); primoGesto(); if (k[1]) scorri(k[1]); if (k[0]) { panX += k[0]; disegnaZoom(); } spinta = [spinta[0] - k[0] * .3, spinta[1] - k[1] * .05]; }
-  if (e.key === '+' || e.key === '-') { zoom = Math.max(.6, Math.min(3, zoom * (e.key === '+' ? 1.15 : 1 / 1.15))); disegnaZoom(); }
+  // + e -: il sito nel vetro, come la ghiera zigrinata
+  if (e.key === '+' || e.key === '-') { zoomMeta = Math.max(.6, Math.min(3, zoomMeta * (e.key === '+' ? 1.15 : 1 / 1.15))); versoLeMete(); }
 });
 
 const forza = (qs.get('gira') || '').split(',').map(Number);
@@ -607,7 +669,7 @@ function giro() {
   }
   tel.style.setProperty('--ry', tx.toFixed(2) + 'deg'); tel.style.setProperty('--rx', (-ty).toFixed(2) + 'deg');
   // la messa a fuoco: durante lo zoom il sito si sfoca appena e torna nitido in fretta
-  sfoca = Math.max(sfoca * .8, Math.min(2.2, Math.abs(zoom - ultimoZoom) * 40)); ultimoZoom = zoom;
+  sfoca = Math.max(sfoca * .8, Math.min(2.2, Math.abs(zoom * grande - ultimoZoom) * 40)); ultimoZoom = zoom * grande;
   sito.style.setProperty('--sfoca', sfoca > .2 ? sfoca.toFixed(2) + 'px' : '0px');
   requestAnimationFrame(giro);
 }
@@ -1014,7 +1076,7 @@ setTimeout(pronto, 9000);   // riserva, se un sito tarda a caricarsi
 if (qs.has('apri')) setTimeout(() => apriSito(+qs.get('apri')), +(qs.get('dopo') || 5200));
 disegnaDiaframma(qs.get('diaframma') !== null ? +qs.get('diaframma') : 0);
 angNomi = -attivo * PASSO_NOMI; disegnaNomi(); disegnaZoom();
-addEventListener('resize', disegnaZoom);
+addEventListener('resize', () => { giroMeta = stringiGiro(giroMeta); mettiGiro(giroBordo); });
 if (MUOVI && !qs.has('gira')) {
   tel.classList.add('intro', 'gira'); tel.style.setProperty('--iry', '-28deg'); tel.style.setProperty('--irx', '6deg');
   requestAnimationFrame(() => requestAnimationFrame(() => { tel.classList.remove('gira'); tel.style.transition = 'transform 1.8s cubic-bezier(.2,.7,.2,1)'; tel.style.setProperty('--iry', '0deg'); tel.style.setProperty('--irx', '0deg'); setTimeout(() => { tel.style.transition = ''; tel.classList.remove('intro'); requestAnimationFrame(giro); }, 1850); }));
@@ -1024,7 +1086,7 @@ else mostraSito(attivo, true).then(() => {
   pronto();
   // la ghiera dello zoom gira un poco da sola, per far capire che si tocca
   if (!MUOVI) return;
-  setTimeout(async () => { if (toccato) return; await anima(1, 1.6, 900, v => { zoom = v; disegnaZoom(); }); await new Promise(r => setTimeout(r, 500)); await anima(1.6, 1, 900, v => { zoom = v; disegnaZoom(); }); }, 1200);
+  setTimeout(async () => { if (toccato) return; await anima(1, 1.6, 900, v => { zoom = zoomMeta = v; disegnaZoom(); }); await new Promise(r => setTimeout(r, 500)); await anima(1.6, 1, 900, v => { zoom = zoomMeta = v; disegnaZoom(); }); if (!DUE_ANELLI || toccato) return; await new Promise(r => setTimeout(r, 400)); await anima(0, -24, 900, mettiGiro); await new Promise(r => setTimeout(r, 400)); await anima(-24, 0, 900, mettiGiro); }, 1200);
 });
 </script>
 </body>
