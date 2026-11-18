@@ -304,6 +304,9 @@ body.tel .didascalia { padding: 9px 13px 10px; gap: 4px; bottom: max(10px, 1.6sv
 body.tel .didascalia b { font-size: .82rem; line-height: 1.35; }
 body.tel .aiuto { font-size: .72rem; line-height: 1.4; }
 body.tel .aiuto.via { display: none; }
+body.tel .aiuto.nota, body.tel .aiuto.nota.via { display: block; opacity: 1; color: #f5f7fa; font-weight: 600; }   /* la nota «aprilo da uno schermo grande» resta sempre */
+@keyframes batte { 50% { opacity: .3; } }
+body.tel .aiuto.nota.batte { animation: batte .45s ease-in-out 2; }
 /* il nome (scelto da Franco il 9/11). 11/11, Franco, con l'immagine del suo marchio (../ispirazioni/franco-obiettivo-moderno-7-marchio.jpg): «la scritta Zenit Atelier
    è meglio come la vedi qui»: «Zenit» pieno e «Atelier» sottile, minuscole, dentro una targhetta di vetro con gli angoli da mirino, due crocette e un filo di luce rame sotto.
    Niente sfocatura dietro (sopra le strisce che si muovono pesa): il vetro è una velatura. */
@@ -452,6 +455,13 @@ window.TELEFONO = { tel: TEL, copre: () => {
   for (let i = 0; i < pezzi.length; i++) for (let j = i + 1; j < pezzi.length; j++) { const a = pezzi[i][1], b = pezzi[j][1], w = Math.min(a.right, b.right) - Math.max(a.left, b.left), h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top); if (w > 3 && h > 3) esce.push(pezzi[i][0] + ' sopra ' + pezzi[j][0]); }
   if (t.left < -12 || t.right > innerWidth + 12) esce.push('l\'obiettivo esce di lato di ' + Math.round(Math.max(-t.left, t.right - innerWidth)) + ' px');   // a riposo il riquadro sporge di qualche pixel (l'alone del bordo): si segnala solo quando esce davvero
   return esce; } };
+/* IL SEGNO «PROVATO SUL TELEFONO» (18/11/2026 notte, Franco dal telefono, su Hora Vera: «è sfasato sulle visioni. Non si vede un kaiser. VENEZIA AUTUNNO è tagliato…»; «Perché questi controlli non sono stati fatti?»).
+   Sul telefono un sito si apre a tutta pagina SOLO se nella sua riga di SITI c'è telefono: true, e quel segno si mette solo dopo che Franco l'ha provato sul suo telefono.
+   Senza il segno il sito resta nella lente, sotto compare la nota e il tocco non lo apre. Hora Vera lo avrà alla tappa 1.7 della scaletta. */
+const AIUTO_TEL = 'Gira la ghiera o tocca un nome per cambiare sito · tocca la lente per aprirlo', NOTA_TEL = 'Questo sito è un film: aprilo da uno schermo grande';
+function notaTel(batti) { if (!TEL) return; const a = document.querySelector('#aiuto'), chiuso = !SITI[attivo].telefono;
+  if (chiuso) a.textContent = NOTA_TEL; else if (a.classList.contains('nota')) a.textContent = AIUTO_TEL;
+  a.classList.toggle('nota', chiuso); a.classList.remove('batte'); if (chiuso && batti) { void a.offsetWidth; a.classList.add('batte'); } }
 const qs = new URLSearchParams(location.search);   // per le prove: ?zoom=2&diaframma=0.5&sito=1&gira=10,6&disp=scalinata&apri=0
 /* i siti nella ghiera: nome inciso, indirizzo, colore di fondo (per quando prende tutta la pagina), cosa fa per il cliente, e le sue carte: una riga per striscia
    (le carte stanno in carte/ e si fanno con strumenti/carte-sito.js). Sito nuovo = una riga qui.
@@ -461,7 +471,7 @@ const serie = (nome, da, a) => Array.from({ length: a - da + 1 }, (_, k) => nome
 // 17/11/2026: quando la vetrina e in inglese, anche il sito nella lente e a tutta pagina si apre in inglese (?lang=en; un sito che non lo conosce lo ignora)
 const inLingua = src => document.documentElement.lang === 'en' ? src + (src.includes('?') ? '&' : '?') + 'lang=en' : src;
 const SITI = [
-  { nome: 'STUDIO ANGELICATA', src: 'siti/angelicata/index.html', fondo: '#f4ede3', esce: '#f6efe5', fa: "Studio legale · calcola le scadenze, capisce le parole della gente, mette in ordine le richieste",
+  { nome: 'STUDIO ANGELICATA', telefono: true, src: 'siti/angelicata/index.html', fondo: '#f4ede3', esce: '#f6efe5', fa: "Studio legale · calcola le scadenze, capisce le parole della gente, mette in ordine le richieste",
     carte: [serie('angelicata', 1, 8), serie('angelicata', 9, 15)] },
   { nome: 'HORA VERA', src: 'siti/horavera/ora-vera.html', fondo: '#0a0908', spenta: ['hora-', 'hora-g-'], fa: "Orologi d'autore · racconta il tempo come un film: otto città dall'alba alla sera, quattro tempi, l'atelier",
     carte: [serie('hora', 1, 8), serie('hora', 9, 14)] }
@@ -589,7 +599,7 @@ function anima(da, a, ms, passo) {
 let cambiando = false, caricato = -1;
 async function mostraSito(i, primo) {
   attivo = (i + SITI.length) % SITI.length; disegnaNomi(); accendi();
-  $('#cosa-fa').textContent = SITI[attivo].fa;
+  $('#cosa-fa').textContent = SITI[attivo].fa; notaTel();
   if (cambiando) return; cambiando = true;
   // 12/11: se intanto qualcuno clicca un nome e il sito esce dalla lente, le lamelle le muove l'uscita (apriSito): qui ci si ferma, se no i due movimenti si pestano i piedi
   const lamelle = v => { if (!aperto) disegnaDiaframma(v); };
@@ -998,6 +1008,7 @@ const pienoPronto = i => new Promise(fine => { const t0 = performance.now(); let
   setTimeout(guarda, 40); })(); });
 const pulisciPiena = () => { clearTimeout(sonno); paginaPiena.classList.remove('vista', 'dorme', 'piena'); paginaPiena.style.transition = paginaPiena.style.opacity = ''; cerchio.style.transition = cerchio.style.transform = pieno.style.transition = pieno.style.transform = ''; pieno.classList.remove('vivo'); };
 async function apriSito(i) {
+  if (TEL && !SITI[i].telefono) { if (i !== attivo) { angNomi = -i * PASSO_NOMI; mostraSito(i); } notaTel(true); return; }   // sul telefono, senza il segno «provato sul telefono», non si apre: resta nella lente con la nota
   if (aperto) return; aperto = true; const mio = ++giroUscita; primoGesto(); clearTimeout(preparo); clearTimeout(copre);
   if (paginaPiena.classList.contains('vista')) { pulisciPiena(); pienoDi = -1; }   // riaperto mentre si stava ancora chiudendo: si ricarica da capo
   if (i !== attivo) {   // il nome cliccato va sotto la tacca e il suo sito nella lente: al ritorno si ritrova quello
@@ -1153,6 +1164,7 @@ const EN = {
   'Il sito dentro la lente': 'The website inside the lens', 'Il sito a tutta pagina': 'The website, full screen',
   'Lente: trascina o usa la rotella per muoverti nel sito; frecce della tastiera per scorrere': 'Lens: drag or use the wheel to move around the site; arrow keys to scroll',
   'Gira la ghiera o tocca un nome per cambiare sito · tocca la lente per aprirlo': 'Turn the ring or tap a name to change site · tap the lens to open it',
+  'Questo sito è un film: aprilo da uno schermo grande': 'This site is a film: open it on a large screen',
   'Clicca un nome sulla ghiera per aprire il sito a tutta pagina · gira la ghiera per cambiare sito · la ghiera zigrinata avvicina · afferra la lente e trascina per muoverti': 'Click a name on the ring to open the site full screen · turn the ring to change site · the knurled ring zooms in · grab the lens and drag to move around',
   'Clicca un nome sulla ghiera per aprire il sito a tutta pagina · gira la ghiera per cambiare sito · la ghiera zigrinata avvicina il sito · il bordo esterno ingrandisce l\'obiettivo · afferra la lente e trascina per muoverti': 'Click a name on the ring to open the site full screen · turn the ring to change site · the knurled ring zooms the site · the outer rim enlarges the lens · grab the lens and drag to move around',
   'Come disporre i siti intorno alla lente': 'How to arrange the sites around the lens', 'In salita': 'Rising', 'In discesa': 'Falling', 'A scalinata': 'Staircase',
