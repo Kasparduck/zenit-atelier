@@ -531,7 +531,7 @@ const inLingua = src => document.documentElement.lang === 'en' ? src + (src.incl
 const SITI = [
   { nome: 'STUDIO ANGELICATA', telefono: true, src: 'siti/angelicata/index.html', fondo: '#f4ede3', esce: '#f6efe5', fa: "Studio legale · calcola le scadenze, capisce le parole della gente, mette in ordine le richieste",
     carte: [serie('angelicata', 1, 8), serie('angelicata', 9, 15)] },
-  { nome: 'HORA VERA', src: 'siti/horavera/ora-vera.html', fondo: '#0a0908', spenta: ['hora-', 'hora-g-'], fa: "Orologi d'autore · racconta il tempo come un film: otto città dall'alba alla sera, quattro tempi, l'atelier",
+  { nome: 'HORA VERA', telefono: true, src: 'siti/horavera/ora-vera.html', fondo: '#0a0908', spenta: ['hora-', 'hora-g-'], fa: "Orologi d'autore · racconta il tempo come un film: otto città dall'alba alla sera, quattro tempi, l'atelier",
     carte: [serie('hora', 1, 8), serie('hora', 9, 14)] }
 ];
 const PASSO_NOMI = 360 / SITI.length;
@@ -1077,7 +1077,7 @@ function saliEApri(i) {
   let giro = Promise.resolve();
   if (v.classList.contains('in-alto')) { void v.getBBox(); v.classList.add('lampo'); }   // la piastrina riparte da capo: si accende adesso
   else { let meta = -i * PASSO_NOMI; while (meta - angNomi > 180) meta -= 360; while (meta - angNomi < -180) meta += 360; giro = anima(angNomi, meta, 1100, a => { if (mio !== giroSalita) return; angNomi = a; disegnaNomi(); }); }
-  giro.then(() => attesa(1150)).then(() => { if (mio !== giroSalita) return; salendo = false; v.classList.remove('lampo'); if (!aperto) apriSito(i); });
+  giro.then(() => attesa(T_NOME)).then(() => { if (mio !== giroSalita) return; salendo = false; v.classList.remove('lampo'); if (!aperto) apriSito(i); });
 }
 // l'apertura in attesa si annulla (sul telefono, quando si sceglie un altro sito: puntino, dito che sfoglia, ghiera presa). Dice se ce n'era una
 function annullaSalita() { if (!salendo) return false; giroSalita++; salendo = false; document.querySelectorAll('.voce.lampo').forEach(v => v.classList.remove('lampo')); return true; }
@@ -1117,7 +1117,13 @@ document.querySelectorAll('.voce').forEach(v => {
    tutta la pagina insieme, piano; i tempi sono più lunghi (circa 5 secondi e mezzo); e si muovono solo «transform» e «opacity» con transizioni fatte partire
    una volta (vedi .pp-cerchio nello stile): niente più numeri scritti a ogni fotogramma, tranne le lamelle, che stanno in uno strato loro. ---------- */
 const pieno = $('#pieno'), paginaPiena = $('#pagina-piena'), cerchio = $('#pp-cerchio'), torna = $('#torna'), scena = document.querySelector('.scena');
-const T_ESCE = 2600, T_FERMO = 250, T_LUCE = 2600, FACILE = 'cubic-bezier(.65, 0, .35, 1)';
+/* SUL TELEFONO L'USCITA È SVELTA (18/11/2026, Franco dal suo telefono: «io tocco al centro dell'obiettivo ma non si apre nulla»; «Il lasso di tempo tra il tocco
+   e l'apertura del sito è troppo lungo»). Prima: fino a 5 secondi FERMI ad aspettare che il sito a tutta pagina fosse caricato (sulla rete del telefono ci arrivava
+   quasi sempre), poi 2,6 secondi di uscita: quasi 8 secondi, e da una pagina intorno 1,15 in più. Sul telefono (TEL): si aspetta al massimo 0,6 secondi (ATTESA_PIENO),
+   l'uscita dura 1,5 secondi, la luce torna in 1,6, e da una pagina intorno il nome resta acceso 0,45 secondi. Stessa sequenza, stessi gesti: solo i tempi.
+   Sul computer i tempi sono quelli approvati. Il sito che finisce di caricarsi DOPO che la luce è tornata non riceve più il rovescio (luceTornata), se no resterebbe capovolto. */
+const T_ESCE = TEL ? 1500 : 2600, T_FERMO = 250, T_LUCE = TEL ? 1600 : 2600, ATTESA_PIENO = TEL ? 600 : 5000, T_NOME = TEL ? 450 : 1150, FACILE = 'cubic-bezier(.65, 0, .35, 1)';
+let luceTornata = false;
 let aperto = false, copre = null, giroUscita = 0;
 const attesa = ms => new Promise(r => setTimeout(r, ms)), dueFotogrammi = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 // le misure dello schermo per il sito a tutta pagina e per il suo cerchio (la mezza diagonale: un disco così copre tutto lo schermo)
@@ -1134,7 +1140,7 @@ function preparaPieno(i) {
   if (pienoDi === i) return; pienoDi = i; pienoCaricato = pienoRovescio = false; clearTimeout(sonno); paginaPiena.classList.remove('dorme');
   pieno.onload = () => {
     if (pienoDi !== i || /^about:/.test(pieno.getAttribute('src') || 'about:')) return; pienoCaricato = true;
-    pieno.contentWindow.postMessage({ rovescio: 1, foto: scuro(i) ? 1 : .6 }, '*');
+    if (!(aperto && luceTornata)) pieno.contentWindow.postMessage({ rovescio: 1, foto: scuro(i) ? 1 : .6 }, '*');   // arrivato dopo che la luce è tornata: resta com'è
     sonno = setTimeout(() => { if (pienoDi === i && !aperto) paginaPiena.classList.add('dorme'); }, 4500);   // fatta la sua entrata, il sito nascosto si ferma
   };
   // (17/11) «esce»: il colore intorno al sito mentre esce, per i siti che NON escono capovolti ma con una veste loro (lo studio esce chiaro, come
@@ -1146,12 +1152,12 @@ const preparaTraPoco = (i, ms) => { clearTimeout(preparo); preparo = setTimeout(
 const pienoPronto = i => new Promise(fine => { const t0 = performance.now(); let dalCarico = 0; (function guarda() {
   const ora = performance.now(); if (pienoDi !== i) return fine();
   if (pienoCaricato && !dalCarico) dalCarico = ora;
-  if ((pienoCaricato && (pienoRovescio || ora - dalCarico > 500)) || ora - t0 > 5000) return fine();
+  if ((pienoCaricato && (pienoRovescio || ora - dalCarico > 500)) || ora - t0 > ATTESA_PIENO) return fine();
   setTimeout(guarda, 40); })(); });
 const pulisciPiena = () => { clearTimeout(sonno); paginaPiena.classList.remove('vista', 'dorme', 'piena'); paginaPiena.style.transition = paginaPiena.style.opacity = ''; cerchio.style.transition = cerchio.style.transform = pieno.style.transition = pieno.style.transform = ''; pieno.classList.remove('vivo'); };
 async function apriSito(i) {
   if (chiuso(i)) { if (i !== attivo) { angNomi = -i * PASSO_NOMI; mostraSito(i); } notaTel(true); return; }   // su un telefono (dritto o di traverso), senza il segno «provato sul telefono», non si apre da nessuna porta: resta nella lente con la nota
-  if (aperto) return; aperto = true; const mio = ++giroUscita; primoGesto(); clearTimeout(preparo); clearTimeout(copre);
+  if (aperto) return; aperto = true; luceTornata = false; const mio = ++giroUscita; primoGesto(); clearTimeout(preparo); clearTimeout(copre);
   if (paginaPiena.classList.contains('vista')) { pulisciPiena(); pienoDi = -1; }   // riaperto mentre si stava ancora chiudendo: si ricarica da capo
   if (i !== attivo) {   // il nome cliccato va sotto la tacca e il suo sito nella lente: al ritorno si ritrova quello
     let meta = -i * PASSO_NOMI; while (meta - angNomi > 180) meta -= 360; while (meta - angNomi < -180) meta += 360;
@@ -1197,7 +1203,7 @@ async function apriSito(i) {
   cerchio.style.transition = pieno.style.transition = scena.style.transition = 'none'; metti(1); scena.style.opacity = 0; disegnaDiaframma(0);
   paginaPiena.classList.add('piena'); document.body.classList.add('coperto'); pieno.classList.add('vivo'); torna.tabIndex = 0;
   // 3) un attimo fermo, poi la luce torna su tutta la pagina insieme, piano (il sito senza il pezzo del rovescio ignora il messaggio)
-  copre = setTimeout(() => { if (aperto && mio === giroUscita && pieno.contentWindow) pieno.contentWindow.postMessage({ rovescio: 0, ms: MUOVI ? T_LUCE : 0 }, '*'); }, MUOVI ? T_FERMO : 0);
+  copre = setTimeout(() => { if (aperto && mio === giroUscita && pieno.contentWindow) { luceTornata = true; pieno.contentWindow.postMessage({ rovescio: 0, ms: MUOVI ? T_LUCE : 0 }, '*'); } }, MUOVI ? T_FERMO : 0);
 }
 function chiudiSito() {
   if (!aperto) return; aperto = false; const mio = ++giroUscita; chiusoAlle = performance.now(); clearTimeout(salita);
