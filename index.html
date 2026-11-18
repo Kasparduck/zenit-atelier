@@ -298,6 +298,12 @@ body.contatti-aperti .c-e { opacity: 1; transform: none; transition: opacity .7s
 .didascalia span { font-size: .82rem; color: var(--tenue); }
 .aiuto { transition: opacity .8s; }
 .aiuto.via { opacity: 0; }
+/* SUL TELEFONO (18/11/2026): via i tre modi; la descrizione più bassa, che non copre l'obiettivo né il nome in basso; l'aiuto, corto, dopo il primo gesto sparisce del tutto */
+body.tel .modi { display: none; }
+body.tel .didascalia { padding: 9px 13px 10px; gap: 4px; bottom: max(10px, 1.6svh); }
+body.tel .didascalia b { font-size: .82rem; line-height: 1.35; }
+body.tel .aiuto { font-size: .72rem; line-height: 1.4; }
+body.tel .aiuto.via { display: none; }
 /* il nome (scelto da Franco il 9/11). 11/11, Franco, con l'immagine del suo marchio (../ispirazioni/franco-obiettivo-moderno-7-marchio.jpg): «la scritta Zenit Atelier
    è meglio come la vedi qui»: «Zenit» pieno e «Atelier» sottile, minuscole, dentro una targhetta di vetro con gli angoli da mirino, due crocette e un filo di luce rame sotto.
    Niente sfocatura dietro (sopra le strisce che si muovono pesa): il vetro è una velatura. */
@@ -434,6 +440,18 @@ body.aperto .invito { pointer-events: none; }
 <script>
 const $ = s => document.querySelector(s);
 const MUOVI = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* SUL TELEFONO (18/11/2026, Franco dal suo telefono: «mi sembra un po' incasinato e le ghiere si muovono ma è scomodo»; «tutto si sovrappone un po'»; al rimedio: «Ok, fai del tuo meglio»).
+   Con un dito l'obiettivo cresceva sopra le scritte e il sito scivolava di lato nella lente. Sullo schermo stretto le ghiere si vedono tutte ma girano solo i NOMI (da qualunque anello si prenda),
+   toccare un nome porta lì il suo sito, toccare la lente lo apre; niente ingrandimenti, niente scivolata di lato, niente tre modi. Sul computer resta tutto com'era.
+   TELEFONO.copre() dice che cosa si copre con che cosa: lo chiede strumenti/vetrina-online.js a 360 × 662 prima di pubblicare. */
+const TEL = matchMedia('(max-aspect-ratio: 5/4), (max-width: 820px)').matches; document.body.classList.toggle('tel', TEL);
+window.TELEFONO = { tel: TEL, copre: () => {
+  const t = document.querySelector('#telescopio').getBoundingClientRect(), cx = t.left + t.width / 2, cy = t.top + t.height / 2, r = t.width / 2, esce = [];
+  const pezzi = [['descrizione', '.didascalia'], ['linguetta', '#lingua'], ['targa', '.targa'], ['invito', '#invito'], ['busta', '.busta'], ['tre modi', '#modi']].map(([n, s]) => { const e = document.querySelector(s); if (!e || getComputedStyle(e).display === 'none') return null; const q = e.getBoundingClientRect(); return q.width ? [n, q] : null; }).filter(Boolean);
+  for (const [n, q] of pezzi) { const dx = Math.max(q.left - cx, 0, cx - q.right), dy = Math.max(q.top - cy, 0, cy - q.bottom), dentro = r - Math.hypot(dx, dy); if (dentro > 3) esce.push(n + ' sopra l\'obiettivo di ' + Math.round(dentro) + ' px'); }
+  for (let i = 0; i < pezzi.length; i++) for (let j = i + 1; j < pezzi.length; j++) { const a = pezzi[i][1], b = pezzi[j][1], w = Math.min(a.right, b.right) - Math.max(a.left, b.left), h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top); if (w > 3 && h > 3) esce.push(pezzi[i][0] + ' sopra ' + pezzi[j][0]); }
+  if (t.left < -12 || t.right > innerWidth + 12) esce.push('l\'obiettivo esce di lato di ' + Math.round(Math.max(-t.left, t.right - innerWidth)) + ' px');   // a riposo il riquadro sporge di qualche pixel (l'alone del bordo): si segnala solo quando esce davvero
+  return esce; } };
 const qs = new URLSearchParams(location.search);   // per le prove: ?zoom=2&diaframma=0.5&sito=1&gira=10,6&disp=scalinata&apri=0
 /* i siti nella ghiera: nome inciso, indirizzo, colore di fondo (per quando prende tutta la pagina), cosa fa per il cliente, e le sue carte: una riga per striscia
    (le carte stanno in carte/ e si fanno con strumenti/carte-sito.js). Sito nuovo = una riga qui.
@@ -537,6 +555,7 @@ if (DUE_ANELLI) {
     return `<line x1="${(s * (r1 - k)).toFixed(1)}" y1="${(c * (r1 - k)).toFixed(1)}" x2="${(s * (r2 + k)).toFixed(1)}" y2="${(c * (r2 + k)).toFixed(1)}"/>`; }).join('');
   $('#tacche-zoom').innerHTML = tacche(396, 408, 5); $('#tacche-grande').innerHTML = tacche(471, 481, 4);
   $('#aiuto').textContent = 'Clicca un nome sulla ghiera per aprire il sito a tutta pagina · gira la ghiera per cambiare sito · la ghiera zigrinata avvicina il sito · il bordo esterno ingrandisce l\'obiettivo · afferra la lente e trascina per muoverti';
+  if (TEL) $('#aiuto').textContent = 'Gira la ghiera o tocca un nome per cambiare sito · tocca la lente per aprirlo';
 }
 function disegnaZoom() {
   $('#ghiera-zoom').setAttribute('transform', `rotate(${-posZoom(zoom)})`); $('#ghiera-grande').setAttribute('transform', `rotate(${giroBordo.toFixed(2)})`);
@@ -593,7 +612,7 @@ function primoGesto() { if (!toccato) { toccato = true; $('#aiuto').classList.ad
 $('#anelli').addEventListener('pointerdown', e => {
   const g = e.target.closest('.presa'); if (!g) return;
   // 9/11: prima chiudeva subito il sito anche con un semplice clic sul nome; ora lo chiude solo se la ghiera gira davvero (vedi pointermove)
-  presa = g.dataset.presa; girato = 0; voceGiu = e.target.closest('.voce'); angPrima = angolo(e); g.setPointerCapture?.(e.pointerId); e.preventDefault(); primoGesto();
+  presa = TEL ? 'nomi' : g.dataset.presa; girato = 0; voceGiu = e.target.closest('.voce'); angPrima = angolo(e); g.setPointerCapture?.(e.pointerId); e.preventDefault(); primoGesto();
 });
 addEventListener('pointermove', e => {
   if (!presa) return;
@@ -607,7 +626,11 @@ addEventListener('pointerup', e => {
   // un clic sul nome (senza girare la ghiera) apre il sito di quel nome a tutta pagina (11/11).
   // Il nome si ricorda dal pointerdown: con il mouse agganciato alla ghiera, il rilascio arriva alla ghiera e non al nome
   const v = voceGiu; voceGiu = null;
-  if (presa === 'nomi' && girato <= 3 && v) { presa = null; apriSito(+v.dataset.i); return; }
+  if (presa === 'nomi' && girato <= 3 && v) { presa = null; const i = +v.dataset.i;
+    // sul telefono il nome toccato va sotto la tacca con il suo sito (per aprirlo si tocca la lente, o di nuovo il nome); sul computer il clic lo apre, come sempre
+    if (TEL && i !== attivo) { let meta = -i * PASSO_NOMI; while (meta - angNomi > 180) meta -= 360; while (meta - angNomi < -180) meta += 360; anima(angNomi, meta, 500, a => { angNomi = a; disegnaNomi(); }); mostraSito(i); }
+    else apriSito(i);
+    return; }
   if (presa === 'nomi') {   // la ghiera dei nomi scatta sul nome più vicino alla tacca
     const i = ((Math.round(-angNomi / PASSO_NOMI) % SITI.length) + SITI.length) % SITI.length, meta = -Math.round(-angNomi / PASSO_NOMI) * PASSO_NOMI, da = angNomi;
     anima(da, meta, 450, v => { angNomi = v; disegnaNomi(); });
@@ -645,18 +668,20 @@ $('#cattura').addEventListener('dblclick', () => { zoomMeta = 1; giroMeta = 0; v
 const scorri = px => cornice.contentWindow && cornice.contentWindow.postMessage({ scorri: px }, '*');
 const lente = $('#cattura'), limita = (v, m) => Math.max(-m, Math.min(m, v));
 lente.addEventListener('wheel', e => { e.preventDefault(); primoGesto(); scorri(e.deltaY / (scala() * zoom)); }, { passive: false });
-let mira = [0, 0], sopra = false, presaLente = null, spinta = [0, 0], inerzia = [0, 0], ultimoMoto = 0;
+let mossaLente = 0, mira = [0, 0], sopra = false, presaLente = null, spinta = [0, 0], inerzia = [0, 0], ultimoMoto = 0;
 lente.addEventListener('pointerenter', () => { sopra = true; });
 lente.addEventListener('pointerleave', () => { sopra = false; mira = [0, 0]; });
-lente.addEventListener('pointerdown', e => { presaLente = [e.clientX, e.clientY]; inerzia = [0, 0]; lente.setPointerCapture?.(e.pointerId); lente.classList.add('presa-lente'); primoGesto(); });
+lente.addEventListener('pointerdown', e => { mossaLente = 0; presaLente = [e.clientX, e.clientY]; inerzia = [0, 0]; lente.setPointerCapture?.(e.pointerId); lente.classList.add('presa-lente'); primoGesto(); });
 lente.addEventListener('pointermove', e => {
   const r = lente.getBoundingClientRect(); mira = [(e.clientX - r.left) / r.width * 2 - 1, (e.clientY - r.top) / r.height * 2 - 1];
   if (!presaLente) return;
-  const dx = e.clientX - presaLente[0], dy = e.clientY - presaLente[1]; presaLente = [e.clientX, e.clientY];
+  mossaLente += Math.abs(e.clientX - presaLente[0]) + Math.abs(e.clientY - presaLente[1]);
+  const dx = TEL ? 0 : e.clientX - presaLente[0], dy = e.clientY - presaLente[1]; presaLente = [e.clientX, e.clientY];   // sul telefono il sito scorre su e giù ma non scivola di lato
   scorri(-dy / (scala() * zoom)); panX += dx; disegnaZoom();
   spinta = [spinta[0] + dx, spinta[1] + dy]; inerzia = [inerzia[0] * .5 + dx * .5, inerzia[1] * .5 + dy * .5]; ultimoMoto = performance.now();
 });
 const lascia = () => { if (!presaLente) return; presaLente = null; lente.classList.remove('presa-lente'); if (performance.now() - ultimoMoto > 90) inerzia = [0, 0]; };
+lente.addEventListener('pointerup', () => { if (TEL && presaLente && mossaLente < 8 && !document.body.classList.contains('aperto')) apriSito(attivo); });   // sul telefono un tocco sulla lente apre il sito
 lente.addEventListener('pointerup', lascia); lente.addEventListener('pointercancel', lascia);
 addEventListener('keydown', e => {
   if (contattiAperti) { if (e.key === 'Escape') chiudiContatti(); return; }   // mentre si scrive nei contatti, frecce e + / − non muovono la lente
@@ -1127,6 +1152,7 @@ const EN = {
   'Un telescopio puntato verso di te: nella lente si vede un sito vero': 'A telescope pointed at you: a real website shows in the lens',
   'Il sito dentro la lente': 'The website inside the lens', 'Il sito a tutta pagina': 'The website, full screen',
   'Lente: trascina o usa la rotella per muoverti nel sito; frecce della tastiera per scorrere': 'Lens: drag or use the wheel to move around the site; arrow keys to scroll',
+  'Gira la ghiera o tocca un nome per cambiare sito · tocca la lente per aprirlo': 'Turn the ring or tap a name to change site · tap the lens to open it',
   'Clicca un nome sulla ghiera per aprire il sito a tutta pagina · gira la ghiera per cambiare sito · la ghiera zigrinata avvicina · afferra la lente e trascina per muoverti': 'Click a name on the ring to open the site full screen · turn the ring to change site · the knurled ring zooms in · grab the lens and drag to move around',
   'Clicca un nome sulla ghiera per aprire il sito a tutta pagina · gira la ghiera per cambiare sito · la ghiera zigrinata avvicina il sito · il bordo esterno ingrandisce l\'obiettivo · afferra la lente e trascina per muoverti': 'Click a name on the ring to open the site full screen · turn the ring to change site · the knurled ring zooms the site · the outer rim enlarges the lens · grab the lens and drag to move around',
   'Come disporre i siti intorno alla lente': 'How to arrange the sites around the lens', 'In salita': 'Rising', 'In discesa': 'Falling', 'A scalinata': 'Staircase',
@@ -1187,7 +1213,7 @@ if (qs.get('lingua') !== 'no') {   // la linguetta di serie dal 18/11/2026: i tr
   b.style.background = SCURO;
   // SUL TELEFONO (18/11/2026): a meta altezza la linguetta, grande come sul computer, copriva il bordo destro dell'obiettivo, che li occupa tutta la larghezza.
   // Piu piccola e piu in alto: a quattro quinti del raggio sopra il centro, dove il cerchio si e gia stretto e a destra resta posto.
-  const stretto = matchMedia('(max-aspect-ratio: 5/4), (max-width: 820px)'), posto = () => { const s = stretto.matches; b.style.top = s ? 'calc(50% - min(39vw, 37svh))' : '50%'; b.style.fontSize = s ? '10px' : '14px'; b.style.padding = s ? '13px 6px 13px 7px' : '24px 12px 24px 13px'; b.style.borderWidth = s ? '3px' : '4px'; b.style.borderRightWidth = '0'; };
+  const stretto = matchMedia('(max-aspect-ratio: 5/4), (max-width: 820px)'), posto = () => { const s = stretto.matches; b.style.top = s ? 'max(64px, calc(50% - min(39vw, 37svh) - 52px))' : '50%';   /* 18/11 notte: 52 px più su, toccava ancora il bordo dell'obiettivo (foto di Franco dal telefono) */ b.style.fontSize = s ? '10px' : '14px'; b.style.padding = s ? '13px 6px 13px 7px' : '24px 12px 24px 13px'; b.style.borderWidth = s ? '3px' : '4px'; b.style.borderRightWidth = '0'; };
   posto(); stretto.addEventListener('change', posto);
   b.addEventListener('click', () => LINGUA.metti(lingua === 'en' ? 'it' : 'en'));
   LINGUA.metti(lingua);
