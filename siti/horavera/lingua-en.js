@@ -9,7 +9,7 @@
    solco = cut; quadrante a raggi = sunray dial; contatori = counters; indici = hour markers; lunetta = bezel; secondi piccoli = small seconds;
    cassa = case; bracciale = bracelet; cinturino = strap; subacqueo = diver.
    I NOMI: HORA VERA non si traduce; HOME resta HOME; i nomi degli orologi (Sobieski, Wanli, Patavium…) e i tempi musicali (Largo, Andante…) restano.
-   Le città hanno il nome inglese (Venezia → Venice, Siviglia → Seville, Parigi → Paris, Pechino → Beijing, Padova → Padua). «N. 036» → «No. 036».
+   Le città hanno il nome inglese (Venezia → Venice, Siviglia → Seville, Parigi → Paris, Pechino → Beijing, Padova → Padua). «N. 036» → «No 036» (senza punto, all'inglese: con il punto andava a capo nel registro).
    I numeri: 21.600 → 21,600; 0,08 → 0.08 (la virgola dei decimali diventa punto). Le ore restano sulle 24 (07:12).
    «frasi»: la frase italiana esatta (un pezzo di testo tra due segni, così com'è nella pagina) → l'inglese. Una frase nuova nella pagina = una riga qui. */
 (() => {
@@ -117,7 +117,7 @@
     'Brescia, 26 marzo 1927': 'Brescia, 26 March 1927', 'Parigi, estate 1925': 'Paris, summer 1925',
     "Per un allevatore di cavalli. Volgeva l'anno 1683, e": 'For a horse breeder. The year was 1683, and', 'la cavalleria scendeva dalla collina': 'the cavalry was coming down the hill',
     "Per un maestro di spada. Volgeva l'anno 1580, e": 'For a master of the sword. The year was 1580, and', 'una lama era ancora una disciplina': 'a blade was still a discipline',
-    "Per un pilota di linea. Volgeva l'anno 1910, e": 'For an airline pilot. The year was 1910, and', 'si andava in Francia e si tornava senza posarsi': 'a man flew to France and back without landing',
+    "Per un pilota di linea. Volgeva l'anno 1910, e": 'For an airline pilot. The year was 1910, and', 'si andava in Francia e si tornava senza posarsi': 'a man flew to France and back without landing',
     "Per una guida alpina. Volgeva l'anno 1911, e": 'For a mountain guide. The year was 1911, and', 'si arrivava dove ogni direzione è nord': 'men reached the place where every direction is north',
     "Per una velista oceanica. Volgeva l'anno 1522, e": 'For an ocean sailor. The year was 1522, and', 'tornava la nave che aveva fatto il giro del mondo': 'the ship that had sailed round the world was coming home',
     "Per un astronomo. Volgeva l'anno 1610, e": 'For an astronomer. The year was 1610, and', 'la luna mostrava le sue montagne': 'the moon was showing its mountains',
@@ -168,7 +168,7 @@
     'Montare': 'Assembling', 'Guardare': 'Looking', 'Regolare': 'Regulating', 'Incidere': 'Engraving',
     '· Montare': '· Assembling', '· Guardare': '· Looking', '· Regolare': '· Regulating', '· Incidere': '· Engraving',
     'scorri, e i pezzi entrano nella cassa': 'scroll, and the parts go into the case', 'la lente: passa con il mouse e cerca': 'the loupe: move the mouse and look',
-    "scorri: la punta sposta l'ago": 'scroll: the point moves the index', 'scorri: giri il tornio': 'scroll: you turn the rose engine',
+    "scorri: la punta sposta l'ago": 'scroll: the point moves the index', 'scorri: giri il tornio': 'scroll: turn the lathe',
 
     /* ---------- L'ATELIER · α Montare (i testi tecnici: un fatto per frase, i termini del mestiere) ---------- */
     'Duecentosettanta giorni': 'Two hundred and seventy days', 'per un orologio.': 'for one watch.',
@@ -287,10 +287,10 @@
     [/^A (.+) (sorge il sole|tramonta il sole|è mezzogiorno vero)\.$/, m => CITTA[m[1]] && dove(m[1]) + ' ' + SUCCEDE[m[2]] + '.'],
     [/^qui sono le (\d{2}:\d{2})$/, m => 'here it is ' + m[1]],
     [/^sono le (\d{2}:\d{2}) a (.+)$/, m => CITTA[m[2]] && 'it is ' + m[1] + ' in ' + CITTA[m[2]]],
-    [/^(N\. \d+|Il protagonista) · (.+)$/, m => (m[1] === 'Il protagonista' ? 'The protagonist' : 'No.' + m[1].slice(2)) + ' · ' + (F[m[2]] || m[2])],   // «N. 036 · Wanli»
+    [/^(N\. \d+|Il protagonista) · (.+)$/, m => (m[1] === 'Il protagonista' ? 'The protagonist' : 'No' + m[1].slice(2)) + ' · ' + (F[m[2]] || m[2])],   // «N. 036 · Wanli»
     [/^(.+), (.+)$/, m => CITTA[m[1]] && (NOMI.includes(m[2]) || F[m[2]]) ? CITTA[m[1]] + ', ' + (F[m[2]] || m[2]) : undefined],          // la casella per chi non vede: «Venezia, Patavium»
-    [/^N\. (\d+)$/, m => 'No. ' + m[1]],
-    [/^Ref\. (\d{4}) · N\. (\d+)$/, m => 'Ref. ' + m[1] + ' · No. ' + m[2]],
+    [/^N\. (\d+)$/, m => 'No ' + m[1]],
+    [/^Ref\. (\d{4}) · N\. (\d+)$/, m => 'Ref. ' + m[1] + ' · No ' + m[2]],
     [/^· (.+) · (\d+) di (\d+)$/, m => F[m[1]] && '· ' + F[m[1]] + ' · ' + m[2] + ' of ' + m[3]],                                     // «· Rubino e oro · 1 di 8»
     [/^(\d+) di (\d+)$/, m => m[1] + ' of ' + m[2]],
     [/^Dal (\d{4}) al (\d{4})$/, m => 'From ' + m[1] + ' to ' + m[2]],
