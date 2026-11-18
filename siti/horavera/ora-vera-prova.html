@@ -1,0 +1,1024 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Hora Vera · L'ora vera</title>
+<!-- Hora Vera, la PRIMA PAGINA «L'ora vera»: la presentazione.
+     LA LUCE A CHIAZZE (Franco, 14/11/2026, alla lettera): «Non voglio più l'onda ma lo stesso effetto che hai applicato alle immagini di prima,
+     la differenza è che poi si passa dal dark mode al video non dark diciamo, allargando sempre di più le chiazze chiare, fino a che il "white
+     mode" non appare del tutto»; e prima: «a chiazze molto più larghe in movimento dal dark all'illuminato».
+     COME È FATTA
+     - I due filmati stanno in UN file solo (immagini/presentazione.mp4), uno sopra l'altro: così vanno sempre insieme. Va UNA volta sola e resta
+       sull'ultimo fotogramma (regola di Hora Vera: nessun filmato in giro continuo); dura 9 s e va un po' più piano (DURATA).
+     - AL CONTRARIO (Franco, 14/11 sera: «fai il contrario va, passa dal chiaro allo scuro e alla fine accendi le voci. Se ce n'è una beige o
+       marroncina falla diventare dello stesso colore di alfa, beta, etc.»): si parte dal filmato chiaro; da PRIMA compaiono le chiazze scure (lo
+       stesso rumore che ondeggia degli aloni di L'atelier, ma con chiazze di quasi due terzi di schermo): poche e piccole, poi si allargano e si
+       fondono, finché a TUTTO il filmato scuro copre tutto; poi le scritte, e la voce di questa pagina e i numeri si accendono nel blu di α, β, γ, δ.
+     - La forma delle chiazze la disegna la scheda grafica (WebGL, senza filmato dentro: così funziona anche aperta dal disco), i filmati li unisce
+       una tela normale.
+     - Prima versione (13/11): le onde del mare che si ritirano e tornano (la risacca); sostituita il 14/11 su richiesta di Franco.
+     PROVE: ?seme=7 (sempre le stesse chiazze), ?tempo=7500 (ferma a 7,5 secondi; poi window.vaiA(ms) porta a un altro istante).
+     DAL 15/11 LA PAGINA SCORRE: finita l'apertura (classe «scritte» + 2,5 s) il corpo prende «scorre» e sotto sale <main class="sotto"> con QUATTRO TEMPI.
+     Con ?tempo= non si sblocca mai. Altre prove: ?vai=tempi (sblocca subito e porta alla sezione), ?vai=tempi&carta=N (la carta N al centro, poi «posato»),
+     ?prova=1 (il pulsante «Rivedi · luce nuova»).
+     DAL 16/11 (quarta sessione) LA ROTELLA NON RESTA MAI MORTA: a pagina ancora chiusa la prima spinta in giù (rotella, freccia giù, Pag giù, spazio, il
+     dito) fa correre la presentazione al finale (il filmato otto volte più svelto) e poi la pagina si apre subito e scende; chi non tocca niente vede
+     tutto come prima. Il perché e il codice: «IL TEMPO» nel primo script e «LA ROTELLA NON RESTA MAI MORTA» nel secondo.
+     DAL 16/11 SERA: le voci e «Commissione» ci sono dall'inizio (anche sul chiaro), e la scritta grande HORA VERA affiora una lettera alla volta, in
+     basso: le parole di Franco e come è fatto stanno in testa a «LE SCRITTE» nello stile. Prove: window.scrittaGrande() (ogni lettera: quanto si
+     vede, quanto è discosta, quanto scuro ha dietro), window.provaMacchia(t) (la macchia calcolata per le lettere contro quella disegnata). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root { --blu: #8fb0ee; --blu-buio: #1f242e; --buio: #0a0908; --avorio: #ece5d8; --tenue: #9c9387; --spento: #5d564d; --oro: #d9b08c; --linea: rgb(236 229 216 / .14);
+  --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif; --sans: "Manrope", "Segoe UI", system-ui, sans-serif; }
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; background: var(--buio); }
+body { margin: 0; height: 100vh; height: 100dvh; overflow: hidden; background: var(--buio); color: var(--avorio); font: 400 17px/1.6 var(--sans); -webkit-font-smoothing: antialiased; }
+
+/* la scena: il filmato sotto (serve solo da sorgente), la tela sopra, e un nero che si alza all'inizio */
+.scena { position: fixed; inset: 0; overflow: hidden; background: var(--buio); }
+.scena video { position: absolute; left: 0; top: 0; width: 100%; height: 200%; object-fit: cover; }
+.scena canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.scena::after { content: ""; position: absolute; inset: 0; background: var(--buio); transition: opacity 1.6s ease; }
+body.parte .scena::after { opacity: 0; }
+body.fermo .scena::after { transition: none; }
+
+/* LE SCRITTE (rifatte il 16/11/2026 sera). Le parole di Franco, alla lettera, da spuntare sugli scatti:
+   LE VOCI
+   1. «Ora come ora nella pagina di presentazione le varie voci compaiono solo alla fine, quando la pagina è in dark mode completo. Vorrei che
+      fossero attive anche in modalità non scura.»
+   2. «Si tratta di cambiare loro colore o altro per fare sì che siano sempre visibili al massimo grado. Lì puoi scegliere tu, basta che
+      l'effetto sia bello.»
+   LA SCRITTA GRANDE («Adesso non compare nessuna scritta HORA VERA. L'ho deciso adesso di fare questa comparsa ad effetto.»)
+   3. «Vorrei che scritto grande emergessero sulla pagina di presentazione le lettere di HORA VERA, una alla volta, a partire dalla prima fino
+      all'ultima.»
+   4. «La H compare per prima (vedi anche tu come può cambiare colore o altro insieme alle altre lettere per essere sempre ben visibile sullo
+      sfondo che cambia)»
+   5. «dopo la H compare la O a una piccola distanza dalla H, quella distanza viene poi ridotta perché la O si sposta da destra a sinistra più
+      vicino alla lettera H»
+   6. «dopo compare la lettera R (affiora o emerge, può essere un effetto in cui da massima trasparenza si passa a massima opacità).»
+   7. «La lettera R compare a una distanza dalla precedente (ovvero dalla O) leggermente maggiore della distanza alla quale la lettera O era
+      comparsa vicino alla H.»
+   8. «Anche la lettera R poi riduce la distanza e si avvicina alla O per avere praticamente la stessa distanza fissa che la O ha dalla H.
+      Questo vale per tutte le lettere.»
+   COME È FATTO (scelte di Claude dove Franco ha detto «puoi scegliere tu»):
+   - Ogni lettera che deve leggersi sempre è uno <span class="l">: INCHIOSTRO finché dietro di lei c'è il filmato chiaro, AVORIO quando la
+     macchia scura la raggiunge (la classe «s», che il codice mette lettera per lettera calcolando la stessa macchia del disegno): le parole
+     cambiano tono una lettera dopo l'altra, al passaggio dell'ombra. Intorno a ogni lettera un alone del tono opposto: sul fondo giusto non
+     si vede, e la stacca dove il disegno ha il suo stesso tono (uno schizzo d'inchiostro, il quadrante chiaro).
+   - Le voci e «Commissione» entrano subito, mentre il nero iniziale si alza; «Commissione» resta avorio (lì il disegno è scuro in tutti e due i
+     filmati). Alla fine, come prima, si alza il velo scuro negli angoli e la voce di questa pagina e i numeri hanno il loro bagliore blu.
+   - La scritta grande sta in basso al centro, sotto il viso e la mano; va DA SOLA, con il tempo del filmato: la H affiora a 1,5 secondi, poi una
+     lettera ogni 1,1 secondi: affiora ferma (da trasparente a piena) un po' discosta, e poi scivola da destra a sinistra fino alla distanza
+     di tutte; ogni lettera compare un po' più discosta di quella prima. L'ultima è a posto a 10,2 secondi, quando lo scuro sta per coprire tutto.
+   - Il marchio piccolo sopra le voci è stato tolto: di «HORA VERA» ce n'è una sola, quella grande. */
+:root { --inchiostro: #14120f; --blu-inchiostro: #2c4684; }
+.velo { position: fixed; z-index: 4; inset: 0; pointer-events: none; opacity: 0; transition: opacity 2.2s ease;
+  background: radial-gradient(120% 90% at 0% 0%, rgb(10 9 8 / .62), rgb(10 9 8 / 0) 46%), radial-gradient(60% 40% at 100% 0%, rgb(10 9 8 / .5), rgb(10 9 8 / 0) 60%); }
+.testa { position: fixed; z-index: 5; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; align-items: flex-start; padding: 26px clamp(18px, 4.2vw, 70px); pointer-events: none; }
+.testa a { pointer-events: auto; }
+/* una lettera che si legge sempre: inchiostro sul chiaro, avorio sullo scuro («s»), con l'alone del tono opposto */
+.l { color: var(--inchiostro); text-shadow: 0 0 .5em rgb(236 229 216 / .9), 0 0 .16em rgb(236 229 216 / .85); transition: color .45s ease, text-shadow .45s ease; }
+.l.s { color: var(--avorio); text-shadow: 0 0 .5em rgb(10 9 8 / .8), 0 0 .16em rgb(10 9 8 / .7); }
+.menu ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.menu li { overflow: hidden; }
+body.voci-su .menu li { overflow: visible; }                              /* finita l'entrata, l'alone delle lettere non va più tagliato */
+.menu li a { display: inline-flex; align-items: baseline; gap: 16px; padding: 2px 0; font: 300 clamp(1.3rem, 1.9vw, 1.7rem)/1.15 var(--serif); color: var(--avorio); text-decoration: none;
+  transform: translateY(112%); transition: transform 1.25s cubic-bezier(.2, .7, .1, 1) calc(var(--i) * 170ms + 150ms), color .4s; }
+.menu li a b { min-width: 2.1em; font: 600 .58rem/1 var(--sans); letter-spacing: .22em; color: var(--blu-buio); }
+.menu li a.qui { font-style: italic; color: var(--blu-buio); }
+/* la voce di questa pagina e i numeri: blu d'inchiostro sul chiaro, il blu di alfa e beta sullo scuro; lo stesso per la voce su cui passa il mouse */
+.menu li a b .l, .menu li a.qui .l, .menu li a:hover .l { color: var(--blu-inchiostro); }
+.menu li a b .l.s, .menu li a.qui .l.s, .menu li a:hover .l.s { color: var(--blu); }
+.commissione { font: 600 .68rem/1 var(--sans); letter-spacing: .22em; text-transform: uppercase; color: var(--avorio); text-decoration: none; border: 1px solid rgb(236 229 216 / .3); padding: 11px 16px; opacity: 0;
+  text-shadow: 0 0 .7em rgb(10 9 8 / .85); background: rgb(10 9 8 / .22); transition: opacity 1.6s ease .7s, border-color .4s; }
+.commissione:hover { border-color: var(--oro); }
+/* LA SCRITTA GRANDE: in basso al centro; ogni lettera affiora e poi scivola al suo posto (opacità e spostamento li scrive il codice, dal tempo del filmato) */
+.grande { position: fixed; z-index: 5; left: 0; right: 0; bottom: 11.5vh; margin: 0; display: flex; justify-content: center; white-space: nowrap; pointer-events: none; user-select: none;
+  font: 500 clamp(2.5rem, 9.4vw, 11.5rem)/1 var(--serif); }
+/* due copie una sull'altra. «neg» è il NEGATIVO del disegno (bianca, fusa in «difference»: scura dove il disegno è chiaro, chiara dove è nero) e si
+   vede finché dietro c'è il filmato chiaro; «pos» è avorio con il suo alone scuro e ne prende il posto, lettera per lettera, dove arriva lo scuro */
+.grande.neg { mix-blend-mode: difference; }
+.grande .l { display: inline-block; margin-left: .12em; opacity: 0; will-change: transform, opacity; transition: none; }
+.grande .l:first-child { margin-left: 0; }
+.grande .l.parola { margin-left: .58em; }
+.grande.neg .l { color: #fff; text-shadow: none; }
+.grande.pos .l { color: var(--avorio); text-shadow: 0 0 .045em rgb(10 9 8 / .9), 0 0 .2em rgb(10 9 8 / .65); }
+body.voci .menu li a { transform: none; }
+body.voci .commissione { opacity: 1; }
+body.scritte .velo { opacity: 1; }
+/* LE VOCI SI ACCENDONO (Franco, 14/11: «alla fine accendi le voci»; quelle beige diventano del colore di α, β, γ, δ). Dal 16/11 il blu lo porta
+   già la macchia scura, lettera per lettera; alla fine, quando lo scuro è dappertutto, resta il bagliore: due secondi di luce blu intorno
+   alla voce di questa pagina e ai numeri, che poi si spegne. */
+@keyframes bagliore { 0%, 100% { text-shadow: 0 0 .5em rgb(10 9 8 / .8), 0 0 .16em rgb(10 9 8 / .7); } 60% { text-shadow: 0 0 .4em rgb(105 150 240 / .75), 0 0 .16em rgb(10 9 8 / .7); } }
+/* PAGINA-FLUIDA 8 — Al ritorno il bagliore ritrova il suo tempo anche dopo display:none. */
+body.scritte .menu li a.qui .l, body.scritte .menu li a b .l { animation: bagliore 2s ease-out calc(var(--i) * 170ms + 500ms - var(--bagliore-passato, 0ms)); }
+
+/* solo per la prova: rivedere con chiazze nuove */
+.rivedi { position: fixed; z-index: 6; left: clamp(18px, 4.2vw, 70px); bottom: 22px; padding: 8px 0; background: none; border: 0; cursor: pointer; font: 600 .6rem/1 var(--sans); letter-spacing: .24em; text-transform: uppercase; color: var(--tenue); opacity: 0; pointer-events: none; transition: opacity 1.2s ease 2.4s, color .3s; }
+.rivedi:hover { color: var(--blu); }
+body.scritte .rivedi { opacity: 1; pointer-events: auto; }
+@media (max-width: 720px) {
+  .testa { padding: 20px 18px; }
+  .commissione { padding: 9px 12px; }
+  .grande { font-size: 12.6vw; bottom: 13vh; }
+}
+@media (prefers-reduced-motion: reduce) { .menu li a, .commissione, .velo, .l { transition-duration: .01s; transition-delay: 0s; } .menu li a.qui .l, .menu li a b .l { animation: none !important; } }
+
+/* ---- A) LA PAGINA SCORRE (15/11): finita l'apertura il corpo si sblocca; la scena resta ferma dietro e <main class="sotto"> le sale sopra ---- */
+body.scorre { height: auto; overflow-y: auto; }
+body:not(.prova) .rivedi { display: none; }
+.scorri { position: fixed; z-index: 6; left: 50%; bottom: 24px; transform: translateX(-50%); display: grid; justify-items: center; gap: 12px; padding-left: .34em;
+  font: 600 .6rem/1 var(--sans); letter-spacing: .34em; text-transform: uppercase; color: var(--tenue); opacity: 0; pointer-events: none; transition: opacity 1.6s ease; }
+.scorri::after { content: ""; width: 1px; height: 38px; background: linear-gradient(var(--oro), rgb(217 176 140 / 0)); opacity: .75; }
+body.scorre .scorri { opacity: 1; }
+body.scorre.sceso .scorri { opacity: 0; transition-duration: .6s; }
+/* PAGINA-FLUIDA 1 — La soglia di copertura è alta quanto il vecchio margine, anche con le barre di Android. */
+.spazio-apertura { position: relative; height: 100vh; pointer-events: none; }
+.spazio-apertura > i { position: absolute; top: 0; width: 1px; height: 8px; }
+.spazio-apertura > .soglia-home { height: 92vh; height: 92dvh; }
+.sotto { position: relative; z-index: 7; background: var(--buio); }
+body.coperta :is(.scena, .velo, .testa, .grande, .scorri, .rivedi, #lingua) { display: none; }
+/* HOME (Franco, 16/11/2026: «in ogni sezione di ogni pagina deve esserci la possibilità di tornare alla HOME, puoi pure scrivere la parola HOME tanto
+   ormai la conoscono in tutto il mondo»; «La HOME è la pagina di Presentazione ovviamente»). In alto a sinistra, nello stesso punto e con lo stesso
+   aspetto in tutte le pagine (in Visioni e in L'atelier è la scritta della testata, che già portava qui). In questa pagina compare quando la
+   presentazione è passata (la classe «giu»), e riporta in cima con una breve dissolvenza nel buio: non un lungo scorrimento all'indietro. */
+.casa { position: fixed; z-index: 9; left: clamp(18px, 4.2vw, 70px); top: 26px; font: 500 .82rem/1 var(--sans); letter-spacing: .46em; color: var(--avorio); text-decoration: none;
+  text-shadow: 0 0 .9em rgb(10 9 8 / .9), 0 0 .3em rgb(10 9 8 / .9); opacity: 0; pointer-events: none; transition: opacity .7s ease, color .4s; }
+.casa::after { content: ""; display: block; width: 100%; height: 1px; margin-top: 16px; background: var(--oro); opacity: .7; }
+.casa:hover { color: var(--blu); }
+body.giu .casa { opacity: 1; pointer-events: auto; }
+.casa-velo { position: fixed; z-index: 60; inset: 0; background: var(--buio); opacity: 0; pointer-events: none; transition: opacity .38s ease; }
+body.torna .casa-velo { opacity: 1; }
+@media (max-width: 720px) { .casa { top: 20px; } }
+
+/* ---- C) QUATTRO TEMPI: un palco fermo, dentro una fascia che scorre verso sinistra mentre si scende (un solo movimento lento) ---- */
+/* PAGINA-FLUIDA 2 — La corsa del palco occupa il suo posto anche entrando direttamente nel finale. */
+.qt { position: relative; --qt-r: min(70vh, 45vw); --qt-cartello: clamp(150px, 13vw, 230px); --qt-gap: 6vw;
+  --qt-sx: clamp(18px, 6vw, 110px); --qt-dx: calc((100vw - 2 * var(--qt-r)) / 2); }
+@media (min-width: 860.01px) {
+  .qt::after { content: ""; display: block;
+    --fascia: calc(var(--qt-sx) + var(--qt-dx) + var(--cartelli) * var(--qt-cartello) + var(--carte) * 2 * var(--qt-r) + var(--intervalli) * var(--qt-gap));
+    /* Il 100% del padding è la larghezza della sezione, al netto della barra di scorrimento. */
+    padding-top: max(0px, calc(var(--fascia) - 100%));
+    padding-top: max(0px, calc(round(nearest, var(--fascia), 1px) - 100%)); }
+}
+.qt-palco { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; align-items: center; }
+.qt-fascia { position: relative; display: flex; align-items: center; gap: var(--qt-gap); width: max-content; will-change: transform;
+  padding: 0 var(--qt-dx) 0 var(--qt-sx); }
+.qt-cartello { flex: none; width: var(--qt-cartello); display: grid; gap: 16px; align-content: center; }
+.qt-num { font: 400 1.25rem/1 var(--serif); letter-spacing: .14em; color: var(--blu); }
+.qt-titolo { margin: 0; font: 300 clamp(2rem, 3vw, 2.9rem)/1.02 var(--serif); color: var(--avorio); }
+.qt-musica { font: italic 400 1rem/1 var(--serif); letter-spacing: .03em; color: var(--blu); }
+.qt-carta { flex: none; display: flex; margin: 0; opacity: .22; transition: opacity 1.4s ease; will-change: opacity; }
+.qt-carta.qt-destra { flex-direction: row-reverse; }                        /* nelle carte dispari il filmato sta a destra */
+.qt-carta.qt-viva { opacity: 1; }
+.qt-riq { flex: none; width: var(--qt-r); aspect-ratio: 4 / 3; overflow: hidden; }
+.qt-film { background: #000; }
+/* IL LOGO NEL RIQUADRO DELLE SCRITTE (Franco, 16/11: «dove ci sono le scritte, più grande e al massimo di opacità»): al centro in basso, sotto il testo,
+   che gli lascia il posto (il padding in basso di .qt-testo); pieno, senza trasparenza; le lancette le gira lo scorrimento */
+.qt-logo { position: absolute; left: 50%; bottom: calc(var(--qt-r) * .068); height: calc(var(--qt-r) * .165); aspect-ratio: 168 / 186; transform: translateX(-50%); pointer-events: none; overflow: visible; }
+.qt-film video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.qt-testo { position: relative; display: flex; flex-direction: column; justify-content: center; padding: 0 calc(var(--qt-r) * .1) calc(var(--qt-r) * .245); border: 1px solid var(--linea); }
+.qt-voce { font: 600 clamp(.6rem, calc(var(--qt-r) * .017), .74rem)/1 var(--sans); letter-spacing: .32em; text-transform: uppercase; color: var(--tenue); margin-bottom: calc(var(--qt-r) * .05); }
+.qt-numero { font: 300 calc(var(--qt-r) * .078)/1.05 var(--serif); color: var(--blu); margin-bottom: calc(var(--qt-r) * .028); }
+.qt-nome { font: italic 400 calc(var(--qt-r) * .042)/1.2 var(--serif); color: var(--avorio); margin-bottom: calc(var(--qt-r) * .04); }
+.qt-dice { margin: 0; font: 400 clamp(14px, calc(var(--qt-r) * .026), 18px)/1.62 var(--sans); color: rgb(236 229 216 / .82); }
+.qt-dove { position: absolute; z-index: 2; left: clamp(18px, 4.2vw, 70px); top: 76px; margin: 0; display: flex; gap: 16px; align-items: baseline;   /* sotto HOME, che sta in alto a sinistra in ogni sezione */
+  font: 600 .62rem/1 var(--sans); letter-spacing: .32em; text-transform: uppercase; color: var(--tenue); }
+.qt-ora { font: italic 400 1.05rem/1 var(--serif); letter-spacing: .02em; text-transform: none; color: var(--avorio); }
+.qt-filo { position: absolute; left: clamp(18px, 4.2vw, 70px); right: clamp(18px, 4.2vw, 70px); bottom: 34px; height: 1px; background: var(--linea); }
+.qt-filo i { position: absolute; inset: 0; background: var(--oro); opacity: .8; transform: scaleX(0); transform-origin: 0 50%; will-change: transform; }
+/* sul telefono, per oggi: una colonna (filmato, sotto il racconto), senza palco fermo */
+@media (max-width: 860px) {
+  .qt { --qt-r: calc(100vw - 32px); height: auto !important; padding: 64px 16px 72px; }
+  .qt-palco { position: static; height: auto; overflow: visible; display: block; }
+  .qt-dove { position: static; margin-bottom: 32px; }
+  .qt-filo { display: none; }
+  .qt-fascia { flex-direction: column; align-items: stretch; width: auto; padding: 0; gap: 40px; transform: none !important; }
+  .qt-cartello { width: auto; margin-top: 24px; }
+  .qt-carta, .qt-carta.qt-destra { flex-direction: column; opacity: 1; }
+  .qt-riq { width: 100%; }
+  .qt-testo { aspect-ratio: auto; padding: 24px 22px 28px; border-top: 0; }
+  .qt-logo { position: static; transform: none; height: 88px; margin: 26px auto 0; }
+  .qt-nome { font-size: 1.15rem; }
+}
+@media (prefers-reduced-motion: reduce) { .qt-carta { transition: none; } }
+
+/* ---- IL TELEFONO (18/11/2026). Le parole di Franco dal suo telefono, alla lettera, spuntate sugli scatti a 360 × 662 e a 390 × 844:
+   [x] 1. «la pagina L'ora vera appare prima nera poi bianca»   → il nero dell'inizio si alza più piano e senza scatto; se il filmato non parte si resta sullo scuro
+   [x] 2. «VENEZIA AUTUNNO è tagliato»                           → in otto.css (il filmato un po' più grande, la scritta più stretta)
+   E quel che ha trovato la diagnosi alla misura del suo telefono:
+   [x] 3. le voci in alto si leggevano a metà: sul telefono il ritaglio del filmato mette dietro di loro il quadrante chiaro, anche nel filmato scuro,
+          e le lettere diventavano avorio sul chiaro. Qui un'ombra ferma nell'angolo (la stessa del velo di fine apertura) c'è da quando entrano,
+          e le lettere restano sempre avorio, i numeri e la voce di questa pagina nel blu;
+   [x] 4. HOME si sovrapponeva ai testi che scorrono sotto: sotto HOME una fascia di buio, che c'è solo quando c'è HOME;
+   [x] 5. nel finale due righe una sull'altra: in finale.css e finale.js.
+   SECONDO GIRO (18/11, dal giudice), spuntato sugli scatti a 360 × 662:
+   [x] 6. scritte troppo piccole: «Scorri», «Quattro tempi» e le voci cielo, vita, uomo a 12 px (i colori restano: grigio tenue, mai beige);
+          «Venezia · autunno» in otto.css;
+   [x] 7. «L'ora vera» in blu si leggeva poco sul chiaro del disegno: l'ombra dietro il menu è più scura e più larga (colori e lettere come prima).
+   TERZO GIRO (18/11, dal giudice), spuntato sugli scatti a 360 × 662:
+   [x] 8. «Rivedi · luce nuova» (solo con ?prova=1) da 9,6 a 12 px;
+   [x] 9. «L'ora vera» in blu sul beige a 4 secondi dall'apertura: l'ombra dietro il menu ancora più decisa (larga tutto lo schermo, alta 280 px,
+          piena fin oltre la terza voce); colori e bagliore delle lettere non cambiano.
+   Tutto qui sotto vale solo fino a 860 px: il computer resta com'era. */
+@media (max-width: 860px) {
+  .testa::before { content: ""; position: absolute; z-index: -1; left: 0; top: 0; width: 100vw; height: 280px; pointer-events: none; opacity: 0; transition: opacity 1.6s ease;
+    background: radial-gradient(100% 100% at 0 0, rgb(10 9 8 / .95), rgb(10 9 8 / .92) 44%, rgb(10 9 8 / .64) 72%, rgb(10 9 8 / 0) 100%); }
+  .scorri, .rivedi { font-size: 12px; }
+  .qt-dove, .qt-voce { font-size: 12px; }
+  body.voci .testa::before { opacity: 1; }
+  .menu li a .l, .menu li a .l.s { color: var(--avorio); text-shadow: 0 0 .5em rgb(10 9 8 / .8), 0 0 .16em rgb(10 9 8 / .7); }
+  .menu li a b .l, .menu li a b .l.s, .menu li a.qui .nome .l, .menu li a.qui .nome .l.s { color: var(--blu); }
+  .scena::after { transition: opacity 2.6s cubic-bezier(.45, 0, .55, 1); }
+  .casa::before { content: ""; position: fixed; z-index: -1; left: 0; right: 0; top: 0; height: 76px; pointer-events: none;
+    background: linear-gradient(var(--buio) 0, var(--buio) 60px, rgb(10 9 8 / 0)); }
+  /* FLUIDITÀ SUL TELEFONO (18/11/2026; Franco dal telefono: «scorre tutto male, è frammentato», «è scattoso», «se non c'è reattività la gente
+     scappa»). Niente qui cambia ciò che si vede; le misure prima e dopo stanno nella consegna del montatore.
+     1. Quando la pagina è scesa di uno schermo intero la presentazione è tutta coperta dal contenuto (classe «coperta», la mette lo scorrimento):
+        il filmato, la tela, il velo, le voci e la scritta grande (due copie, una fusa in «difference») non si disegnano più sotto. Tornando in
+        cima (HOME) ricompaiono com'erano.
+     2. Nei Quattro tempi sul telefono le carte sono sempre piene e la fascia non scorre di lato: gli strati tenuti pronti per quei movimenti
+        (will-change) qui non servono, ed erano quattordici strati in più da tenere a ogni fotogramma di tutta la pagina. */
+  .qt-fascia, .qt-carta { will-change: auto; }
+}
+/* PAGINA-FLUIDA 4 — HOME, la sua fascia di 76px e il velo a pieno schermo hanno tre limiti di pittura distinti. */
+.casa-velo { visibility: hidden; transition: opacity .38s ease, visibility 0s linear .38s; }
+body.torna .casa-velo { visibility: visible; transition-delay: 0s; }
+@media (max-width: 860px) and (pointer: coarse) {
+  .casa::before { content: none; }
+  body::before { content: ""; position: fixed; z-index: 8; inset: 0 0 auto; height: 76px; pointer-events: none;
+    background: linear-gradient(var(--buio) 0, var(--buio) 60px, rgb(10 9 8 / 0));
+    opacity: 0; visibility: hidden; transition: opacity .7s ease, visibility 0s linear .7s; }
+  body.giu::before { opacity: 1; visibility: visible; transition-delay: 0s; }
+  body.coperta .sotto { z-index: auto; }
+  .sotto > section { contain: layout paint style; }
+}
+</style>
+<link rel="stylesheet" href="otto-fluido.css">
+<link rel="stylesheet" href="finale.css">
+<!-- L'INGLESE CON UN CLIC (18/11/2026): il vocabolario e il motore stanno qui in testa, così la lingua si decide prima di disegnare. La linguetta
+     ENGLISH / ITALIANO c'è solo in questa pagina (data-linguetta). Come funziona: in testa a lingua.js. -->
+<script src="lingua-en.js"></script>
+<script src="lingua.js" data-linguetta></script>
+</head>
+<body>
+
+<div class="scena" aria-hidden="true">
+  <video id="filmato" data-src="immagini/presentazione.mp4" muted playsinline preload="auto"></video>
+  <canvas id="tela"></canvas>
+</div>
+<div class="velo" aria-hidden="true"></div>
+
+<header class="testa">
+  <nav class="menu" aria-label="Le pagine di Hora Vera">
+    <!-- La porta è la voce «L'ora vera», che porta giù alla pagina (Otto meridiani e Quattro tempi). Il marchio piccolo che stava qui sopra è
+         stato tolto il 16/11: di «HORA VERA» ce n'è una sola, la scritta grande in basso (Franco, 15/11: «una sola avrebbe senso fosse attiva»).
+         Il codice mette ogni lettera di <b> e di .nome in uno <span class="l">, per darle il tono giusto sul fondo che cambia. -->
+    <ol>
+      <li style="--i: 0"><a class="qui" href="#otto" aria-current="page" data-entra><b>I</b><span class="nome" data-lingua="pagina">L'ora vera</span></a></li>
+      <li style="--i: 1"><a href="index.html"><b>II</b><span class="nome" data-lingua="pagina">Visioni</span></a></li>
+      <li style="--i: 2"><a href="atelier.html"><b>III</b><span class="nome" data-lingua="pagina">L'atelier</span></a></li>
+    </ol>
+  </nav>
+  <!-- «Commissione», il riquadro che stava qui in alto a destra, è stato tolto il 16/11 (Franco: «quella scritta COMMISSIONE non è meglio toglierla?»):
+       era un pulsante da negozio sopra il disegno, e portava a una parte ancora vuota. La porta per chi vuole l'orologio si farà alla chiusura del sito. -->
+</header>
+<!-- LA SCRITTA GRANDE: le lettere le mette il codice (una per span); chi non vede legge il nome una volta sola -->
+<p class="grande neg" aria-hidden="true"></p>
+<p class="grande pos" role="img" aria-label="Hora Vera"></p>
+<button class="rivedi" type="button">Rivedi · luce nuova</button>
+<div class="scorri" aria-hidden="true">Scorri</div>
+<!-- HOME: torna alla presentazione da ogni sezione (compare quando la presentazione è passata) -->
+<a class="casa" href="ora-vera.html" aria-label="Home: torna alla presentazione">HOME</a>
+<div class="casa-velo" aria-hidden="true"></div>
+
+<div class="spazio-apertura" aria-hidden="true"><i class="soglia-sceso"></i><i class="soglia-home"></i></div>
+<main class="sotto">
+  <!-- OTTO MERIDIANI (innestato il 15/11/2026): il modulo sta in otto.css e otto.js; prova da solo in otto-prova.html -->
+  <section id="otto" class="otto" aria-label="Otto meridiani"></section>
+
+  <section class="qt" id="tempi" aria-label="Quattro tempi">
+    <!-- QUATTRO TEMPI (15/11/2026). Le parole di Franco, alla lettera, da spuntare sugli scatti:
+         1. «Quattro sezioni: i giorni, le ore, i minuti, i secondi; in ognuna le cose che impiegano quel tempo ad accadere.»
+         2. «Una fascia orizzontale con i quattro tempi; per ognuno il filmato con il racconto ACCANTO, della stessa misura, mai sopra.»
+         3. I filmati sono 4:3, con il soggetto al centro.
+         4. «È un'opera d'arte… se no metti azione dappertutto ed è ridicolo»: calma, un solo movimento lento.
+         5. «A me piace comporre sinfonie»: i quattro tempi musicali (Largo, Andante, Allegro, Presto) sono una proposta di Claude: si mettono piccoli.
+         COME È FATTA: la sezione è alta quanto serve; dentro un palco fermo (sticky) con una fascia che scorre verso sinistra mentre si scende
+         (1 px in giù = 1 px di lato, la posizione mostrata insegue quella vera a 0,14 per fotogramma, si muove solo transform). Per ogni tempo un
+         cartello stretto e le sue carte: due riquadri 4:3 uguali, il filmato e accanto il racconto (pari: filmato a sinistra; dispari: a destra).
+         Solo la carta più vicina al centro è viva (piena, il filmato va una volta e resta sull'ultimo fotogramma; rientrando riparte); le altre
+         in penombra e ferme sul primo fotogramma. La fascia si costruisce dai dati di tempi.js (scritto da piani/quattro-tempi/genera.js):
+         un tempo senza filmati non compare.
+         IL LOGO (16/11/2026). Le parole di Franco, alla lettera, da spuntare sugli scatti. PRIMA lo voleva sui filmati («al centro dei filmati…
+         al centro e nella parte bassa», «grande all'incirca un centimetro e mezzo», «leggermente trasparente»); dopo averlo visto ha cambiato:
+         1-3. «È meglio che metti il logo dove ci sono le scritte, più grande e al massimo di opacità (totale opacità).»
+         4. «Sistema e centralizza meglio il puntino del mezzogiorno che è non in asse e fallo grigio, non beige.»
+         5. «Mentre si scorre anche le lancette devono scorrere, ma quando si passa sui filmati relativi ai giorni scorre velocemente solo quella
+            delle ore e le altre restano ferme, quando si passa ai filmati relativi ai minuti scorre più lentamente la lancetta dei minuti e solo
+            quella, mentre le altre restano ferme; quando si passa ai filmati dei secondi scorre solo lentamente quella dei secondi e le altre
+            restano ferme.»
+         COME È FATTO: il logo è il numero 1 («Il filo», scelto il 16/11). Ogni carta ha il suo, nel riquadro delle scritte: al centro in basso,
+         sotto il testo, che gli lascia il posto (il testo si centra nello spazio sopra); pieno, senza trasparenza. Sul telefono sta sotto il testo.
+         Gli angoli sono uno solo per tutti e dipendono solo da dove si è nella fascia (tornando indietro tornano indietro). Un tratto per tempo, da
+         metà strada tra due tempi a metà strada tra i due dopo; giri interi, così alla fine di ogni tratto la lancetta è di nuovo nella posa del
+         disegno (le dieci e dieci, i secondi dritti in giù sulla riga del puntino). GIRI: giorni → ore, 6 giri; ORE (Franco non l'aveva detto: proposta
+         di Claude, lui: «Ok») → ore, 3 giri; minuti → minuti, 2 giri; secondi → secondi, 1 giro. -->
+    <div class="qt-palco">
+      <p class="qt-dove">Quattro tempi <span class="qt-ora"></span></p>
+      <div class="qt-fascia"></div>
+      <div class="qt-filo" aria-hidden="true"><i></i></div>
+    </div>
+  </section>
+  <!-- IL FINALE (innestato il 16/11/2026): il testo sul tempo che si compone con frasi orfane; il modulo sta in finale.css e finale.js -->
+  <section id="finale" class="finale" aria-label="Il messaggio"></section>
+</main>
+
+<!-- la lingua: in inglese le scritte ferme si traducono qui, prima che il codice le spezzi in lettere (lingua.js) -->
+<script>
+// PAGINA-FLUIDA 5 — Conteggi cumulativi degli script inline. Gli observer ricevono geometria già calcolata dal browser.
+window.FLUIDO = { conta: { apertura: 0, tempi: 0, misure: 0 } };
+const contaHV = window.FLUIDO.conta;
+const geometriaHV = {
+  rettangolo(e) { contaHV.misure++; return e.getBoundingClientRect(); },
+  valore(e, nome) { contaHV.misure++; return e[nome]; },
+  stile(e) { contaHV.misure++; return getComputedStyle(e); }
+};
+window.LINGUA && LINGUA.parti();
+</script>
+<script>
+(() => {
+  const Q = new URLSearchParams(location.search);
+  // PAGINA-FLUIDA 1 — L'ingresso da un'ancora non prepara né il video né la scheda grafica.
+  const daAncora = ['#otto', '#tempi', '#finale'].includes(location.hash);
+  if (daAncora) document.body.classList.add('scorre', 'coperta');
+  const video = document.getElementById('filmato'), C = document.getElementById('tela');
+  const T = document.createElement('canvas'), G = document.createElement('canvas');
+  let cx, tx, gl, preparata = false, riprendiFilm = false, linguaInAttesa = false, posaIntera = false;
+  let visibile = !daAncora && !document.hidden, tentativo = 0;
+  const FERMO = Q.has('tempo') ? +Q.get('tempo') / 1000 : null;              // prova: ferma a un istante
+  const CALMO = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const FUOCO = .57;                                                         // sul telefono: che parte del filmato resta al centro
+  const TELEFONO = matchMedia('(max-width: 860px)').matches;                 // (18/11) sul telefono, se il filmato non parte, si resta sullo scuro: vedi via()
+
+  // ---- I TEMPI (secondi dall'inizio) ----
+  const DURATA = 12.4;                                                      // quanto dura la presentazione: il filmato (9 s) rallenta per durare altrettanto
+  const PRIMA = 1.0;                                                        // fin qui solo il chiaro
+  const TUTTO = 10.6;                                                       // da qui lo scuro è dappertutto
+  const SCRITTE = 11.5;                                                     // quando lo scuro è dappertutto da un po': il velo negli angoli, il bagliore delle voci, e poi la pagina si sblocca
+  const VOCI = .8;                                                          // quando entrano le voci e «Commissione» (il nero iniziale si sta alzando): ci sono anche sul chiaro
+  const SCRITTA = 1.5, PRIMA_LETTERA = .8, OGNI_LETTERA = 1.12;             // la scritta grande: la H affiora a SCRITTA e ci mette PRIMA_LETTERA; poi una lettera ogni OGNI_LETTERA
+  const DISCOSTA = .30, DI_PIU = .07;                                       // di quanto compare discosta la O (in altezze di carattere) e quanto si aggiunge a ogni lettera dopo
+
+  // ---- LE CHIAZZE (come negli aloni di L'atelier, ma molto più larghe; dal 14/11 sera scure: dal chiaro allo scuro) ----
+  // Un rumore deformato da due onde che cambiano nel tempo: le chiazze ondeggiano e scivolano anche da sole. Una soglia scende piano: prima si
+  // accendono poche chiazze piccole dove il rumore è più alto, poi si allargano e si fondono, finché il chiaro copre tutto (a TUTTO).
+  const VERTICI = `#version 300 es
+void main() { vec2 p = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2)); gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0); }`;
+  const PUNTI = `#version 300 es
+precision highp float;
+precision highp int;
+uniform vec2 uRes;          // misura della tela delle chiazze
+uniform float uT;           // secondi
+uniform vec2 uSeme;         // il caso di questa volta
+uniform float uSoglia;      // dove il rumore supera la soglia, si vede il chiaro
+uniform int uModo;          // 0 = disegna; 1 = scrive il rumore (per misurare quale soglia scopre quanta parte dello schermo)
+out vec4 o;
+
+uint mescola(uvec2 p) { p *= uvec2(1597334673u, 3812015801u); uint n = (p.x ^ p.y) * 1597334673u; n ^= n >> 16u; n *= 2246822519u; n ^= n >> 13u; return n; }
+vec2 verso(vec2 i) { uint n = mescola(uvec2(ivec2(i) + 8192)); return vec2(float(n & 65535u), float(n >> 16u)) / 32767.5 - 1.0; }
+float rumore(vec2 p) {
+  vec2 i = floor(p), f = fract(p), u = f * f * f * (f * (f * 6.0 - 15.0) + 10.0);
+  float a = dot(verso(i), f), b = dot(verso(i + vec2(1.0, 0.0)), f - vec2(1.0, 0.0)), c = dot(verso(i + vec2(0.0, 1.0)), f - vec2(0.0, 1.0)), d = dot(verso(i + vec2(1.0, 1.0)), f - vec2(1.0, 1.0));
+  return mix(mix(a, b, u.x), mix(c, d, u.x), u.y) * 1.4;
+}
+float fbm(vec2 p) { return rumore(p) * 0.57 + rumore(p * 2.03 + vec2(17.3, 5.1)) * 0.29 + rumore(p * 4.07 + vec2(31.7, 11.9)) * 0.14; }
+
+void main() {
+  vec2 q = gl_FragCoord.xy / uRes.y;                                        // in altezze di schermo
+  vec2 w = q + vec2(0.085 * sin(q.y * 3.1 + uT * 0.55), 0.085 * sin(q.x * 2.6 - uT * 0.45));   // le due onde: le chiazze ondeggiano
+  float n = clamp(0.5 + 0.62 * fbm(w * 1.7 + uSeme + vec2(uT * 0.05, -uT * 0.035)), 0.0, 1.0);  // chiazze larghe (quasi due terzi di schermo)
+  if (uModo == 1) { o = vec4(n, 0.0, 0.0, 1.0); return; }
+  float luce = smoothstep(uSoglia, uSoglia + 0.2, n);                       // orlo morbido, come negli aloni
+  o = vec4(0.0, 0.0, 0.0, 1.0 - luce);                                      // quanto resta il chiaro (luce = dentro una chiazza scura)
+}`;
+
+  let U = null, seme = 0;
+  function accendi() {
+    if (!gl) return false;
+    const fai = (tipo, testo) => { const s = gl.createShader(tipo); gl.shaderSource(s, testo); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; };
+    try {
+      const p = gl.createProgram(); gl.attachShader(p, fai(gl.VERTEX_SHADER, VERTICI)); gl.attachShader(p, fai(gl.FRAGMENT_SHADER, PUNTI)); gl.linkProgram(p);
+      if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+      gl.useProgram(p); gl.bindVertexArray(gl.createVertexArray());
+      U = {}; for (const n of ['uRes', 'uT', 'uSeme', 'uSoglia', 'uModo']) U[n] = gl.getUniformLocation(p, n);
+      gl.disable(gl.BLEND);
+      return true;
+    } catch (errore) { console.warn('Chiazze spente: ' + errore.message); U = null; return false; }
+  }
+  // una luce nuova: le chiazze nascono in posti diversi ogni volta (con ?seme=7 sempre gli stessi, per le prove)
+  function luceNuova(stesso) {
+    seme = stesso || (Q.has('seme') ? +Q.get('seme') : Math.floor(Math.random() * 9000) + 1);
+    if (!U) return;
+    let s = seme >>> 0; const caso = () => { s = (s + 0x6D2B79F5) >>> 0; let x = Math.imul(s ^ (s >>> 15), 1 | s); x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x; return ((x ^ (x >>> 14)) >>> 0) / 4294967296; };
+    semeXY = [3 + caso() * 90, 3 + caso() * 90];
+    gl.uniform2f(U.uSeme, semeXY[0], semeXY[1]);
+    misuraRumore();
+  }
+  // IL RITMO (14/11): con una soglia che scende a tempo le chiazze comparivano solo dopo 4 secondi e in un secondo e mezzo coprivano quasi tutto.
+  // Si legge il rumore una volta (piccolo, sulla scheda grafica) e si mettono in fila i suoi valori: così per ogni istante si sa quale soglia
+  // lascia chiara la parte di schermo voluta (coperto), e le chiazze crescono in modo continuo, qualunque sia il caso.
+  let fila = null;
+  function misuraRumore() {
+    const qw = 120, qh = Math.max(8, Math.round(120 * C.height / C.width)), px = new Uint8Array(qw * qh * 4);
+    gl.viewport(0, 0, qw, qh); gl.uniform2f(U.uRes, qw, qh); gl.uniform1i(U.uModo, 1); gl.uniform1f(U.uT, (PRIMA + TUTTO) / 2); gl.uniform1f(U.uSoglia, 0);
+    gl.drawArrays(gl.TRIANGLES, 0, 3); gl.readPixels(0, 0, qw, qh, gl.RGBA, gl.UNSIGNED_BYTE, px); gl.uniform1i(U.uModo, 0);
+    const v = []; for (let i = 0; i < px.length; i += 4) v.push(px[i] / 255); fila = v.sort((a, b) => a - b);
+  }
+  // quanta parte dello schermo è già scura: subito poca, poi sempre di più (le chiazze si allargano e si fondono), tutta a TUTTO
+  const avanti = t => Math.min(1, Math.max(0, (t - PRIMA) / (TUTTO - PRIMA))), coperto = t => Math.pow(avanti(t), 1.4);
+  const soglia = t => {
+    const c = coperto(t);
+    if (!fila) return 1.02 - 1.25 * c;
+    if (c <= 0) return fila[fila.length - 1] + .01;
+    if (c >= 1) return fila[0] - .21;
+    return fila[Math.min(fila.length - 1, Math.floor((1 - c) * fila.length))] - .1;   // metà dell'orlo morbido sta sulla soglia giusta
+  };
+
+  // ---- LE LETTERE CHE SI LEGGONO SEMPRE e LA SCRITTA GRANDE (16/11: le parole di Franco sono in cima allo stile) ----
+  // LA STESSA MACCHIA DEL DISEGNO, calcolata qui per un punto dello schermo: quanto scuro c'è lì (0 = filmato chiaro, 1 = filmato scuro). È il rumore
+  // di PUNTI riscritto pari pari (interi a 32 bit con Math.imul): così ogni lettera cambia tono proprio quando l'ombra la raggiunge, senza leggere i
+  // punti della tela (con la pagina aperta dal disco il filmato la «sporca» e non si possono leggere). Si controlla con window.provaMacchia(t).
+  let semeXY = [0, 0];
+  const mescola = (x, y) => { x = Math.imul(x, 1597334673) >>> 0; y = Math.imul(y, 3812015801) >>> 0; let n = Math.imul(x ^ y, 1597334673) >>> 0;
+    n = (n ^ (n >>> 16)) >>> 0; n = Math.imul(n, 2246822519) >>> 0; return (n ^ (n >>> 13)) >>> 0; };
+  const verso = (ix, iy) => { const n = mescola((ix + 8192) >>> 0, (iy + 8192) >>> 0); return [(n & 65535) / 32767.5 - 1, (n >>> 16) / 32767.5 - 1]; };
+  const rumore = (x, y) => {
+    const ix = Math.floor(x), iy = Math.floor(y), fx = x - ix, fy = y - iy, ux = fx * fx * fx * (fx * (fx * 6 - 15) + 10), uy = fy * fy * fy * (fy * (fy * 6 - 15) + 10);
+    const a = verso(ix, iy), b = verso(ix + 1, iy), c = verso(ix, iy + 1), d = verso(ix + 1, iy + 1);
+    const va = a[0] * fx + a[1] * fy, vb = b[0] * (fx - 1) + b[1] * fy, vc = c[0] * fx + c[1] * (fy - 1), vd = d[0] * (fx - 1) + d[1] * (fy - 1);
+    const sopra = va + (vb - va) * ux, sotto = vc + (vd - vc) * ux;
+    return (sopra + (sotto - sopra) * uy) * 1.4; };
+  const fbm = (x, y) => rumore(x, y) * .57 + rumore(x * 2.03 + 17.3, y * 2.03 + 5.1) * .29 + rumore(x * 4.07 + 31.7, y * 4.07 + 11.9) * .14;
+  const dolce = x => { x = Math.min(1, Math.max(0, x)); return x * x * (3 - 2 * x); };
+  function scuroIn(px, py, t) {
+    if (t <= PRIMA) return 0;
+    if (t >= TUTTO) return 1;
+    if (!U) return avanti(t);                                               // senza scheda grafica c'è una dissolvenza, uguale dappertutto
+    const qx = px / vistaW * G.width / G.height, qy = 1 - py / vistaH;   // in altezze di schermo, da sotto in su: come nel disegno
+    const wx = qx + .085 * Math.sin(qy * 3.1 + t * .55), wy = qy + .085 * Math.sin(qx * 2.6 - t * .45);
+    const n = Math.min(1, Math.max(0, .5 + .62 * fbm(wx * 1.7 + semeXY[0] + t * .05, wy * 1.7 + semeXY[1] - t * .035)));
+    return dolce((n - soglia(t)) / .2);
+  }
+  // le lettere: quelle delle voci (numeri e nomi) e quelle della scritta grande, una per <span class="l">
+  const lettere = [], titolo = [], grande = document.querySelector('.grande.pos'), grandeNeg = document.querySelector('.grande.neg');
+  const unaLettera = c => { const s = document.createElement('span'); s.className = 'l'; s.textContent = c; return s; };
+  // (18/11/2026, l'inglese con un clic) il nome di una voce si scrive nella lingua scelta: la frase la dà LINGUA.t() (lingua.js), l'italiano resta in
+  // data-it. Quando la lingua cambia (evento «lingua», più sotto) il nome si riscrive lettera per lettera, sul posto, senza toccare il filmato.
+  const FRASE = s => window.LINGUA ? window.LINGUA.t(s) : s;
+  function scriviVoce(el, testo) {
+    for (let i = lettere.length - 1; i >= 0; i--) if (lettere[i].p === el) lettere.splice(i, 1);
+    el.textContent = '';
+    for (const c of testo) { if (c === ' ') { el.append(' '); continue; } const s = unaLettera(c); el.append(s); lettere.push({ e: s, p: el, x: 0, y: 0, dx: 0, s: false }); }
+  }
+  function preparaLettere() {
+    document.querySelectorAll('.menu li a b, .menu li a .nome').forEach(el => {
+      if (!el.classList.contains('nome')) { scriviVoce(el, el.textContent); return; }
+      el.dataset.it = el.textContent; scriviVoce(el, FRASE(el.dataset.it)); });
+    'HORA VERA'.split(' ').forEach((parola, p) => [...parola].forEach((c, k) => {
+      const s = unaLettera(c), n = unaLettera(c); if (p && !k) { s.classList.add('parola'); n.classList.add('parola'); } grande.append(s); grandeNeg.append(n);
+      titolo.push({ e: s, n, x: 0, y: 0, dx: 0, j: titolo.length, op: -1, sp: -1, k: -1 }); }));   // e = la copia avorio, n = il negativo
+  }
+  let corpoGrande = 100, vistaW = 0, vistaH = 0;
+  function misuraLettere() {                                                // il centro di ogni lettera sullo schermo, al suo posto (tolto lo spostamento di adesso)
+    corpoGrande = parseFloat(geometriaHV.stile(grande).fontSize) || 100;
+    lettere.forEach(o => { const r = geometriaHV.rettangolo(o.e); o.x = r.left + r.width / 2; o.y = r.top + r.height / 2; });
+    titolo.forEach(o => { if (o.sp > 0) o.dx = o.sp * corpoGrande; const r = geometriaHV.rettangolo(o.e); o.x = r.left + r.width / 2 - o.dx; o.y = r.top + r.height / 2; });
+  }
+  // LA SCRITTA GRANDE, lettera per lettera: quanto si vede e quanto è ancora discosta dal suo posto (in altezze di carattere). La H affiora e resta;
+  // ogni altra AFFIORA FERMA (da trasparente a piena) un po' più a destra, e POI scivola da destra a sinistra fino alla distanza di tutte.
+  // Ogni lettera compare un po' più discosta di quella prima (DISCOSTA, poi + DI_PIU a ogni lettera).
+  function posa(j, t) {
+    if (!j) return [dolce((t - SCRITTA) / PRIMA_LETTERA), 0];
+    const da = SCRITTA + PRIMA_LETTERA + (j - 1) * OGNI_LETTERA;
+    return [dolce((t - da) / .5), (DISCOSTA + DI_PIU * (j - 1)) * (1 - dolce((t - da - .58) / .54))];
+  }
+  // a ogni fotogramma: le voci ci sono, la scritta grande è a questo punto, e ogni lettera ha il tono del fondo che ha dietro adesso
+  // («tutta» = tutta la scritta al suo posto, per chi ha chiesto meno movimento o se il filmato non parte)
+  function vesti(t, tutta) {
+    const B = document.body.classList, voci = !!tutta || t >= VOCI, su = !!tutta || t >= VOCI + 2.4; B.toggle('voci', voci);
+    if (voci) { if (!vociDa) vociDa = performance.now(); } else vociDa = 0;
+    // di corsa il tempo del filmato va più svelto dell'entrata delle voci (che ha il suo tempo): l'alone si libera solo a entrata finita davvero
+    if (su && corsa && fermoA === null && performance.now() - vociDa < 2400) { if (!suDopo) suDopo = setTimeout(() => B.add('voci-su'), 2400 - (performance.now() - vociDa)); }
+    else B.toggle('voci-su', su);
+    titolo.forEach(o => { const [op, sp] = tutta ? [1, 0] : posa(o.j, t);
+      if (sp !== o.sp) { o.sp = sp; o.dx = sp * corpoGrande; o.e.style.transform = o.n.style.transform = sp ? 'translateX(' + sp.toFixed(4) + 'em)' : ''; }
+      const k = dolce((scuroIn(o.x + o.dx, o.y, t) - .1) / .8);            // quanto scuro è già arrivato dietro questa lettera: di tanto l'avorio prende il posto del negativo
+      if (op !== o.op || k !== o.k) { o.op = op; o.k = k; o.e.style.opacity = (op * k).toFixed(3); o.n.style.opacity = (op * (1 - k)).toFixed(3); } });
+    lettere.forEach(o => { const k = scuroIn(o.x + o.dx, o.y, t), s = o.s ? k > .44 : k > .56; if (s !== o.s) { o.s = s; o.e.classList.toggle('s', s); } });
+  }
+  // per le prove: la macchia calcolata qui e quella disegnata dalla scheda grafica devono coincidere (in n punti: la differenza più grande e la media)
+  window.provaMacchia = (t, n = 80) => {
+    if (!U) return 'senza scheda grafica';
+    gl.viewport(0, 0, G.width, G.height); gl.uniform2f(U.uRes, G.width, G.height); gl.uniform1f(U.uT, t); gl.uniform1f(U.uSoglia, soglia(t)); gl.drawArrays(gl.TRIANGLES, 0, 3);
+    const px = new Uint8Array(4); let peggio = 0, media = 0, mezzi = 0;
+    for (let i = 0; i < n; i++) {
+      const gx = Math.floor((i * 37 % 97) / 97 * G.width), gy = Math.floor((i * 53 % 89) / 89 * G.height);
+      gl.readPixels(gx, gy, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+      const qui = scuroIn((gx + .5) / G.width * vistaW, (1 - (gy + .5) / G.height) * vistaH, t), la = 1 - px[3] / 255, d = Math.abs(qui - la);
+      peggio = Math.max(peggio, d); media += d / n; if (la > .05 && la < .95) mezzi++;
+    }
+    return { punti: n, sulBordo: mezzi, peggio: +peggio.toFixed(3), media: +media.toFixed(4) };
+  };
+  window.scrittaGrande = () => titolo.map(o => o.e.textContent + ' si vede ' + o.op.toFixed(2) + ', discosta ' + (o.sp || 0).toFixed(3) + ', scuro ' + o.k.toFixed(2)).join(' | ');
+
+  function misura() {
+    vistaW = geometriaHV.valore(window, 'innerWidth'); vistaH = geometriaHV.valore(window, 'innerHeight');
+    const dpr = Math.min(devicePixelRatio || 1, 1.5), W = Math.max(2, Math.round(vistaW * dpr)), H = Math.max(2, Math.round(vistaH * dpr));
+    if (C.width === W && C.height === H) return false;
+    C.width = T.width = W; C.height = T.height = H;
+    const m = Math.min(.75, 1000 / Math.max(W, H)); G.width = Math.max(64, Math.round(W * m)); G.height = Math.max(64, Math.round(H * m));
+    return true;
+  }
+  // che pezzo del filmato riempie lo schermo (come «cover»); i due filmati sono uno sopra l'altro, 3 punti di margine dalla giuntura
+  function ritaglio() {
+    const vw = video.videoWidth - 12, vh = video.videoHeight / 2 - 6, A = C.width / C.height, a = vw / vh;
+    if (A >= a) { const h = vw / A; return [6, 3 + (vh - h) / 2, vw, h]; }
+    const w = vh * A; return [6 + Math.max(0, Math.min(vw - w, vw * FUOCO - w / 2)), 3, w, vh];
+  }
+  function disegna(t) {
+    if (!video.videoWidth) return;
+    const W = C.width, H = C.height, [x, y, w, h] = ritaglio(), meta = video.videoHeight / 2;
+    const scuro = c => c.drawImage(video, x, y, w, h, 0, 0, W, H), chiaro = c => c.drawImage(video, x, y + meta, w, h, 0, 0, W, H);
+    cx.globalCompositeOperation = 'copy';
+    if (t <= PRIMA) { chiaro(cx); cx.globalCompositeOperation = 'source-over'; return; }
+    if (t >= TUTTO) { scuro(cx); cx.globalCompositeOperation = 'source-over'; return; }
+    if (!U) { scuro(cx); cx.globalCompositeOperation = 'source-over'; cx.globalAlpha = 1 - avanti(t); chiaro(cx); cx.globalAlpha = 1; return; }   // senza scheda grafica: una dissolvenza
+    gl.viewport(0, 0, G.width, G.height); gl.uniform2f(U.uRes, G.width, G.height); gl.uniform1f(U.uT, t); gl.uniform1f(U.uSoglia, soglia(t));
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    tx.globalCompositeOperation = 'copy'; tx.drawImage(G, 0, 0, W, H);       // la parte ancora chiara (fuori dalle chiazze scure)…
+    tx.globalCompositeOperation = 'source-in'; chiaro(tx);                   // …riempita con il filmato chiaro
+    scuro(cx);                                                                // sotto, il filmato scuro: lo mostrano le chiazze
+    cx.globalCompositeOperation = 'source-over'; cx.drawImage(T, 0, 0);
+  }
+
+  // ---- IL TEMPO: lo dà il filmato (se il filmato aspetta, aspettano anche le chiazze) ----
+  // Il filmato va una volta sola e resta sull'ultimo fotogramma (lo scuro); da lì in poi conta l'orologio.
+  let passo = 1, finito = null, seguita = 0, fermoA = null;
+  // LA ROTELLA NON RESTA MAI MORTA (Franco, 16/11/2026, sul «solito problema di blocco»; alla terza proposta: «Fallo così»). Misurato: la pagina
+  // restava FERMA 13 secondi all'inizio, e una rotella che non fa niente sembra un guasto. Finché la pagina è chiusa, il primo colpo di rotella in
+  // giù (o freccia giù, Pag giù, spazio, il dito) fa CORRERE la presentazione al finale: il filmato va FRETTA volte più svelto e, siccome tutto
+  // prende il tempo dal filmato (chiazze, lettere, voci), lo scuro copre e HORA VERA si completa in poco più di un secondo; poi la pagina si apre
+  // subito e scende (lo fa il secondo script, che qui chiede «corri» e «finita»). Chi non tocca niente vede tutto come prima.
+  let baglioreDa = null, menuNascosto = false;
+  const testa = document.querySelector('.testa');
+  function scritte(accese) {
+    if (accese === (baglioreDa !== null)) return;
+    baglioreDa = accese ? performance.now() : null;
+    testa.style.removeProperty('--bagliore-passato');
+    document.body.classList.toggle('scritte', accese);
+  }
+  const FRETTA = 8; let corsa = false, vociDa = 0, suDopo = 0;
+  window.PRESENTAZIONE = {
+    corri() { if (corsa || FERMO !== null) return; corsa = true; if (window.pronta && !video.paused && !video.ended) video.playbackRate = passo * FRETTA; },
+    finita: () => finito !== null || video.ended || (!!window.pronta && video.paused),   // «paused» da pronta: chi ha chiesto meno movimento, o il filmato che non parte
+    diCorsa: () => corsa,
+    visibilita,
+    avviata: () => preparata,
+    ridisegna() { if (visibile && window.pronta && video.readyState >= 2) { contaHV.apertura++; const t = adesso(); disegna(t); vesti(t, posaIntera); } }
+  };
+  const adesso = () => {
+    if (fermoA !== null) return fermoA;
+    if (video.ended && finito === null) finito = performance.now();
+    return finito !== null ? DURATA + (performance.now() - finito) / 1000 : video.currentTime / passo;
+  };
+  function giro() {
+    seguita = 0;
+    if (!visibile) return;
+    contaHV.apertura++;
+    if (video.readyState >= 2) { const t = adesso(); disegna(t); vesti(t); if (t >= SCRITTE) scritte(true); if (finito !== null) return; }
+    seguita = requestAnimationFrame(giro);
+  }
+  function daCapo() {
+    if (!visibile || !window.pronta) return;
+    posaIntera = false;
+    scritte(false); luceNuova(); finito = null; fermoA = null;
+    corsa = false; clearTimeout(suDopo); suDopo = 0; video.playbackRate = passo;
+    video.currentTime = 0; video.play().catch(() => {});
+    if (!seguita) giro();
+  }
+  document.querySelector('.rivedi').addEventListener('click', daCapo);
+  const rimisura = () => { if (!visibile || !preparata) return; misuraLettere(); if (window.pronta) vesti(adesso(), posaIntera); };
+  addEventListener('resize', () => { if (!visibile || !preparata) return; misura(); if (!seguita) disegna(adesso()); rimisura(); });
+  addEventListener('load', rimisura);
+  if (document.fonts) document.fonts.ready.then(rimisura);
+  // LA LINGUA CAMBIA (clic sulla linguetta): i nomi delle voci si riscrivono. Le lettere nuove nascono già del tono del fondo che hanno dietro adesso
+  // (senza il passaggio di colore) e non rifanno il bagliore finale: cambia la parola, nient'altro si muove.
+  function cambiaLingua() {
+    if (!visibile || !preparata) { linguaInAttesa = true; return; }
+    linguaInAttesa = false;
+    const nomi = [...document.querySelectorAll('.menu li a .nome')], nuova = o => o.p && nomi.includes(o.p);
+    nomi.forEach(el => scriviVoce(el, FRASE(el.dataset.it)));
+    misuraLettere();
+    const t = window.pronta ? adesso() : 0, fatte = document.body.classList.contains('scritte');
+    lettere.forEach(o => { if (!nuova(o)) return; o.s = scuroIn(o.x, o.y, t) > .5; o.e.style.transition = 'none'; if (fatte) o.e.style.animation = 'none'; o.e.classList.toggle('s', o.s); });
+    geometriaHV.valore(document.body, 'offsetWidth');
+    lettere.forEach(o => { if (nuova(o)) o.e.style.transition = ''; });
+    rimisura();
+  }
+  document.addEventListener('lingua', cambiaLingua);
+
+  // prova: porta la pagina a un istante preciso (millisecondi) e la lascia ferma
+  window.vaiA = async ms => {
+    const t = ms / 1000, c = Math.min((video.duration || 9) - .03, t * passo);
+    video.pause(); cancelAnimationFrame(seguita); seguita = 0; fermoA = t;
+    if (Math.abs(video.currentTime - c) > .001) await new Promise(r => { video.addEventListener('seeked', r, { once: true }); video.currentTime = c; });
+    await new Promise(r => { const ok = () => r(); if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(ok); setTimeout(ok, 350); });
+    if (!visibile) return seme;
+    disegna(t); misuraLettere(); vesti(t);
+    scritte(t >= SCRITTE);
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    // ogni movimento della pagina va al suo istante: il cambio di tono di una lettera è già finito; il velo e il bagliore contano da SCRITTE,
+    // l'entrata delle voci da VOCI
+    document.getAnimations().forEach(a => { const e = a.effect && a.effect.target;
+      if (e && e.classList && e.classList.contains('l') && a.transitionProperty) { a.finish(); return; }
+      const da = e && e.classList && (e.classList.contains('velo') || e.classList.contains('rivedi') || a.animationName === 'bagliore') ? SCRITTE : VOCI;
+      a.pause(); a.currentTime = Math.max(0, (t - da) * 1000); });
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    return seme;
+  };
+
+  function via() {
+    if (!visibile || window.pronta || video.readyState < 2) return;
+    passo = (video.duration || 9) / DURATA; video.defaultPlaybackRate = passo; video.playbackRate = corsa ? passo * FRETTA : passo;
+    disegna(0);   // il primo fotogramma subito: la tela non resta mai vuota
+    misuraLettere(); vesti(0);
+    if (FERMO !== null) document.body.classList.add('fermo');
+    document.body.classList.add('parte');
+    if (FERMO !== null) { window.vaiA(FERMO * 1000).then(() => { window.pronta = true; document.body.classList.add('posato'); }); return; }
+    window.pronta = true;
+    if (CALMO) { posaIntera = true; video.currentTime = Math.max(0, (video.duration || 9) - .05); video.addEventListener('seeked', () => { if (visibile) disegna(DURATA); }, { once: true }); vesti(DURATA, true); scritte(true); return; }
+    avviaFilm();
+  }
+  function avviaFilm() {
+    const id = ++tentativo;
+    // il filmato non parte: sul computer resta il chiaro, con le scritte d'inchiostro. Sul TELEFONO (18/11, Franco: «appare prima nera poi bianca»)
+    // si va all'ultimo fotogramma, lo scuro, come per chi ha chiesto meno movimento: la pagina non resta bianca e le voci si leggono
+    video.play().catch(() => {
+      if (!visibile || tentativo !== id) return;
+      cancelAnimationFrame(seguita); seguita = 0; posaIntera = true;
+      if (!TELEFONO) { disegna(0); vesti(0, true); scritte(true); return; }
+      finito = performance.now(); video.currentTime = Math.max(0, (video.duration || 9) - .05);
+      video.addEventListener('seeked', () => { if (visibile) disegna(DURATA); }, { once: true }); vesti(DURATA, true); scritte(true); });
+    giro();
+  }
+  function prepara() {
+    preparata = true;
+    cx = C.getContext('2d'); tx = T.getContext('2d');
+    gl = G.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false });
+    preparaLettere(); linguaInAttesa = false;
+    misura(); accendi(); luceNuova();
+    video.addEventListener('loadeddata', via, { once: true });
+    video.src = video.dataset.src;
+  }
+  function visibilita() {
+    const coperta = document.body.classList.contains('coperta');
+    if (coperta) menuNascosto = true;
+    const vede = !document.hidden && !coperta;
+    if (vede === visibile) return;
+    visibile = vede;
+    if (!vede) {
+      riprendiFilm = !!seguita && !video.ended;
+      ++tentativo; cancelAnimationFrame(seguita); seguita = 0;
+      clearTimeout(suDopo); suDopo = 0; video.pause();
+      return;
+    }
+    if (menuNascosto && baglioreDa !== null) testa.style.setProperty('--bagliore-passato', (performance.now() - baglioreDa) + 'ms');
+    menuNascosto = false;
+    if (!preparata) { prepara(); return; }
+    misura();
+    if (linguaInAttesa) cambiaLingua(); else misuraLettere();
+    if (!window.pronta) { via(); return; }
+    window.PRESENTAZIONE.ridisegna();
+    if (riprendiFilm && fermoA === null) avviaFilm();
+  }
+  document.addEventListener('visibilitychange', visibilita);
+  if (visibile) prepara();
+})();
+</script>
+<script src="otto-fluido.js"></script>
+<script src="tempi.js"></script>
+<script src="finale.js"></script>
+<script>
+// ---- LA PAGINA SCORRE e QUATTRO TEMPI (15/11/2026) ----
+(() => {
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  const Q = new URLSearchParams(location.search), B = document.body, R = document.documentElement;
+  const FERMO = Q.has('tempo'), CALMO = matchMedia('(prefers-reduced-motion: reduce)').matches, TEL = matchMedia('(max-width: 860px)');
+  if (Q.has('prova')) B.classList.add('prova');
+
+  // A) finita l'apertura (classe «scritte») si aspettano 2,5 secondi e il corpo si sblocca; con ?tempo= (le prove) mai
+  let sblocco = 0;
+  if (!FERMO) new MutationObserver(() => {
+    if (B.classList.contains('scritte') && !B.classList.contains('scorre') && !sblocco) sblocco = setTimeout(() => { B.classList.add('scorre'); invalida(); }, 2500);
+  }).observe(B, { attributes: true, attributeFilter: ['class'] });
+  addEventListener('mousedown', e => { if (e.button === 1) e.preventDefault(); });   // rotella premuta: niente scorrimento automatico di Chrome
+  // LA ROTELLA NON RESTA MAI MORTA (Franco, 16/11: «Fallo così»; il perché sta nel primo script, a «IL TEMPO»). A pagina ancora chiusa una spinta in
+  // giù (rotella, freccia giù, Pag giù, spazio, il dito che sale) fa correre la presentazione al finale; appena è finita la pagina si apre, senza i
+  // 2,5 secondi, e scende di quanto la spinta ha chiesto (al più uno schermo: si arriva all'inizio del contenuto, non oltre), così il colpo di
+  // rotella non va perso. A pagina aperta queste righe non fanno più niente: lo scorrimento è quello del browser.
+  let voglia = 0, fretta = 0;
+  const P = window.PRESENTAZIONE;
+  const apri = () => {
+    if (B.classList.contains('scorre')) return;
+    clearTimeout(sblocco); sblocco = 1;
+    B.classList.add('scorre'); invalida();
+    if (voglia > 0) scrollTo({ top: Math.min(voglia, geometriaHV.valore(window, 'innerHeight')), behavior: CALMO ? 'auto' : 'smooth' });
+  };
+  const aspetta = () => {
+    if (B.classList.contains('scorre')) return;
+    contaHV.apertura++;
+    if (P.finita()) apri(); else requestAnimationFrame(aspetta);
+  };
+  function spinta(dy) {
+    if (FERMO || dy <= 0 || B.classList.contains('scorre')) return;
+    voglia += dy;
+    if (!fretta) { fretta = 1; B.classList.add('fretta'); if (P) P.corri(); aspetta(); }
+  }
+  addEventListener('wheel', e => {
+    if (FERMO || B.classList.contains('scorre')) return;
+    spinta(e.deltaMode === 1 ? e.deltaY * 40 : e.deltaMode === 2 ? e.deltaY * geometriaHV.valore(window, 'innerHeight') : e.deltaY);
+  }, { passive: true });
+  addEventListener('keydown', e => {
+    if (FERMO || B.classList.contains('scorre') || e.ctrlKey || e.altKey || e.metaKey || (e.target.closest && e.target.closest('button, input, textarea, select'))) return;
+    if (e.key === 'ArrowDown') spinta(100); else if (e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) spinta(geometriaHV.valore(window, 'innerHeight') * .85); else if (e.key === 'End') spinta(geometriaHV.valore(window, 'innerHeight'));
+  });
+  let dito = null;
+  addEventListener('touchstart', e => { dito = e.touches[0].clientY; }, { passive: true });
+  addEventListener('touchmove', e => { if (dito === null) return; const y = e.touches[0].clientY; if (dito - y > 10) { spinta(dito - y); dito = y; } }, { passive: true });
+  // LA PORTA (Franco, 15/11 sera: «la scritta Hora Vera non è collegata… perché non hai collegato la pagina giusta?»): la voce «L'ora vera» sblocca
+  // subito la pagina e la porta, piano, all'inizio del contenuto (Otto meridiani); prima ricaricava la presentazione.
+  const PORTA = document.querySelector('[data-entra]');
+  if (PORTA) PORTA.addEventListener('click', e => {
+    e.preventDefault(); clearTimeout(sblocco); sblocco = 1;
+    B.classList.add('scorre'); invalida();
+    document.getElementById('otto').scrollIntoView({ behavior: CALMO ? 'auto' : 'smooth' });
+  });
+
+  // C) la fascia, costruita dai dati
+  const SEZ = document.getElementById('tempi'), FASCIA = SEZ.querySelector('.qt-fascia'), FILO = SEZ.querySelector('.qt-filo i'), ORA = SEZ.querySelector('.qt-ora');
+  const ROMANI = { giorni: 'I', ore: 'II', minuti: 'III', secondi: 'IV' };
+  const el = (tag, cls, testo) => { const e = document.createElement(tag); if (cls) e.className = cls; if (testo != null) e.textContent = testo; return e; };
+  const carte = [];
+  // IL LOGO (il numero 1, «Il filo»): ogni lancetta è disegnata verso le dodici e girata intorno al perno (100, 104); data-l dice quale è
+  // (h ore, m minuti, s secondi). Il puntino del mezzogiorno è grigio e sta dritto sopra il perno. Il disegno è ritagliato sul giro delle lancette
+  // (viewBox 16 2 168 186): il perno resta a metà della larghezza, così il logo si centra da solo nel riquadro.
+  const POSA = { h: 300, m: 60, s: 180 }, GIRI = { giorni: ['h', 6], ore: ['h', 3], minuti: ['m', 2], secondi: ['s', 1] };
+  function logo() {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('class', 'qt-logo'); s.setAttribute('viewBox', '16 2 168 186'); s.setAttribute('aria-hidden', 'true');
+    const ore = '<polygon points="95.8,116 104.2,116 101.6,56 98.4,56"/>', minuti = '<polygon points="97.3,118 102.7,118 101,26 99,26"/>', secondi = '<line x1="100" y1="126" x2="100" y2="24"/>';
+    const gira = (l, dentro) => '<g data-l="' + l + '" transform="rotate(' + POSA[l] + ' 100 104)">' + dentro + '</g>';
+    s.innerHTML = '<circle cx="100" cy="12" r="3.6" fill="#a2a2a2"/>' +
+      '<g fill="#ece5d8">' + gira('h', ore) + gira('m', minuti) + '</g>' +
+      '<g stroke="#8fb0ee" stroke-width="2" stroke-linecap="round">' + gira('s', secondi) + '</g>' +
+      '<circle cx="100" cy="104" r="4" fill="#0a0908" stroke="#ece5d8" stroke-width="1.8"/>';
+    return s;
+  }
+  (window.TEMPI || []).forEach((t, i) => {
+    const voci = (t.voci || []).filter(v => v && v.film);
+    if (!voci.length) return;                                               // un tempo senza filmati non compare
+    const c = el('div', 'qt-cartello');
+    c.append(el('span', 'qt-num', ROMANI[t.k] || String(i + 1)), el('h2', 'qt-titolo', t.titolo), el('em', 'qt-musica', t.tempo));
+    FASCIA.append(c);
+    voci.forEach(v => {
+      const a = el('article', 'qt-carta' + (carte.length % 2 ? ' qt-destra' : '')), f = el('div', 'qt-riq qt-film'), video = document.createElement('video');
+      video.muted = true; video.playsInline = true; video.preload = 'none';
+      video.setAttribute('muted', ''); video.setAttribute('playsinline', ''); video.setAttribute('aria-hidden', 'true');
+      video.poster = 'immagini/tempi/' + v.film.replace(/\.[^.]+$/, '.jpg'); video.src = 'immagini/tempi/' + v.film;
+      f.append(video);
+      const r = el('div', 'qt-riq qt-testo'), lg = logo();
+      r.append(el('span', 'qt-voce', v.voce), el('strong', 'qt-numero', v.numero), el('em', 'qt-nome', v.nome), el('p', 'qt-dice', v.dice), lg);
+      a.append(f, r); FASCIA.append(a);
+      carte.push({ e: a, v: video, tempo: t.titolo, k: t.k, x: 0, mani: Array.from(lg.querySelectorAll('[data-l]'), g => ({ g, l: g.getAttribute('data-l') })) });
+    });
+  });
+  const figli = FASCIA.childElementCount;
+  SEZ.style.setProperty('--carte', carte.length);
+  SEZ.style.setProperty('--cartelli', figli - carte.length);
+  SEZ.style.setProperty('--intervalli', Math.max(0, figli - 1));
+  const vuota = !carte.length;
+  if (vuota) SEZ.hidden = true; else ORA.textContent = carte[0].tempo;
+
+  // le misure: quanto la fascia è più larga dello schermo (= quanto in più è alta la sezione) e dove stanno i centri delle carte
+  let max = 0, cima = 0, mostra = 0, viva = -1, seguita = 0, attesa = 0, tratti = [], ultima = '';
+  const largo = () => !TEL.matches;
+  let visibile = false, sporca = true, larghezza = 0, altezza = 0, fondo = 0;
+  let cartaDiProva = null, ingresso = true;
+  // LE LANCETTE DEL LOGO: un tratto per tempo (da metà strada tra due tempi a metà strada tra i due dopo); «pos» sono i centri delle carte
+  // (di lato sul computer, in altezza sul telefono), «inizio» e «fine» i due capi della sezione nella stessa misura
+  function confini(pos, inizio, fine) {
+    const t = [];
+    carte.forEach((c, i) => { const u = t[t.length - 1]; if (u && u.k === c.k) u.ult = i; else t.push({ k: c.k, pri: i, ult: i }); });
+    t.forEach((u, j) => { u.da = j ? (pos[t[j - 1].ult] + pos[u.pri]) / 2 : inizio; u.a = j < t.length - 1 ? (pos[u.ult] + pos[t[j + 1].pri]) / 2 : fine; });
+    return t;
+  }
+  // dove si è (centro) → gli angoli: in ogni tratto gira una lancetta sola, le altre restano dove sono; con «riduci movimento» restano nella posa
+  function angoli(centro) {
+    const a = { h: POSA.h, m: POSA.m, s: POSA.s };
+    if (!CALMO) tratti.forEach(u => { const g = GIRI[u.k]; if (g && u.a > u.da) a[g[0]] += 360 * g[1] * Math.min(1, Math.max(0, (centro - u.da) / (u.a - u.da))); });
+    return a;
+  }
+  // (18/11/2026, fluidità sul telefono) «vede» dice quali carte sono vicine allo schermo: le lancette si riscrivono solo nei loro loghi (sul telefono
+  // se ne vedono una o due, ed erano 39 lancette riscritte a ogni passo dello scorrimento); una carta che arriva prende gli angoli di adesso prima
+  // di entrare nello schermo. Senza «vede» (il computer) si scrivono tutte, come prima.
+  function lancette(centro, vede) {
+    const a = angoli(centro), chiave = a.h.toFixed(1) + ' ' + a.m.toFixed(1) + ' ' + a.s.toFixed(1);
+    if (chiave === ultima && !vede) return;
+    ultima = chiave;
+    carte.forEach((c, i) => { if (c.ang === chiave || (vede && !vede(i))) return; c.ang = chiave;
+      c.mani.forEach(x => x.g.setAttribute('transform', 'rotate(' + a[x.l].toFixed(1) + ' 100 104)')); });
+  }
+  window.QT = { angoli: () => ultima, tratti: () => tratti.map(u => u.k + ' ' + Math.round(u.da) + '→' + Math.round(u.a)).join(' | ') };   // per le prove
+  // PAGINA-FLUIDA 5 — Solo gli attraversamenti delle tre soglie interessano la testata.
+  const spazio = document.querySelector('.spazio-apertura');
+  const soglie = new IntersectionObserver(voci => {
+    for (const v of voci) {
+      const oltre = v.boundingClientRect.bottom <= 0;
+      if (v.target === spazio) {
+        B.classList.toggle('coperta', oltre && B.classList.contains('scorre'));
+        P.visibilita();
+      } else if (v.target.classList.contains('soglia-home')) B.classList.toggle('giu', oltre);
+      else if (oltre) B.classList.add('sceso');
+    }
+  }, { threshold: [0, .000001] });
+  [spazio, ...spazio.children].forEach(nodo => soglie.observe(nodo));
+  // PAGINA-FLUIDA 2 — Tutte le letture in un blocco, prima di scrivere la posa del fotogramma.
+  function misura(y) {
+    const r = geometriaHV.rettangolo(SEZ);
+    cima = r.top + y; fondo = cima + r.height;
+    altezza = geometriaHV.valore(window, 'innerHeight');
+    if (largo()) {
+      larghezza = geometriaHV.valore(R, 'clientWidth');
+      max = Math.max(0, geometriaHV.valore(FASCIA, 'offsetWidth') - larghezza);
+      carte.forEach(c => { c.x = geometriaHV.valore(c.e, 'offsetLeft') + geometriaHV.valore(c.e, 'offsetWidth') / 2; });
+      tratti = confini(carte.map(c => c.x), larghezza / 2, max + larghezza / 2);
+    } else {
+      carte.forEach(c => {
+        const box = geometriaHV.rettangolo(c.e);
+        c.alta = box.height; c.x = box.top + y + box.height / 2;
+      });
+      const ys = carte.map(c => c.x);
+      tratti = confini(ys, ys[0] - altezza / 2, ys[ys.length - 1]);
+    }
+    sporca = false;
+  }
+  const meta = y => Math.min(max, Math.max(0, y - cima));
+  // IL SOLO MOVIMENTO: la fascia va di lato quanto si scende, e la posizione mostrata insegue quella vera con un ritardo morbido
+  function giro() {
+    seguita = 0;
+    if (!visibile || document.hidden) return;
+    contaHV.tempi++;
+    let y = geometriaHV.valore(window, 'scrollY');
+    if (sporca) misura(y);
+    if (y + altezza <= cima || y >= fondo) { accendi(-1); return; }
+    const prova = cartaDiProva;
+    if (prova !== null) {
+      const c = carte[prova];
+      y = largo() ? cima + Math.min(max, Math.max(0, c.x - larghezza / 2)) : c.x - Math.max(c.alta, altezza) / 2;
+      scrollTo(0, y); cartaDiProva = null;
+      requestAnimationFrame(() => requestAnimationFrame(() => B.classList.add('posato')));
+    }
+    if (!largo()) { scegliTel(y); return; }
+    const m = meta(y);
+    // PAGINA-FLUIDA 7 — Rientrando dal finale la fascia è già all'estremo giusto.
+    mostra = ingresso || CALMO || prova !== null ? m : mostra + (m - mostra) * .14;
+    ingresso = false;
+    if (Math.abs(m - mostra) < .25) mostra = m;
+    FASCIA.style.transform = 'translate3d(' + (-mostra).toFixed(2) + 'px, 0, 0)';
+    FILO.style.transform = 'scaleX(' + (max ? mostra / max : 0).toFixed(4) + ')';
+    lancette(mostra + larghezza / 2);
+    const dentro = y > cima - altezza * .5 && y < cima + max + altezza * .5;   // il palco è almeno per metà sullo schermo
+    if (!dentro) accendi(-1);
+    else { const centro = mostra + larghezza / 2; let k = 0; carte.forEach((c, i) => { if (Math.abs(c.x - centro) < Math.abs(carte[k].x - centro)) k = i; }); accendi(k); }
+    if (mostra !== m) seguita = requestAnimationFrame(giro);
+  }
+  function sveglia() { if (visibile && !document.hidden && !seguita) seguita = requestAnimationFrame(giro); }
+  function invalida() { sporca = true; sveglia(); }
+  function scegliTel(y) {
+    const centro = y + altezza / 2;
+    lancette(centro, i => Math.abs(carte[i].x - centro) < altezza * 1.3);
+    let k = -1, d = altezza * .5;
+    carte.forEach((c, i) => { const s = Math.abs(c.x - centro); if (s < d) { d = s; k = i; } });
+    accendi(k);
+  }
+  // una carta viva: piena, e il suo filmato parte da capo e va una volta sola (resta sull'ultimo fotogramma); le altre ferme sul primo
+  function accendi(k) {
+    if (k === viva) return;
+    clearTimeout(attesa);
+    if (viva >= 0) { const c = carte[viva]; c.e.classList.remove('qt-viva'); c.v.pause(); if (c.v.currentTime) c.v.currentTime = 0; }
+    viva = k;
+    if (k < 0) return;
+    const c = carte[k]; c.e.classList.add('qt-viva'); ORA.textContent = c.tempo;
+    attesa = setTimeout(() => { if (c.v.currentTime) c.v.currentTime = 0; c.v.play().catch(() => {}); }, 450);
+  }
+  function attivaTempi() {
+    if (visibile && !document.hidden) {
+      addEventListener('scroll', sveglia, { passive: true });
+      sveglia();
+    } else {
+      ingresso = true;
+      removeEventListener('scroll', sveglia);
+      cancelAnimationFrame(seguita); seguita = 0; accendi(-1);
+    }
+  }
+  if (!vuota) {
+    new IntersectionObserver(voci => {
+      const v = voci[voci.length - 1];
+      visibile = v.isIntersecting && v.intersectionRect.height > 0;
+      attivaTempi();
+    }, { threshold: [0, .000001] }).observe(SEZ);
+    // Un cambio d'altezza sopra le carte sposta i loro centri nel documento.
+    const dimensioni = new ResizeObserver(invalida);
+    [document.getElementById('otto'), SEZ].forEach(e => dimensioni.observe(e));
+    addEventListener('resize', invalida);
+    document.addEventListener('lingua', invalida);
+    document.addEventListener('visibilitychange', attivaTempi);
+    TEL.addEventListener('change', () => { accendi(-1); mostra = 0; invalida(); });
+    if (document.fonts) { document.fonts.ready.then(invalida); document.fonts.addEventListener('loadingdone', invalida); }
+  }
+
+  // HOME: riporta in cima, alla presentazione, con una breve dissolvenza nel buio (chi ha chiesto meno movimento: subito)
+  // PAGINA-FLUIDA 6 — HOME dopo un ingresso diretto deve ancora offrire la prima spinta.
+  function tornaInCima() {
+    scrollTo(0, 0);
+    if (!P.avviata()) {
+      clearTimeout(sblocco); sblocco = 0; fretta = 0; voglia = 0;
+      B.classList.remove('scorre', 'sceso', 'fretta');
+    }
+    B.classList.remove('coperta', 'giu');
+    P.visibilita();
+  }
+  document.querySelector('.casa').addEventListener('click', e => {
+    e.preventDefault();
+    if (CALMO) { tornaInCima(); return; }
+    B.classList.add('torna');
+    setTimeout(() => { tornaInCima(); requestAnimationFrame(() => requestAnimationFrame(() => B.classList.remove('torna'))); }, 400);
+  });
+  // chi arriva da Visioni o da L'atelier con la voce «L'ora vera» (ora-vera.html#otto) va dritto al contenuto di questa pagina: alla presentazione porta HOME
+  if (['#otto', '#tempi', '#finale'].includes(location.hash)) {
+    clearTimeout(sblocco); sblocco = 1;
+    document.querySelector(location.hash).scrollIntoView({ behavior: 'instant' });
+    B.classList.add('sceso', 'giu');
+  }
+
+  // prove: ?vai=tempi sblocca subito e porta alla sezione; con &carta=N porta la carta N al centro senza inseguimento, poi «posato»
+  if (Q.get('vai') === 'tempi' && !FERMO) {
+    const vai = () => {
+      if (vuota) return;
+      if (Q.has('carta')) cartaDiProva = Math.max(0, Math.min(carte.length - 1, Math.round(+Q.get('carta') || 0)));
+      B.classList.add('scorre'); invalida();
+      SEZ.scrollIntoView({ behavior: 'instant' });
+    };
+    Promise.all([new Promise(r => document.readyState === 'complete' ? r() : addEventListener('load', r, { once: true })), document.fonts ? document.fonts.ready : 0]).then(vai);
+  }
+})();
+</script>
+<script>
+  // LE SCRITTE NON SONO MAI BEIGE (Franco, 15/11 notte: «togli le scritte beige e falle dello stesso colore di alfa, beta, etc.»): in questa pagina le
+  // scritte d'accento sono nel blu di L'atelier (--blu); l'oro (--oro) resta ai fili sottili e ai bordi. La pagina si controlla da sola: se dopo il
+  // caricamento un elemento ha il beige come colore del testo parte un errore che strumenti/foto-pagina.js vede, e la pagina non arriva a Franco.
+  window.scritteBeige = () => { const prova = document.createElement('i'); prova.style.color = 'var(--oro)'; document.body.appendChild(prova);
+    const beige = geometriaHV.stile(prova).color; prova.remove();
+    return [...document.querySelectorAll('body *')].filter(e => geometriaHV.stile(e).color === beige)
+      .map(e => ((typeof e.className === 'string' && e.className) || e.tagName.toLowerCase()) + (e.textContent.trim() ? ' «' + e.textContent.trim().slice(0, 24) + '»' : '')); };
+  // PAGINA-FLUIDA 3 — foto-pagina.js apre questa copia locale e raccoglie Runtime.exceptionThrown.
+  if (/\/\.prova-viewport-\d+\.html$/.test(location.pathname)) {
+    addEventListener('load', () => setTimeout(() => {
+      const b = window.scritteBeige();
+      if (b.length) throw new Error('Scritte beige nella prima pagina (vanno nel blu di alfa e beta): ' + b.slice(0, 5).join(' | '));
+    }, 1500));
+  }
+</script>
+<!-- nella lente della vetrina Web Retold (17/11/2026): lo scorrimento arriva come messaggio. A pagina ancora chiusa (la presentazione) vale come una
+     spinta di rotella, così la rotella non resta morta neanche nella lente; a pagina aperta scorre. Esc riporta al telescopio. Fuori dalla vetrina non fanno niente. -->
+<script>addEventListener("message", e => { const d = e.data; if (d && typeof d.scorri === "number") { if (document.body.classList.contains("scorre")) scrollBy({ top: d.scorri, behavior: "instant" }); else dispatchEvent(new WheelEvent("wheel", { deltaY: d.scorri })); } if (d && d.inizio) scrollTo({ top: 0, behavior: "instant" }); });</script>
+<script>if (parent !== window) addEventListener("keydown", e => { if (e.key === "Escape") parent.postMessage({ esci: 1 }, "*"); });</script>
+<!-- zenit-rovescio: uscendo dalla lente della vetrina Zenit Atelier il sito si rovescia e poi torna com'è (pezzo unico: progetti/vetrina/telescopio/pezzo-rovescio.html, si monta con strumenti/monta-rovescio.js) -->
+<style>html.zenit-rovescio { filter: invert(1) hue-rotate(180deg); } html.zenit-rovescio :is(img, video, canvas, .zenit-tieni) { filter: brightness(var(--zenit-foto, 1)) invert(1) hue-rotate(180deg); }   /* prima si abbassa la luce della foto, poi la si rovescia: al contrario esce slavata */
+html.zenit-passa::view-transition-old(root), html.zenit-passa::view-transition-new(root) { animation-duration: var(--zenit-ms, 2600ms); animation-timing-function: cubic-bezier(.45, 0, .55, 1); }</style>
+<script>if (parent !== window) addEventListener("message", e => { const d = e.data, h = document.documentElement; if (!d || !("rovescio" in d)) return;
+  if (d.rovescio) { h.style.setProperty("--zenit-foto", d.foto || 1); h.classList.add("zenit-rovescio"); setTimeout(() => parent.postMessage({ rovescio: "fatto" }, "*"), 0); return; }   /* niente requestAnimationFrame: in una pagina nascosta non scatta */
+  if (!h.classList.contains("zenit-rovescio")) return; const via = () => h.classList.remove("zenit-rovescio");
+  if (!document.startViewTransition || !d.ms || matchMedia("(prefers-reduced-motion: reduce)").matches) return via();
+  h.style.setProperty("--zenit-ms", d.ms + "ms"); h.classList.add("zenit-passa");
+  document.startViewTransition(via).finished.finally(() => h.classList.remove("zenit-passa")); });</script>
+<!-- /zenit-rovescio -->
+</body>
+</html>
