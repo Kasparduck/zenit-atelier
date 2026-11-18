@@ -32,7 +32,7 @@
   const CHIAVI_QUI = new Set(); QUI.forEach(([, m]) => Object.keys(m).forEach(k => CHIAVI_QUI.add(k)));
   const q = new URLSearchParams(location.search), mancate = new Set();
   const TITOLO = document.title, DESCR = document.querySelector('meta[name="description"]'), DESCR_IT = DESCR ? DESCR.getAttribute('content') : '';
-  let lingua = 'it', linguetta = null;
+  let lingua = 'it', linguetta = null, menuLingua = null;
 
   const netta = s => s.trim().replace(/\s+/g, ' ');
   // l'inglese di una scritta italiana (già «netta») nel posto dove sta; undefined se non c'è
@@ -79,6 +79,7 @@
     if (DESCR) DESCR.setAttribute('content', (lingua === 'en' && TITOLI[DESCR_IT]) || DESCR_IT);
     passa(document.body);
     document.querySelectorAll('a[href]').forEach(collega);
+    if (menuLingua) menuLingua.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.l === lingua));
     if (linguetta) { const en = lingua === 'en'; linguetta.textContent = en ? 'Italiano' : 'English'; linguetta.lang = en ? 'it' : 'en'; linguetta.setAttribute('aria-label', en ? 'Leggi il sito in italiano' : 'Read this site in English'); }
     if (ricorda) { try { localStorage.setItem(CHIAVE, lingua); } catch (e) {} }
     try { const u = new URL(location.href); if (u.searchParams.has('lang')) { if (porta()) u.searchParams.set('lang', porta()); else u.searchParams.delete('lang'); if (u.href !== location.href) history.replaceState(history.state, '', u.href); } } catch (e) {}
@@ -123,6 +124,7 @@
       + '@media (hover:hover){#lingua:hover{background-image:linear-gradient(90deg,#80858a,#d8dce0 22%,#fbfcfd 50%,#ced2d6 78%,#7c8186),' + AMARANTO + ';color:#141210}}'
       + '@media (max-width:1023px){#lingua{font-size:12px;padding:16px 6px 16px 7px}}'      // margini più stretti: linguetta più stretta (29 px), sempre dentro il margine
       + '@media (max-width:720px){#lingua{position:absolute;top:50svh}}'
+      + '@media (max-width:1023px){#lingua::before{content:"";position:absolute;top:-4px;bottom:-4px;right:0;left:-19px}}'   // 18/11: la linguetta stretta si tocca su 44 px (area invisibile, l'aspetto non cambia)
       + '@media print{#lingua{display:none}}';
     document.head.appendChild(stile);
     linguetta = document.body.appendChild(Object.assign(document.createElement('button'), { id: 'lingua', type: 'button', textContent: 'English', lang: 'en' }));
@@ -132,6 +134,24 @@
     const posa = () => { const h = telefono.matches && document.querySelector('h1'); if (!h) { linguetta.style.top = ''; return; } const r = h.getBoundingClientRect(); linguetta.style.top = Math.round(r.top + scrollY + r.height / 2) + 'px'; };
     posa(); addEventListener('resize', posa); addEventListener('load', posa); document.addEventListener('lingua', posa);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(posa);
+  }
+
+  /* LA LINGUA NEL MENU (18/11/2026, giudice #27: la linguetta c'era solo nella prima schermata della home; chi-sono e per-capire non l'avevano).
+     Dentro il pannello del menu a tre righe, in tutte e tre le pagine, sotto le voci e con il loro stile: Italiano / English; quella scelta è in
+     corsivo bronzo come la voce della pagina in cui sei. Stesse regole della linguetta: nella vetrina non compare (lì comanda la vetrina). */
+  const pannello = document.getElementById('pannello-menu'), voci = pannello && pannello.querySelector('nav');
+  if (voci && (q.get('linguetta') === '1' || (!inCornice && q.get('linguetta') !== '0'))) {
+    const st = document.createElement('style');
+    st.textContent = '.menu-lingua{display:flex;align-items:center;gap:6px 14px;border-top:1px solid var(--linea);padding-top:10px}'
+      + '.menu-lingua button{background:none;border:0;padding:0;min-height:44px;cursor:pointer;font:300 2.2rem/1.25 var(--serif);color:inherit}'
+      + '.menu-lingua button[aria-pressed="true"]{font-style:italic;color:var(--voce,var(--bronzo))}'   // lo stesso colore della voce della pagina in cui sei
+      + '.menu-lingua span{color:var(--tenue);font:300 1.6rem/1 var(--serif)}';
+    document.head.appendChild(st);
+    menuLingua = document.createElement('div');
+    menuLingua.className = 'menu-lingua'; menuLingua.setAttribute('data-lingua', ''); menuLingua.setAttribute('role', 'group'); menuLingua.setAttribute('aria-label', 'Lingua · Language');
+    menuLingua.innerHTML = '<button type="button" data-l="it" lang="it" aria-pressed="true">Italiano</button><span aria-hidden="true">/</span><button type="button" data-l="en" lang="en" aria-pressed="false">English</button>';
+    voci.after(menuLingua);
+    menuLingua.addEventListener('click', e => { const b = e.target.closest('button[data-l]'); if (!b || b.dataset.l === lingua) return; chiesta = null; metti(b.dataset.l, true); });
   }
 
   // la lingua con cui si apre: l'indirizzo comanda (e non si ricorda), se no la scelta ricordata

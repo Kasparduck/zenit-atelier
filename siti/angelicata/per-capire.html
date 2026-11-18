@@ -352,6 +352,20 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
   .dentro { grid-column: 1 / -1; }
   .pc-testa { padding-top: 120px; }
 }
+/* 18/11/2026, ritocchi sul telefono (giudice e Codex): solo fino a 720 px e di traverso; il computer resta com'è */
+@media (max-width: 720px) {
+  .occhio, .fondo h3, .dimostra, .etichetta, .giornale .giornale-firma, .giornale-testata .data { font-size: 12px; }
+  .marchio-nome small { font-size: 12px; letter-spacing: .2em; }
+  .pillola, .pannello-menu .chiudi-menu, .apri, .pc-filtri button { min-height: 44px; }
+  .pannello-menu { overscroll-behavior: contain; }
+}
+@media (max-height: 500px) and (orientation: landscape) and (min-aspect-ratio: 3/2) and (max-width: 899px) {
+  .testata-riga, .testata.stretta .testata-riga { height: 50px; }
+  .monogramma { width: 34px; height: 34px; }
+  .tocco a { padding-block: 12px; }
+  body { padding-bottom: calc(46px + env(safe-area-inset-bottom, 0px)); }
+  html { scroll-padding-top: 58px; }
+}
 </style>
 <!-- prove dei colori (16/11/2026): senza ?colori= nell'indirizzo non fanno niente; si tolgono quando Franco ha scelto -->
 <link rel="stylesheet" href="colori.css">
@@ -553,7 +567,7 @@ aperto(); setInterval(aperto, 60000);
 /* ---------- testata che si stringe ---------- */
 const testata = $('#testata');
 let inCoda = false;
-addEventListener('scroll', () => { if (inCoda) return; inCoda = true; requestAnimationFrame(() => { inCoda = false; testata.classList.toggle('stretta', scrollY > 40); }); }, { passive: true });
+addEventListener('scroll', () => { if (inCoda) return; inCoda = true; requestAnimationFrame(() => { inCoda = false; if (document.body.classList.contains('sfondo-fermo')) return; testata.classList.toggle('stretta', scrollY > 40); }); }, { passive: true });
 
 /* ---------- Tutto · Civile · Penale filtrano l'elenco; parte dalla scelta fatta nella home ---------- */
 function filtra(m) {
@@ -587,7 +601,14 @@ if (giro) { if (!MUOVI || !('IntersectionObserver' in window)) giro.classList.ad
   else { const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { giro.classList.add('vista'); io.disconnect(); } })); io.observe(giro); } }
 
 /* ---------- menu del telefono ---------- */
-function menu(apri) { document.body.classList.toggle('menu-aperto', apri); $('.apri-menu').setAttribute('aria-expanded', apri); $('#pannello-menu').inert = !apri; }
+/* 18/11/2026: con il menu aperto lo sfondo sta fermo dov'era (uno swipe spostava la pagina sotto e chiudendo si perdeva il punto); scorre solo il pannello */
+let menuY = 0;
+function menu(apri) {
+  const b = document.body; if (apri === b.classList.contains('menu-aperto')) return;
+  if (apri) { menuY = scrollY; b.classList.add('sfondo-fermo'); Object.assign(b.style, { position: 'fixed', top: -menuY + 'px', left: '0', right: '0' }); }
+  b.classList.toggle('menu-aperto', apri); $('.apri-menu').setAttribute('aria-expanded', apri); $('#pannello-menu').inert = !apri;
+  if (!apri) { Object.assign(b.style, { position: '', top: '', left: '', right: '' }); scrollTo({ top: menuY, behavior: 'instant' }); b.classList.remove('sfondo-fermo'); }
+}
 $('.apri-menu').addEventListener('click', () => menu(!document.body.classList.contains('menu-aperto')));
 $('.velo-menu').addEventListener('click', () => menu(false));
 $('.chiudi-menu').addEventListener('click', () => menu(false));

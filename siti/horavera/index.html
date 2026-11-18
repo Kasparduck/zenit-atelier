@@ -159,7 +159,8 @@ html.motore::-webkit-scrollbar { display: none; }
 .palco[data-stato="s4"] .orologio { transition: transform 1.6s cubic-bezier(.5, 0, .8, .4), opacity 1s .3s; }
 .palco[data-stato="s4"] .volo { transition: transform 1.6s cubic-bezier(.5, 0, .8, .4); }
 
-@media (min-width: 761px) {
+/* (18/11/2026) le disposizioni del computer valgono da 761 px, tranne il telefono di traverso (largo meno di 900 px e alto meno di 501): quello va col telefono */
+@media (min-width: 900px), (min-width: 761px) and (min-height: 501px) {
   /* MODO «ACCANTO» (la tigre), angolo 2: entra dal basso a destra, sale sullo spadaccino facendosi grande e trasparente, poi scivola in alto a sinistra.
      I tempi e la grandezza sono quelli approvati; di nuovo ci sono solo da dove viene e la posa, 7 centesimi di schermo più in alto. */
   .palco[data-modo="accanto"] { --x: 50vw; --y: 62vh; --giro: -34deg; --grande: .2; }
@@ -170,7 +171,7 @@ html.motore::-webkit-scrollbar { display: none; }
 
 /* MODO «FREGIO» (la Manica): il filmato è una fascia a tutta larghezza; l'orologio parte piccolo e pieno dal buio in basso a sinistra, sale sul filmato
    crescendo e facendosi trasparente (l'aereo si vede attraverso), poi si posa a destra dell'aereo e lì torna pieno. Solo sul computer: sul telefono vale lo schema comune. */
-@media (min-width: 761px) {
+@media (min-width: 900px), (min-width: 761px) and (min-height: 501px) {
   /* angolo 3: dal basso a sinistra, sale sull'aereo, poi scivola in alto a destra (la posa è 7 centesimi di schermo più in alto di prima) */
   .palco[data-modo="fregio"] { --x: -30vw; --y: 54vh; --giro: 34deg; --grande: .18; --vx: 59%; --alone: .82; }
   .palco[data-modo="fregio"][data-stato="s1"] { --x: -24vw; --y: 35vh; --giro: 24deg; --grande: .23; --lento: 2.4s; }
@@ -426,31 +427,97 @@ html.motore::-webkit-scrollbar { display: none; }
 .salta.si { opacity: .8; transform: translate(-50%, 0); pointer-events: auto; }
 .salta:hover, .salta:focus-visible { color: var(--avorio); opacity: 1; outline: none; }
 
-@media (max-width: 760px) {
+@media (max-width: 760px), (max-width: 899px) and (max-height: 500px) and (orientation: landscape) {
   .scorri-racconto .registro { height: 480vh; }
   .racconto { display: none; }
   .scorri-racconto .quinta { scale: none; opacity: 1; }
   .prova-scorri { top: auto; bottom: 10px; max-width: calc(100vw - 20px); }
   .scala, .righe { display: none; }
   .commissione { padding: 9px 12px; }
-  .conta { display: block; position: absolute; z-index: 6; left: 0; right: 0; top: 74px; text-align: center; font: 600 .62rem/1 var(--sans); letter-spacing: .28em; text-transform: uppercase; color: var(--tenue); }
+  /* IL TELEFONO RICOMPOSTO (18/11/2026; Franco: «sfasato», «l'orologio non si vede un kaiser»). Dall'alto, uno sotto l'altro e senza sovrapporsi:
+     l'etichetta (N. 031 · Rubino e oro · 1 di 8), l'orologio intero e centrato, l'anno, il luogo, la frase, e il filmato in tutto lo spazio che resta.
+     --cw = la larghezza della CASSA (non dell'immagine): il 62% dello schermo, mai più del 46% dell'altezza (telefono di traverso).
+     Ogni immagine ha la cassa in un punto diverso, quindi per ogni orologio: --hk = altezza dell'immagine diviso larghezza della cassa (misurata sugli scatti)
+     e --py = dove sta il perno, in frazione dell'altezza (lo stesso di --perno). Con questi due numeri la cassa cade sempre tra 104 px e 104 px + --cw,
+     e la maschera lascia piena la cassa e sfuma il bracciale prima dell'etichetta e prima dell'anno. Il computer (da 761 px) non cambia. */
+  .palco { --cw: min(62vw, 46svh); --hk: 1.9; --py: .45; --x: 30vw; --y: -4%; }
+  .palco[data-modo="carica"] { --hk: 2.13; --py: .4094; }
+  .palco[data-modo="accanto"] { --hk: 1.97; --py: .4492; }
+  .palco[data-modo="fregio"] { --hk: 1.84; --py: .4727; }
+  .palco[data-modo="polo"] { --hk: 1.85; --py: .4658; }
+  .palco[data-modo="ritorno"] { --hk: 1.63; --py: .457; }
+  .palco[data-modo="studio"] { --hk: 1.56; --py: .4436; }
+  .palco[data-modo="viale"] { --hk: 1.73; --py: .4563; }
+  .palco[data-modo="deco"] { --hk: 2.37; --py: .4469; }
+  .conta { display: block; position: absolute; z-index: 6; left: 0; right: 0; top: 72px; text-align: center; font: 600 .62rem/1 var(--sans); letter-spacing: .28em; text-transform: uppercase; color: var(--tenue); }
   .conta b { color: var(--oro); font-weight: 600; }
-  .orologio { left: 50%; top: 30%; height: 58vh; height: 58svh; }
-  .corpo { -webkit-mask-image: linear-gradient(transparent 5%, #000 17%, #000 70%, transparent 83%); mask-image: linear-gradient(transparent 5%, #000 17%, #000 70%, transparent 83%); }
-  .palco { --x: 80%; --y: -4%; }
-  .palco[data-stato="s1"] { --x: 30%; --y: -8%; --grande: .34; }
-  .palco[data-stato="s2"], .palco[data-stato="s3"] { --x: 0%; --y: 0%; --grande: 1; }
-  .palco[data-stato="s4"] { --x: -70%; --y: -60%; }
-  .scena { left: 0; width: 100%; top: 53%; height: 39%; object-position: var(--fuoco, 47%) 50%; transform-origin: 50% 50%; -webkit-mask-image: linear-gradient(transparent, #000 26%, #000 80%, transparent), linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent); -webkit-mask-composite: source-in; mask-image: linear-gradient(transparent, #000 26%, #000 80%, transparent), linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent); mask-composite: intersect; }
-  .velo { background: radial-gradient(ellipse 80% 34% at 50% 28%, rgb(217 160 120 / .15), transparent 72%); }
-  .tempo { right: 0; left: 0; top: 44.5vh; top: 44.5svh; bottom: auto; transform: none; text-align: center; width: auto; padding: 0 22px; }
+  .orologio { left: 50%; height: calc(var(--cw) * var(--hk)); top: calc(104px + var(--cw) / 2 + (.5 - var(--py)) * var(--cw) * var(--hk)); }
+  .corpo { --m: linear-gradient(transparent calc((var(--py) - .62 / var(--hk)) * 100%), #000 calc((var(--py) - .5 / var(--hk)) * 100%), #000 calc((var(--py) + .5 / var(--hk)) * 100%), transparent calc((var(--py) + .57 / var(--hk)) * 100%));
+    -webkit-mask-image: var(--m); mask-image: var(--m); }
+  /* arriva piccolo in alto a destra ma tutto dentro lo schermo (in vw: in % le immagini larghe uscivano dal bordo), poi va al centro */
+  .palco[data-stato="s1"] { --x: 22vw; --y: -8%; --grande: .34; }
+  .palco[data-stato="s2"], .palco[data-stato="s3"] { --x: 0vw; --y: 0%; --grande: 1; --scena: .95; }
+  .palco[data-stato="s3"] { --scena: .9; }
+  .palco[data-stato="s4"] { --x: -60vw; --y: -60%; }
+  .scena { left: 0; width: 100%; top: calc(104px + var(--cw) + 128px); height: max(140px, calc(100% - 232px - var(--cw))); object-position: var(--fuoco, 47%) 50%; transform-origin: 50% 50%;
+    -webkit-mask-image: linear-gradient(transparent, #000 24%, #000 86%, transparent), linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(transparent, #000 24%, #000 86%, transparent), linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-composite: intersect; }
+  .velo { background: radial-gradient(ellipse 80% 30% at 50% calc(104px + var(--cw) / 2), rgb(217 160 120 / .15), transparent 72%); }
+  .tempo { right: 0; left: 0; top: calc(104px + var(--cw) + 12px); bottom: auto; transform: none; text-align: center; width: auto; padding: 0 22px; }
   .tempo::before { display: none; }
   .tempo .n { display: none; }
-  .anno { justify-content: center; font-size: clamp(3.2rem, 18vw, 4.6rem); }
-  .luogo { margin-top: 2px; }
-  .per { position: absolute; left: 22px; right: 22px; top: 47vh; top: 47svh; margin: 0; font-size: 1.08rem; }
+  .anno { justify-content: center; font-size: clamp(2.6rem, 13vw, 3.8rem); }
+  .luogo { margin-top: 4px; font-size: .75rem; }   /* terzo giro (il giudice): 10,6 px → 12 px, come le altre scritte del telefono */
+  .scorri { font-size: .75rem; }                    /* «Scorri» della prima schermata: 10,2 px → 12 px */
+  .per { margin-top: 10px; font-size: 1rem; line-height: 1.3; text-shadow: 0 0 8px var(--buio), 0 0 3px var(--buio); }   /* l'ultima riga può finire sull'orlo sfumato del filmato */
+  /* il filo e «Salta» stanno sul filmato, in basso: un'ombra scura sotto le lettere e sotto il filo, perché si leggano anche sulla nebbia chiara */
+  .attesa { background: rgb(10 9 8 / .55); box-shadow: 0 0 0 1px rgb(10 9 8 / .5); }
+  .attesa b, .salta-filo { text-shadow: 0 0 8px var(--buio), 0 0 3px var(--buio); }
+  /* SECONDO GIRO (18/11/2026, il giudice: «Salta» a 9,6 px con 28 px da toccare, la percentuale e l'etichetta sotto i 10 px). Sul telefono nessuna
+     scritta sotto i 12 px; «Salta» si prende col dito (44 px di altezza) e ha dietro un fondo scuro morbido, così si legge anche sul filmato chiaro.
+     Restano blu. Il filo sale di 18 px per lasciare posto al pulsante. */
+  .conta { font-size: .75rem; letter-spacing: .12em; }
+  .conta b { color: var(--blu); }   /* il numero era beige: in Hora Vera le scritte d'accento sono blu (Franco, 15/11) */
+  .attesa { bottom: 64px; }
+  .attesa b { font-size: .75rem; }
+  .salta-filo { bottom: 8px; min-height: 44px; padding: 16px 24px; font-size: .75rem; line-height: 12px; letter-spacing: .3em; text-indent: .3em;
+    border-radius: 22px; background: rgb(10 9 8 / .62); box-shadow: 0 0 14px 6px rgb(10 9 8 / .45); }
   .cassa { left: 40%; width: min(74vw, 112vh); }
+  /* la prima schermata: il titolo scende sotto le tre voci del menu (prima «Ora XV · pomeriggio» ci finiva sotto) */
+  .soglia { padding-top: 200px; padding-bottom: 40px; }
+  /* in fondo, «Commissione» (il resto della parte è ancora di prova e nascosto) finiva accanto a HOME, come una voce del menu: con meno spazio sotto, in fondo alla pagina scende di 100 px */
+  .coda { padding-bottom: 20px; }
 }
+/* IL TELEFONO DI TRAVERSO (18/11/2026, secondo giro; Codex: a 662×360 e 844×390 il filmato cominciava sotto lo schermo e non si vedeva).
+   Quando lo schermo è basso e largo: l'orologio a sinistra, il filmato a destra in alto e sotto il filmato anno, luogo e frase; il filo e «Salta»
+   sotto l'orologio. Tutto dentro lo schermo; traiettorie e tempi restano quelli del telefono. */
+@media (max-width: 899px) and (max-height: 500px) and (orientation: landscape) {
+  .palco { --cw: min(28vw, 48svh); }
+  .orologio { left: 22vw; top: calc(50% + 2px + (.5 - var(--py)) * var(--cw) * var(--hk)); }
+  .conta { left: 42vw; right: 16px; top: 16px; text-align: left; }
+  .scena { left: 42vw; width: calc(58vw - 16px); top: 40px; height: 50svh;
+    -webkit-mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent), linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent), linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .velo { background: radial-gradient(ellipse 30% 50% at 22vw 52%, rgb(217 160 120 / .15), transparent 72%); }
+  .tempo { left: 42vw; right: 16px; top: calc(44px + 50svh); padding: 0; text-align: left; }
+  .anno { justify-content: flex-start; font-size: 2.2rem; }
+  .luogo { margin-top: 0; }
+  .per { margin-top: 6px; font-size: .95rem; line-height: 1.25; }
+  .attesa { left: 22vw; bottom: 60px; }
+  .salta-filo { left: 22vw; }
+}
+/* IL DITO NON SI FERMA PIÙ (18/11/2026, secondo giro). Il corpo della pagina, scesi di mezzo schermo, prende la classe «dentro» (menu nascosto),
+   che però è anche il nome dell'interno della confezione (.dentro: overflow hidden, position absolute): sul telefono il dito non scorreva più oltre
+   i primi 330 px (misurato con il tocco vero). Sul computer il motore scorre da sé e non cambia niente; qui, dove scorre il dito, il corpo resta com'è. */
+/* TERZO GIRO (18/11/2026, Codex): anche sui portatili con lo schermo che si tocca (puntatore principale il mouse, motore acceso) il dito si fermava a 480 px:
+   lì il corpo resta com'è anche col motore, che segue il dito (segui) e governa solo rotella, tastiera e barra. Il computer senza schermo da toccare non cambia. */
+@media (max-width: 760px), (max-width: 899px) and (max-height: 500px) and (orientation: landscape), (pointer: coarse), (any-pointer: coarse) {
+  body.dentro { position: static; overflow: visible; border-radius: 0; background: var(--buio); }
+  body.dentro::after { content: none; }
+}
+/* Lo stesso sul computer quando il motore è spento (html.libero, messo dallo script): la rotella la gestisce il browser e il corpo non deve bloccarla. */
+html.libero body.dentro { position: static; overflow: visible; border-radius: 0; background: var(--buio); }
+html.libero body.dentro::after { content: none; }
 @media (prefers-reduced-motion: reduce) {
   .orologio, .volo, .corpo, .lancetta, .nastro, .scena, .velo, .per, .luogo, .riflesso { transition: none !important; }
 }
@@ -860,7 +927,7 @@ html.motore::-webkit-scrollbar { display: none; }
   if (new URLSearchParams(location.search).has('prova')) document.documentElement.classList.add('prova');
   addEventListener('scroll', () => document.body.classList.toggle('dentro', scrollY > innerHeight * .5), { passive: true });
   const parametri = new URLSearchParams(location.search), forzato = parametri.get('stato'), capForzato = +(parametri.get('cap') || 1) - 1, tempo = parametri.get('tempo');
-  const fermo = !!parametri.get('fermo'), calmo = matchMedia('(prefers-reduced-motion: reduce)').matches, stretto = matchMedia('(max-width: 760px)');
+  const fermo = !!parametri.get('fermo'), calmo = matchMedia('(prefers-reduced-motion: reduce)').matches, stretto = matchMedia('(max-width: 760px), (max-width: 899px) and (max-height: 500px) and (orientation: landscape)');   // il telefono, anche di traverso (come nel CSS)
   if (fermo) document.documentElement.classList.add('fermo');
   // CORSA = quanto durano lancette e data (come --corsa nel CSS); negli ultimi PIENO millisecondi l'orologio torna pieno; VELATO = quanto è trasparente sul filmato
   const OGGI = '2026', GIRI = [0, 0, 1, 2], CORSA = 7200, PIENO = 2600, VELATO = .46;
@@ -1141,13 +1208,18 @@ html.motore::-webkit-scrollbar { display: none; }
   // chi scende oltre un cancello ancora chiuso viene riportato lì (solo scendendo; un collegamento o il tasto Fine saltano tutto)
   const filo = document.querySelector('.attesa'), filoDentro = filo.firstElementChild, filoCento = filo.querySelector('b'), saltaFilo = document.querySelector('.salta-filo');
   let ultimoY = scrollY, salto = 0, inAttesa = null, filoGira = false, motore = null;
+  // SUL TOCCO LA PAGINA NON TORNA MAI INDIETRO (18/11/2026, secondo giro; Codex: col dito e l'inerzia questa rete riportava la pagina al cancello,
+  // di colpo e anche più volte). Senza il motore (il telefono) non si trattiene: le animazioni vanno a tempo, e chi scorre svelto le vede finire
+  // quando si ferma; passando un cancello ancora chiuso compaiono solo il filo, la percentuale e «Salta», che porta avanti. La rete che riporta
+  // indietro resta solo per la prova ?vecchia=1 con il mouse.
+  const RETE = !!parametri.get('vecchia') && matchMedia('(pointer: fine)').matches;
   function trattieni() {
     const y = scrollY, ora = performance.now(); let chiuso = null;
     // con il motore la pagina non viene MAI riportata indietro: questa rete resta solo per la prova ?vecchia=1
     if (ASPETTA && !motore && ora > salto && y > ultimoY) for (const c of cancelli.sort((a, b) => a.y() - b.y())) {
       if (c.saltato) continue;   // una sezione saltata con «Salta» non trattiene più
       const l = c.y();
-      if (ultimoY <= l && y > l && ora < c.fine()) { scrollTo(0, l); chiuso = c; break; }
+      if (ultimoY <= l && y > l && ora < c.fine()) { if (RETE) scrollTo(0, l); chiuso = c; break; }
     }
     ultimoY = scrollY;
     return chiuso;
@@ -1206,6 +1278,8 @@ html.motore::-webkit-scrollbar { display: none; }
   // si lascia fare e si segue. Solo con mouse o touchpad (pointer: fine); sul telefono lo scorrimento resta quello del telefono, per ora senza attese.
   // Controlli: strumenti/rotella-vera.js (la rotella vera di Windows; MODO=barra trascina la barra nostra) e strumenti/prova-sfarfallio.js.
   const MORBIDO = .14;   // quanta della strada che manca si fa in un fotogramma (a 60 al secondo): la pagina scivola invece di saltare
+  // 18/11: senza motore (animazioni ridotte in Windows, ?aspetta=0, ?vecchia=1) scorre il browser da sé: il corpo non deve prendere il blocco di .dentro
+  if (!(ASPETTA && !parametri.get('vecchia') && matchMedia('(pointer: fine)').matches)) document.documentElement.classList.add('libero');
   if (ASPETTA && !parametri.get('vecchia') && matchMedia('(pointer: fine)').matches) motore = (() => {
     const radice = document.documentElement, fondo = () => Math.max(0, radice.scrollHeight - innerHeight);
     radice.classList.add('motore');

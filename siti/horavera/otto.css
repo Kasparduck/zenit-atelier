@@ -86,5 +86,11 @@
   .ot-nome span { display: none; }
   .ot-citta { font-size: 1.9rem; }
   .ot-evento { font-size: 1.1rem; }
+  /* (18/11/2026, Franco dal telefono: «VENEZIA AUTUNNO è tagliato») a 360 px il filmato era largo 157 punti e la scritta 192. Il filmato un po' più
+     grande (52 % invece di 48 %: arriva fino al bordo delle foto ferme, senza passarci sopra) e la scritta più stretta. Secondo giro (il giudice:
+     11 px è troppo piccolo) 12 px, con le lettere meno spaziate: a 360 px la più lunga («Greenwich · autunno») è larga 163 punti in un filmato di 171 */
+  .ot-film, .ot-ora { left: 24%; top: 24%; width: 52%; height: 52%; }
+  .ot-luogo { padding: .55em .7em .55em .74em; font-size: 12px; letter-spacing: .04em; }
+  .ot-bollo { font-size: .62rem; letter-spacing: .06em; }      /* «MEZZOGIORNO VERO» dentro una casella di 107 punti */
 }
 @media (prefers-reduced-motion: reduce) { .ot-cella, .ot-cella .ot-orologio, .ot-nome, .ot-fermo { transition-duration: .01s !important; } }

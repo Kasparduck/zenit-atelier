@@ -193,6 +193,37 @@ body.torna .casa-velo { opacity: 1; }
   .qt-nome { font-size: 1.15rem; }
 }
 @media (prefers-reduced-motion: reduce) { .qt-carta { transition: none; } }
+
+/* ---- IL TELEFONO (18/11/2026). Le parole di Franco dal suo telefono, alla lettera, spuntate sugli scatti a 360 × 662 e a 390 × 844:
+   [x] 1. «la pagina L'ora vera appare prima nera poi bianca»   → il nero dell'inizio si alza più piano e senza scatto; se il filmato non parte si resta sullo scuro
+   [x] 2. «VENEZIA AUTUNNO è tagliato»                           → in otto.css (il filmato un po' più grande, la scritta più stretta)
+   E quel che ha trovato la diagnosi alla misura del suo telefono:
+   [x] 3. le voci in alto si leggevano a metà: sul telefono il ritaglio del filmato mette dietro di loro il quadrante chiaro, anche nel filmato scuro,
+          e le lettere diventavano avorio sul chiaro. Qui un'ombra ferma nell'angolo (la stessa del velo di fine apertura) c'è da quando entrano,
+          e le lettere restano sempre avorio, i numeri e la voce di questa pagina nel blu;
+   [x] 4. HOME si sovrapponeva ai testi che scorrono sotto: sotto HOME una fascia di buio, che c'è solo quando c'è HOME;
+   [x] 5. nel finale due righe una sull'altra: in finale.css e finale.js.
+   SECONDO GIRO (18/11, dal giudice), spuntato sugli scatti a 360 × 662:
+   [x] 6. scritte troppo piccole: «Scorri», «Quattro tempi» e le voci cielo, vita, uomo a 12 px (i colori restano: grigio tenue, mai beige);
+          «Venezia · autunno» in otto.css;
+   [x] 7. «L'ora vera» in blu si leggeva poco sul chiaro del disegno: l'ombra dietro il menu è più scura e più larga (colori e lettere come prima).
+   TERZO GIRO (18/11, dal giudice), spuntato sugli scatti a 360 × 662:
+   [x] 8. «Rivedi · luce nuova» (solo con ?prova=1) da 9,6 a 12 px;
+   [x] 9. «L'ora vera» in blu sul beige a 4 secondi dall'apertura: l'ombra dietro il menu ancora più decisa (larga tutto lo schermo, alta 280 px,
+          piena fin oltre la terza voce); colori e bagliore delle lettere non cambiano.
+   Tutto qui sotto vale solo fino a 860 px: il computer resta com'era. */
+@media (max-width: 860px) {
+  .testa::before { content: ""; position: absolute; z-index: -1; left: 0; top: 0; width: 100vw; height: 280px; pointer-events: none; opacity: 0; transition: opacity 1.6s ease;
+    background: radial-gradient(100% 100% at 0 0, rgb(10 9 8 / .95), rgb(10 9 8 / .92) 44%, rgb(10 9 8 / .64) 72%, rgb(10 9 8 / 0) 100%); }
+  .scorri, .rivedi { font-size: 12px; }
+  .qt-dove, .qt-voce { font-size: 12px; }
+  body.voci .testa::before { opacity: 1; }
+  .menu li a .l, .menu li a .l.s { color: var(--avorio); text-shadow: 0 0 .5em rgb(10 9 8 / .8), 0 0 .16em rgb(10 9 8 / .7); }
+  .menu li a b .l, .menu li a b .l.s, .menu li a.qui .nome .l, .menu li a.qui .nome .l.s { color: var(--blu); }
+  .scena::after { transition: opacity 2.6s cubic-bezier(.45, 0, .55, 1); }
+  .casa::before { content: ""; position: fixed; z-index: -1; left: 0; right: 0; top: 0; height: 76px; pointer-events: none;
+    background: linear-gradient(var(--buio) 0, var(--buio) 60px, rgb(10 9 8 / 0)); }
+}
 </style>
 <link rel="stylesheet" href="otto.css">
 <link rel="stylesheet" href="finale.css">
@@ -285,6 +316,7 @@ body.torna .casa-velo { opacity: 1; }
   const FERMO = Q.has('tempo') ? +Q.get('tempo') / 1000 : null;              // prova: ferma a un istante
   const CALMO = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const FUOCO = .57;                                                         // sul telefono: che parte del filmato resta al centro
+  const TELEFONO = matchMedia('(max-width: 860px)').matches;                 // (18/11) sul telefono, se il filmato non parte, si resta sullo scuro: vedi via()
 
   // ---- I TEMPI (secondi dall'inizio) ----
   const DURATA = 12.4;                                                      // quanto dura la presentazione: il filmato (9 s) rallenta per durare altrettanto
@@ -562,7 +594,12 @@ void main() {
     if (FERMO !== null) { await window.vaiA(FERMO * 1000); window.pronta = true; document.body.classList.add('posato'); return; }
     window.pronta = true;
     if (CALMO) { video.currentTime = Math.max(0, (video.duration || 9) - .05); video.addEventListener('seeked', () => disegna(DURATA), { once: true }); vesti(DURATA, true); document.body.classList.add('scritte'); return; }
-    video.play().catch(() => { disegna(0); vesti(0, true); document.body.classList.add('scritte'); });   // il filmato non parte: resta il chiaro, con le scritte d'inchiostro
+    // il filmato non parte: sul computer resta il chiaro, con le scritte d'inchiostro. Sul TELEFONO (18/11, Franco: «appare prima nera poi bianca»)
+    // si va all'ultimo fotogramma, lo scuro, come per chi ha chiesto meno movimento: la pagina non resta bianca e le voci si leggono
+    video.play().catch(() => {
+      if (!TELEFONO) { disegna(0); vesti(0, true); document.body.classList.add('scritte'); return; }
+      finito = performance.now(); video.currentTime = Math.max(0, (video.duration || 9) - .05);
+      video.addEventListener('seeked', () => disegna(DURATA), { once: true }); vesti(DURATA, true); document.body.classList.add('scritte'); });
     giro();
   }
   via();

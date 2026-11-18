@@ -29,7 +29,7 @@
   const radice = document.getElementById('otto');
   if (!radice) return;
   const BASE = ((document.currentScript && document.currentScript.src) || location.href).replace(/[^/]*$/, ''), IMG = BASE + 'immagini/', OTTO_DIR = IMG + 'otto/';
-  const RAD = Math.PI / 180, calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const RAD = Math.PI / 180, calmo = matchMedia('(prefers-reduced-motion: reduce)').matches, TEL = matchMedia('(max-width: 860px)');
   const el = (tag, classe, padre, html) => { const e = document.createElement(tag); if (classe) e.className = classe; if (html != null) e.innerHTML = html; if (padre) padre.appendChild(e); return e; };
   const lim = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x)), dolce = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2, esce = u => 1 - Math.pow(1 - u, 3);
   const fase = (t, a, b) => lim((t - a) / (b - a));
@@ -462,8 +462,14 @@
     proietta(c.lon, polo ? -90 : c.lat, v, P); const px = P[0] / DPR, py = P[1] / DPR, pd = esce(fase(e, 5000, 5700));
     if (pd > 0 && P[2] >= 0) { g.beginPath(); g.arc(P[0], P[1], 4.2 * DPR * pd, 0, Math.PI * 2); g.fillStyle = '#ece5d8'; g.fill();
       const onda = fase(e, 5100, 6600); if (onda > 0 && onda < 1) { g.beginPath(); g.arc(P[0], P[1], (6 + 26 * onda) * DPR, 0, Math.PI * 2); g.strokeStyle = `rgba(217,176,140,${(.7 * (1 - onda)).toFixed(3)})`; g.lineWidth = DPR; g.stroke(); } }
-    etich.style.transform = `translate(${(px + 14).toFixed(1)}px, ${(py - 12).toFixed(1)}px)`; etich.style.opacity = pd * (1 - fase(e, 6400, 7200));
-    if (cima) etMer.style.transform = `translate(${(cima[0] + 8).toFixed(1)}px, ${(Math.max(6, cima[1]) + 4).toFixed(1)}px)`;
+    // (18/11/2026, sul telefono) il nome della città e quello del meridiano stanno a destra del loro punto; se lì non ci stanno (a 360 px la carta è
+    // larga 328 punti) passano a sinistra del punto, così non escono tagliati dalla carta. Sul computer la carta è larga e restano sempre a destra.
+    let ex = px + 14, mx = cima ? cima[0] + 8 : 0;
+    if (TEL.matches) { const ew = etich.offsetWidth, mw = etMer.offsetWidth;
+      if (ex + ew > CW - 6) ex = Math.max(6, px - 14 - ew);
+      if (cima && mx + mw > CW - 6) mx = Math.max(6, cima[0] - 8 - mw); }
+    etich.style.transform = `translate(${ex.toFixed(1)}px, ${(py - 12).toFixed(1)}px)`; etich.style.opacity = pd * (1 - fase(e, 6400, 7200));
+    if (cima) etMer.style.transform = `translate(${mx.toFixed(1)}px, ${(Math.max(6, cima[1]) + 4).toFixed(1)}px)`;
     etMer.style.opacity = pm * (1 - fase(e, 6400, 7200));
   }
 

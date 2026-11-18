@@ -13,3 +13,11 @@
 .fi-t { font-style: normal; color: #96918a; }
 .finale.fi-composto .fi-riga { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .fi-riga { opacity: 1; } }
+/* SUL TELEFONO (18/11/2026): a 360-390 px alcune frasi vanno su due righe, e una frase in attesa nella riga di un'altra, più bassa di lei, finiva
+   mezza sopra le righe vicine (due righe stampate una sull'altra). La mattina ogni frase aveva un posto alto due righe; nel secondo giro le righe
+   stanno strette come sul computer e lo spazio lo apre finale.js solo dove chi aspetta sporge, più l'aria tra le strofe e il posto della chiusa
+   (spazia()). Il testo comincia sotto HOME: HOME sta a 20-26 px dall'alto e la sua fascia di buio arriva a 76 px. Il computer non cambia. */
+@media (max-width: 860px) {
+  .finale { padding-top: 92px; }
+  .fi-riga { display: flex; align-items: center; }
+}

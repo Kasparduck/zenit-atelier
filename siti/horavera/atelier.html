@@ -220,15 +220,70 @@ html.motore::-webkit-scrollbar { display: none; }
 .riga a { display: inline-block; margin-top: 36px; font: 600 .7rem/1 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: var(--avorio); text-decoration: none; border: 1px solid var(--oro); padding: 16px 26px; transition: background .4s, color .4s; }
 .riga a:hover { background: var(--oro); color: var(--buio); }
 
-@media (max-width: 720px) {
+/* IL TELEFONO (18/11/2026; da 721 px in su non cambia niente). Sul telefono stretto il palco 16:9 largo come lo schermo faceva l'orologio piccolo e
+   le didascalie di 7 px. Qui: 1) sceso sotto l'apertura, il menu se ne va (resta HOME, su una fascia di buio); 2) il palco è più largo dello schermo
+   quanto basta perché l'orologio (56,25 cqw) sia largo il 92% e centrato: la lettera greca e il nome stanno sopra, il contatore e la didascalia sotto,
+   in corpo leggibile (le parti del palco fuori dallo schermo sono vuote); 3) i due testi del capitolo escono dal quadro fermo e si leggono DOPO la scena,
+   uno dopo l'altro, nella pagina che scorre (li sposta sistemaTesti(), più sotto). Le stesse regole valgono per il telefono girato di lato (vedi sotto). */
+.racconto:empty { display: none; }
+/* TERZO GIRO (18/11/2026, Codex): «di traverso» vuol dire telefono, non una finestra del computer bassa (a 1280×450 prendeva questa disposizione):
+   per questo il ramo orizzontale ha anche (max-width: 899px), come in Visioni; lo stesso nel matchMedia STRETTO, più sotto. */
+@media (max-width: 720px), (max-width: 899px) and (max-height: 500px) and (orientation: landscape) {
   .testa { padding: 20px 18px; }
+  .testa > * { position: relative; }
+  .testa::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 92px; background: linear-gradient(var(--buio) 60%, rgb(10 9 8 / 0)); opacity: 0; transition: opacity .6s; pointer-events: none; }
+  body.sceso:not(.scena) .testa::before { opacity: 1; }
+  body.sceso .menu ol { opacity: 0; pointer-events: none; }
+  body.sceso .menu ol a { pointer-events: none; }   /* terzo giro (Codex): i collegamenti hanno pointer-events: auto (.testa a) e il menu nascosto rubava i tocchi; HOME resta attivo */
   .commissione { padding: 9px 12px; }
-  .capitolo { height: 480vh; }
+  .capitolo { height: 400vh; }
   .apertura .indice { flex-wrap: wrap; }
-  .testi { width: auto; left: 18px; right: 18px; }
-  .testi.tecnico { top: 9%; transform: translateY(100vh); }
-  .testi.lirico { top: auto; bottom: 9%; transform: translateY(100vh); }
-  .capitolo.legge .testi.tecnico, .capitolo.legge .testi.lirico { transform: none; }
+  .palco, .alone { width: min(163.6vw, 110vh); width: min(163.6vw, 110svh); }
+  /* terzo giro (Codex, iOS Safari): con le barre aperte 100vh è più alto dello schermo e tagliava il fondo dell'orologio; svh = lo schermo con le barre (100vh resta per i browser vecchi) */
+  .apertura, .fermo { height: 100vh; height: 100svh; }
+  .lettera { left: 0; right: 0; top: auto; bottom: calc(100% + 14px); text-align: center; }
+  .lettera b { font-size: 58px; line-height: 1; }
+  .lettera span { margin-top: 8px; font-size: 11px; text-indent: .32em; }
+  .lettera small { display: none; }
+  .conta, .marcia, .trovati { left: calc(50% - 50vw + 18px); top: calc(100% + 18px); bottom: auto; width: 92px; }
+  .passo, .nota { left: calc(50% - 50vw + 120px); top: calc(100% + 18px) !important; width: calc(100vw - 138px); }
+  .conta small, .marcia small, .nota small { font-size: 10px; margin-bottom: 8px; }
+  .cifre { font-size: 30px; }
+  .marcia .grande { font-size: 30px; white-space: nowrap; }
+  .marcia .unita { margin-top: 4px; font-size: 11px; }
+  .passo strong, .nota strong { margin-top: 0; font-size: 20px; line-height: 1.15; }
+  .passo span, .nota span { margin-top: 6px; font-size: 14.5px; line-height: 1.45; }
+  .trovati { width: auto; font-size: 10px; line-height: 1.7; letter-spacing: .12em; white-space: nowrap; }
+  .trovati i { width: 7px; height: 7px; margin-right: 3px; }
+  .fili path, .fili line { display: none; }
+  .racconto { padding: 12vh 18px 16vh; }
+  .racconto .testi { position: static; width: auto; transform: none !important; visibility: visible; text-shadow: none; }
+  .racconto .testi.lirico { margin-top: 64px; }
+  .racconto .rg { opacity: 1; animation: none !important; }
+  .racconto .testi small, .racconto .testi h2 em, .racconto .testi.lirico .firma { color: var(--blu); }
+  .racconto .testi.lirico .tratto { display: block; background: var(--blu); }
+  .racconto .testi h2 { font-size: 2.3rem; }
+  .racconto .testi p { font-size: 1.05rem; }
+  .racconto .testi.lirico .verso { font-size: 1.28rem; }
+}
+/* IL TELEFONO GIRATO DI LATO (18/11/2026; trovato da Codex: a 662×360 la lettera greca cominciava sopra lo schermo e le didascalie uscivano sotto;
+   a 844×390 i testi del capitolo uscivano in basso). Valgono le regole del telefono qui sopra (il menu che se ne va, i testi dopo la scena); in più il
+   palco sta a sinistra, alto quanto lo schermo meno due margini, così l'orologio (56,25 cqw, alto quanto il palco) entra tutto; a destra, in colonna
+   e dentro lo schermo: la lettera greca con il nome del gesto, il contatore, la didascalia. Scritte di almeno 12 px. Computer e telefono dritto: uguali. */
+@media (max-width: 899px) and (max-height: 500px) and (orientation: landscape) {
+  :root { --lato: calc(100vh - 28px); }
+  @supports (height: 100svh) { :root { --lato: calc(100svh - 28px); } }
+  .palco, .alone { width: calc(var(--lato) * 16 / 9); left: calc(18px + var(--lato) / 2); }
+  .lettera, .conta, .marcia, .trovati, .passo, .nota { left: calc(78.125cqw + 24px); width: calc(100vw - var(--lato) - 60px); }
+  .lettera { right: auto; top: 4%; bottom: auto; text-align: left; }
+  .lettera span { font-size: 12px; text-indent: 0; }
+  .conta, .marcia, .trovati { top: 34%; bottom: auto; }
+  .passo, .nota { top: 62% !important; }
+  .conta small, .marcia small, .nota small, .marcia .unita, .trovati { font-size: 12px; }
+  .passo strong, .nota strong { font-size: 19px; }
+  .passo span, .nota span { font-size: 14px; line-height: 1.4; }
+  /* la fascia scura dietro HOME resta alta come sul telefono dritto (92 px): a 70 px era piena solo fino a 42 px e i versi passavano sotto HOME (terzo giro, il giudice) */
+  .racconto { max-width: 40rem; margin: 0 auto; }
 }
 </style>
 <!-- L'INGLESE CON UN CLIC (18/11/2026): il vocabolario e il motore stanno in testa, così la lingua si decide prima di disegnare. Qui non c'è la
@@ -422,7 +477,11 @@ html.motore::-webkit-scrollbar { display: none; }
     });
     const [, x9, y9, w9, h9] = PEZZI[8];
     A.lampo = el('div', 'lampo'); Object.assign(A.lampo.style, { left: x9 * K + 'cqw', top: y9 * K + 'cqw', width: w9 * K + 'cqw', height: h9 * K + 'cqw' });
-    A.lampo.style.webkitMaskImage = A.lampo.style.maskImage = 'url(' + SM + 'pezzo-09.webp)'; banco.append(A.lampo);
+    // la luce sulla cassa ha la forma del pezzo 9 (una maschera). Aperta dal disco, Chrome blocca le maschere prese da un file (errore «ERR_FAILED»)
+    // e la luce restava comunque invisibile: dal disco non si chiede e la luce non c'è; online (GitHub Pages) è come prima.
+    if (location.protocol === 'file:') A.lampo.style.display = 'none';
+    else A.lampo.style.webkitMaskImage = A.lampo.style.maskImage = 'url(' + SM + 'pezzo-09.webp)';
+    banco.append(A.lampo);
     const conta = el('div', 'conta', '<small>Giorno</small><div class="cifre"></div>'); p.append(conta);
     A.colonne = [0, 1, 2].map(() => { const s = el('span'); s.innerHTML = '<i>0</i><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i><i>0</i>'; conta.lastChild.append(s); return s; });
     A.passo = el('div', 'passo', '<strong></strong><span></span>'); A.passo.dataset.lingua = 'pagina'; p.append(A.passo);
@@ -478,7 +537,7 @@ html.motore::-webkit-scrollbar { display: none; }
     B.linea = p.querySelector('.fili line');
     B.nota = el('div', 'nota', '<small>Trovato</small><strong></strong><span></span>'); B.nota.children[1].dataset.lingua = B.nota.children[2].dataset.lingua = 'pagina'; p.append(B.nota);
     B.conta = el('div', 'trovati'); p.append(B.conta); B.contatore();
-    p.addEventListener('pointermove', e => { const r = p.getBoundingClientRect(); B.mx = (e.clientX - r.left) / r.width * 100; B.my = (e.clientY - r.top) / r.width * 100; B.ultimo = performance.now(); });
+    p.addEventListener('pointermove', e => { if (e.pointerType === 'touch') return; const r = p.getBoundingClientRect(); B.mx = (e.clientX - r.left) / r.width * 100; B.my = (e.clientY - r.top) / r.width * 100; B.ultimo = performance.now(); });
   };
   B.contatore = () => { B.conta.innerHTML = PUNTI.map((q, i) => `<i class="${B.trovati.has(i) ? 'si' : ''}"></i>`).join('') + ` ${B.trovati.size} di 5`; };
   // la guida dello scorrimento: dal centro al primo punto, poi un punto dopo l'altro, con una sosta su ognuno
@@ -815,8 +874,11 @@ html.motore::-webkit-scrollbar { display: none; }
     PROVE[nome].alone = !!al;   // δ lo usa per rendere trasparente il fondo della sua tela
     const lettera = el('div', 'lettera', `<b>${NUMERO[nome]}</b><span>${NOMI[nome][0]}</span><small>${NOMI[nome][1]}</small>`); palco.append(lettera);
     const buio = el('div', 'buio'); palco.append(buio);
-    return { nome, sec, palco, lettera, buio, alone: !!al, al, sin: [], des: [], p: 0, pv: 0, vede: false };
+    // i due testi e il posto dove vanno sul telefono, dopo la scena (vedi sistemaTesti)
+    const t = sec.querySelector('.testi.tecnico'), l = sec.querySelector('.testi.lirico'), racconto = el('div', 'racconto'); sec.after(racconto);
+    return { nome, sec, palco, lettera, buio, alone: !!al, al, t, l, racconto, sin: [], des: [], p: 0, pv: 0, vede: false };
   });
+  const STRETTO = matchMedia('(max-width: 720px), (max-width: 899px) and (max-height: 500px) and (orientation: landscape)');   // il telefono, dritto o girato di lato
   // LE RIGHE: ogni testo diviso nelle sue righe vere (come va a capo sullo schermo); salgono una alla volta, da trasparenti a piene
   const dividi = el => {
     if (el.dataset.orig === undefined) el.dataset.orig = el.innerHTML; else el.innerHTML = el.dataset.orig;
@@ -833,7 +895,7 @@ html.motore::-webkit-scrollbar { display: none; }
   // a destra cade bene sotto la prima a sinistra; tutto dentro lo schermo (sotto la testata in alto, un margine in basso). Se la destra non entra,
   // lo sfalsamento cala fino a un ottavo di schermo e poi i versi si rimpiccioliscono (al più del 25%), rifacendo le righe.
   const posiziona = (c, t, l) => {
-    if (matchMedia('(max-width: 720px)').matches) return;
+    if (STRETTO.matches) return;
     const H = innerHeight, su = Math.max(84, H * .1), giu = Math.max(36, H * .055), posto = H - su - giu, minD = Math.round(H * .13);
     for (let giro = 0; giro < 5; giro++) {
       const hT = t.offsetHeight, hL = l.offsetHeight;
@@ -852,7 +914,12 @@ html.motore::-webkit-scrollbar { display: none; }
     }
   };
   const preparaRighe = c => {
-    const t = c.sec.querySelector('.testi.tecnico'), l = c.sec.querySelector('.testi.lirico'), sin = [], des = [];
+    const t = c.t, l = c.l, sin = [], des = [];
+    // sul telefono i testi si leggono fermi nella pagina che scorre: niente righe da far salire, il testo intero com'era
+    if (STRETTO.matches) {
+      for (const e of [t, l]) if (e) { for (const x of e.querySelectorAll('small, h2, p')) if (x.dataset.orig !== undefined) x.innerHTML = x.dataset.orig; e.classList.add('diviso'); }
+      c.sin = []; c.des = []; return;
+    }
     if (t) { t.classList.remove('diviso'); for (const el of t.querySelectorAll('small, h2, p')) sin.push(...dividi(el)); for (const d of t.querySelectorAll('.dati > div')) { d.classList.add('rg'); sin.push(d); } t.classList.add('diviso'); }
     if (l) { l.style.removeProperty('--k'); l.classList.remove('diviso'); const tr = l.querySelector('.tratto'); if (tr) { tr.classList.add('rg'); des.push(tr); } for (const el of l.querySelectorAll('.verso, .firma')) des.push(...dividi(el)); l.classList.add('diviso'); }
     c.sin = sin; c.des = des;
@@ -860,7 +927,14 @@ html.motore::-webkit-scrollbar { display: none; }
     c.sin.forEach((x, i) => x.style.setProperty('--d', (i * .42).toFixed(2) + 's'));
     c.des.forEach((x, i) => x.style.setProperty('--d', (.9 + i * .42).toFixed(2) + 's'));
   };
-  CAP.forEach(preparaRighe);
+  // SUL TELEFONO i due testi escono dal quadro fermo (dove stavano uno sopra l'altro) e vanno dopo la scena; tornando largo rientrano al loro posto
+  const sistemaTesti = () => {
+    const fuori = STRETTO.matches;
+    for (const c of CAP) { const dove = fuori ? c.racconto : c.sec.querySelector('.fermo'); for (const e of [c.t, c.l]) if (e && e.parentNode !== dove) dove.append(e); }
+    CAP.forEach(preparaRighe);
+  };
+  sistemaTesti();
+  if (STRETTO.addEventListener) STRETTO.addEventListener('change', sistemaTesti);
   document.fonts.ready.then(() => CAP.forEach(preparaRighe));
   let attesaRighe = 0; addEventListener('resize', () => { clearTimeout(attesaRighe); attesaRighe = setTimeout(() => CAP.forEach(preparaRighe), 200); });
   // la variante del blu (a riposo più chiaro) e l'accensione dell'ultima parte quando entra nello schermo
@@ -958,6 +1032,8 @@ html.motore::-webkit-scrollbar { display: none; }
     const primo = CAP[0].sec.offsetTop, ultimo = CAP[CAP.length - 1].sec.offsetTop + CAP[CAP.length - 1].sec.offsetHeight;
     document.body.classList.toggle('dentro', y > primo - h * .4 && y < ultimo - h * .6);
     document.body.classList.toggle('legge', CAP.some(c => c.p > FASI.via[0] - .02 && c.p < 1));
+    document.body.classList.toggle('sceso', y > h * .5);   // sotto l'apertura: sul telefono il menu se ne va (CSS), sul computer niente
+    document.body.classList.toggle('scena', CAP.some(c => c.p > 0 && c.p < 1));   // un quadro fermo riempie lo schermo: lì sul telefono la fascia di HOME non serve
   }
   function capitolo(c, ora, vivo) {
     const p = c.pv, entra = dolce(p, ...FASI.entra), via = passo(p, ...FASI.via), q = passo(p, ...FASI.prova);

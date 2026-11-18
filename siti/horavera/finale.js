@@ -30,6 +30,21 @@
    - va DA SOLO quando la sezione è nello schermo; uscendo del tutto e rientrando riparte da capo;
    - le parole in grigio: ore, orologio, ritmo, rallentato, rallentano, tempo.
 
+   SUL TELEFONO, SECONDO GIRO (18/11/2026). La decisione di Franco, alla lettera, e i punti del giudice e di Codex, spuntati sugli scatti:
+   [x] 1. «le frasi che parlano alla civiltà aliena lasciamole così»: il viaggio (tempi, due tratti, ordine, chi aspetta nella riga di chi) è lo stesso;
+          non si cambia una riga di `tappe()` né di `parti()`.
+   [x] 2. a 360 px, a riposo, il testo era tutto spaziato uguale e le strofe non si vedevano: le righe stanno strette come sul computer e tra le
+          strofe torna l'aria (vedi «IL TESTO FERMO SUL TELEFONO», `spazia()`).
+   [x] 3. le prime righe a riposo finivano sotto la fascia scura di HOME: il testo comincia sotto HOME (finale.css).
+   [x] 4. col telefono girato di lato il finale non partiva mai (aspettava metà di un testo più alto di due schermi): parte quando la sezione
+          copre metà dello schermo; sul computer, dove la sezione è alta uno schermo, è lo stesso istante di prima.
+   TERZO GIRO (18/11/2026, giudice, difetto 24). La decisione di Franco, alla lettera nell'incarico, e il punto, spuntati sugli scatti:
+   [x] 1. «il viaggio delle frasi non si tocca (tempi, traiettorie, partenza), si cambia solo lo spazio intorno al testo a riposo»: nessuna riga di
+          `tappe()`, `parti()` od `osserva()` cambia; cambia solo il buio SOTTO il testo (vedi «IL FONDO DELLA PAGINA SUL TELEFONO», `coda()`).
+   [x] 2. sul telefono il testo fermo è più alto dello schermo e in fondo alla pagina la prima riga in vista era «ha un ritmo suo…», a metà frase,
+          con «È l'atomo più semplice» sotto HOME: adesso l'ultima schermata comincia pulita all'inizio di una strofa, sotto HOME, e finisce con
+          la chiusa; le strofe prima si leggono risalendo col dito, e il finale non riparte (riparte solo se la sezione esce del tutto).
+
    Si innesta con tre righe: <link rel="stylesheet" href="finale.css">, <section id="finale" class="finale"></section>, <script src="finale.js"></script>.
    Per le prove: ?vai=finale porta lì; &fermo=6000 ferma tutto a 6 secondi e mette «posato» sul body; FINALE.vaiA(ms) fa lo stesso da codice.
    Dopo OGNI modifica al viaggio (dritte, un movimento alla volta; deve dire OK):
@@ -64,6 +79,62 @@
       x.appendChild(y); riga.appendChild(x); p.appendChild(riga); righe.push({ riga, x, y, r }); } }
   const DURATA = PARTE + (righe.length - 1) * OGNI + VIAGGIO;
 
+  // ---------- IL TESTO FERMO SUL TELEFONO (18/11/2026, secondo giro) ----------
+  // Sul telefono alcune frasi vanno su due righe. Una frase in attesa sta nella riga di un'altra (vedi «DA DOVE PARTE» in parti): se è più alta della
+  // padrona di casa, sporge di mezza differenza sopra e sotto. La mattina del 18/11 ogni riga era diventata alta due righe: niente più frasi ferme una
+  // sull'altra, ma a riposo il testo era spaziato tutto uguale e le strofe non si vedevano. Adesso le righe stanno strette come sul computer e lo
+  // spazio si apre SOLO tra due righe dove chi aspetta sporge (quanto sporge, misurato sulle righe vere, in tutte e due le lingue); tra le strofe c'è
+  // lo spazio del computer (.78em) più il più grande di quegli spazi, così una strofa è sempre più staccata di due righe vicine. Sotto il testo, il
+  // posto dove aspetta la chiusa. Il viaggio non cambia: parti() misura le righe come sono e le frasi fanno la stessa strada, dai posti di adesso.
+  // Non si tocca mai mentre il testo si compone (le misure del viaggio sono prese alla partenza). Il computer (oltre 860 px) resta com'era.
+  const STRETTO = matchMedia('(max-width: 860px)');
+  function spazia() {
+    if (partito) return;
+    const strofe = [...blocco.children];
+    righe.forEach(o => { o.riga.style.marginTop = ''; }); strofe.forEach(p => { p.style.marginBottom = ''; }); blocco.style.paddingBottom = '';
+    if (!STRETTO.matches) return;
+    const fs = parseFloat(getComputedStyle(blocco).fontSize) || 20, h = righe.map(o => o.x.getBoundingClientRect().height), n = righe.length;
+    const ospite = i => { const k = ORDINE.indexOf(i + 1); return k > 0 ? ORDINE[k - 1] - 1 : -1; };          // chi aspetta nella riga i (-1: nessuno)
+    const sporge = righe.map((o, i) => { const g = ospite(i); return g < 0 ? 0 : Math.max(0, (h[g] - h[i]) / 2); });
+    const strofa = righe.map(o => strofe.indexOf(o.riga.parentNode));
+    let piu = 0; for (let i = 1; i < n; i++) if (strofa[i] === strofa[i - 1]) piu = Math.max(piu, sporge[i - 1] + sporge[i]);
+    const tra = .78 * fs + piu;
+    for (let i = 1; i < n; i++) { const serve = sporge[i - 1] + sporge[i];
+      if (strofa[i] !== strofa[i - 1]) strofe[strofa[i - 1]].style.marginBottom = Math.max(tra, serve).toFixed(1) + 'px';
+      else if (serve > 0) righe[i].riga.style.marginTop = serve.toFixed(1) + 'px'; }
+    // la chiusa aspetta a un'interlinea sotto l'ultima riga (yInPiu in parti): lì ci deve stare tutta, senza toccare chi aspetta nell'ultima riga
+    const centro = i => { const q = righe[i].x.getBoundingClientRect(); return q.top + q.height / 2; }, gU = ospite(n - 1);
+    let inter = centro(n - 1) - centro(n - 2); const manca = (h[n - 1] + Math.max(h[n - 1], gU < 0 ? 0 : h[gU])) / 2 - inter;
+    if (manca > 0) { righe[n - 1].riga.style.marginTop = ((parseFloat(righe[n - 1].riga.style.marginTop) || 0) + manca).toFixed(1) + 'px'; inter += manca; }
+    blocco.style.paddingBottom = Math.ceil(inter) + 'px';
+  }
+
+  // ---------- IL FONDO DELLA PAGINA SUL TELEFONO (18/11/2026, terzo giro) ----------
+  // Sul telefono il testo fermo è più alto dello schermo (a 360 × 662: 954 px su 662) e il finale è l'ultima cosa della pagina: chi scendeva col dito
+  // arrivava in fondo e la prima riga in vista era «ha un ritmo suo…», a metà frase, con «È l'atomo più semplice» sotto la fascia di HOME. Adesso
+  // sotto il testo c'è il buio che serve perché l'ultima schermata cominci pulita all'INIZIO DI UNA STROFA, all'altezza dove sta la prima riga quando
+  // la sezione è in cima (sotto HOME): la prima strofa che ci sta tutta con quelle dopo e la chiusa (se nessuna strofa ci sta, l'inizio di una frase).
+  // Le strofe prima si leggono risalendo; il finale riparte solo se la sezione esce del tutto dallo schermo. È solo spazio sotto il testo: nessuna riga
+  // si sposta e il viaggio è lo stesso (parti() misura dall'alto della sezione; la partenza dipende da quanta parte dello schermo la sezione copre, non
+  // da quanto è alta), quindi si può rifare anche mentre il testo si compone. Le misure sono di impaginazione (offsetTop: non sentono i viaggi in corso)
+  // e l'altezza è quella dello schermo con le barre del browser nascoste (100vh, la min-height della sezione: non cambia mentre si scorre). Il computer non cambia.
+  function coda() {
+    radice.style.paddingBottom = '';
+    if (!STRETTO.matches) return;
+    const st = getComputedStyle(radice), alto = parseFloat(st.minHeight) || innerHeight, cima = parseFloat(st.paddingTop) || 0, piede = parseFloat(st.paddingBottom) || 0;
+    const fondo = blocco.offsetTop + blocco.offsetHeight;                  // fin dove arriva il testo, compreso il posto dove aspetta la chiusa
+    if (fondo + piede <= alto) return;                                     // il finale sta tutto in uno schermo
+    // dove si ferma l'inizio scelto: all'altezza della prima riga (cima), ma la riga che lo precede deve finire dentro la parte PIENA della fascia di
+    // HOME (buio pieno fino a 60 px, sfuma fino a 76: .casa::before in ora-vera.html), se no si legge a metà nella sfumatura (di traverso le strofe
+    // sono vicine, e a 844 × 390 si vedeva la coda della «g» di «disegnato»); e le lettere dell'inizio stanno sempre sotto la fascia (la riga ha
+    // 4-5 px d'aria sopra le lettere: il suo bordo a 74 px le mette sotto i 76)
+    const PIENA = 60, FASCIA = 74, dove = (t, primaFine) => Math.min(cima, Math.max(FASCIA, PIENA + t - primaFine));
+    const inizi = el => el.map((e, i) => i ? { t: e.offsetTop, y: dove(e.offsetTop, el[i - 1].offsetTop + el[i - 1].offsetHeight) } : null).filter(Boolean);
+    const ci_sta = c => fondo - c.t + c.y <= alto;
+    const da = inizi([...blocco.children]).find(ci_sta) || inizi(righe.map(o => o.riga)).find(ci_sta);
+    if (da) radice.style.paddingBottom = Math.max(piede, alto - (fondo - da.t + da.y)).toFixed(1) + 'px';
+  }
+
   // ---------- il viaggio ----------
   // SEMPRE DRITTE, UN MOVIMENTO ALLA VOLTA (Franco, 16/11): nessuna rotazione, e due tratti staccati. Il guscio di dentro (.fi-y) porta in altezza nel
   // PRIMO tratto (dalla riga dove la frase aspetta fino alla sua); una breve sosta; il guscio di fuori (.fi-x) porta di lato nel SECONDO, lungo la sua
@@ -93,7 +164,9 @@
     // DA DOVE PARTE: ogni frase sta nella riga di quella che approda subito dopo di lei, così partendo le libera il posto e due frasi non stanno
     // mai ferme una sull'altra (la versione con le fasce a caso lasciava per secondi le frasi in attesa sopra quelle già arrivate). La riga della
     // prima che approda è vuota fin dall'inizio; l'ultima, la chiusa, aspetta in una riga in più: sotto il testo se c'è posto, se no sopra.
-    const yInPiu = H - (ultima.y + ultima.h / 2) >= cima.y - cima.h / 2 ? ultima.y + interlinea : cima.y - interlinea;
+    // (18/11) sul telefono il testo è più alto dello schermo e sopra non c'è posto: la chiusa aspetta sempre sotto, nel posto in più (finale.css)
+    const tel = matchMedia('(max-width: 860px)').matches;
+    const yInPiu = tel || H - (ultima.y + ultima.h / 2) >= cima.y - cima.h / 2 ? ultima.y + interlinea : cima.y - interlinea;
     righe.forEach((o, i) => {
       const b = { width: posto[i].w, height: posto[i].h }, fx = posto[i].x, fy = posto[i].y, k = ORDINE.indexOf(i + 1);   // dove deve arrivare (il suo centro)
       const mezzo = b.width / 2 + 14, u = rnd() < .5 ? rnd() * .3 : 1 - rnd() * .3;                                    // verso un bordo, o l'altro
@@ -116,13 +189,28 @@
     const andava = partito && !fermo;
     if (!calmo && !fermo) azzera();
     righe.forEach(o => { o.y.innerHTML = veste(o.r); });
+    spazia(); coda();
     if (andava) parti();
   });
-
-  // ---------- va da solo: parte quando metà della sezione è nello schermo; uscita del tutto, torna alle frasi sparse e rientrando riparte ----------
+  // ---------- va da solo: parte quando la sezione copre metà dello schermo (o, se è più bassa di uno schermo, quando se ne vede metà); uscita del
+  // tutto, torna alle frasi sparse e rientrando riparte. Sul computer la sezione è alta uno schermo: è lo stesso istante di «metà della sezione»,
+  // com'era fino al 18/11. Sul telefono girato di lato il testo è alto più di due schermi e metà della sezione non si vedeva mai: il finale restava
+  // invisibile per sempre (Codex, 18/11). La soglia giusta dipende dall'altezza della sezione: si rifà quando l'altezza cambia (caratteri, schermo girato).
+  let guardia = null;
+  function osserva() {
+    if (calmo) return;
+    const H = radice.getBoundingClientRect().height || 1, r = Math.min(1, Math.min(H, innerHeight) / 2 / H);
+    if (guardia) guardia.disconnect();
+    guardia = new IntersectionObserver(voci => { for (const v of voci) { if (fermo) return;
+      const basta = Math.min(v.boundingClientRect.height, v.rootBounds ? v.rootBounds.height : innerHeight) / 2;
+      if (v.isIntersecting && v.intersectionRect.height >= basta - 1) parti(); else if (!v.isIntersecting) azzera(); } }, { threshold: [0, .5, Math.min(1, r + .002)] });
+    guardia.observe(radice);
+  }
   if (calmo) radice.classList.add('fi-composto');
-  else new IntersectionObserver(voci => { for (const v of voci) { if (fermo) return;
-    if (v.isIntersecting && v.intersectionRatio >= .5) parti(); else if (!v.isIntersecting) azzera(); } }, { threshold: [0, .5] }).observe(radice);
+  const rifai = () => { spazia(); coda(); osserva(); };
+  rifai();                                                               // le righe al loro posto sul telefono (vedi sopra), e di nuovo coi caratteri veri
+  if (document.fonts) document.fonts.ready.then(rifai);
+  addEventListener('resize', rifai);
 
   // ---------- per le prove ----------
   const FINALE = window.FINALE = { pronta: true, durata: DURATA,

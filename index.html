@@ -302,11 +302,55 @@ body.contatti-aperti .c-e { opacity: 1; transform: none; transition: opacity .7s
 body.tel .modi { display: none; }
 body.tel .didascalia { padding: 9px 13px 10px; gap: 4px; bottom: max(10px, 1.6svh); }
 body.tel .didascalia b { font-size: .82rem; line-height: 1.35; }
-body.tel .aiuto { font-size: .72rem; line-height: 1.4; }
+body.tel .aiuto { font-size: 13px; line-height: 1.4; }   /* 18/11 sera (giudice): sul telefono niente scritte sotto 12 px. L'aiuto da 11,5 a 13 */
+body.tel .invito { font-size: 12px; margin-top: 12px; padding: 2px 0; }   /* l'invito da 11,5 a 12, e alto almeno 44 px per il dito (2 px sopra e sotto, tolti dal margine: resta dov'era) */
+/* DI TRAVERSO SUL TELEFONO (18/11/2026 sera). Con lo schermo basso l'obiettivo prende tutta l'altezza: sotto non c'è posto e l'invito, largo, gli finiva sopra.
+   Scelta mia, la più semplice, da confermare: a sinistra il nome e la descrizione; a destra, dall'alto, la busta, l'invito (a capo, stretto), la linguetta;
+   i puntini nell'angolo in basso a destra. Niente si muove in più. Le stesse misure piccole del telefono dritto per busta e nome. */
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 899px) {
+  body.tel .firma { left: 12px; top: 12px; } body.tel .targa { font-size: 1.08rem; padding: 9px 14px 10px; border-radius: 8px; } body.tel .targa::before { inset: 5px; }
+  body.tel .busta { right: 10px; top: 10px; width: 108px; } body.tel .busta-scritta { font-size: 9.7px; }
+  body.tel .invito { position: fixed; right: 12px; top: 76px; margin: 0; padding: 0; width: 138px; line-height: 1.5; text-shadow: 0 0 10px #05080c, 0 0 4px #05080c, 0 0 2px #05080c; }
+  body.tel .puntini { left: auto; right: 8px; top: auto; bottom: 4px; transform: none; }
+}
 body.tel .aiuto.via { display: none; }
 body.tel .aiuto.nota, body.tel .aiuto.nota.via { display: block; opacity: 1; color: #f5f7fa; font-weight: 600; }   /* la nota «aprilo da uno schermo grande» resta sempre */
 @keyframes batte { 50% { opacity: .3; } }
 body.tel .aiuto.nota.batte { animation: batte .45s ease-in-out 2; }
+/* SUL TELEFONO SI APRE COL DITO (18/11/2026). Le parole di Franco, alla lettera:
+   1. «nel caso del cellulare si possa toccare un punto qualsiasi al centro dell'obiettivo per aprire il sito. Diversamente andare col dito sulle scritte
+      piccole è difficile e non così intuitivo»
+   2. «le pagine sature sul cellulare andrebbero verificate bene come particolarmente visibili, in modo che basti toccare anche quelle affinché il sito si
+      apra, senza andare sulle scritte che però possono tranquillamente rimanere»
+   3. «col dito sul cellulare occorre prendere in considerazione scelte diverse ogni volta, dato che è piccolo lo schermo»
+   Qui: la lente che si tocca prende tutto il vetro, fino alla ghiera zigrinata (prima il 70% del lato, un anello di vetro non rispondeva); le pagine intorno
+   un poco più chiare, perché si vedano come cose da toccare (codice: «il tocco sulle pagine»). Solo sul telefono: sul computer resta tutto com'era.
+   :where() tiene bassa la forza di queste regole, così le pagine dei siti scuri (Hora Vera) seguono le loro, scritte più sotto dal codice. */
+body.tel .cattura { width: 76%; }
+/* e le ghiere col dito: sull'obiettivo il browser si prendeva il gesto per scorrere la pagina e dopo 10-30 gradi fermava la ghiera (pointercancel, misurato
+   con tocchi veri il 18/11; Franco quel giorno: «le ghiere si muovono ma è scomodo»). Sull'obiettivo il dito è tutto della vetrina */
+body.tel .telescopio { touch-action: none; }
+:where(body.tel) .spenta { filter: saturate(.45) brightness(.66); }
+:where(body.tel) .spenta.accesa { filter: saturate(.58) brightness(.8); }
+/* I PUNTINI SOTTO L'OBIETTIVO (18/11/2026, Franco sceglie la soluzione 1: «va bene la soluzione 1. di scorrere il dito sulla lente»). La proposta approvata,
+   alla lettera: 1. scorrendo il dito sulla lente a destra o a sinistra si cambia sito, come si sfogliano le foto sul telefono (dito verso sinistra = sito
+   successivo, verso destra = precedente), e la ghiera dei nomi gira insieme; 2. il tocco sulla lente apre il sito, lo scorrimento cambia sito e non apre;
+   3. sotto l'obiettivo dei puntini, uno per sito: quanti siti ci sono e quale stai guardando (quello attivo pieno); ogni puntino si tocca per andare a
+   quel sito; 4. un sito ancora bloccato si raggiunge (va nella lente con la sua nota) ma non si apre; 5. l'aiuto: «Scorri sulla lente per cambiare sito
+   · tocca per aprirlo». Il puntino è piccolo, ma si tocca in un quadrato di 44 px; il pieno è il rame della tacca, i vuoti un filo chiaro; un'ombra scura
+   li stacca dalle pagine dietro. Stanno appena sotto il cerchio dell'obiettivo (TELEFONO.copre() li controlla). Li crea il codice, solo sul telefono. */
+.puntini { position: fixed; left: 50%; top: calc(50% + var(--d) * var(--g, 1) / 2 + 1px); z-index: 3; display: flex; transform: translateX(-50%); transition: opacity .6s; }
+body.aperto .puntini { opacity: 0; pointer-events: none; }
+.puntini button { all: unset; width: 44px; height: 44px; display: grid; place-items: center; cursor: pointer; }
+.puntini i { width: 8px; height: 8px; border-radius: 50%; box-shadow: inset 0 0 0 1.2px rgb(255 240 220 / .62), 0 0 7px 2px rgb(5 8 12 / .8); transition: background .35s, box-shadow .35s; }
+.puntini [aria-current="true"] i { background: #e0935c; box-shadow: inset 0 0 0 1.2px #e0935c, 0 0 7px 2px rgb(5 8 12 / .8); }
+/* LE DUE FRECCETTE ATTORNO ALL'OBIETTIVO (18/11/2026, Franco, alla lettera: «Metti anche due freccettine sottili, quindi delicate, attorno all'obiettivo e
+   che vanno in versi opposti per rendere ancora più intuitivo che si può girare la ghiera»). Due archi corti appena fuori dal bordo, in basso a destra (gira in
+   senso orario) e in basso a sinistra (in senso antiorario): lì non toccano nomi, linguetta, busta né puntini. Tratto di 1,3 px nel rame della tacca, punta
+   aperta piccola; ferme, non si toccano. Solo sul telefono (le crea il codice); TELEFONO.copre() controlla punto per punto che stiano fuori dall'obiettivo. */
+.frecce { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; transition: opacity .6s; }
+.frecce path { fill: none; stroke: #e0935c; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+body.aperto .frecce { opacity: 0; }
 /* il nome (scelto da Franco il 9/11). 11/11, Franco, con l'immagine del suo marchio (../ispirazioni/franco-obiettivo-moderno-7-marchio.jpg): «la scritta Zenit Atelier
    è meglio come la vedi qui»: «Zenit» pieno e «Atelier» sottile, minuscole, dentro una targhetta di vetro con gli angoli da mirino, due crocette e un filo di luce rame sotto.
    Niente sfocatura dietro (sopra le strisce che si muovono pesa): il vetro è una velatura. */
@@ -345,8 +389,7 @@ body.aperto .invito { pointer-events: none; }
 <p class="firma"><span class="targa"><i></i><b>Web</b> Retold<i></i></span><button type="button" class="invito" id="invito">Un sito alla volta. <span>Il prossimo può essere il tuo.</span></button></p>
 <div class="strisce" id="strisce" aria-hidden="true"></div>
 
-<main class="scena" aria-label="Un telescopio puntato verso di te: nella lente si vede un sito vero">
-  <div class="alone" aria-hidden="true"></div>
+<main class="scena" data-decoro aria-label="Un telescopio puntato verso di te: nella lente si vede un sito vero"><div class="alone" aria-hidden="true"></div>
   <div class="telescopio" id="telescopio">
     <div class="tubo inclina" aria-hidden="true" id="tubo"></div>
 
@@ -447,21 +490,36 @@ const MUOVI = !matchMedia('(prefers-reduced-motion: reduce)').matches;
    Con un dito l'obiettivo cresceva sopra le scritte e il sito scivolava di lato nella lente. Sullo schermo stretto le ghiere si vedono tutte ma girano solo i NOMI (da qualunque anello si prenda),
    toccare un nome porta lì il suo sito, toccare la lente lo apre; niente ingrandimenti, niente scivolata di lato, niente tre modi. Sul computer resta tutto com'era.
    TELEFONO.copre() dice che cosa si copre con che cosa: lo chiede strumenti/vetrina-online.js a 360 × 662 prima di pubblicare. */
-const TEL = matchMedia('(max-aspect-ratio: 5/4), (max-width: 820px)').matches; document.body.classList.toggle('tel', TEL);
-window.TELEFONO = { tel: TEL, copre: () => {
+const STRETTO = matchMedia('(max-aspect-ratio: 5/4), (max-width: 820px)').matches;
+/* IL BLOCCO NON DIPENDE DALLA DISPOSIZIONE (18/11/2026 sera, trovato da Codex: a 844 × 390, telefono di traverso, lo schermo non era «stretto», TEL era falso e
+   toccando il nome di Hora Vera il sito si apriva a tutta pagina). Due cose distinte:
+   - fono(): è un TELEFONO VERO, dritto o di traverso (si tocca, e il lato corto dello schermo è sotto 520 px). Un tablet e un computer con lo schermo che si tocca no.
+   - chiuso(i): il sito i NON si apre a tutta pagina: gli manca «telefono: true» e siamo su un telefono (o nella disposizione stretta). È l'unica domanda che fanno
+     tutte le porte (nome, lente, carte, puntini, tastiera, ?apri), e la fa apriSito() per prima cosa.
+   La disposizione e i gesti del telefono (TEL) valgono anche di traverso: lì il dito ha bisogno degli stessi gesti (lente che apre, dito che sfoglia). */
+const fono = () => (navigator.maxTouchPoints > 0 || matchMedia('(pointer: coarse)').matches) && Math.min(screen.width, screen.height) < 520;
+const TEL = STRETTO || fono(); document.body.classList.toggle('tel', TEL);
+const chiuso = i => !SITI[i].telefono && (TEL || fono());
+window.TELEFONO = { tel: TEL, fono, chiuso: i => chiuso(i), copre: () => {
   const t = document.querySelector('#telescopio').getBoundingClientRect(), cx = t.left + t.width / 2, cy = t.top + t.height / 2, r = t.width / 2, esce = [];
-  const pezzi = [['descrizione', '.didascalia'], ['linguetta', '#lingua'], ['targa', '.targa'], ['invito', '#invito'], ['busta', '.busta'], ['tre modi', '#modi']].map(([n, s]) => { const e = document.querySelector(s); if (!e || getComputedStyle(e).display === 'none') return null; const q = e.getBoundingClientRect(); return q.width ? [n, q] : null; }).filter(Boolean);
+  const pezzi = [['descrizione', '.didascalia'], ['linguetta', '#lingua'], ['targa', '.targa'], ['invito', '#invito'], ['busta', '.busta'], ['tre modi', '#modi'], ['puntini', '#puntini']].map(([n, s]) => { const e = document.querySelector(s); if (!e || getComputedStyle(e).display === 'none') return null; const q = e.getBoundingClientRect(); return q.width ? [n, q] : null; }).filter(Boolean);
   for (const [n, q] of pezzi) { const dx = Math.max(q.left - cx, 0, cx - q.right), dy = Math.max(q.top - cy, 0, cy - q.bottom), dentro = r - Math.hypot(dx, dy); if (dentro > 3) esce.push(n + ' sopra l\'obiettivo di ' + Math.round(dentro) + ' px'); }
   for (let i = 0; i < pezzi.length; i++) for (let j = i + 1; j < pezzi.length; j++) { const a = pezzi[i][1], b = pezzi[j][1], w = Math.min(a.right, b.right) - Math.max(a.left, b.left), h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top); if (w > 3 && h > 3) esce.push(pezzi[i][0] + ' sopra ' + pezzi[j][0]); }
+  // le freccette attorno all'obiettivo: il loro riquadro tocca per forza il cerchio, quindi si guardano punto per punto lungo il tratto
+  document.querySelectorAll('#frecce path').forEach((p, k) => { const M = p.getScreenCTM(), L = p.getTotalLength(), dove = new Set();
+    for (let s = 0; s <= L; s += 2) { const q = p.getPointAtLength(s), x = M.a * q.x + M.c * q.y + M.e, y = M.b * q.x + M.d * q.y + M.f;
+      if (Math.hypot(x - cx, y - cy) < r - 1) dove.add('l\'obiettivo'); if (x < 0 || x > innerWidth || y < 0 || y > innerHeight) dove.add('il bordo dello schermo');
+      for (const [n, q2] of pezzi) if (x > q2.left - 2 && x < q2.right + 2 && y > q2.top - 2 && y < q2.bottom + 2) dove.add(n); }
+    dove.forEach(n => esce.push('freccia ' + (k + 1) + ' sopra ' + n)); });
   if (t.left < -12 || t.right > innerWidth + 12) esce.push('l\'obiettivo esce di lato di ' + Math.round(Math.max(-t.left, t.right - innerWidth)) + ' px');   // a riposo il riquadro sporge di qualche pixel (l'alone del bordo): si segnala solo quando esce davvero
   return esce; } };
 /* IL SEGNO «PROVATO SUL TELEFONO» (18/11/2026 notte, Franco dal telefono, su Hora Vera: «è sfasato sulle visioni. Non si vede un kaiser. VENEZIA AUTUNNO è tagliato…»; «Perché questi controlli non sono stati fatti?»).
    Sul telefono un sito si apre a tutta pagina SOLO se nella sua riga di SITI c'è telefono: true, e quel segno si mette solo dopo che Franco l'ha provato sul suo telefono.
    Senza il segno il sito resta nella lente, sotto compare la nota e il tocco non lo apre. Hora Vera lo avrà alla tappa 1.7 della scaletta. */
-const AIUTO_TEL = 'Gira la ghiera o tocca un nome per cambiare sito · tocca la lente per aprirlo', NOTA_TEL = 'Questo sito è un film: aprilo da uno schermo grande';
-function notaTel(batti) { if (!TEL) return; const a = document.querySelector('#aiuto'), chiuso = !SITI[attivo].telefono;
-  if (chiuso) a.textContent = NOTA_TEL; else if (a.classList.contains('nota')) a.textContent = AIUTO_TEL;
-  a.classList.toggle('nota', chiuso); a.classList.remove('batte'); if (chiuso && batti) { void a.offsetWidth; a.classList.add('batte'); } }
+const AIUTO_TEL = 'Scorri sulla lente per cambiare sito · tocca per aprirlo', NOTA_TEL = 'Questo sito è un film: aprilo da uno schermo grande';
+function notaTel(batti) { if (!TEL) return; const a = document.querySelector('#aiuto'), ch = chiuso(attivo);
+  if (ch) a.textContent = NOTA_TEL; else if (a.classList.contains('nota')) a.textContent = AIUTO_TEL;
+  a.classList.toggle('nota', ch); a.classList.remove('batte'); if (ch && batti) { void a.offsetWidth; a.classList.add('batte'); } }
 const qs = new URLSearchParams(location.search);   // per le prove: ?zoom=2&diaframma=0.5&sito=1&gira=10,6&disp=scalinata&apri=0
 /* i siti nella ghiera: nome inciso, indirizzo, colore di fondo (per quando prende tutta la pagina), cosa fa per il cliente, e le sue carte: una riga per striscia
    (le carte stanno in carte/ e si fanno con strumenti/carte-sito.js). Sito nuovo = una riga qui.
@@ -486,7 +544,8 @@ const PASSO_NOMI = 360 / SITI.length;
        di L'atelier su fondo grigio ardesia: «Puoi usare questa di GPT come riferimento?». Fatto così: ogni pagina di Hora Vera è fotografata dal sito vero due
        volte nello stesso punto, nera (hora-NN.jpg) e su grigio (hora-g-NN.jpg; campo «spenta» in SITI). Nelle strisce scorrono le grigie; la pagina scelta
        è la nera, piena. Un sito scuro SENZA le sorelle grigie resta com'era (più luce e neri sollevati). */
-    if (s.spenta) return `.spenta[data-sito="${i}"] { filter: saturate(.8) brightness(.7); } .spenta.accesa[data-sito="${i}"] { filter: saturate(1) brightness(.92); } [data-sito="${i}"] .carta { box-shadow: inset 0 0 0 1px rgb(255 240 220 / .12); } .pv.ha[data-s="${i}"]::before { filter: saturate(1.1) brightness(1.42); }`;
+    if (s.spenta) return `.spenta[data-sito="${i}"] { filter: saturate(.8) brightness(.7); } .spenta.accesa[data-sito="${i}"] { filter: saturate(1) brightness(.92); } [data-sito="${i}"] .carta { box-shadow: inset 0 0 0 1px rgb(255 240 220 / .12); } .pv.ha[data-s="${i}"]::before { filter: saturate(1.1) brightness(1.42); }`
+      + ` body.tel .spenta[data-sito="${i}"] { filter: saturate(.85) brightness(.84); } body.tel .spenta.accesa[data-sito="${i}"] { filter: saturate(1) brightness(1); }`;   // sul telefono un poco più chiare (18/11: «particolarmente visibili»)
     const [giu, su] = ['saturate(.55) contrast(.8) brightness(1.2)', 'saturate(1.05) contrast(.86) brightness(1.55)'];
     return `.spenta[data-sito="${i}"] { filter: ${giu}; } .spenta.accesa[data-sito="${i}"] { filter: ${su}; } [data-sito="${i}"] .carta { box-shadow: inset 0 0 0 1px rgb(255 240 220 / .3); } .pv.ha[data-s="${i}"]::before { filter: saturate(1.12) contrast(.92) brightness(1.8); }`; }).join('');
   if (css) document.head.appendChild(Object.assign(document.createElement('style'), { textContent: css })); })();
@@ -565,7 +624,7 @@ if (DUE_ANELLI) {
     return `<line x1="${(s * (r1 - k)).toFixed(1)}" y1="${(c * (r1 - k)).toFixed(1)}" x2="${(s * (r2 + k)).toFixed(1)}" y2="${(c * (r2 + k)).toFixed(1)}"/>`; }).join('');
   $('#tacche-zoom').innerHTML = tacche(396, 408, 5); $('#tacche-grande').innerHTML = tacche(471, 481, 4);
   $('#aiuto').textContent = 'Clicca un nome sulla ghiera per aprire il sito a tutta pagina · gira la ghiera per cambiare sito · la ghiera zigrinata avvicina il sito · il bordo esterno ingrandisce l\'obiettivo · afferra la lente e trascina per muoverti';
-  if (TEL) $('#aiuto').textContent = 'Gira la ghiera o tocca un nome per cambiare sito · tocca la lente per aprirlo';
+  if (TEL) $('#aiuto').textContent = AIUTO_TEL;
 }
 function disegnaZoom() {
   $('#ghiera-zoom').setAttribute('transform', `rotate(${-posZoom(zoom)})`); $('#ghiera-grande').setAttribute('transform', `rotate(${giroBordo.toFixed(2)})`);
@@ -574,7 +633,7 @@ function disegnaZoom() {
   sito.style.setProperty('--s', s.toFixed(4)); sito.style.setProperty('--px', panX.toFixed(1) + 'px');
 }
 function disegnaNomi() {
-  $('#ghiera-nomi').setAttribute('transform', `rotate(${angNomi})`);
+  $('#ghiera-nomi').setAttribute('transform', `rotate(${angNomi})`); segnaPuntini();
   document.querySelectorAll('.voce').forEach(v => { const a = (((+v.dataset.i * PASSO_NOMI + angNomi) % 360) + 360) % 360; v.classList.toggle('in-alto', a < 8 || a > 352); });
   // 11/11: un nome che sta nella metà bassa della ghiera si gira e si legge dritto, da sinistra a destra (prima era capovolto). Cambia verso quando passa
   // da un fianco (a ore 3 o a ore 9), con un po' di margine perché non sfarfalli sul confine
@@ -619,26 +678,67 @@ const centro = () => { const r = tel.getBoundingClientRect(); return [r.left + r
 const angolo = e => { const [cx, cy] = centro(); return Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI; };
 let presa = null, angPrima = 0, toccato = false, girato = 0, voceGiu = null;
 function primoGesto() { if (!toccato) { toccato = true; $('#aiuto').classList.add('via'); } }
+// sul telefono: il nome di un sito va sotto la tacca girando la ghiera, e il suo sito entra nella lente (senza aprirlo)
+// (18/11 sera, Codex) Se un sito stava per aprirsi (una carta appena toccata: il nome sale, poi apre) e intanto si sceglie un altro sito, quell'apertura si annulla:
+// prima la lente andava sul sito nuovo e un secondo dopo l'apertura in attesa riportava a quello di prima.
+function portaSotto(i) { const era = annullaSalita(); if (i === attivo && !era) return; let meta = -i * PASSO_NOMI; while (meta - angNomi > 180) meta -= 360; while (meta - angNomi < -180) meta += 360; anima(angNomi, meta, 500, a => { angNomi = a; disegnaNomi(); }); if (i !== attivo) mostraSito(i); else notaTel(); }
+// sul telefono, il dito che scorre sulla lente: d = +1 il sito dopo (dito verso sinistra), -1 quello prima (verso destra). La ghiera gira dalla parte del dito
+// (verso sinistra = in senso antiorario), con la stessa animazione del tocco su un nome; un sito bloccato entra nella lente con la sua nota, non si apre
+function sfoglia(d) {
+  annullaSalita();
+  const i = ((attivo + d) % SITI.length + SITI.length) % SITI.length; if (i === attivo) return;
+  let da = -attivo * PASSO_NOMI; while (da - angNomi > 180) da -= 360; while (da - angNomi < -180) da += 360;   // dove sta adesso il nome del sito di prima
+  anima(angNomi, da - d * PASSO_NOMI, 500, a => { angNomi = a; disegnaNomi(); }); mostraSito(i);
+}
+// i puntini sotto l'obiettivo (stile: «I PUNTINI SOTTO L'OBIETTIVO»): uno per sito, il pieno è quello nella lente; toccato, porta lì il suo sito
+if (TEL) {
+  const p = document.body.appendChild(Object.assign(document.createElement('div'), { id: 'puntini', className: 'puntini' }));
+  p.setAttribute('role', 'group'); p.setAttribute('aria-label', 'I siti della vetrina');
+  p.innerHTML = SITI.map((s, i) => `<button type="button" data-i="${i}" aria-label="${s.nome}"><i></i></button>`).join('');
+  p.addEventListener('click', e => { const b = e.target.closest('button'); if (!b || aperto) return; primoGesto(); portaSotto(+b.dataset.i); });
+}
+const segnaPuntini = () => document.querySelectorAll('#puntini button').forEach(b => b.setAttribute('aria-current', +b.dataset.i === attivo));
+// le due freccette attorno all'obiettivo (stile: «LE DUE FRECCETTE»), nelle misure degli anelli (il bordo dell'obiettivo è a 500): archi a 518, da 28° a 58°
+// sotto a destra (orario) e da 152° a 122° sotto a sinistra (antiorario), con la punta alla fine
+if (TEL) {
+  const R = 518, P = g => [Math.cos(g * Math.PI / 180) * R, Math.sin(g * Math.PI / 180) * R], f = n => n.toFixed(1);
+  const freccia = (da, a) => { const orario = a > da, [x1, y1] = P(da), [x2, y2] = P(a), t = a * Math.PI / 180, v = orario ? [-Math.sin(t), Math.cos(t)] : [Math.sin(t), -Math.cos(t)], L = 16;
+    const ala = k => { const c = Math.cos(k), s = Math.sin(k); return [x2 - L * (v[0] * c - v[1] * s), y2 - L * (v[0] * s + v[1] * c)]; }, [p1, q1] = ala(.6), [p2, q2] = ala(-.6);
+    return `<path vector-effect="non-scaling-stroke" d="M ${f(x1)},${f(y1)} A ${R} ${R} 0 0 ${orario ? 1 : 0} ${f(x2)},${f(y2)} M ${f(p1)},${f(q1)} L ${f(x2)},${f(y2)} L ${f(p2)},${f(q2)}"/>`; };
+  $('#telescopio').insertAdjacentHTML('beforeend', `<svg class="frecce" id="frecce" viewBox="-500 -500 1000 1000" aria-hidden="true">${freccia(28, 58)}${freccia(152, 122)}</svg>`);
+}
+/* UN DITO SOLO PER VOLTA (18/11/2026 sera, Codex): ghiera e lente tenevano un solo stato per tutte le dita, e un secondo dito poteva chiudere il gesto del primo
+   o aprire un sito. Ora ognuna segue UN dito (il suo pointerId, «ditoGhiera» e «ditoLente»): gli altri non contano finché quello non si alza; mentre una è presa
+   l'altra non si prende; se il browser si riprende il dito (pointercancel, lostpointercapture) lo stato si azzera. Il mouse ha sempre lo stesso numero: per lui
+   non cambia niente. E la soglia «ha girato o ha solo toccato» conta anche l'ultimo tratto, fino al punto in cui il dito si alza. */
+let ditoGhiera = null;
+const mollaGhiera = () => { presa = null; ditoGhiera = null; voceGiu = null; };
 $('#anelli').addEventListener('pointerdown', e => {
   const g = e.target.closest('.presa'); if (!g) return;
+  if ((ditoGhiera !== null && ditoGhiera !== e.pointerId) || presaLente) return;   // c'è già un dito sulla ghiera, o sulla lente
+  if (TEL) annullaSalita();   // chi prende la ghiera sta scegliendo lui: un'apertura in attesa non parte più
   // 9/11: prima chiudeva subito il sito anche con un semplice clic sul nome; ora lo chiude solo se la ghiera gira davvero (vedi pointermove)
-  presa = TEL ? 'nomi' : g.dataset.presa; girato = 0; voceGiu = e.target.closest('.voce'); angPrima = angolo(e); g.setPointerCapture?.(e.pointerId); e.preventDefault(); primoGesto();
+  presa = TEL ? 'nomi' : g.dataset.presa; ditoGhiera = e.pointerId; girato = 0; voceGiu = e.target.closest('.voce'); angPrima = angolo(e); g.setPointerCapture?.(e.pointerId); e.preventDefault(); primoGesto();
 });
 addEventListener('pointermove', e => {
-  if (!presa) return;
+  if (!presa || e.pointerId !== ditoGhiera) return;
   let d = angolo(e) - angPrima; if (d > 180) d -= 360; if (d < -180) d += 360; angPrima += d;
   if (presa === 'grande') { giroMeta = stringiGiro(giroBordo + d); mettiGiro(giroMeta); }
   else if (presa === 'zoom') { zoom = zoomMeta = Math.max(.6, Math.min(3, Math.exp((posZoom(zoom) - d) / 101))); disegnaZoom(); }
   else { girato += Math.abs(d); angNomi += d; disegnaNomi(); }
 });
-addEventListener('pointercancel', () => { presa = null; });
+addEventListener('pointercancel', e => { if (e.pointerId === ditoGhiera) mollaGhiera(); });
+$('#anelli').addEventListener('lostpointercapture', e => { if (e.pointerId === ditoGhiera) mollaGhiera(); });   // dopo un rilascio normale arriva tardi, a stato già azzerato, e non fa niente
 addEventListener('pointerup', e => {
+  if (e.pointerId !== ditoGhiera) return;   // il rilascio di un altro dito non chiude questo gesto
+  ditoGhiera = null;
+  if (presa === 'nomi') { let d = angolo(e) - angPrima; if (d > 180) d -= 360; if (d < -180) d += 360; girato += Math.abs(d); }   // l'ultimo tratto, fino al rilascio
   // un clic sul nome (senza girare la ghiera) apre il sito di quel nome a tutta pagina (11/11).
   // Il nome si ricorda dal pointerdown: con il mouse agganciato alla ghiera, il rilascio arriva alla ghiera e non al nome
   const v = voceGiu; voceGiu = null;
   if (presa === 'nomi' && girato <= 3 && v) { presa = null; const i = +v.dataset.i;
     // sul telefono il nome toccato va sotto la tacca con il suo sito (per aprirlo si tocca la lente, o di nuovo il nome); sul computer il clic lo apre, come sempre
-    if (TEL && i !== attivo) { let meta = -i * PASSO_NOMI; while (meta - angNomi > 180) meta -= 360; while (meta - angNomi < -180) meta += 360; anima(angNomi, meta, 500, a => { angNomi = a; disegnaNomi(); }); mostraSito(i); }
+    if (TEL && i !== attivo) portaSotto(i);
     else apriSito(i);
     return; }
   if (presa === 'nomi') {   // la ghiera dei nomi scatta sul nome più vicino alla tacca
@@ -678,21 +778,36 @@ $('#cattura').addEventListener('dblclick', () => { zoomMeta = 1; giroMeta = 0; v
 const scorri = px => cornice.contentWindow && cornice.contentWindow.postMessage({ scorri: px }, '*');
 const lente = $('#cattura'), limita = (v, m) => Math.max(-m, Math.min(m, v));
 lente.addEventListener('wheel', e => { e.preventDefault(); primoGesto(); scorri(e.deltaY / (scala() * zoom)); }, { passive: false });
-let mossaLente = 0, mira = [0, 0], sopra = false, presaLente = null, spinta = [0, 0], inerzia = [0, 0], ultimoMoto = 0;
+let mossaLente = 0, mira = [0, 0], sopra = false, presaLente = null, spinta = [0, 0], inerzia = [0, 0], ultimoMoto = 0, partenzaLente = [0, 0], lontanoLente = 0, ditoLente = null;
 lente.addEventListener('pointerenter', () => { sopra = true; });
 lente.addEventListener('pointerleave', () => { sopra = false; mira = [0, 0]; });
-lente.addEventListener('pointerdown', e => { mossaLente = 0; presaLente = [e.clientX, e.clientY]; inerzia = [0, 0]; lente.setPointerCapture?.(e.pointerId); lente.classList.add('presa-lente'); primoGesto(); });
+lente.addEventListener('pointerdown', e => {
+  if ((ditoLente !== null && ditoLente !== e.pointerId) || presa) return;   // un dito solo per volta (vedi «UN DITO SOLO PER VOLTA»): c'è già un dito sulla lente, o sulla ghiera
+  ditoLente = e.pointerId; mossaLente = 0; presaLente = partenzaLente = [e.clientX, e.clientY]; lontanoLente = 0; inerzia = [0, 0]; lente.setPointerCapture?.(e.pointerId); lente.classList.add('presa-lente'); primoGesto(); });
 lente.addEventListener('pointermove', e => {
   const r = lente.getBoundingClientRect(); mira = [(e.clientX - r.left) / r.width * 2 - 1, (e.clientY - r.top) / r.height * 2 - 1];
-  if (!presaLente) return;
+  if (!presaLente || e.pointerId !== ditoLente) return;
   mossaLente += Math.abs(e.clientX - presaLente[0]) + Math.abs(e.clientY - presaLente[1]);
+  lontanoLente = Math.max(lontanoLente, Math.hypot(e.clientX - partenzaLente[0], e.clientY - partenzaLente[1]));   // quanto si è allontanato il dito dal punto in cui ha toccato
   const dx = TEL ? 0 : e.clientX - presaLente[0], dy = e.clientY - presaLente[1]; presaLente = [e.clientX, e.clientY];   // sul telefono il sito scorre su e giù ma non scivola di lato
   scorri(-dy / (scala() * zoom)); panX += dx; disegnaZoom();
   spinta = [spinta[0] + dx, spinta[1] + dy]; inerzia = [inerzia[0] * .5 + dx * .5, inerzia[1] * .5 + dy * .5]; ultimoMoto = performance.now();
 });
-const lascia = () => { if (!presaLente) return; presaLente = null; lente.classList.remove('presa-lente'); if (performance.now() - ultimoMoto > 90) inerzia = [0, 0]; };
-lente.addEventListener('pointerup', () => { if (TEL && presaLente && mossaLente < 8 && !document.body.classList.contains('aperto')) apriSito(attivo); });   // sul telefono un tocco sulla lente apre il sito
-lente.addEventListener('pointerup', lascia); lente.addEventListener('pointercancel', lascia);
+const lascia = () => { ditoLente = null; if (!presaLente) return; presaLente = null; lente.classList.remove('presa-lente'); if (performance.now() - ultimoMoto > 90) inerzia = [0, 0]; };
+// sul telefono un tocco sulla lente apre il sito. 18/11/2026: un dito vero trema di qualche pixel mentre tocca, e prima bastavano 8 px sommati per non aprire:
+// ora conta quanto si è allontanato dal punto di partenza (meno di 10 px); chi trascina per scorrere va ben oltre.
+// E lo stesso giorno (soluzione 1 di Franco, «di scorrere il dito sulla lente»): il dito che scorre di lato (più di 40 px, più di lato che in altezza) cambia
+// sito e non apre: verso sinistra il sito dopo, verso destra quello prima. In altezza il dito scorre il sito nella lente, come prima
+lente.addEventListener('pointerup', e => {
+  if (e.pointerId !== ditoLente || !TEL || !presaLente || document.body.classList.contains('aperto')) return;   // solo il dito che ha toccato la lente
+  const dx = e.clientX - partenzaLente[0], dy = e.clientY - partenzaLente[1];
+  lontanoLente = Math.max(lontanoLente, Math.hypot(dx, dy));   // anche l'ultimo tratto, fino al punto in cui il dito si alza
+  if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { inerzia = [0, 0]; sfoglia(dx < 0 ? 1 : -1); }
+  else if (lontanoLente < 10 && !salendo) apriSito(attivo);   // mentre un nome sale (una carta appena toccata) il sito sta già per aprirsi
+});
+const lasciaSe = e => { if (e.pointerId === ditoLente) lascia(); };
+lente.addEventListener('pointerup', lasciaSe); lente.addEventListener('pointercancel', lasciaSe); lente.addEventListener('lostpointercapture', lasciaSe);
+addEventListener('pointerup', lasciaSe); addEventListener('pointercancel', lasciaSe);   // di riserva, se il rilascio non arriva alla lente
 addEventListener('keydown', e => {
   if (contattiAperti) { if (e.key === 'Escape') chiudiContatti(); return; }   // mentre si scrive nei contatti, frecce e + / − non muovono la lente
   if (e.key === 'Escape') { chiudiSito(); return; }
@@ -800,7 +915,7 @@ function doveSiVede(sito = -1) {   // «sito»: per chi si guarda; le pagine pie
     const p = postoDi(c), e = c.firstElementChild; altri.push({ cx: p.cx, cy: p.cy, w: p.w, h: p.h, cos: p.cos, sin: p.sin });
     if (e) { const r = e.getBoundingClientRect(); altri.push({ cx: r.left + r.width / 2, cy: r.top + r.height / 2, w: e.offsetWidth, h: e.offsetHeight, cos: p.cos, sin: p.sin }); } }); });
   return { x: t.left + t.width / 2, y: t.top + t.height / 2, r: t.width / 2 + Math.min(innerWidth, innerHeight) * .07, altri,
-    ingombri: [...document.querySelectorAll('.didascalia, .firma, .modi, .busta')].map(e => e.getBoundingClientRect()) };
+    ingombri: [...document.querySelectorAll('.didascalia, .firma, .modi, .busta, #puntini, #invito')].map(e => e.getBoundingClientRect()) };   // #puntini: solo sul telefono (sul computer non esiste); #invito: di traverso sul telefono sta a destra, fuori dal riquadro del nome (altrove è già dentro .firma)
 }
 function inVista(x, y, d) {   // un punto dello schermo: una pagina, lì, si vede?
   if (x < innerWidth * .02 || x > innerWidth * .98 || y < innerHeight * .09 || y > innerHeight * .91) return false;   // i bordi, più scuri
@@ -913,7 +1028,31 @@ addEventListener('pointermove', e => {
   sopraViva = s; scena.style.cursor = s >= 0 ? 'pointer' : '';
   if (s >= 0) { vive[s].forEach(c => c.classList.add('sopra')); preparaTraPoco(s, 150); }
 });
-addEventListener('click', e => { if (!scenaLibera(e)) return; const s = vivaSotto(e.clientX, e.clientY); if (s >= 0) { primoGesto(); preparaTraPoco(s, 0); saliEApri(s); } });   // punto 8: prima si accende il nome sull'obiettivo
+addEventListener('click', e => { if (TEL) return toccoPagina(e); if (!scenaLibera(e)) return; const s = vivaSotto(e.clientX, e.clientY); if (s >= 0) { primoGesto(); preparaTraPoco(s, 0); saliEApri(s); } });   // punto 8: prima si accende il nome sull'obiettivo
+/* ---------- il tocco sulle pagine (18/11/2026, solo sul telefono; parole di Franco nello stile, sopra «body.tel .cattura»). Ogni pagina che scorre intorno,
+   non solo quella satura, apre il SUO sito come il clic sulla pagina piena del computer: il nome sale sotto la tacca, la piastrina si accende, il sito esce
+   dalla lente. Le pagine restano SOTTO il resto: sulle ghiere, sulla lente, sulla busta, sulla linguetta, sull'invito e sulla descrizione un tocco fa la cosa
+   loro (o niente); sull'obiettivo e appena fuori dal suo bordo non apre (lì il dito cercava la ghiera); un dito che trascina non apre (il browser, se il dito
+   si sposta, non manda il clic). Un sito senza «telefono: true» non si apre: va sotto la tacca e batte la nota, come dalla lente. Prova: window.TOCCO.sotto(x, y). */
+function cartaSotto(x, y) {
+  const t = tel.getBoundingClientRect(); if (Math.hypot(x - t.left - t.width / 2, y - t.top - t.height / 2) < t.width / 2 * 1.04) return -1;
+  if ([...document.querySelectorAll('.didascalia, .firma, .modi, .busta, #lingua, #puntini, #invito')].some(e => { const q = e.getBoundingClientRect(); return q.width && x >= q.left - 4 && x <= q.right + 4 && y >= q.top - 4 && y <= q.bottom + 4; })) return -1;
+  const viva = vivaSotto(x, y); if (viva >= 0) return viva;   // la pagina satura, con la sua targhetta appesa alla cornice
+  // le altre: le strisce non prendono il dito (stanno sotto la scena), quindi per un attimo si lasciano trovare e si chiede che cosa c'è sotto il punto
+  strisce.style.pointerEvents = 'auto'; const sotto = document.elementsFromPoint(x, y); strisce.style.pointerEvents = '';
+  for (const e of sotto) { if (!strisce.contains(e)) continue; const c = e.closest('.pv, .carta'); if (!c) continue;
+    const s = c.classList.contains('pv') ? +c.dataset.s : +(c.closest('[data-sito]') || {}).dataset?.sito; if (s >= 0) return s; }
+  return -1;
+}
+function toccoPagina(e) {
+  if (presa || aperto || contattiAperti || !partito || salendo) return;
+  if (![scena, document.body, document.documentElement, $('#anelli')].includes(e.target)) return;   // #anelli: gli angoli del riquadro dell'obiettivo, fuori dal cerchio
+  const s = cartaSotto(e.clientX, e.clientY); if (s < 0) return;
+  primoGesto();
+  if (chiuso(s)) { portaSotto(s); notaTel(true); return; }
+  preparaTraPoco(s, 0); saliEApri(s);
+}
+window.TOCCO = { sotto: (x, y) => cartaSotto(x, y) };
 window.SATURA = { adesso: () => vive.map((l, s) => { const d = doveSiVede(s); return { sito: SITI[s].nome, pagina: l[0] ? l[0].dataset.f : null, accese: strisce.querySelectorAll(`.pv.su[data-s="${s}"]`).length, vede: l.length ? Math.max(...l.map(x => quantoSiVede(x, d))) : 0 }; }), cambia: s => scegliSatura(s),
   // la prova del vuoto: per ogni sito, la pagina migliore fra «avanti» millisecondi: nome, quanto si legge la targhetta, quanto è pieno sotto, quanta pagina si vede
   prova: avanti => SITI.map((_, s) => { const m = migliori(candidate(s, doveSiVede(s), avanti))[0]; return m ? m.c.dataset.f.replace('.jpg', '') + ' v' + m.targa.voto + ' s' + m.v.toFixed(2) : '-'; }),
@@ -931,14 +1070,17 @@ let rifai = null; addEventListener('resize', () => { clearTimeout(rifai); rifai 
 // in alto la piastrina di platino si accende (l'effetto 1, Franco: «anche quando HORA VERA sale deve avere l'effetto 1 che compare quando è in alto»), poi il
 // sito si apre. Un nome già in alto: solo la piastrina, poi il sito. Lo usano il mouse fermo sul nome in basso e il clic sulla pagina piena (punto 8, Franco:
 // «quando si clicca la scritta sulla pagina satura vorrei che la pagina si aprisse come sempre, ma prima lampeggiasse… la scritta sull'obiettivo»).
+let giroSalita = 0;   // il numero della salita in corso: se intanto è stata annullata (annullaSalita), il suo seguito non fa più niente
 function saliEApri(i) {
   if (salendo || aperto) return;
-  const v = document.querySelector(`.voce[data-i="${i}"]`); salendo = true; v.classList.remove('sopra', 'lampo');
+  const v = document.querySelector(`.voce[data-i="${i}"]`), mio = ++giroSalita; salendo = true; v.classList.remove('sopra', 'lampo');
   let giro = Promise.resolve();
   if (v.classList.contains('in-alto')) { void v.getBBox(); v.classList.add('lampo'); }   // la piastrina riparte da capo: si accende adesso
-  else { let meta = -i * PASSO_NOMI; while (meta - angNomi > 180) meta -= 360; while (meta - angNomi < -180) meta += 360; giro = anima(angNomi, meta, 1100, a => { angNomi = a; disegnaNomi(); }); }
-  giro.then(() => attesa(1150)).then(() => { salendo = false; v.classList.remove('lampo'); if (!aperto) apriSito(i); });
+  else { let meta = -i * PASSO_NOMI; while (meta - angNomi > 180) meta -= 360; while (meta - angNomi < -180) meta += 360; giro = anima(angNomi, meta, 1100, a => { if (mio !== giroSalita) return; angNomi = a; disegnaNomi(); }); }
+  giro.then(() => attesa(1150)).then(() => { if (mio !== giroSalita) return; salendo = false; v.classList.remove('lampo'); if (!aperto) apriSito(i); });
 }
+// l'apertura in attesa si annulla (sul telefono, quando si sceglie un altro sito: puntino, dito che sfoglia, ghiera presa). Dice se ce n'era una
+function annullaSalita() { if (!salendo) return false; giroSalita++; salendo = false; document.querySelectorAll('.voce.lampo').forEach(v => v.classList.remove('lampo')); return true; }
 // passando sopra un nome: piastrina di platino e le sue strisce a colori (un assaggio); cliccandolo, il sito prende tutta la pagina
 document.querySelectorAll('.voce').forEach(v => {
   v.addEventListener('pointerenter', e => {
@@ -1008,13 +1150,13 @@ const pienoPronto = i => new Promise(fine => { const t0 = performance.now(); let
   setTimeout(guarda, 40); })(); });
 const pulisciPiena = () => { clearTimeout(sonno); paginaPiena.classList.remove('vista', 'dorme', 'piena'); paginaPiena.style.transition = paginaPiena.style.opacity = ''; cerchio.style.transition = cerchio.style.transform = pieno.style.transition = pieno.style.transform = ''; pieno.classList.remove('vivo'); };
 async function apriSito(i) {
-  if (TEL && !SITI[i].telefono) { if (i !== attivo) { angNomi = -i * PASSO_NOMI; mostraSito(i); } notaTel(true); return; }   // sul telefono, senza il segno «provato sul telefono», non si apre: resta nella lente con la nota
+  if (chiuso(i)) { if (i !== attivo) { angNomi = -i * PASSO_NOMI; mostraSito(i); } notaTel(true); return; }   // su un telefono (dritto o di traverso), senza il segno «provato sul telefono», non si apre da nessuna porta: resta nella lente con la nota
   if (aperto) return; aperto = true; const mio = ++giroUscita; primoGesto(); clearTimeout(preparo); clearTimeout(copre);
   if (paginaPiena.classList.contains('vista')) { pulisciPiena(); pienoDi = -1; }   // riaperto mentre si stava ancora chiudendo: si ricarica da capo
   if (i !== attivo) {   // il nome cliccato va sotto la tacca e il suo sito nella lente: al ritorno si ritrova quello
     let meta = -i * PASSO_NOMI; while (meta - angNomi > 180) meta -= 360; while (meta - angNomi < -180) meta += 360;
     anima(angNomi, meta, 500, v => { angNomi = v; disegnaNomi(); });
-    attivo = caricato = i; cornice.src = inLingua(SITI[i].src); panX = 0; disegnaZoom(); $('#cosa-fa').textContent = SITI[i].fa;
+    attivo = caricato = i; cornice.src = inLingua(SITI[i].src); panX = 0; disegnaZoom(); $('#cosa-fa').textContent = SITI[i].fa; notaTel();   // la nota segue sempre il sito attivo (18/11 sera: al ritorno lo Studio mostrava ancora quella di Hora Vera)
   }
   sopraNome = null; accendi();
   document.body.classList.add('aperto');   // le scritte intorno sfumano subito
@@ -1150,7 +1292,7 @@ else mostraSito(attivo, true).then(() => {
   pronto();
   // la ghiera dello zoom gira un poco da sola, per far capire che si tocca
   if (!MUOVI) return;
-  setTimeout(async () => { if (toccato) return; await anima(1, 1.6, 900, v => { zoom = zoomMeta = v; disegnaZoom(); }); await new Promise(r => setTimeout(r, 500)); await anima(1.6, 1, 900, v => { zoom = zoomMeta = v; disegnaZoom(); }); if (!DUE_ANELLI || toccato) return; await new Promise(r => setTimeout(r, 400)); await anima(0, -24, 900, mettiGiro); await new Promise(r => setTimeout(r, 400)); await anima(-24, 0, 900, mettiGiro); }, 1200);
+  setTimeout(async () => { if (toccato) return; await anima(1, 1.6, 900, v => { zoom = zoomMeta = v; disegnaZoom(); }); await new Promise(r => setTimeout(r, 500)); await anima(1.6, 1, 900, v => { zoom = zoomMeta = v; disegnaZoom(); }); if (!DUE_ANELLI || toccato || TEL) return;   /* 18/11: sul telefono l'obiettivo non cresce (lì il bordo gira i nomi): la prova da sola lo faceva crescere sopra i puntini e le scritte */ await new Promise(r => setTimeout(r, 400)); await anima(0, -24, 900, mettiGiro); await new Promise(r => setTimeout(r, 400)); await anima(-24, 0, 900, mettiGiro); }, 1200);
 });
 /* L'INGLESE CON UN CLIC (17/11/2026, passo 5.2; Franco: «cliccandovi sopra immediatamente il sito viene tradotto»). Niente pagina doppia: un vocabolario
    (EN: la frase italiana → la frase inglese) e una passata sulle scritte delle zone della vetrina (testi, e gli attributi che si leggono: aria-label,
@@ -1163,7 +1305,7 @@ const EN = {
   'Un telescopio puntato verso di te: nella lente si vede un sito vero': 'A telescope pointed at you: a real website shows in the lens',
   'Il sito dentro la lente': 'The website inside the lens', 'Il sito a tutta pagina': 'The website, full screen',
   'Lente: trascina o usa la rotella per muoverti nel sito; frecce della tastiera per scorrere': 'Lens: drag or use the wheel to move around the site; arrow keys to scroll',
-  'Gira la ghiera o tocca un nome per cambiare sito · tocca la lente per aprirlo': 'Turn the ring or tap a name to change site · tap the lens to open it',
+  'Scorri sulla lente per cambiare sito · tocca per aprirlo': 'Swipe on the lens to change site · tap to open it', 'I siti della vetrina': 'The sites in the showcase',
   'Questo sito è un film: aprilo da uno schermo grande': 'This site is a film: open it on a large screen',
   'Clicca un nome sulla ghiera per aprire il sito a tutta pagina · gira la ghiera per cambiare sito · la ghiera zigrinata avvicina · afferra la lente e trascina per muoverti': 'Click a name on the ring to open the site full screen · turn the ring to change site · the knurled ring zooms in · grab the lens and drag to move around',
   'Clicca un nome sulla ghiera per aprire il sito a tutta pagina · gira la ghiera per cambiare sito · la ghiera zigrinata avvicina il sito · il bordo esterno ingrandisce l\'obiettivo · afferra la lente e trascina per muoverti': 'Click a name on the ring to open the site full screen · turn the ring to change site · the knurled ring zooms the site · the outer rim enlarges the lens · grab the lens and drag to move around',
@@ -1182,7 +1324,7 @@ const EN = {
   'Invio in corso…': 'Sending…', 'Il messaggio non è partito: controlla la connessione e premi di nuovo Invia.': 'The message didn\u2019t go through: check your connection and press Send again.' };
 let lingua = 'it';
 const LINGUA = window.LINGUA = (() => {
-  const ZONE = '.firma, .scena, .didascalia, #modi, #busta, #contatti, #pagina-piena, #torna', ATTR = ['aria-label', 'placeholder', 'title', 'alt'];
+  const ZONE = '.firma, .scena, .didascalia, #modi, #busta, #contatti, #pagina-piena, #torna, #puntini', ATTR = ['aria-label', 'placeholder', 'title', 'alt'];
   const inglese = it => it.replace(it.trim(), EN[it.trim()]);
   // una scritta (v = com'è adesso, it = l'italiano che ricordava): dice l'italiano da ricordare e come deve essere
   const volta = (v, it) => { if (EN[v.trim()] !== undefined) it = v; else if (it === undefined || v !== inglese(it)) return [undefined, v]; return [it, lingua === 'en' ? inglese(it) : it]; };
@@ -1198,7 +1340,7 @@ const LINGUA = window.LINGUA = (() => {
     const prima = lingua; lingua = l === 'en' ? 'en' : 'it'; document.documentElement.lang = lingua; zone().forEach(passa);
     if (prima !== lingua && partito && caricato >= 0) { cornice.src = inLingua(SITI[caricato].src); if (!aperto) { pienoDi = -1; pieno.src = 'about:blank'; preparaTraPoco(attivo, 900); } }   // il sito nella lente si riapre nella lingua nuova
     if (prima !== lingua) cambiaCarte();   // e le pagine che scorrono intorno diventano quelle di quella lingua
-    const b = document.querySelector('#lingua'); if (b) { b.textContent = lingua === 'en' ? 'Italiano' : 'English'; b.setAttribute('aria-label', lingua === 'en' ? 'Leggi il sito in italiano' : 'Read this site in English'); }
+    const b = document.querySelector('#lingua'); if (b) { (b.querySelector('span') || b).textContent = lingua === 'en' ? 'Italiano' : 'English'; b.setAttribute('aria-label', lingua === 'en' ? 'Leggi il sito in italiano' : 'Read this site in English'); }   // sul telefono la scritta sta nella «veste» dentro il pulsante
     const bu = document.querySelector('#busta'), im = bu && bu.querySelector('img'), vuole = lingua === 'en' ? 'contatti-busta-vuota.webp' : 'contatti-busta.webp';   // la busta: in inglese l'immagine senza parola e «Contact» scritto sopra
     if (im) { bu.classList.toggle('in-inglese', lingua === 'en'); if (im.getAttribute('src') !== vuole) im.setAttribute('src', vuole); }
     try { localStorage.setItem('webretold-lingua', lingua); } catch (e) {}
@@ -1221,16 +1363,24 @@ if (qs.get('lingua') !== 'no') {   // la linguetta di serie dal 18/11/2026: i tr
   const b = document.body.appendChild(Object.assign(document.createElement('button'), { id: 'lingua', type: 'button', textContent: 'English' }));
   const AMARANTO = 'linear-gradient(172deg, #8a1535, #c2284f 16%, #f3a1b3 33%, #c2284f 50%, #8a1535 68%, #d85173 85%, #8a1535) border-box';
   const SCURO = 'linear-gradient(#090d13, #090d13) padding-box, ' + AMARANTO + ' #090d13', ARGENTO = 'linear-gradient(90deg, #80858a, #d8dce0 22%, #fbfcfd 50%, #ced2d6 78%, #7c8186) padding-box, ' + AMARANTO + ' #cfd3d7';   // in fondo un colore pieno: il controllo vuole un fondo vero sotto una scritta sopra le foto
-  b.style.cssText = 'position:fixed;z-index:6;right:0;top:50%;transform:translateY(-50%);margin:0;cursor:pointer;writing-mode:vertical-rl;padding:24px 12px 24px 13px;border:4px solid transparent;border-right:0;border-radius:11px 0 0 11px;color:#fff;font:600 14px/1 Manrope,sans-serif;letter-spacing:.3em;text-transform:uppercase;white-space:nowrap;box-shadow:0 0 22px rgb(0 0 0 / .55);transition:color .3s;';
+  const ASPETTO = 'writing-mode:vertical-rl;padding:24px 12px 24px 13px;border:4px solid transparent;border-right:0;border-radius:11px 0 0 11px;color:#fff;font:600 14px/1 Manrope,sans-serif;letter-spacing:.3em;text-transform:uppercase;white-space:nowrap;box-shadow:0 0 22px rgb(0 0 0 / .55);transition:color .3s;';   // come si vede la linguetta
+  b.style.cssText = 'position:fixed;z-index:6;right:0;top:50%;transform:translateY(-50%);margin:0;cursor:pointer;' + ASPETTO;
   b.style.background = SCURO;
   // SUL TELEFONO (18/11/2026): a meta altezza la linguetta, grande come sul computer, copriva il bordo destro dell'obiettivo, che li occupa tutta la larghezza.
   // Piu piccola e piu in alto: a quattro quinti del raggio sopra il centro, dove il cerchio si e gia stretto e a destra resta posto.
-  const stretto = matchMedia('(max-aspect-ratio: 5/4), (max-width: 820px)'), posto = () => { const s = stretto.matches; b.style.top = s ? 'max(64px, calc(50% - min(39vw, 37svh) - 52px))' : '50%';   /* 18/11 notte: 52 px più su, toccava ancora il bordo dell'obiettivo (foto di Franco dal telefono) */ b.style.fontSize = s ? '10px' : '14px'; b.style.padding = s ? '13px 6px 13px 7px' : '24px 12px 24px 13px'; b.style.borderWidth = s ? '3px' : '4px'; b.style.borderRightWidth = '0'; };
-  posto(); stretto.addEventListener('change', posto);
+  // SUL TELEFONO, IL BERSAGLIO DI 44 PX E LA SCRITTA DI 12 (18/11/2026 sera, giudice: la linguetta era larga 26 px e scritta a 10). La linguetta che si vede
+  // resta com'è, ma passa in una «veste» dentro il pulsante: il pulsante, trasparente, è largo 44 px e sporge verso sinistra, così il dito la prende. Sul
+  // computer il pulsante e la veste sono la stessa cosa, come prima.
+  let veste = b;
+  if (TEL) { veste = document.createElement('span'); veste.style.cssText = 'display:block;' + ASPETTO; veste.style.background = SCURO; veste.textContent = b.textContent;
+    b.textContent = ''; b.appendChild(veste); b.style.cssText = 'position:fixed;z-index:6;right:0;top:50%;transform:translateY(-50%);margin:0;padding:0;border:0;background:none;cursor:pointer;display:flex;justify-content:flex-end;min-width:44px;font:inherit;color:inherit;-webkit-appearance:none;appearance:none;'; }
+  // di traverso sul telefono la linguetta scende sotto l'invito (che lì sta a destra, sotto la busta): vedi «DI TRAVERSO SUL TELEFONO» nello stile
+  const stretto = matchMedia('(max-aspect-ratio: 5/4), (max-width: 820px)'), traverso = matchMedia('(max-height: 500px) and (orientation: landscape) and (max-width: 899px)'), posto = () => { const s = stretto.matches || TEL; b.style.top = TEL && traverso.matches ? 'calc(50% + 56px)' : s ? 'max(64px, calc(50% - min(39vw, 37svh) - 52px))' : '50%';   /* 18/11 notte: 52 px più su, toccava ancora il bordo dell'obiettivo (foto di Franco dal telefono) */ veste.style.fontSize = s ? (TEL ? '12px' : '10px') : '14px'; veste.style.padding = s ? '13px 6px 13px 7px' : '24px 12px 24px 13px'; veste.style.borderWidth = s ? '3px' : '4px'; veste.style.borderRightWidth = '0'; };
+  posto(); stretto.addEventListener('change', posto); traverso.addEventListener('change', posto);
   b.addEventListener('click', () => LINGUA.metti(lingua === 'en' ? 'it' : 'en'));
   LINGUA.metti(lingua);
-  b.addEventListener('pointerenter', () => { b.style.background = ARGENTO; b.style.color = '#141210'; });
-  b.addEventListener('pointerleave', () => { b.style.background = SCURO; b.style.color = '#fff'; });
+  b.addEventListener('pointerenter', () => { veste.style.background = ARGENTO; veste.style.color = '#141210'; });
+  b.addEventListener('pointerleave', () => { veste.style.background = SCURO; veste.style.color = '#fff'; });
 }
 </script>
 </body>

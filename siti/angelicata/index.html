@@ -581,6 +581,47 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .tocco a + a { background: var(--inchiostro); color: var(--gesso); }
   .mappa-quadro { min-height: 460px; }
 }
+/* 18/11/2026, ritocchi sul telefono (giudice e Codex): solo fino a 720 px e di traverso; il computer resta com'è */
+@media (max-width: 720px) {
+  /* scritte mai sotto i 12 px */
+  .filtri-tit, .occhio, .lastra-num, .parole span, .frasi-tit, .frasi .num, .area, .risposta small, .scadenza em, .tappa-num, .tempo em, .quattro .n, .due-liste h4,
+  .anteprima .testa-a, .posta .etich, .segnino, .mappa-linee span, .mappa-linee button, .mappa-dove, .mappa-tasti button[data-piatta], .mappa-scheda small, .bollino,
+  .dove-titoletto, .dimostra, .prossimo .stato, .fondo h3 { font-size: 12px; }
+  .marchio-nome small { font-size: 12px; letter-spacing: .2em; }
+  /* aree di tocco di almeno 44 px */
+  .pillola, .schede button, .filtri button, .pannello-menu .chiudi-menu, .dove-indicazioni, .mappa-viste button { min-height: 44px; }
+  .voce-testo a { padding-block: 13px; margin-block: -13px 7px; }
+  .modulo .informativa a { display: inline-block; padding-block: 12px; margin-block: -12px; }
+  .mappa-tasti button { width: 44px; height: 44px; }
+  .mappa-chiudi { width: 44px; height: 44px; top: 0; right: 0; }
+  .mappa-quadro .mappa-linee { padding: 0 6px; gap: 0; }
+  .mappa-quadro .mappa-linee button { width: 44px; height: 44px; padding: 11px 8px; background-clip: content-box; }
+  /* le tappe: carte vere (la successiva si vede come carta) e niente lettere nel margine sinistro a fine corsa */
+  .tappe-binario { clip-path: inset(0 0 0 var(--bordo-sx)); }
+  .tappe-treno { padding-right: calc(24vw - 12px); }   /* anche l'ultima carta arriva al bordo sinistro: la precedente esce tutta */
+  .tappa { width: 76vw; margin-right: 12px; padding: 62px 18px 22px 16px; }
+  .tappa::before { left: 16px; }
+  .tappa::after { content: ""; position: absolute; z-index: -1; left: 0; right: 0; top: 44px; bottom: 0; background: var(--gesso); border: 1px solid var(--linea); border-radius: 4px; }
+  /* la barra Chiama / Scrivimi si fa da parte mentre scrivi e quando il modulo è già in vista */
+  .tocco { transition: transform .35s cubic-bezier(.2,.7,.2,1), visibility 0s; }
+  .tocco.via { transform: translateY(105%); visibility: hidden; transition: transform .35s cubic-bezier(.2,.7,.2,1), visibility 0s .35s; }
+  .pannello-menu { overscroll-behavior: contain; }
+}
+/* di traverso, schermo basso: testata e barra più sottili, la prima schermata arriva fino a «Raccontami» */
+@media (max-height: 500px) and (orientation: landscape) and (min-aspect-ratio: 3/2) and (max-width: 899px) {
+  .testata-riga, .testata.stretta .testata-riga { height: 50px; }
+  .monogramma { width: 34px; height: 34px; }
+  .testata-sotto { display: none; }
+  .testata .testata-riga .filtri-corti { display: flex; max-width: 340px; opacity: 1; pointer-events: auto; }
+  .filtri-corti button { padding-block: 15px 10px; }
+  .filtri-corti button::before { top: 9px; }
+  .tocco a { padding-block: 9px; }
+  body { padding-bottom: calc(46px + env(safe-area-inset-bottom, 0px)); }
+  html { scroll-padding-top: 58px; }
+  .apertura-pannello { padding-top: 62px; gap: 10px; }
+  .apertura h1 { font-size: 2.1rem; }
+  .apertura-sotto { max-width: 62ch; font-size: .95rem; }
+}
 </style>
 <!-- prove dei colori (16/11/2026): senza ?colori= nell'indirizzo non fanno niente; si tolgono quando Franco ha scelto -->
 <link rel="stylesheet" href="colori.css">
@@ -1171,7 +1212,16 @@ function capisci(testo) {
 }
 (() => { const campo = $('#parole'); let t; campo.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => capisci(campo.value), 350); }); })();
 $('#m-racconto').addEventListener('input', e => { e.target.dataset.toccato = '1'; });
-$$('.frasi button').forEach(b => b.addEventListener('click', () => scegli(b.dataset.k)));
+$$('.frasi button').forEach(b => b.addEventListener('click', () => { scegli(b.dataset.k); portaRisposta(); }));
+/* 18/11/2026: toccata una frase, la risposta viene in vista (sul telefono stava 500 px più sotto, dietro la barra, e sembrava che il tocco non facesse niente).
+   Sul telefono sempre, con la cima sotto la testata; sul computer solo se la risposta è fuori dallo schermo. */
+function portaRisposta() {
+  requestAnimationFrame(() => {
+    const r = $('#risposta').getBoundingClientRect(), testa = Math.min($('.testata-riga').offsetHeight, ALTO()) + 14, telefono = innerWidth <= 720;
+    if (!telefono && r.top < innerHeight - 90 && r.bottom > testa + 40) return;
+    scrollTo({ top: scrollY + r.top - testa, behavior: MUOVI ? 'smooth' : 'auto' });
+  });
+}
 
 /* ---------- Civile · Penale ---------- */
 function mostraLato(l, anima = true) {
@@ -1315,7 +1365,7 @@ function scorriFrase() {
   paroleFrase.forEach((s, i) => s.classList.toggle('accesa', i < n));
 }
 let inCoda = false;
-function suScroll() { if (inCoda) return; inCoda = true; requestAnimationFrame(() => { inCoda = false; testata.classList.toggle('stretta', scrollY > 40); scorriLastre(); scorriTappe(); scorriFrase(); }); }
+function suScroll() { if (inCoda) return; inCoda = true; requestAnimationFrame(() => { inCoda = false; if (document.body.classList.contains('sfondo-fermo')) return; testata.classList.toggle('stretta', scrollY > 40); scorriLastre(); scorriTappe(); scorriFrase(); }); }
 addEventListener('scroll', suScroll, { passive: true });
 let attesa; addEventListener('resize', () => { clearTimeout(attesa); attesa = setTimeout(() => { impostaPila(); impostaPin(); tele().forEach(plastico); suScroll(); }, 150); });
 
@@ -1350,12 +1400,36 @@ if (MUOVI && matchMedia('(pointer: fine)').matches) $$('.magnetico').forEach(b =
 });
 
 /* ---------- menu del telefono ---------- */
-function menu(apri) { document.body.classList.toggle('menu-aperto', apri); $('.apri-menu').setAttribute('aria-expanded', apri); $('#pannello-menu').inert = !apri; }
+/* 18/11/2026: con il menu aperto lo sfondo sta fermo dov'era (uno swipe spostava la pagina sotto di 225 px e chiudendo si perdeva il punto);
+   scorre solo il pannello. Il body resta fisso con top = -scrollY e alla chiusura si torna esattamente lì. */
+let menuY = 0;
+function menu(apri) {
+  const b = document.body; if (apri === b.classList.contains('menu-aperto')) return;
+  if (apri) { menuY = scrollY; b.classList.add('sfondo-fermo'); Object.assign(b.style, { position: 'fixed', top: -menuY + 'px', left: '0', right: '0' }); }
+  b.classList.toggle('menu-aperto', apri); $('.apri-menu').setAttribute('aria-expanded', apri); $('#pannello-menu').inert = !apri;
+  if (!apri) { Object.assign(b.style, { position: '', top: '', left: '', right: '' }); scrollTo({ top: menuY, behavior: 'instant' }); b.classList.remove('sfondo-fermo'); }
+}
 $('.apri-menu').addEventListener('click', () => menu(!document.body.classList.contains('menu-aperto')));
 $('.velo-menu').addEventListener('click', () => menu(false));
 $('.chiudi-menu').addEventListener('click', () => menu(false));
 $$('#pannello-menu a').forEach(a => a.addEventListener('click', () => menu(false)));
 addEventListener('keydown', e => { if (e.key === 'Escape') menu(false); });
+
+/* 18/11/2026: sul telefono la barra Chiama / Scrivimi non copre i campi. Mentre un campo è attivo si fa da parte e torna quando lo lasci;
+   se la tastiera stringe lo schermo, il campo attivo torna in vista; quando il modulo è già sullo schermo la barra non serve e se ne va. */
+(() => {
+  const tocco = $('.tocco'); if (!tocco) return;
+  const campo = e => !!(e && e.matches && e.matches('input:not([type="checkbox"]):not([type="radio"]), textarea, select'));
+  let scrive = false, modulo = false;
+  const metti = () => tocco.classList.toggle('via', scrive || modulo);
+  const guarda = () => setTimeout(() => { scrive = campo(document.activeElement); metti(); }, 0);
+  document.addEventListener('focusin', guarda); document.addEventListener('focusout', guarda);
+  const inVista = () => { const a = document.activeElement; if (!campo(a) || innerWidth > 720) return; const vv = window.visualViewport, sopra = vv ? vv.offsetTop : 0, sotto = sopra + (vv ? vv.height : innerHeight), r = a.getBoundingClientRect();
+    if (r.top < sopra + ALTO() || r.bottom > sotto - 12) a.scrollIntoView({ block: 'center', behavior: 'instant' }); };
+  let attesa; const dopo = () => { clearTimeout(attesa); attesa = setTimeout(inVista, 120); };
+  addEventListener('resize', dopo); if (window.visualViewport) visualViewport.addEventListener('resize', dopo);
+  if ('IntersectionObserver' in window) new IntersectionObserver(e => { modulo = e[0].isIntersecting; metti(); }, { rootMargin: '0px 0px -25% 0px' }).observe($('#modulo'));
+})();
 
 /* ---------- la mappa vera di Milano (8/11): palazzi in 3D, metro M1-M5, studio e Palazzo di Giustizia ----------
    Dal pacchetto «Mappa 3D Besana» di Franco, rivisto: colori del sito, dati della metro in mappa-metro.js (un .js si apre anche con il doppio clic,
@@ -1509,7 +1583,9 @@ html.zenit-passa::view-transition-old(root), html.zenit-passa::view-transition-n
   if (!h.classList.contains("zenit-rovescio")) return; const via = () => h.classList.remove("zenit-rovescio");
   if (!document.startViewTransition || !d.ms || matchMedia("(prefers-reduced-motion: reduce)").matches) return via();
   h.style.setProperty("--zenit-ms", d.ms + "ms"); h.classList.add("zenit-passa");
-  document.startViewTransition(via).finished.finally(() => h.classList.remove("zenit-passa")); });</script>
+  const passa = document.startViewTransition(via), zitto = () => {};   /* 18/11/2026: se il passaggio viene interrotto (pagina nascosta, aperta dalla vetrina) le sue promesse falliscono: senza catch usciva «Uncaught (in promise) InvalidStateError: Transition was aborted» */
+  if (passa.ready) passa.ready.catch(zitto); if (passa.updateCallbackDone) passa.updateCallbackDone.catch(zitto);
+  passa.finished.catch(zitto).finally(() => h.classList.remove("zenit-passa")); });</script>
 <!-- /zenit-rovescio -->
 </body>
 </html>
