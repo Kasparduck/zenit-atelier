@@ -1076,7 +1076,7 @@ function saliEApri(i) {
   const v = document.querySelector(`.voce[data-i="${i}"]`), mio = ++giroSalita; salendo = true; v.classList.remove('sopra', 'lampo');
   let giro = Promise.resolve();
   if (v.classList.contains('in-alto')) { void v.getBBox(); v.classList.add('lampo'); }   // la piastrina riparte da capo: si accende adesso
-  else { let meta = -i * PASSO_NOMI; while (meta - angNomi > 180) meta -= 360; while (meta - angNomi < -180) meta += 360; giro = anima(angNomi, meta, 1100, a => { if (mio !== giroSalita) return; angNomi = a; disegnaNomi(); }); }
+  else { let meta = -i * PASSO_NOMI; while (meta - angNomi > 180) meta -= 360; while (meta - angNomi < -180) meta += 360; giro = anima(angNomi, meta, TEL ? 500 : 1100, a => { if (mio !== giroSalita) return; angNomi = a; disegnaNomi(); }); }
   giro.then(() => attesa(T_NOME)).then(() => { if (mio !== giroSalita) return; salendo = false; v.classList.remove('lampo'); if (!aperto) apriSito(i); });
 }
 // l'apertura in attesa si annulla (sul telefono, quando si sceglie un altro sito: puntino, dito che sfoglia, ghiera presa). Dice se ce n'era una
