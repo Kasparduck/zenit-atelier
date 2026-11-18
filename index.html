@@ -191,10 +191,14 @@ body.esce #nomi { opacity: 0; transition: opacity .6s ease-out; }   /* 17/11: i 
 .torna kbd { font: 500 .68rem var(--sans); letter-spacing: .08em; padding: 2px 6px; border-radius: 5px; border: 1px solid rgb(255 240 220 / .25); color: var(--tenue); }
 .torna:hover { background: rgb(18 25 36 / .95); }
 body.aperto .torna { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; transition-delay: 5.6s; }
-/* SUL TELEFONO (18/11/2026, Franco: «Nella pagina Visioni la scritta Torna al telescopio copre qualcosa»): in basso al centro stava sopra «Salta» e la percentuale di Visioni
-   e sopra la barra dello Studio. Diventa una linguetta sul bordo sinistro, a metà altezza, dove i siti non hanno comandi fissi (a destra c'è la linguetta ENGLISH). */
-body.tel .torna { left: 0; bottom: auto; top: 44%; writing-mode: vertical-rl; transform: translate(-100%, -50%); padding: 14px 0; min-width: 44px; justify-content: center; border-radius: 0 12px 12px 0; border-left: 0; font-size: .78rem; letter-spacing: .1em; gap: 0; }
-body.tel.aperto .torna { transform: translate(0, -50%); transition-delay: 3.2s; }
+/* SUL TELEFONO «TORNA AL TELESCOPIO» È UNA BARRA SOTTO IL SITO (18/11/2026, Franco dal telefono: «Nella pagina Visioni la scritta Torna al telescopio copre qualcosa»;
+   alla linguetta di lato: «no, copriva una scritta invece»). Un pulsante che galleggia sopra un sito prima o poi copre una scritta, dovunque lo si metta. Sul telefono il
+   sito a tutta pagina finisce 46 px sopra il fondo dello schermo (BARRA, in misure()) e lì sotto, FUORI dal sito, sta la barra: non può coprire niente. Compare quando
+   il sito è arrivato a tutto schermo (body.coperto) e prima non si tocca. */
+body.tel .torna { left: 0; right: 0; bottom: 0; width: 100%; height: 46px; padding: 0; transform: none; justify-content: center; border: 0; border-top: 1px solid rgb(255 240 220 / .18); border-radius: 0; background: #090d13; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; font-size: .82rem; letter-spacing: .06em; transition: opacity .3s; }
+body.tel.aperto .torna { opacity: 0; transform: none; pointer-events: none; transition-delay: 0s; }
+body.tel.aperto.coperto .torna { opacity: 1; pointer-events: auto; }
+body.tel .pp-cerchio iframe { top: calc(50% - 23px); }   /* il sito sta in alto: la sua altezza è lo schermo meno la barra */
 body.tel .torna kbd { display: none; }   /* compare quando il sito è tornato com'è */
 /* in basso a destra: i tre modi di guardare i siti (11/11 sera, Franco: «sposterei le voci "a scalinata", "in discesa"… in basso a destra»; prima stavano in alto a destra,
    dove ora c'è la busta dei contatti). Sopra le strisce che si muovono: una targhetta scura come quella della riga a sinistra */
@@ -1128,11 +1132,12 @@ const pieno = $('#pieno'), paginaPiena = $('#pagina-piena'), cerchio = $('#pp-ce
    l'uscita dura 1,5 secondi, la luce torna in 1,6, e da una pagina intorno il nome resta acceso 0,45 secondi. Stessa sequenza, stessi gesti: solo i tempi.
    Sul computer i tempi sono quelli approvati. Il sito che finisce di caricarsi DOPO che la luce è tornata non riceve più il rovescio (luceTornata), se no resterebbe capovolto. */
 const T_ESCE = TEL ? 1500 : 2600, T_FERMO = 250, T_LUCE = TEL ? 1600 : 2600, ATTESA_PIENO = TEL ? 600 : 5000, T_NOME = TEL ? 450 : 1150, FACILE = 'cubic-bezier(.65, 0, .35, 1)';
+const BARRA = TEL ? 46 : 0;   // sul telefono, lo spazio sotto il sito per la barra «Torna al telescopio»
 let luceTornata = false;
 let aperto = false, copre = null, giroUscita = 0;
 const attesa = ms => new Promise(r => setTimeout(r, ms)), dueFotogrammi = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 // le misure dello schermo per il sito a tutta pagina e per il suo cerchio (la mezza diagonale: un disco così copre tutto lo schermo)
-const misure = () => { const W = innerWidth, H = innerHeight, R = Math.hypot(W, H) / 2 + 4; paginaPiena.style.setProperty('--W', W + 'px'); paginaPiena.style.setProperty('--H', H + 'px'); paginaPiena.style.setProperty('--R', R.toFixed(1) + 'px'); return { W, H, R }; };
+const misure = () => { const W = innerWidth, H = innerHeight - BARRA, R = Math.hypot(W, innerHeight) / 2 + 4; paginaPiena.style.setProperty('--W', W + 'px'); paginaPiena.style.setProperty('--H', H + 'px'); paginaPiena.style.setProperty('--R', R.toFixed(1) + 'px'); return { W, H, R }; };
 misure(); addEventListener('resize', misure);
 // un sito è «scuro» se il suo fondo è scuro: allora esce chiaro e torna scuro, e le sue foto non si abbassano
 const scuro = i => { const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(SITI[i].fondo || ''); return !!m && (parseInt(m[1], 16) * .299 + parseInt(m[2], 16) * .587 + parseInt(m[3], 16) * .114) < 96; };
