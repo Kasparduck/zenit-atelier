@@ -190,7 +190,12 @@ body.esce #nomi { opacity: 0; transition: opacity .6s ease-out; }   /* 17/11: i 
   font: 500 .82rem var(--sans); letter-spacing: .04em; cursor: pointer; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgb(0 0 0 / .35); }
 .torna kbd { font: 500 .68rem var(--sans); letter-spacing: .08em; padding: 2px 6px; border-radius: 5px; border: 1px solid rgb(255 240 220 / .25); color: var(--tenue); }
 .torna:hover { background: rgb(18 25 36 / .95); }
-body.aperto .torna { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; transition-delay: 5.6s; }   /* compare quando il sito è tornato com'è */
+body.aperto .torna { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; transition-delay: 5.6s; }
+/* SUL TELEFONO (18/11/2026, Franco: «Nella pagina Visioni la scritta Torna al telescopio copre qualcosa»): in basso al centro stava sopra «Salta» e la percentuale di Visioni
+   e sopra la barra dello Studio. Diventa una linguetta sul bordo sinistro, a metà altezza, dove i siti non hanno comandi fissi (a destra c'è la linguetta ENGLISH). */
+body.tel .torna { left: 0; bottom: auto; top: 44%; writing-mode: vertical-rl; transform: translate(-100%, -50%); padding: 14px 0; min-width: 44px; justify-content: center; border-radius: 0 12px 12px 0; border-left: 0; font-size: .78rem; letter-spacing: .1em; gap: 0; }
+body.tel.aperto .torna { transform: translate(0, -50%); transition-delay: 3.2s; }
+body.tel .torna kbd { display: none; }   /* compare quando il sito è tornato com'è */
 /* in basso a destra: i tre modi di guardare i siti (11/11 sera, Franco: «sposterei le voci "a scalinata", "in discesa"… in basso a destra»; prima stavano in alto a destra,
    dove ora c'è la busta dei contatti). Sopra le strisce che si muovono: una targhetta scura come quella della riga a sinistra */
 .modi { position: fixed; right: 18px; bottom: 16px; z-index: 3; display: flex; gap: 22px; padding: 9px 16px 10px; border-radius: 12px; background: rgb(9 13 19 / .92); border: 1px solid rgb(255 240 220 / .07); font: 500 .86rem var(--sans); letter-spacing: .05em; }
@@ -662,12 +667,12 @@ async function mostraSito(i, primo) {
   if (cambiando) return; cambiando = true;
   // 12/11: se intanto qualcuno clicca un nome e il sito esce dalla lente, le lamelle le muove l'uscita (apriSito): qui ci si ferma, se no i due movimenti si pestano i piedi
   const lamelle = v => { if (!aperto) disegnaDiaframma(v); };
-  if (!primo) await anima(apertura, 0, MUOVI ? 650 : 1, lamelle);
-  const carico = new Promise(r => { cornice.onload = () => r(); setTimeout(r, 6000); });
+  if (!primo) await anima(apertura, 0, MUOVI ? (TEL ? 260 : 650) : 1, lamelle);
+  const carico = new Promise(r => { cornice.onload = () => r(); setTimeout(r, TEL ? 1200 : 6000); });   // 18/11, Franco dal telefono: «il diaframma deve aprirsi più velocemente. È lento»: sul telefono le lamelle non restano chiuse ad aspettare il sito più di 1,2 secondi
   caricato = attivo; cornice.src = inLingua(SITI[attivo].src); await carico;
-  await new Promise(r => setTimeout(r, primo ? 900 : 350));   // il sito disegna la sua apertura
+  await new Promise(r => setTimeout(r, primo ? (TEL ? 400 : 900) : (TEL ? 150 : 350)));   // il sito disegna la sua apertura
   if (!aperto) { panX = 0; disegnaZoom(); }
-  await anima(aperto ? apertura : 0, 1, MUOVI ? 1400 : 1, lamelle);
+  await anima(aperto ? apertura : 0, 1, MUOVI ? (TEL ? 520 : 1400) : 1, lamelle);
   cambiando = false;
   if (caricato !== attivo) mostraSito(attivo);   // se nel frattempo si è girata la ghiera su un altro sito
   else if (partito && !aperto) preparaTraPoco(attivo, 900);   // e intanto lo stesso sito si prepara, di nascosto, a tutta pagina (vedi apriSito)
@@ -1211,7 +1216,7 @@ function chiudiSito() {
   document.querySelectorAll('.voce.sopra').forEach(v => v.classList.remove('sopra'));
   document.body.classList.remove('coperto', 'esce', 'aperto', 'fermo'); disegnaZoom();   // tornano le strisce, le scritte e, nel vetro, il sito della lente
   // il ritorno: il sito a tutta pagina sfuma, l'obiettivo ricresce dal centro (anche lui con una transizione sola) e riapre le lamelle
-  const T = MUOVI ? 1100 : 1;
+  const T = MUOVI ? (TEL ? 650 : 1100) : 1;
   if (paginaPiena.classList.contains('vista')) { paginaPiena.style.transition = 'opacity .55s'; paginaPiena.style.opacity = 0; }
   scena.style.transition = `transform ${T}ms cubic-bezier(.2, .7, .2, 1), opacity ${Math.round(T * .35)}ms linear`; scena.style.transform = 'scale(1)'; scena.style.opacity = 1;
   anima(apertura, 1, T, v => { if (mio === giroUscita) disegnaDiaframma(v); });
