@@ -206,6 +206,11 @@
       if (v.isIntersecting && v.intersectionRect.height >= basta - 1) parti(); else if (!v.isIntersecting) azzera(); } }, { threshold: [0, .5, Math.min(1, r + .002)] });
     guardia.observe(radice);
   }
+  // (18/11/2026, fluidità sul telefono) le trenta frasi tengono ognuna uno strato pronto per il viaggio (will-change in finale.css): sul telefono lo
+  // tengono solo quando il finale è vicino allo schermo (classe «fi-vicina»: da uno schermo prima a uno dopo), non per tutta la pagina. Il viaggio non
+  // cambia: nessuna riga di tappe(), parti() od osserva() è toccata; la regola sta in finale.css e vale solo fino a 860 px.
+  if ('IntersectionObserver' in window) new IntersectionObserver(voci => { for (const v of voci) radice.classList.toggle('fi-vicina', v.isIntersecting); }, { rootMargin: '100% 0px' }).observe(radice);
+  else radice.classList.add('fi-vicina');
   if (calmo) radice.classList.add('fi-composto');
   const rifai = () => { spazia(); coda(); osserva(); };
   rifai();                                                               // le righe al loro posto sul telefono (vedi sopra), e di nuovo coi caratteri veri

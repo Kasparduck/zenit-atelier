@@ -20,4 +20,6 @@
 @media (max-width: 860px) {
   .finale { padding-top: 92px; }
   .fi-riga { display: flex; align-items: center; }
+  /* (18/11/2026, fluidità) lontano dal finale le frasi non tengono uno strato pronto: erano trenta strati in più a ogni fotogramma di tutta la pagina */
+  .finale:not(.fi-vicina) .fi-x, .finale:not(.fi-vicina) .fi-y { will-change: auto; }
 }

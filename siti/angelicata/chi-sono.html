@@ -246,6 +246,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
 }
 .riga-fine { border-top: 1px solid var(--linea-noce); padding-block: 20px 28px; display: flex; flex-wrap: wrap; gap: 8px 26px; font-size: .8rem; color: var(--su-noce-tenue); }
 .tocco { display: none; }
+/* 20/11/2026: le strisce più larghe dello schermo restano ferme al centro mentre si scende e scorrono di lato da sole (preparaStrisce, in fondo) */
+.di-lato.attivo > * { position: sticky; top: max(calc(var(--alto) + 16px), calc((100svh - var(--h, 0px)) / 2)); }
+.di-lato.attivo [data-scende="1"] { scroll-snap-type: none; scroll-behavior: auto; }
 
 @media (max-width: 1400px) { .tel { display: none; } }
 @media (max-width: 1220px) { .menu, .tel { display: none; } .aperto { margin-left: auto; } .apri-menu { display: block; } }
@@ -267,7 +270,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
   .fondo-griglia { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 }
 @media (max-width: 720px) {
-  body { padding-bottom: calc(62px + env(safe-area-inset-bottom, 0px)); }
+  body { padding-bottom: calc(44px + env(safe-area-inset-bottom, 0px)); }
   .testata-riga { height: 66px; gap: 14px; }
   .monogramma { width: 38px; height: 38px; }
   .marchio-nome b { font-size: 1.22rem; }
@@ -277,11 +280,12 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
   .sottomenu a { white-space: nowrap; }
   .ch-apertura-testo { padding-top: 140px; }
   .ch-apertura h1 { font-size: clamp(3.2rem, 16vw, 4.4rem); }
+  .ch-apertura h1 .riga { white-space: nowrap; }   /* 20/11, Franco: «Chi sono all'inizio va in una sola riga» */
   .percorso-lista { grid-auto-columns: 78vw; }
   .percorso-lista p { filter: none; opacity: 1; }
   .come-griglia, .fondo-griglia { grid-template-columns: minmax(0, 1fr); }
   .tocco { display: grid; grid-template-columns: 1fr 1fr; position: fixed; left: 0; right: 0; bottom: 0; z-index: 70; padding-bottom: env(safe-area-inset-bottom, 0px); background: rgb(251 248 243 / .94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--linea-forte); }
-  .tocco a { padding: 17px 10px; text-align: center; font-weight: 600; text-decoration: none; background: var(--gesso); }
+  .tocco a { padding: 11px 10px; text-align: center; font-size: .84rem; letter-spacing: .02em; font-weight: 600; text-decoration: none; background: var(--gesso); }
   .tocco a + a { background: var(--inchiostro); color: var(--gesso); }
 }
 /* 18/11/2026, ritocchi sul telefono (giudice e Codex): solo fino a 720 px e di traverso; il computer resta com'è */
@@ -295,8 +299,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
 @media (max-height: 500px) and (orientation: landscape) and (min-aspect-ratio: 3/2) and (max-width: 899px) {
   .testata-riga, .testata.stretta .testata-riga { height: 50px; }
   .monogramma { width: 34px; height: 34px; }
-  .tocco a { padding-block: 12px; }
-  body { padding-bottom: calc(46px + env(safe-area-inset-bottom, 0px)); }
+  .tocco a { padding-block: 8px; }
+  body { padding-bottom: calc(36px + env(safe-area-inset-bottom, 0px)); }
   html { scroll-padding-top: 58px; }
 }
 </style>
@@ -342,7 +346,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--bronzo); outlin
   <section class="ch-apertura" aria-labelledby="t-chi">
     <div class="ch-apertura-testo">
       <p class="occhio">Avvocata · civile e penale · Milano</p>
-      <h1 id="t-chi"><span class="riga"><span>Chi</span></span><span class="riga"><span><em>sono</em></span></span></h1>
+      <h1 id="t-chi"><span class="riga"><span>Chi <em>sono</em></span></span></h1>
       <p>Sono un'avvocata civilista e penalista. Dal 2008 assisto a Milano persone e famiglie nei momenti in cui la legge entra nella loro vita all'improvviso: una separazione, un'eredità contesa, una denuncia, un processo.</p>
       <p>Il mio studio è a pochi passi dal Palazzo di Giustizia. Lavoro da sola, per scelta: chi mi affida un problema parla con me dal primo incontro all'ultima udienza.</p>
     </div>
@@ -572,7 +576,7 @@ function accendi(i, scorri) {
 }
 voci.forEach((li, k) => $('button', li).addEventListener('click', () => { clearInterval(giro); giro = null; accendi(k); }));
 if (MUOVI) {
-  const parti = () => { if (!giro && !finito) giro = setInterval(() => accendi(attiva + 1, true), 4500); };
+  const parti = () => { if (!giro && !finito && $('#percorso-lista').dataset.scende !== '1') giro = setInterval(() => accendi(attiva + 1, true), 4500); };
   const ferma = () => { clearInterval(giro); giro = null; };
   const lista = $('#percorso-lista');
   lista.addEventListener('mouseenter', ferma); lista.addEventListener('focusin', ferma);
@@ -581,6 +585,38 @@ if (MUOVI) {
   lista.addEventListener('pointerdown', basta, { once: true }); lista.addEventListener('touchstart', basta, { once: true, passive: true });
   new IntersectionObserver(e => { e[0].isIntersecting ? parti() : ferma(); }, { threshold: .4 }).observe(lista);
 }
+
+/* ---------- 20/11/2026, Franco (in Framer, nel riquadro del telefono, con il mouse): «Quando si arriva alle foto messe in orizzontale e alla linea
+   del tempo che si sviluppa in orizzontale, non c'è scorrimento». Si muovevano solo strisciando il dito di lato. Ora una striscia più larga dello
+   schermo resta ferma al centro mentre si scende e scorre di lato da sola (rotella, barra o dito); la linea del tempo accende l'anno che passa.
+   Strisciare di lato funziona ancora. Sul computer, dove le strisce stanno tutte nello schermo, non cambia niente. ---------- */
+// striscia = ciò che scorre di lato; blocco = ciò che resta fermo mentre scorre (la linea del tempo resta con il suo titolo)
+const strisce = [['.storia-foto', '.storia-foto'], ['#percorso-lista', '#percorso .contenitore']].map(([s, b]) => ({ el: $(s), blocco: $(b) })).filter(x => x.el && x.blocco);
+function preparaStrisce() {
+  strisce.forEach(({ el, blocco }) => {
+    let av = blocco.parentElement.classList.contains('di-lato') ? blocco.parentElement : null;
+    if (!av) { av = document.createElement('div'); av.className = 'di-lato'; blocco.before(av); av.append(blocco); }
+    av.classList.remove('attivo'); av.style.height = ''; el.dataset.scende = '';
+    const dist = el.scrollWidth - el.clientWidth;
+    if (!MUOVI || dist < 24) return;
+    blocco.style.setProperty('--h', blocco.offsetHeight + 'px'); el.dataset.dist = dist; el.dataset.scende = '1';
+    av.classList.add('attivo'); av.style.height = (blocco.offsetHeight + dist) + 'px';
+  });
+  scorriStrisce();
+}
+function scorriStrisce() {
+  strisce.forEach(({ el, blocco }) => {
+    if (el.dataset.scende !== '1') return;
+    const av = blocco.parentElement, r = av.getBoundingClientRect(), su = parseFloat(getComputedStyle(blocco).top) || 0, tot = av.offsetHeight - blocco.offsetHeight;
+    const p = tot > 0 ? Math.min(1, Math.max(0, (su - r.top) / tot)) : 0;
+    el.scrollLeft = p * (+el.dataset.dist);
+    if (el.id === 'percorso-lista') { const i = Math.round(p * (voci.length - 1)); if (i !== attiva) accendi(i); }
+  });
+}
+let codaStrisce = false;
+addEventListener('scroll', () => { if (codaStrisce) return; codaStrisce = true; requestAnimationFrame(() => { codaStrisce = false; scorriStrisce(); }); }, { passive: true });
+addEventListener('resize', preparaStrisce); addEventListener('load', preparaStrisce);
+preparaStrisce();
 
 /* ---------- testata che si stringe e indice della pagina ---------- */
 const testata = $('#testata');

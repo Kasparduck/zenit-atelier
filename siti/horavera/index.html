@@ -433,6 +433,7 @@ html.motore::-webkit-scrollbar { display: none; }
   .scorri-racconto .quinta { scale: none; opacity: 1; }
   .prova-scorri { top: auto; bottom: 10px; max-width: calc(100vw - 20px); }
   .scala, .righe { display: none; }
+  html.senza-scie .scia { display: none; }   /* solo con ?scie=0: la prova «telefono senza scia delle lancette» (scelta di Franco, non decisa) */
   .commissione { padding: 9px 12px; }
   /* IL TELEFONO RICOMPOSTO (18/11/2026; Franco: «sfasato», «l'orologio non si vede un kaiser»). Dall'alto, uno sotto l'altro e senza sovrapporsi:
      l'etichetta (N. 031 · Rubino e oro · 1 di 8), l'orologio intero e centrato, l'anno, il luogo, la frase, e il filmato in tutto lo spazio che resta.
@@ -601,7 +602,7 @@ html.libero body.dentro::after { content: none; }
 <!-- N. 036 · la tigre · Cina dei Ming, 1580 · modo «accanto» -->
 <section class="registro" data-modo="accanto" data-allora="1580">
   <div class="palco" data-modo="accanto" data-stato="s0" style="--perno: 49.76% 44.92%; --sagoma: url(immagini/tigre.webp)">
-    <video class="scena" data-fuoco="47" muted playsinline preload="auto" poster="immagini/scena-spadaccino.jpg" src="immagini/scena-spadaccino.mp4"></video>
+    <video class="scena" data-fuoco="47" muted playsinline preload="metadata" poster="immagini/scena-spadaccino.jpg" src="immagini/scena-spadaccino.mp4"></video><!-- sul computer lo script lo rimette subito a preload="auto", com'era; sul telefono si precarica quando si entra nella scena prima -->
     <div class="velo"></div>
 
     <ol class="righe">
@@ -937,6 +938,26 @@ html.libero body.dentro::after { content: none; }
   // al cancello non prima che l'animazione sia finita. Indietro si torna sempre; i collegamenti (Commissione) saltano tutto.
   // SOSTA = quanto resta il traguardo prima di poter ripartire.
   const ASPETTA = parametri.get('aspetta') !== '0' && !calmo && !fermo && !forzato, SOSTA = 2400, cancelli = [];
+  // LA PAGINA FLUIDA (18/11/2026; Franco dal telefono: «è scattoso», «le date non scorrono fluide e gli orologi scendono a scatti», «sfarfallio sul
+  // video Decò»). Misurato con strumenti/misura-fluidita.js (telefono 360 × 662, processore rallentato 4 volte): il filo della pagina era occupato
+  // per tre quarti del tempo, e non dai filmati. Quattro rimedi, nessuno cambia ciò che si vede; ?pesante=1 li spegne tutti, per rimisurare «prima»:
+  //   1. LE MISURE UNA VOLTA SOLA: dove comincia e quanto è alta ogni parte si misura quando la pagina cambia misura (geo), non a ogni fotogramma
+  //      (erano circa mille domande al browser per fotogramma di scorrimento: i cancelli riordinati rimisurando tutto);
+  //   2. col dito, TORNARE INDIETRO DI UN PELO NON ROVESCIA LA SCENA: una soglia già passata si ripassa all'indietro solo 16 px più su (il dito
+  //      fermo a cavallo di una soglia faceva andare avanti e indietro data, orologio e filmato); scendendo le soglie restano quelle approvate;
+  //   3. col dito, IL FILMATO SI RIAVVOLGE SOLO SE LA SCENA È DAVVERO USCITA (tornata nel buio, 3,3 secondi): prima bastava sfiorare l'uscita e
+  //      rientrare per vederlo saltare dall'ultimo fotogramma al primo, in piena luce; va sempre una volta sola e rientrando riparte da capo;
+  //   4. col dito si precarica un filmato per volta, quello della scena dopo (prima: due interi all'apertura).
+  // CHE COSA PESA DAVVERO (misurato, pagina ferma, una scena): le copie delle lancette che fanno la scia (10-14 per orologio). Toglierle cambia ciò
+  // che si vede (niente ventaglio dietro le lancette), quindi NON è deciso: ?scie=0 le toglie sul telefono, per far vedere a Franco la differenza.
+  const PESANTE = !!parametri.get('pesante'), dito = () => !PESANTE && (stretto.matches || matchMedia('(pointer: coarse)').matches), ISTERESI = 16;
+  if (parametri.get('scie') === '0') document.documentElement.classList.add('senza-scie');
+  let geo = 0;
+  const unaVolta = f => { let v = -1, r; return () => { if (PESANTE || v !== geo) { v = geo; r = f(); } return r; }; };
+  const rimisura = () => { geo++; };
+  addEventListener('resize', rimisura); addEventListener('load', rimisura);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(rimisura);
+  if (window.ResizeObserver) new ResizeObserver(rimisura).observe(document.body);
 
   // PROVA DELLO SCORRIMENTO (13/11, Franco: «dammi delle soluzioni migliori, magari ne valutiamo diverse, per lo scrolling un po' fastidioso che si blocca»;
   // e la sua idea: «potrebbe avvenire con la rotella del mouse intanto che le immagini rimpiccioliscono e svaniscono… e nel momento in cui svaniscono
@@ -986,6 +1007,7 @@ html.libero body.dentro::after { content: none; }
     const palco = sez.querySelector('.palco'), video = palco.querySelector('video'), anno = palco.querySelector('.anno'), corpo = palco.querySelector('.corpo');
     // la quinta: tutto ciò che sta sul palco, in un contenitore che il racconto può rimpicciolire e far svanire senza toccare i movimenti approvati
     const quinta = document.createElement('div'); quinta.className = 'quinta'; quinta.append(...palco.childNodes); palco.appendChild(quinta);
+    if (quale === 1 && !dito()) video.preload = 'auto';   // sul computer il secondo filmato si precarica intero dall'inizio, com'era; sul telefono uno per volta (rimedio 4)
     let racconto = null;
     if (MODO === 'racconto' && RACCONTO[sez.dataset.allora]) { racconto = document.createElement('div'); racconto.className = 'racconto'; racconto.innerHTML = RACCONTO[sez.dataset.allora].map(t => '<p>' + t + '</p>').join(''); palco.appendChild(racconto); }
     // nel racconto il capitolo è più lungo di 110vh (CSS): lì le immagini svaniscono e restano le righe; soglie e cancelli si contano sulla lunghezza di prima
@@ -1037,7 +1059,8 @@ html.libero body.dentro::after { content: none; }
 
     // i due cancelli del capitolo: non si passa alla sosta finché la corsa non è finita, e non si lascia la sosta prima di SOSTA millisecondi
     let stato = '', spegni = 0, partito = false, eraAllora = false, finoCorsa = Infinity, finoSosta = Infinity;
-    const cima = () => sez.getBoundingClientRect().top + scrollY, lunga = () => sez.offsetHeight - extra() - innerHeight;
+    const posto = unaVolta(() => { const r = sez.getBoundingClientRect(); return { cima: r.top + scrollY, alta: r.height, intera: sez.offsetHeight }; });   // misurato una volta (geo)
+    const cima = () => posto().cima, lunga = () => posto().intera - extra() - innerHeight;
     // da = dove stava la pagina quando l'animazione è partita (più un tratto per frenare): da lì al cancello la pagina avanza al più col passo dell'animazione
     const cancelloCorsa = { y: () => cima() + lunga() * .5 - 4, fine: () => finoCorsa, dura: CORSA, da: 0, tipo: 'corsa' }, cancelloSosta = { y: () => cima() + lunga() * .86 - 4, fine: () => finoSosta, dura: SOSTA, da: 0, tipo: 'sosta' };
     cancelli.push(cancelloCorsa, cancelloSosta);
@@ -1066,17 +1089,23 @@ html.libero body.dentro::after { content: none; }
       clearTimeout(spegni);
       // il filmato va una volta sola (Franco, 13/11: «su alcuni filmati hai lasciato il loop, tipo su Galileo e su Déco»): un filmato già FINITO è fermo,
       // e play() lo faceva ripartire da capo passando dalla corsa alla sosta. Ora riparte da capo solo rientrando nella scena (da sopra o da sotto).
-      if (s === 's0' || s === 's4') partito = false;
+      // col dito (rimedio 3) il filmato si riarma solo quando la scena è davvero uscita: tra 3,3 secondi, se è ancora fuori (più sotto)
+      if ((s === 's0' || s === 's4') && !dito()) partito = false;
+      if (dito() && s !== 's0' && capitoli[quale + 1]) capitoli[quale + 1].video.preload = 'auto';   // rimedio 4: si precarica il filmato della scena dopo
       if (allora || (s === 's1' && sez.dataset.filmSubito)) {   // data-film-subito: il filmato parte già all'arrivo
         if (!partito) { partito = true; if (video.currentTime > 0) video.currentTime = 0; video.play().catch(() => {}); }
         else if (video.paused && !video.ended) video.play().catch(() => {});
       }
-      else spegni = setTimeout(() => video.pause(), 3300);   // si ferma quando è già tornata nel buio
+      else spegni = setTimeout(() => { video.pause(); if (stato === 's0' || stato === 's4') partito = false; }, 3300);   // si ferma quando è già tornata nel buio
     }
+    const ORDINE = { s0: 0, s1: 1, s2: 2, s3: 3, s4: 4 };
     function aggiorna() {
-      const r = sez.getBoundingClientRect(), corsa = r.height - extra() - innerHeight, p = Math.max(0, Math.min(1, -r.top / corsa));
+      const g = posto(), r = { top: g.cima - scrollY, bottom: g.cima - scrollY + g.alta }, corsa = g.alta - extra() - innerHeight;
       // soglie approvate da Franco con la tigre: non si toccano (nel racconto la sosta resta finché le immagini non sono svanite)
-      let s = r.top > innerHeight * .45 ? 's0' : p < .2 ? 's1' : p < .5 ? 's2' : p < .86 ? 's3' : racconto && !stretto.matches ? 's3' : 's4';
+      const tempoDi = top => { const p = Math.max(0, Math.min(1, -top / corsa)); return top > innerHeight * .45 ? 's0' : p < .2 ? 's1' : p < .5 ? 's2' : p < .86 ? 's3' : racconto && !stretto.matches ? 's3' : 's4'; };
+      let s = tempoDi(r.top);
+      // rimedio 2, col dito: indietro si passa una soglia solo 16 px più su (scendendo non cambia niente)
+      if (stato && ORDINE[s] < ORDINE[stato] && dito() && ORDINE[tempoDi(r.top - ISTERESI)] >= ORDINE[stato]) s = stato;
       if (forzato && quale === capForzato) s = forzato;
       if (s !== stato) imposta(s);
       if (racconto && !stretto.matches) {   // la sezione del racconto parte quando la pagina, scendendo, passa la fine della sosta
@@ -1177,14 +1206,15 @@ html.libero body.dentro::after { content: none; }
       if (calmo || fermo) { el.classList.add('vivo'); return { el, gioca, aggiorna() {} }; }
       // il cancello della parte: a metà del tratto in cui il quadro resta fermo; si apre quando nome o confezione hanno finito
       let fino = Infinity;
-      const cancello = { y: () => el.getBoundingClientRect().top + scrollY + (el.offsetHeight - innerHeight) * .5, fine: () => fino, dura: 5000, da: 0, tipo: 'parte' };
+      const posto = unaVolta(() => { const r = el.getBoundingClientRect(); return { cima: r.top + scrollY, alta: r.height, intera: el.offsetHeight }; });   // misurato una volta (geo)
+      const cancello = { y: () => posto().cima + (posto().intera - innerHeight) * .5, fine: () => fino, dura: 5000, da: 0, tipo: 'parte' };
       cancelli.push(cancello);
       cancello.gruppo = { cancelli: [cancello] };   // il nome, e poi la confezione: ognuno è una sezione con il suo giro dell'orologio
       // racconto: nome e confezione seguono la rotella, dal punto in cui partono fino al punto del cancello (mai più svelti del loro passo)
-      const cimaParte = () => el.getBoundingClientRect().top + scrollY;
+      const cimaParte = () => posto().cima;
       if (SCORRE) zone.push({ da: () => cimaParte() - innerHeight * .35, a: () => cimaParte() + (el.offsetHeight - innerHeight) * .5, dura: () => cancello.dura });
       return { el, gioca, aggiorna() {
-        const r = el.getBoundingClientRect();
+        const g = posto(), r = { top: g.cima - scrollY, bottom: g.cima - scrollY + g.alta };
         if (!vivo && r.top < innerHeight * .35 && r.bottom > innerHeight * .6) {
           vivo = true; el.classList.add('vivo'); gioca(el);
           cancello.dura = Math.max(0, ...el.getAnimations({ subtree: true }).map(a => a.effect.getComputedTiming().endTime)); fino = performance.now() + cancello.dura;
@@ -1204,6 +1234,7 @@ html.libero body.dentro::after { content: none; }
     });
   });
 
+  rimisura();   // gli intermezzi sono appena stati riempiti: le posizioni di tutte le parti sono cambiate
   const tutti = () => { capitoli.forEach(c => c.aggiorna()); parti.forEach(p => p.aggiorna()); };
   // chi scende oltre un cancello ancora chiuso viene riportato lì (solo scendendo; un collegamento o il tasto Fine saltano tutto)
   const filo = document.querySelector('.attesa'), filoDentro = filo.firstElementChild, filoCento = filo.querySelector('b'), saltaFilo = document.querySelector('.salta-filo');
@@ -1213,10 +1244,11 @@ html.libero body.dentro::after { content: none; }
   // quando si ferma; passando un cancello ancora chiuso compaiono solo il filo, la percentuale e «Salta», che porta avanti. La rete che riporta
   // indietro resta solo per la prova ?vecchia=1 con il mouse.
   const RETE = !!parametri.get('vecchia') && matchMedia('(pointer: fine)').matches;
+  const inOrdine = unaVolta(() => cancelli.sort((a, b) => a.y() - b.y()));   // i cancelli dall'alto in basso: si riordinano solo quando la pagina cambia misura (prima: a ogni fotogramma)
   function trattieni() {
     const y = scrollY, ora = performance.now(); let chiuso = null;
     // con il motore la pagina non viene MAI riportata indietro: questa rete resta solo per la prova ?vecchia=1
-    if (ASPETTA && !motore && ora > salto && y > ultimoY) for (const c of cancelli.sort((a, b) => a.y() - b.y())) {
+    if (ASPETTA && !motore && ora > salto && y > ultimoY) for (const c of inOrdine()) {
       if (c.saltato) continue;   // una sezione saltata con «Salta» non trattiene più
       const l = c.y();
       if (ultimoY <= l && y > l && ora < c.fine()) { if (RETE) scrollTo(0, l); chiuso = c; break; }

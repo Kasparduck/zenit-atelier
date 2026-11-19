@@ -115,7 +115,8 @@ body.scritte .velo { opacity: 1; }
    già la macchia scura, lettera per lettera; alla fine, quando lo scuro è dappertutto, resta il bagliore: due secondi di luce blu intorno
    alla voce di questa pagina e ai numeri, che poi si spegne. */
 @keyframes bagliore { 0%, 100% { text-shadow: 0 0 .5em rgb(10 9 8 / .8), 0 0 .16em rgb(10 9 8 / .7); } 60% { text-shadow: 0 0 .4em rgb(105 150 240 / .75), 0 0 .16em rgb(10 9 8 / .7); } }
-body.scritte .menu li a.qui .l, body.scritte .menu li a b .l { animation: bagliore 2s ease-out calc(var(--i) * 170ms + 500ms); }
+/* PAGINA-FLUIDA 8 — Al ritorno il bagliore ritrova il suo tempo anche dopo display:none. */
+body.scritte .menu li a.qui .l, body.scritte .menu li a b .l { animation: bagliore 2s ease-out calc(var(--i) * 170ms + 500ms - var(--bagliore-passato, 0ms)); }
 
 /* solo per la prova: rivedere con chiazze nuove */
 .rivedi { position: fixed; z-index: 6; left: clamp(18px, 4.2vw, 70px); bottom: 22px; padding: 8px 0; background: none; border: 0; cursor: pointer; font: 600 .6rem/1 var(--sans); letter-spacing: .24em; text-transform: uppercase; color: var(--tenue); opacity: 0; pointer-events: none; transition: opacity 1.2s ease 2.4s, color .3s; }
@@ -136,7 +137,12 @@ body:not(.prova) .rivedi { display: none; }
 .scorri::after { content: ""; width: 1px; height: 38px; background: linear-gradient(var(--oro), rgb(217 176 140 / 0)); opacity: .75; }
 body.scorre .scorri { opacity: 1; }
 body.scorre.sceso .scorri { opacity: 0; transition-duration: .6s; }
-.sotto { position: relative; z-index: 7; margin-top: 100vh; background: var(--buio); }
+/* PAGINA-FLUIDA 1 — La soglia di copertura è alta quanto il vecchio margine, anche con le barre di Android. */
+.spazio-apertura { position: relative; height: 100vh; pointer-events: none; }
+.spazio-apertura > i { position: absolute; top: 0; width: 1px; height: 8px; }
+.spazio-apertura > .soglia-home { height: 92vh; height: 92dvh; }
+.sotto { position: relative; z-index: 7; background: var(--buio); }
+body.coperta :is(.scena, .velo, .testa, .grande, .scorri, .rivedi, #lingua) { display: none; }
 /* HOME (Franco, 16/11/2026: «in ogni sezione di ogni pagina deve esserci la possibilità di tornare alla HOME, puoi pure scrivere la parola HOME tanto
    ormai la conoscono in tutto il mondo»; «La HOME è la pagina di Presentazione ovviamente»). In alto a sinistra, nello stesso punto e con lo stesso
    aspetto in tutte le pagine (in Visioni e in L'atelier è la scritta della testata, che già portava qui). In questa pagina compare quando la
@@ -151,15 +157,24 @@ body.torna .casa-velo { opacity: 1; }
 @media (max-width: 720px) { .casa { top: 20px; } }
 
 /* ---- C) QUATTRO TEMPI: un palco fermo, dentro una fascia che scorre verso sinistra mentre si scende (un solo movimento lento) ---- */
-.qt { position: relative; --qt-r: min(70vh, 45vw); }                        /* --qt-r = lato lungo di un riquadro 4:3 */
+/* PAGINA-FLUIDA 2 — La corsa del palco occupa il suo posto anche entrando direttamente nel finale. */
+.qt { position: relative; --qt-r: min(70vh, 45vw); --qt-cartello: clamp(150px, 13vw, 230px); --qt-gap: 6vw;
+  --qt-sx: clamp(18px, 6vw, 110px); --qt-dx: calc((100vw - 2 * var(--qt-r)) / 2); }
+@media (min-width: 860.01px) {
+  .qt::after { content: ""; display: block;
+    --fascia: calc(var(--qt-sx) + var(--qt-dx) + var(--cartelli) * var(--qt-cartello) + var(--carte) * 2 * var(--qt-r) + var(--intervalli) * var(--qt-gap));
+    /* Il 100% del padding è la larghezza della sezione, al netto della barra di scorrimento. */
+    padding-top: max(0px, calc(var(--fascia) - 100%));
+    padding-top: max(0px, calc(round(nearest, var(--fascia), 1px) - 100%)); }
+}
 .qt-palco { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; align-items: center; }
-.qt-fascia { position: relative; display: flex; align-items: center; gap: 6vw; width: max-content; will-change: transform;
-  padding: 0 calc((100vw - 2 * var(--qt-r)) / 2) 0 clamp(18px, 6vw, 110px); }
-.qt-cartello { flex: none; width: clamp(150px, 13vw, 230px); display: grid; gap: 16px; align-content: center; }
+.qt-fascia { position: relative; display: flex; align-items: center; gap: var(--qt-gap); width: max-content; will-change: transform;
+  padding: 0 var(--qt-dx) 0 var(--qt-sx); }
+.qt-cartello { flex: none; width: var(--qt-cartello); display: grid; gap: 16px; align-content: center; }
 .qt-num { font: 400 1.25rem/1 var(--serif); letter-spacing: .14em; color: var(--blu); }
 .qt-titolo { margin: 0; font: 300 clamp(2rem, 3vw, 2.9rem)/1.02 var(--serif); color: var(--avorio); }
 .qt-musica { font: italic 400 1rem/1 var(--serif); letter-spacing: .03em; color: var(--blu); }
-.qt-carta { flex: none; display: flex; margin: 0; opacity: .22; transition: opacity 1.4s ease; will-change: opacity; }
+.qt-carta { flex: none; display: flex; margin: 0; opacity: .6; transition: opacity 1.4s ease; will-change: opacity; }   /* fuori dal centro al 60% (Franco, 20/11: al 22% erano «troppo avvolti da un alone di oscurità») */
 .qt-carta.qt-destra { flex-direction: row-reverse; }                        /* nelle carte dispari il filmato sta a destra */
 .qt-carta.qt-viva { opacity: 1; }
 .qt-riq { flex: none; width: var(--qt-r); aspect-ratio: 4 / 3; overflow: hidden; }
@@ -223,6 +238,26 @@ body.torna .casa-velo { opacity: 1; }
   .scena::after { transition: opacity 2.6s cubic-bezier(.45, 0, .55, 1); }
   .casa::before { content: ""; position: fixed; z-index: -1; left: 0; right: 0; top: 0; height: 76px; pointer-events: none;
     background: linear-gradient(var(--buio) 0, var(--buio) 60px, rgb(10 9 8 / 0)); }
+  /* FLUIDITÀ SUL TELEFONO (18/11/2026; Franco dal telefono: «scorre tutto male, è frammentato», «è scattoso», «se non c'è reattività la gente
+     scappa»). Niente qui cambia ciò che si vede; le misure prima e dopo stanno nella consegna del montatore.
+     1. Quando la pagina è scesa di uno schermo intero la presentazione è tutta coperta dal contenuto (classe «coperta», la mette lo scorrimento):
+        il filmato, la tela, il velo, le voci e la scritta grande (due copie, una fusa in «difference») non si disegnano più sotto. Tornando in
+        cima (HOME) ricompaiono com'erano.
+     2. Nei Quattro tempi sul telefono le carte sono sempre piene e la fascia non scorre di lato: gli strati tenuti pronti per quei movimenti
+        (will-change) qui non servono, ed erano quattordici strati in più da tenere a ogni fotogramma di tutta la pagina. */
+  .qt-fascia, .qt-carta { will-change: auto; }
+}
+/* PAGINA-FLUIDA 4 — HOME, la sua fascia di 76px e il velo a pieno schermo hanno tre limiti di pittura distinti. */
+.casa-velo { visibility: hidden; transition: opacity .38s ease, visibility 0s linear .38s; }
+body.torna .casa-velo { visibility: visible; transition-delay: 0s; }
+@media (max-width: 860px) and (pointer: coarse) {
+  .casa::before { content: none; }
+  body::before { content: ""; position: fixed; z-index: 8; inset: 0 0 auto; height: 76px; pointer-events: none;
+    background: linear-gradient(var(--buio) 0, var(--buio) 60px, rgb(10 9 8 / 0));
+    opacity: 0; visibility: hidden; transition: opacity .7s ease, visibility 0s linear .7s; }
+  body.giu::before { opacity: 1; visibility: visible; transition-delay: 0s; }
+  body.coperta .sotto { z-index: auto; }
+  .sotto > section { contain: layout paint style; }
 }
 </style>
 <link rel="stylesheet" href="otto.css">
@@ -235,7 +270,7 @@ body.torna .casa-velo { opacity: 1; }
 <body>
 
 <div class="scena" aria-hidden="true">
-  <video id="filmato" src="immagini/presentazione.mp4" muted playsinline preload="auto"></video>
+  <video id="filmato" data-src="immagini/presentazione.mp4" muted playsinline preload="auto"></video>
   <canvas id="tela"></canvas>
 </div>
 <div class="velo" aria-hidden="true"></div>
@@ -263,6 +298,7 @@ body.torna .casa-velo { opacity: 1; }
 <a class="casa" href="ora-vera.html" aria-label="Home: torna alla presentazione">HOME</a>
 <div class="casa-velo" aria-hidden="true"></div>
 
+<div class="spazio-apertura" aria-hidden="true"><i class="soglia-sceso"></i><i class="soglia-home"></i></div>
 <main class="sotto">
   <!-- OTTO MERIDIANI (innestato il 15/11/2026): il modulo sta in otto.css e otto.js; prova da solo in otto-prova.html -->
   <section id="otto" class="otto" aria-label="Otto meridiani"></section>
@@ -305,14 +341,27 @@ body.torna .casa-velo { opacity: 1; }
 </main>
 
 <!-- la lingua: in inglese le scritte ferme si traducono qui, prima che il codice le spezzi in lettere (lingua.js) -->
-<script>window.LINGUA && LINGUA.parti();</script>
+<script>
+// PAGINA-FLUIDA 5 — Conteggi cumulativi degli script inline. Gli observer ricevono geometria già calcolata dal browser.
+window.FLUIDO = { conta: { apertura: 0, tempi: 0, misure: 0 } };
+const contaHV = window.FLUIDO.conta;
+const geometriaHV = {
+  rettangolo(e) { contaHV.misure++; return e.getBoundingClientRect(); },
+  valore(e, nome) { contaHV.misure++; return e[nome]; },
+  stile(e) { contaHV.misure++; return getComputedStyle(e); }
+};
+window.LINGUA && LINGUA.parti();
+</script>
 <script>
 (() => {
   const Q = new URLSearchParams(location.search);
-  const video = document.getElementById('filmato'), C = document.getElementById('tela'), cx = C.getContext('2d');
-  const T = document.createElement('canvas'), tx = T.getContext('2d');       // lo scuro ritagliato con la forma delle chiazze
-  const G = document.createElement('canvas');                                // la forma delle chiazze (scheda grafica)
-  const gl = G.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false });
+  // PAGINA-FLUIDA 1 — L'ingresso da un'ancora non prepara né il video né la scheda grafica.
+  const daAncora = ['#otto', '#tempi', '#finale'].includes(location.hash);
+  if (daAncora) document.body.classList.add('scorre', 'coperta');
+  const video = document.getElementById('filmato'), C = document.getElementById('tela');
+  const T = document.createElement('canvas'), G = document.createElement('canvas');
+  let cx, tx, gl, preparata = false, riprendiFilm = false, linguaInAttesa = false, posaIntera = false;
+  let visibile = !daAncora && !document.hidden, tentativo = 0;
   const FERMO = Q.has('tempo') ? +Q.get('tempo') / 1000 : null;              // prova: ferma a un istante
   const CALMO = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const FUOCO = .57;                                                         // sul telefono: che parte del filmato resta al centro
@@ -422,7 +471,7 @@ void main() {
     if (t <= PRIMA) return 0;
     if (t >= TUTTO) return 1;
     if (!U) return avanti(t);                                               // senza scheda grafica c'è una dissolvenza, uguale dappertutto
-    const qx = px / innerWidth * G.width / G.height, qy = 1 - py / innerHeight;   // in altezze di schermo, da sotto in su: come nel disegno
+    const qx = px / vistaW * G.width / G.height, qy = 1 - py / vistaH;   // in altezze di schermo, da sotto in su: come nel disegno
     const wx = qx + .085 * Math.sin(qy * 3.1 + t * .55), wy = qy + .085 * Math.sin(qx * 2.6 - t * .45);
     const n = Math.min(1, Math.max(0, .5 + .62 * fbm(wx * 1.7 + semeXY[0] + t * .05, wy * 1.7 + semeXY[1] - t * .035)));
     return dolce((n - soglia(t)) / .2);
@@ -438,17 +487,19 @@ void main() {
     el.textContent = '';
     for (const c of testo) { if (c === ' ') { el.append(' '); continue; } const s = unaLettera(c); el.append(s); lettere.push({ e: s, p: el, x: 0, y: 0, dx: 0, s: false }); }
   }
-  document.querySelectorAll('.menu li a b, .menu li a .nome').forEach(el => {
-    if (!el.classList.contains('nome')) { scriviVoce(el, el.textContent); return; }
-    el.dataset.it = el.textContent; scriviVoce(el, FRASE(el.dataset.it)); });
-  'HORA VERA'.split(' ').forEach((parola, p) => [...parola].forEach((c, k) => {
-    const s = unaLettera(c), n = unaLettera(c); if (p && !k) { s.classList.add('parola'); n.classList.add('parola'); } grande.append(s); grandeNeg.append(n);
-    titolo.push({ e: s, n, x: 0, y: 0, dx: 0, j: titolo.length, op: -1, sp: -1, k: -1 }); }));   // e = la copia avorio, n = il negativo
-  let corpoGrande = 100;
+  function preparaLettere() {
+    document.querySelectorAll('.menu li a b, .menu li a .nome').forEach(el => {
+      if (!el.classList.contains('nome')) { scriviVoce(el, el.textContent); return; }
+      el.dataset.it = el.textContent; scriviVoce(el, FRASE(el.dataset.it)); });
+    'HORA VERA'.split(' ').forEach((parola, p) => [...parola].forEach((c, k) => {
+      const s = unaLettera(c), n = unaLettera(c); if (p && !k) { s.classList.add('parola'); n.classList.add('parola'); } grande.append(s); grandeNeg.append(n);
+      titolo.push({ e: s, n, x: 0, y: 0, dx: 0, j: titolo.length, op: -1, sp: -1, k: -1 }); }));   // e = la copia avorio, n = il negativo
+  }
+  let corpoGrande = 100, vistaW = 0, vistaH = 0;
   function misuraLettere() {                                                // il centro di ogni lettera sullo schermo, al suo posto (tolto lo spostamento di adesso)
-    corpoGrande = parseFloat(getComputedStyle(grande).fontSize) || 100;
-    lettere.forEach(o => { const r = o.e.getBoundingClientRect(); o.x = r.left + r.width / 2; o.y = r.top + r.height / 2; });
-    titolo.forEach(o => { if (o.sp > 0) o.dx = o.sp * corpoGrande; const r = o.e.getBoundingClientRect(); o.x = r.left + r.width / 2 - o.dx; o.y = r.top + r.height / 2; });
+    corpoGrande = parseFloat(geometriaHV.stile(grande).fontSize) || 100;
+    lettere.forEach(o => { const r = geometriaHV.rettangolo(o.e); o.x = r.left + r.width / 2; o.y = r.top + r.height / 2; });
+    titolo.forEach(o => { if (o.sp > 0) o.dx = o.sp * corpoGrande; const r = geometriaHV.rettangolo(o.e); o.x = r.left + r.width / 2 - o.dx; o.y = r.top + r.height / 2; });
   }
   // LA SCRITTA GRANDE, lettera per lettera: quanto si vede e quanto è ancora discosta dal suo posto (in altezze di carattere). La H affiora e resta;
   // ogni altra AFFIORA FERMA (da trasparente a piena) un po' più a destra, e POI scivola da destra a sinistra fino alla distanza di tutte.
@@ -480,7 +531,7 @@ void main() {
     for (let i = 0; i < n; i++) {
       const gx = Math.floor((i * 37 % 97) / 97 * G.width), gy = Math.floor((i * 53 % 89) / 89 * G.height);
       gl.readPixels(gx, gy, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
-      const qui = scuroIn((gx + .5) / G.width * innerWidth, (1 - (gy + .5) / G.height) * innerHeight, t), la = 1 - px[3] / 255, d = Math.abs(qui - la);
+      const qui = scuroIn((gx + .5) / G.width * vistaW, (1 - (gy + .5) / G.height) * vistaH, t), la = 1 - px[3] / 255, d = Math.abs(qui - la);
       peggio = Math.max(peggio, d); media += d / n; if (la > .05 && la < .95) mezzi++;
     }
     return { punti: n, sulBordo: mezzi, peggio: +peggio.toFixed(3), media: +media.toFixed(4) };
@@ -488,7 +539,8 @@ void main() {
   window.scrittaGrande = () => titolo.map(o => o.e.textContent + ' si vede ' + o.op.toFixed(2) + ', discosta ' + (o.sp || 0).toFixed(3) + ', scuro ' + o.k.toFixed(2)).join(' | ');
 
   function misura() {
-    const dpr = Math.min(devicePixelRatio || 1, 1.5), W = Math.max(2, Math.round(innerWidth * dpr)), H = Math.max(2, Math.round(innerHeight * dpr));
+    vistaW = geometriaHV.valore(window, 'innerWidth'); vistaH = geometriaHV.valore(window, 'innerHeight');
+    const dpr = Math.min(devicePixelRatio || 1, 1.5), W = Math.max(2, Math.round(vistaW * dpr)), H = Math.max(2, Math.round(vistaH * dpr));
     if (C.width === W && C.height === H) return false;
     C.width = T.width = W; C.height = T.height = H;
     const m = Math.min(.75, 1000 / Math.max(W, H)); G.width = Math.max(64, Math.round(W * m)); G.height = Math.max(64, Math.round(H * m));
@@ -524,11 +576,22 @@ void main() {
   // giù (o freccia giù, Pag giù, spazio, il dito) fa CORRERE la presentazione al finale: il filmato va FRETTA volte più svelto e, siccome tutto
   // prende il tempo dal filmato (chiazze, lettere, voci), lo scuro copre e HORA VERA si completa in poco più di un secondo; poi la pagina si apre
   // subito e scende (lo fa il secondo script, che qui chiede «corri» e «finita»). Chi non tocca niente vede tutto come prima.
+  let baglioreDa = null, menuNascosto = false;
+  const testa = document.querySelector('.testa');
+  function scritte(accese) {
+    if (accese === (baglioreDa !== null)) return;
+    baglioreDa = accese ? performance.now() : null;
+    testa.style.removeProperty('--bagliore-passato');
+    document.body.classList.toggle('scritte', accese);
+  }
   const FRETTA = 8; let corsa = false, vociDa = 0, suDopo = 0;
   window.PRESENTAZIONE = {
     corri() { if (corsa || FERMO !== null) return; corsa = true; if (window.pronta && !video.paused && !video.ended) video.playbackRate = passo * FRETTA; },
     finita: () => finito !== null || video.ended || (!!window.pronta && video.paused),   // «paused» da pronta: chi ha chiesto meno movimento, o il filmato che non parte
-    diCorsa: () => corsa
+    diCorsa: () => corsa,
+    visibilita,
+    avviata: () => preparata,
+    ridisegna() { if (visibile && window.pronta && video.readyState >= 2) { contaHV.apertura++; const t = adesso(); disegna(t); vesti(t, posaIntera); } }
   };
   const adesso = () => {
     if (fermoA !== null) return fermoA;
@@ -537,32 +600,39 @@ void main() {
   };
   function giro() {
     seguita = 0;
-    if (video.readyState >= 2) { const t = adesso(); disegna(t); vesti(t); if (t >= SCRITTE) document.body.classList.add('scritte'); if (finito !== null) return; }
+    if (!visibile) return;
+    contaHV.apertura++;
+    if (video.readyState >= 2) { const t = adesso(); disegna(t); vesti(t); if (t >= SCRITTE) scritte(true); if (finito !== null) return; }
     seguita = requestAnimationFrame(giro);
   }
   function daCapo() {
-    document.body.classList.remove('scritte'); luceNuova(); finito = null; fermoA = null;
+    if (!visibile || !window.pronta) return;
+    posaIntera = false;
+    scritte(false); luceNuova(); finito = null; fermoA = null;
     corsa = false; clearTimeout(suDopo); suDopo = 0; video.playbackRate = passo;
     video.currentTime = 0; video.play().catch(() => {});
     if (!seguita) giro();
   }
   document.querySelector('.rivedi').addEventListener('click', daCapo);
-  const rimisura = () => { misuraLettere(); if (window.pronta) vesti(adesso(), CALMO); };
-  addEventListener('resize', () => { misura(); if (!seguita) disegna(adesso()); rimisura(); });
+  const rimisura = () => { if (!visibile || !preparata) return; misuraLettere(); if (window.pronta) vesti(adesso(), posaIntera); };
+  addEventListener('resize', () => { if (!visibile || !preparata) return; misura(); if (!seguita) disegna(adesso()); rimisura(); });
   addEventListener('load', rimisura);
   if (document.fonts) document.fonts.ready.then(rimisura);
   // LA LINGUA CAMBIA (clic sulla linguetta): i nomi delle voci si riscrivono. Le lettere nuove nascono già del tono del fondo che hanno dietro adesso
   // (senza il passaggio di colore) e non rifanno il bagliore finale: cambia la parola, nient'altro si muove.
-  document.addEventListener('lingua', () => {
+  function cambiaLingua() {
+    if (!visibile || !preparata) { linguaInAttesa = true; return; }
+    linguaInAttesa = false;
     const nomi = [...document.querySelectorAll('.menu li a .nome')], nuova = o => o.p && nomi.includes(o.p);
     nomi.forEach(el => scriviVoce(el, FRASE(el.dataset.it)));
     misuraLettere();
     const t = window.pronta ? adesso() : 0, fatte = document.body.classList.contains('scritte');
     lettere.forEach(o => { if (!nuova(o)) return; o.s = scuroIn(o.x, o.y, t) > .5; o.e.style.transition = 'none'; if (fatte) o.e.style.animation = 'none'; o.e.classList.toggle('s', o.s); });
-    void document.body.offsetWidth;
+    geometriaHV.valore(document.body, 'offsetWidth');
     lettere.forEach(o => { if (nuova(o)) o.e.style.transition = ''; });
     rimisura();
-  });
+  }
+  document.addEventListener('lingua', cambiaLingua);
 
   // prova: porta la pagina a un istante preciso (millisecondi) e la lascia ferma
   window.vaiA = async ms => {
@@ -570,8 +640,9 @@ void main() {
     video.pause(); cancelAnimationFrame(seguita); seguita = 0; fermoA = t;
     if (Math.abs(video.currentTime - c) > .001) await new Promise(r => { video.addEventListener('seeked', r, { once: true }); video.currentTime = c; });
     await new Promise(r => { const ok = () => r(); if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(ok); setTimeout(ok, 350); });
+    if (!visibile) return seme;
     disegna(t); misuraLettere(); vesti(t);
-    document.body.classList.toggle('scritte', t >= SCRITTE);
+    scritte(t >= SCRITTE);
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
     // ogni movimento della pagina va al suo istante: il cambio di tono di una lettera è già finito; il velo e il bagliore contano da SCRITTE,
     // l'entrata delle voci da VOCI
@@ -583,26 +654,62 @@ void main() {
     return seme;
   };
 
-  async function via() {
-    misura(); accendi(); luceNuova();
-    if (video.readyState < 2) await new Promise(r => video.addEventListener('loadeddata', r, { once: true }));
+  function via() {
+    if (!visibile || window.pronta || video.readyState < 2) return;
     passo = (video.duration || 9) / DURATA; video.defaultPlaybackRate = passo; video.playbackRate = corsa ? passo * FRETTA : passo;
     disegna(0);   // il primo fotogramma subito: la tela non resta mai vuota
     misuraLettere(); vesti(0);
     if (FERMO !== null) document.body.classList.add('fermo');
     document.body.classList.add('parte');
-    if (FERMO !== null) { await window.vaiA(FERMO * 1000); window.pronta = true; document.body.classList.add('posato'); return; }
+    if (FERMO !== null) { window.vaiA(FERMO * 1000).then(() => { window.pronta = true; document.body.classList.add('posato'); }); return; }
     window.pronta = true;
-    if (CALMO) { video.currentTime = Math.max(0, (video.duration || 9) - .05); video.addEventListener('seeked', () => disegna(DURATA), { once: true }); vesti(DURATA, true); document.body.classList.add('scritte'); return; }
+    if (CALMO) { posaIntera = true; video.currentTime = Math.max(0, (video.duration || 9) - .05); video.addEventListener('seeked', () => { if (visibile) disegna(DURATA); }, { once: true }); vesti(DURATA, true); scritte(true); return; }
+    avviaFilm();
+  }
+  function avviaFilm() {
+    const id = ++tentativo;
     // il filmato non parte: sul computer resta il chiaro, con le scritte d'inchiostro. Sul TELEFONO (18/11, Franco: «appare prima nera poi bianca»)
     // si va all'ultimo fotogramma, lo scuro, come per chi ha chiesto meno movimento: la pagina non resta bianca e le voci si leggono
     video.play().catch(() => {
-      if (!TELEFONO) { disegna(0); vesti(0, true); document.body.classList.add('scritte'); return; }
+      if (!visibile || tentativo !== id) return;
+      cancelAnimationFrame(seguita); seguita = 0; posaIntera = true;
+      if (!TELEFONO) { disegna(0); vesti(0, true); scritte(true); return; }
       finito = performance.now(); video.currentTime = Math.max(0, (video.duration || 9) - .05);
-      video.addEventListener('seeked', () => disegna(DURATA), { once: true }); vesti(DURATA, true); document.body.classList.add('scritte'); });
+      video.addEventListener('seeked', () => { if (visibile) disegna(DURATA); }, { once: true }); vesti(DURATA, true); scritte(true); });
     giro();
   }
-  via();
+  function prepara() {
+    preparata = true;
+    cx = C.getContext('2d'); tx = T.getContext('2d');
+    gl = G.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false });
+    preparaLettere(); linguaInAttesa = false;
+    misura(); accendi(); luceNuova();
+    video.addEventListener('loadeddata', via, { once: true });
+    video.src = video.dataset.src;
+  }
+  function visibilita() {
+    const coperta = document.body.classList.contains('coperta');
+    if (coperta) menuNascosto = true;
+    const vede = !document.hidden && !coperta;
+    if (vede === visibile) return;
+    visibile = vede;
+    if (!vede) {
+      riprendiFilm = !!seguita && !video.ended;
+      ++tentativo; cancelAnimationFrame(seguita); seguita = 0;
+      clearTimeout(suDopo); suDopo = 0; video.pause();
+      return;
+    }
+    if (menuNascosto && baglioreDa !== null) testa.style.setProperty('--bagliore-passato', (performance.now() - baglioreDa) + 'ms');
+    menuNascosto = false;
+    if (!preparata) { prepara(); return; }
+    misura();
+    if (linguaInAttesa) cambiaLingua(); else misuraLettere();
+    if (!window.pronta) { via(); return; }
+    window.PRESENTAZIONE.ridisegna();
+    if (riprendiFilm && fermoA === null) avviaFilm();
+  }
+  document.addEventListener('visibilitychange', visibilita);
+  if (visibile) prepara();
 })();
 </script>
 <script src="otto.js"></script>
@@ -619,7 +726,7 @@ void main() {
   // A) finita l'apertura (classe «scritte») si aspettano 2,5 secondi e il corpo si sblocca; con ?tempo= (le prove) mai
   let sblocco = 0;
   if (!FERMO) new MutationObserver(() => {
-    if (B.classList.contains('scritte') && !B.classList.contains('scorre') && !sblocco) sblocco = setTimeout(() => { B.classList.add('scorre'); misura(); }, 2500);
+    if (B.classList.contains('scritte') && !B.classList.contains('scorre') && !sblocco) sblocco = setTimeout(() => { B.classList.add('scorre'); invalida(); }, 2500);
   }).observe(B, { attributes: true, attributeFilter: ['class'] });
   addEventListener('mousedown', e => { if (e.button === 1) e.preventDefault(); });   // rotella premuta: niente scorrimento automatico di Chrome
   // LA ROTELLA NON RESTA MAI MORTA (Franco, 16/11: «Fallo così»; il perché sta nel primo script, a «IL TEMPO»). A pagina ancora chiusa una spinta in
@@ -631,19 +738,26 @@ void main() {
   const apri = () => {
     if (B.classList.contains('scorre')) return;
     clearTimeout(sblocco); sblocco = 1;
-    B.classList.add('scorre'); misura();
-    if (voglia > 0) scrollTo({ top: Math.min(voglia, innerHeight), behavior: CALMO ? 'auto' : 'smooth' });
+    B.classList.add('scorre'); invalida();
+    if (voglia > 0) scrollTo({ top: Math.min(voglia, geometriaHV.valore(window, 'innerHeight')), behavior: CALMO ? 'auto' : 'smooth' });
   };
-  const aspetta = () => { if (B.classList.contains('scorre')) return; if (!P || P.finita()) apri(); else requestAnimationFrame(aspetta); };
+  const aspetta = () => {
+    if (B.classList.contains('scorre')) return;
+    contaHV.apertura++;
+    if (P.finita()) apri(); else requestAnimationFrame(aspetta);
+  };
   function spinta(dy) {
     if (FERMO || dy <= 0 || B.classList.contains('scorre')) return;
     voglia += dy;
     if (!fretta) { fretta = 1; B.classList.add('fretta'); if (P) P.corri(); aspetta(); }
   }
-  addEventListener('wheel', e => spinta(e.deltaMode === 1 ? e.deltaY * 40 : e.deltaMode === 2 ? e.deltaY * innerHeight : e.deltaY), { passive: true });
+  addEventListener('wheel', e => {
+    if (FERMO || B.classList.contains('scorre')) return;
+    spinta(e.deltaMode === 1 ? e.deltaY * 40 : e.deltaMode === 2 ? e.deltaY * geometriaHV.valore(window, 'innerHeight') : e.deltaY);
+  }, { passive: true });
   addEventListener('keydown', e => {
-    if (e.ctrlKey || e.altKey || e.metaKey || (e.target.closest && e.target.closest('button, input, textarea, select'))) return;
-    if (e.key === 'ArrowDown') spinta(100); else if (e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) spinta(innerHeight * .85); else if (e.key === 'End') spinta(innerHeight);
+    if (FERMO || B.classList.contains('scorre') || e.ctrlKey || e.altKey || e.metaKey || (e.target.closest && e.target.closest('button, input, textarea, select'))) return;
+    if (e.key === 'ArrowDown') spinta(100); else if (e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)) spinta(geometriaHV.valore(window, 'innerHeight') * .85); else if (e.key === 'End') spinta(geometriaHV.valore(window, 'innerHeight'));
   });
   let dito = null;
   addEventListener('touchstart', e => { dito = e.touches[0].clientY; }, { passive: true });
@@ -653,9 +767,8 @@ void main() {
   const PORTA = document.querySelector('[data-entra]');
   if (PORTA) PORTA.addEventListener('click', e => {
     e.preventDefault(); clearTimeout(sblocco); sblocco = 1;
-    B.classList.add('scorre'); misura();
-    const meta = document.getElementById('otto') || document.querySelector('.sotto');
-    scrollTo({ top: meta.getBoundingClientRect().top + scrollY, behavior: CALMO ? 'auto' : 'smooth' });
+    B.classList.add('scorre'); invalida();
+    document.getElementById('otto').scrollIntoView({ behavior: CALMO ? 'auto' : 'smooth' });
   });
 
   // C) la fascia, costruita dai dati
@@ -696,12 +809,18 @@ void main() {
       carte.push({ e: a, v: video, tempo: t.titolo, k: t.k, x: 0, mani: Array.from(lg.querySelectorAll('[data-l]'), g => ({ g, l: g.getAttribute('data-l') })) });
     });
   });
+  const figli = FASCIA.childElementCount;
+  SEZ.style.setProperty('--carte', carte.length);
+  SEZ.style.setProperty('--cartelli', figli - carte.length);
+  SEZ.style.setProperty('--intervalli', Math.max(0, figli - 1));
   const vuota = !carte.length;
   if (vuota) SEZ.hidden = true; else ORA.textContent = carte[0].tempo;
 
   // le misure: quanto la fascia è più larga dello schermo (= quanto in più è alta la sezione) e dove stanno i centri delle carte
   let max = 0, cima = 0, mostra = 0, viva = -1, seguita = 0, attesa = 0, tratti = [], ultima = '';
-  const largo = () => !TEL.matches, W = () => R.clientWidth;
+  const largo = () => !TEL.matches;
+  let visibile = false, sporca = true, larghezza = 0, altezza = 0, fondo = 0;
+  let cartaDiProva = null, ingresso = true;
   // LE LANCETTE DEL LOGO: un tratto per tempo (da metà strada tra due tempi a metà strada tra i due dopo); «pos» sono i centri delle carte
   // (di lato sul computer, in altezza sul telefono), «inizio» e «fine» i due capi della sezione nella stessa misura
   function confini(pos, inizio, fine) {
@@ -716,50 +835,87 @@ void main() {
     if (!CALMO) tratti.forEach(u => { const g = GIRI[u.k]; if (g && u.a > u.da) a[g[0]] += 360 * g[1] * Math.min(1, Math.max(0, (centro - u.da) / (u.a - u.da))); });
     return a;
   }
-  function lancette(centro) {
+  // (18/11/2026, fluidità sul telefono) «vede» dice quali carte sono vicine allo schermo: le lancette si riscrivono solo nei loro loghi (sul telefono
+  // se ne vedono una o due, ed erano 39 lancette riscritte a ogni passo dello scorrimento); una carta che arriva prende gli angoli di adesso prima
+  // di entrare nello schermo. Senza «vede» (il computer) si scrivono tutte, come prima.
+  function lancette(centro, vede) {
     const a = angoli(centro), chiave = a.h.toFixed(1) + ' ' + a.m.toFixed(1) + ' ' + a.s.toFixed(1);
-    if (chiave === ultima) return;
+    if (chiave === ultima && !vede) return;
     ultima = chiave;
-    carte.forEach(c => c.mani.forEach(x => x.g.setAttribute('transform', 'rotate(' + a[x.l].toFixed(1) + ' 100 104)')));
+    carte.forEach((c, i) => { if (c.ang === chiave || (vede && !vede(i))) return; c.ang = chiave;
+      c.mani.forEach(x => x.g.setAttribute('transform', 'rotate(' + a[x.l].toFixed(1) + ' 100 104)')); });
   }
   window.QT = { angoli: () => ultima, tratti: () => tratti.map(u => u.k + ' ' + Math.round(u.da) + '→' + Math.round(u.a)).join(' | ') };   // per le prove
-  function misura() {
-    if (vuota) return;
-    if (!largo()) {
-      SEZ.style.height = ''; FASCIA.style.transform = '';
-      const ys = carte.map(c => { const r = c.e.getBoundingClientRect(); return r.top + scrollY + r.height / 2; });
-      tratti = confini(ys, ys[0] - innerHeight * .5, ys[ys.length - 1]);
-      scegliTel(); return;
+  // PAGINA-FLUIDA 5 — Solo gli attraversamenti delle tre soglie interessano la testata.
+  const spazio = document.querySelector('.spazio-apertura');
+  const soglie = new IntersectionObserver(voci => {
+    for (const v of voci) {
+      const oltre = v.boundingClientRect.bottom <= 0;
+      if (v.target === spazio) {
+        B.classList.toggle('coperta', oltre && B.classList.contains('scorre'));
+        P.visibilita();
+      } else if (v.target.classList.contains('soglia-home')) B.classList.toggle('giu', oltre);
+      else if (oltre) B.classList.add('sceso');
     }
-    max = Math.max(0, FASCIA.offsetWidth - W());
-    SEZ.style.height = (SEZ.querySelector('.qt-palco').offsetHeight + max) + 'px';
-    cima = SEZ.getBoundingClientRect().top + scrollY;
-    carte.forEach(c => { c.x = c.e.offsetLeft + c.e.offsetWidth / 2; });
-    tratti = confini(carte.map(c => c.x), W() / 2, max + W() / 2);
-    sveglia();
+  }, { threshold: [0, .000001] });
+  [spazio, ...spazio.children].forEach(nodo => soglie.observe(nodo));
+  // PAGINA-FLUIDA 2 — Tutte le letture in un blocco, prima di scrivere la posa del fotogramma.
+  function misura(y) {
+    const r = geometriaHV.rettangolo(SEZ);
+    cima = r.top + y; fondo = cima + r.height;
+    altezza = geometriaHV.valore(window, 'innerHeight');
+    if (largo()) {
+      larghezza = geometriaHV.valore(R, 'clientWidth');
+      max = Math.max(0, geometriaHV.valore(FASCIA, 'offsetWidth') - larghezza);
+      carte.forEach(c => { c.x = geometriaHV.valore(c.e, 'offsetLeft') + geometriaHV.valore(c.e, 'offsetWidth') / 2; });
+      tratti = confini(carte.map(c => c.x), larghezza / 2, max + larghezza / 2);
+    } else {
+      carte.forEach(c => {
+        const box = geometriaHV.rettangolo(c.e);
+        c.alta = box.height; c.x = box.top + y + box.height / 2;
+      });
+      const ys = carte.map(c => c.x);
+      tratti = confini(ys, ys[0] - altezza / 2, ys[ys.length - 1]);
+    }
+    sporca = false;
   }
-  const meta = () => Math.min(max, Math.max(0, scrollY - cima));
+  const meta = y => Math.min(max, Math.max(0, y - cima));
   // IL SOLO MOVIMENTO: la fascia va di lato quanto si scende, e la posizione mostrata insegue quella vera con un ritardo morbido
   function giro() {
     seguita = 0;
-    if (!largo()) return;
-    const m = meta();
-    mostra = CALMO ? m : mostra + (m - mostra) * .14;
+    if (!visibile || document.hidden) return;
+    contaHV.tempi++;
+    let y = geometriaHV.valore(window, 'scrollY');
+    if (sporca) misura(y);
+    if (y + altezza <= cima || y >= fondo) { accendi(-1); return; }
+    const prova = cartaDiProva;
+    if (prova !== null) {
+      const c = carte[prova];
+      y = largo() ? cima + Math.min(max, Math.max(0, c.x - larghezza / 2)) : c.x - Math.max(c.alta, altezza) / 2;
+      scrollTo(0, y); cartaDiProva = null;
+      requestAnimationFrame(() => requestAnimationFrame(() => B.classList.add('posato')));
+    }
+    if (!largo()) { scegliTel(y); return; }
+    const m = meta(y);
+    // PAGINA-FLUIDA 7 — Rientrando dal finale la fascia è già all'estremo giusto.
+    mostra = ingresso || CALMO || prova !== null ? m : mostra + (m - mostra) * .14;
+    ingresso = false;
     if (Math.abs(m - mostra) < .25) mostra = m;
     FASCIA.style.transform = 'translate3d(' + (-mostra).toFixed(2) + 'px, 0, 0)';
     FILO.style.transform = 'scaleX(' + (max ? mostra / max : 0).toFixed(4) + ')';
-    lancette(mostra + W() / 2);
-    const dentro = scrollY > cima - innerHeight * .5 && scrollY < cima + max + innerHeight * .5;   // il palco è almeno per metà sullo schermo
+    lancette(mostra + larghezza / 2);
+    const dentro = y > cima - altezza * .5 && y < cima + max + altezza * .5;   // il palco è almeno per metà sullo schermo
     if (!dentro) accendi(-1);
-    else { const centro = mostra + W() / 2; let k = 0; carte.forEach((c, i) => { if (Math.abs(c.x - centro) < Math.abs(carte[k].x - centro)) k = i; }); accendi(k); }
+    else { const centro = mostra + larghezza / 2; let k = 0; carte.forEach((c, i) => { if (Math.abs(c.x - centro) < Math.abs(carte[k].x - centro)) k = i; }); accendi(k); }
     if (mostra !== m) seguita = requestAnimationFrame(giro);
   }
-  function sveglia() { if (!seguita && largo()) seguita = requestAnimationFrame(giro); }
-  // sul telefono: viva è la carta più vicina al centro dello schermo (se ce n'è una vicina)
-  function scegliTel() {
-    lancette(scrollY + innerHeight / 2);
-    let k = -1, d = innerHeight * .5;
-    carte.forEach((c, i) => { const r = c.e.getBoundingClientRect(), s = Math.abs(r.top + r.height / 2 - innerHeight / 2); if (s < d) { d = s; k = i; } });
+  function sveglia() { if (visibile && !document.hidden && !seguita) seguita = requestAnimationFrame(giro); }
+  function invalida() { sporca = true; sveglia(); }
+  function scegliTel(y) {
+    const centro = y + altezza / 2;
+    lancette(centro, i => Math.abs(carte[i].x - centro) < altezza * 1.3);
+    let k = -1, d = altezza * .5;
+    carte.forEach((c, i) => { const s = Math.abs(c.x - centro); if (s < d) { d = s; k = i; } });
     accendi(k);
   }
   // una carta viva: piena, e il suo filmato parte da capo e va una volta sola (resta sull'ultimo fotogramma); le altre ferme sul primo
@@ -772,42 +928,63 @@ void main() {
     const c = carte[k]; c.e.classList.add('qt-viva'); ORA.textContent = c.tempo;
     attesa = setTimeout(() => { if (c.v.currentTime) c.v.currentTime = 0; c.v.play().catch(() => {}); }, 450);
   }
-  addEventListener('scroll', () => { if (scrollY > 8) B.classList.add('sceso'); B.classList.toggle('giu', scrollY > innerHeight * .92); if (largo()) sveglia(); else scegliTel(); }, { passive: true });
-  addEventListener('resize', misura);
-  document.addEventListener('lingua', misura);   // cambiata la lingua le scritte hanno un'altra lunghezza: le misure si rifanno (18/11)
-  TEL.addEventListener('change', () => { accendi(-1); mostra = 0; misura(); });
-  misura();
-  addEventListener('load', misura);
-  if (document.fonts) document.fonts.ready.then(misura);
+  function attivaTempi() {
+    if (visibile && !document.hidden) {
+      addEventListener('scroll', sveglia, { passive: true });
+      sveglia();
+    } else {
+      ingresso = true;
+      removeEventListener('scroll', sveglia);
+      cancelAnimationFrame(seguita); seguita = 0; accendi(-1);
+    }
+  }
+  if (!vuota) {
+    new IntersectionObserver(voci => {
+      const v = voci[voci.length - 1];
+      visibile = v.isIntersecting && v.intersectionRect.height > 0;
+      attivaTempi();
+    }, { threshold: [0, .000001] }).observe(SEZ);
+    // Un cambio d'altezza sopra le carte sposta i loro centri nel documento.
+    const dimensioni = new ResizeObserver(invalida);
+    [document.getElementById('otto'), SEZ].forEach(e => dimensioni.observe(e));
+    addEventListener('resize', invalida);
+    document.addEventListener('lingua', invalida);
+    document.addEventListener('visibilitychange', attivaTempi);
+    TEL.addEventListener('change', () => { accendi(-1); mostra = 0; invalida(); });
+    if (document.fonts) { document.fonts.ready.then(invalida); document.fonts.addEventListener('loadingdone', invalida); }
+  }
 
   // HOME: riporta in cima, alla presentazione, con una breve dissolvenza nel buio (chi ha chiesto meno movimento: subito)
+  // PAGINA-FLUIDA 6 — HOME dopo un ingresso diretto deve ancora offrire la prima spinta.
+  function tornaInCima() {
+    scrollTo(0, 0);
+    if (!P.avviata()) {
+      clearTimeout(sblocco); sblocco = 0; fretta = 0; voglia = 0;
+      B.classList.remove('scorre', 'sceso', 'fretta');
+    }
+    B.classList.remove('coperta', 'giu');
+    P.visibilita();
+  }
   document.querySelector('.casa').addEventListener('click', e => {
     e.preventDefault();
-    if (CALMO) { scrollTo(0, 0); return; }
+    if (CALMO) { tornaInCima(); return; }
     B.classList.add('torna');
-    setTimeout(() => { scrollTo(0, 0); requestAnimationFrame(() => requestAnimationFrame(() => B.classList.remove('torna'))); }, 400);
+    setTimeout(() => { tornaInCima(); requestAnimationFrame(() => requestAnimationFrame(() => B.classList.remove('torna'))); }, 400);
   });
   // chi arriva da Visioni o da L'atelier con la voce «L'ora vera» (ora-vera.html#otto) va dritto al contenuto di questa pagina: alla presentazione porta HOME
-  if (location.hash === '#otto' && !FERMO) {
+  if (['#otto', '#tempi', '#finale'].includes(location.hash)) {
     clearTimeout(sblocco); sblocco = 1;
-    let meta = -1;
-    const giu = () => {
-      if (meta >= 0 && Math.abs(scrollY - meta) > 4) return;                 // chi legge ha già scorso: non lo si riporta indietro
-      B.classList.add('scorre'); misura(); meta = Math.round(document.getElementById('otto').getBoundingClientRect().top + scrollY); scrollTo(0, meta);
-    };
-    giu(); addEventListener('load', () => { giu(); setTimeout(giu, 450); });
+    document.querySelector(location.hash).scrollIntoView({ behavior: 'instant' });
+    B.classList.add('sceso', 'giu');
   }
 
   // prove: ?vai=tempi sblocca subito e porta alla sezione; con &carta=N porta la carta N al centro senza inseguimento, poi «posato»
   if (Q.get('vai') === 'tempi' && !FERMO) {
     const vai = () => {
-      B.classList.add('scorre'); misura();
-      const n = Q.has('carta') ? Math.max(0, Math.min(carte.length - 1, Math.round(+Q.get('carta') || 0))) : -1;
-      let y = cima;
-      if (n >= 0) y = largo() ? cima + Math.min(max, Math.max(0, carte[n].x - W() / 2)) : carte[n].e.getBoundingClientRect().top + scrollY - Math.max(0, (innerHeight - carte[n].e.offsetHeight) / 2);
-      scrollTo(0, y);
-      if (largo()) { mostra = meta(); cancelAnimationFrame(seguita); giro(); } else scegliTel();
-      if (n >= 0) requestAnimationFrame(() => requestAnimationFrame(() => B.classList.add('posato')));
+      if (vuota) return;
+      if (Q.has('carta')) cartaDiProva = Math.max(0, Math.min(carte.length - 1, Math.round(+Q.get('carta') || 0)));
+      B.classList.add('scorre'); invalida();
+      SEZ.scrollIntoView({ behavior: 'instant' });
     };
     Promise.all([new Promise(r => document.readyState === 'complete' ? r() : addEventListener('load', r, { once: true })), document.fonts ? document.fonts.ready : 0]).then(vai);
   }
@@ -818,11 +995,16 @@ void main() {
   // scritte d'accento sono nel blu di L'atelier (--blu); l'oro (--oro) resta ai fili sottili e ai bordi. La pagina si controlla da sola: se dopo il
   // caricamento un elemento ha il beige come colore del testo parte un errore che strumenti/foto-pagina.js vede, e la pagina non arriva a Franco.
   window.scritteBeige = () => { const prova = document.createElement('i'); prova.style.color = 'var(--oro)'; document.body.appendChild(prova);
-    const beige = getComputedStyle(prova).color; prova.remove();
-    return [...document.querySelectorAll('body *')].filter(e => getComputedStyle(e).color === beige)
+    const beige = geometriaHV.stile(prova).color; prova.remove();
+    return [...document.querySelectorAll('body *')].filter(e => geometriaHV.stile(e).color === beige)
       .map(e => ((typeof e.className === 'string' && e.className) || e.tagName.toLowerCase()) + (e.textContent.trim() ? ' «' + e.textContent.trim().slice(0, 24) + '»' : '')); };
-  addEventListener('load', () => setTimeout(() => { const b = window.scritteBeige();
-    if (b.length) throw new Error('Scritte beige nella prima pagina (vanno nel blu di alfa e beta): ' + b.slice(0, 5).join(' | ')); }, 1500));
+  // PAGINA-FLUIDA 3 — foto-pagina.js apre questa copia locale e raccoglie Runtime.exceptionThrown.
+  if (/\/\.prova-viewport-\d+\.html$/.test(location.pathname)) {
+    addEventListener('load', () => setTimeout(() => {
+      const b = window.scritteBeige();
+      if (b.length) throw new Error('Scritte beige nella prima pagina (vanno nel blu di alfa e beta): ' + b.slice(0, 5).join(' | '));
+    }, 1500));
+  }
 </script>
 <!-- nella lente della vetrina Web Retold (17/11/2026): lo scorrimento arriva come messaggio. A pagina ancora chiusa (la presentazione) vale come una
      spinta di rotella, così la rotella non resta morta neanche nella lente; a pagina aperta scorre. Esc riporta al telescopio. Fuori dalla vetrina non fanno niente. -->
