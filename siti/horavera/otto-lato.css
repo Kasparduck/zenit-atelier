@@ -1,0 +1,147 @@
+:root {
+  color-scheme: dark;
+  --buio: #0a0908;
+  --grafite: #171717;
+  --avorio: #ece5d8;
+  --tenue: #9c9387;
+  --rame: #d9b08c;
+  --linea: rgb(217 176 140 / .32);
+  --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --sans: "Manrope", "Segoe UI", system-ui, sans-serif;
+  --testata: 52px;
+  background: var(--buio);
+  overscroll-behavior-x: none;
+  -webkit-text-size-adjust: 100%;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  max-width: 520px;
+  margin: 0 auto;
+  background: var(--grafite);
+  color: var(--avorio);
+  font: 400 16px/1.3 var(--sans);
+}
+h1, h2, p { margin: 0; }
+.testata, footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 6%;
+}
+.testata { height: var(--testata); border-bottom: 1px solid var(--linea); }
+h1 { font: 500 24px/1 var(--serif); }
+.home {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--rame);
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-decoration: none;
+}
+:focus-visible { outline: 2px solid var(--rame); outline-offset: -2px; }
+.carosello {
+  --distanza: 7px;
+  height: calc(100vh - var(--testata));
+  height: calc(100svh - var(--testata));
+  display: flex;
+  gap: var(--distanza);
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.carosello::-webkit-scrollbar { display: none; }
+/* Due margini scorrevoli centrano anche il primo e l’ultimo scatto. */
+.carosello::before, .carosello::after {
+  content: "";
+  flex: 0 0 calc(6% - var(--distanza));
+}
+.citta {
+  flex: 0 0 88%;
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  row-gap: 8px;
+  padding-block: 10px 12px;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+.film {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: calc((100vh - var(--testata)) / 2);
+  max-height: calc((100svh - var(--testata)) / 2);
+  overflow: hidden;
+  border-radius: 3px;
+  outline: 1px solid var(--linea);
+  outline-offset: -1px;
+}
+.film img, .film video, .orologio img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.film img, .film video { object-fit: contain; }
+.film video { opacity: 0; transition: opacity 400ms ease; }
+.film video.in-onda { opacity: 1; }
+.meridiano, .invito {
+  position: absolute;
+  padding: 3px 7px;
+  background: rgb(10 9 8 / .84);
+  color: var(--avorio);
+  font-size: 12px;
+}
+.meridiano { bottom: 6px; left: 6px; }
+.invito { right: 6px; bottom: 6px; color: var(--rame); }
+h2 { font: 500 30px/1.1 var(--serif); }
+.stagione { color: var(--tenue); font-size: 20px; }
+.ora { display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 12px; }
+time { font: 500 22px/1.2 var(--serif); font-variant-numeric: lining-nums tabular-nums; }
+.alba, .sole { color: var(--tenue); font-size: 12px; }
+.vetrina { min-height: 0; display: grid; place-items: center; }
+.orologio { position: relative; height: min(100%, 156px); }
+.ore, .minuti { transform-origin: var(--perno); }
+.ore { transform: rotate(var(--angolo-ore, 0deg)); }
+.minuti { transform: rotate(var(--angolo-minuti, 0deg)); }
+.storia { display: grid; gap: 5px; }
+.modello {
+  font: 500 17px/1.2 var(--serif);
+  letter-spacing: .07em;
+  color: var(--rame);
+}
+.storia b { font-weight: 600; }
+.piede { padding-top: 6px; border-top: 1px solid var(--linea); }
+.sole { display: flex; flex-wrap: wrap; gap: 2px 10px; font-variant-numeric: tabular-nums; }
+.indici {
+  display: grid;
+  grid-template-columns: repeat(8, 44px);
+  justify-content: center;
+  padding-block: 4px;
+  border-block: 1px solid var(--linea);
+}
+.indici a { display: grid; place-items: center; height: 44px; }
+.indici a::after { content: ""; width: 6px; height: 6px; border: 1px solid var(--tenue); border-radius: 50%; }
+.indici a[aria-current]::after { width: 18px; height: 3px; border: 0; border-radius: 0; background: var(--rame); }
+footer { min-height: 72px; color: var(--rame); font: 500 15px/1.2 var(--serif); letter-spacing: .18em; }
+output { color: var(--tenue); font: 400 12px/1 var(--sans); letter-spacing: .08em; }
+@media (prefers-reduced-motion: reduce) {
+  .film video { display: none; transition: none; }
+}
+@media (max-height: 500px) and (orientation: landscape) and (max-width: 899px) {
+  :root { --testata: 44px; }
+  .citta { grid-template: "film luogo" auto "film storia" auto "vetrina storia" 1fr "vetrina piede" auto / 40% 1fr; gap: 5px 12px; }
+  .film { grid-area: film; align-self: start; }
+  .vetrina { grid-area: vetrina; }
+  .orologio { max-height: 90px; }
+  .luogo { grid-area: luogo; }
+  .storia { grid-area: storia; align-self: start; }
+  .piede { grid-area: piede; }
+  .invito { bottom: auto; top: 6px; }
+  h2 { font-size: 24px; }
+}
