@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Hora Vera · Visioni (prova sul nostro indirizzo)</title>
+<!--
+  PROVA DEL 19/11/2026: le stesse quattro scene della prova fatta su Higgsfield, ma sul nostro indirizzo.
+  Lo scorrimento del filmato NON è scritto da noi: lo fa ScrollyVideo.js (libreria pronta, licenza MIT,
+  github.com/dkaoster/scrolly-video, versione 0.0.24 fissata, caricata da jsDelivr con il controllo dell'impronta).
+  Di nostro ci sono solo: i filmati ricodificati per lo scorrimento (un fotogramma chiave ogni 4 sul telefono,
+  ogni 8 sul computer, senza audio: cartella immagini/scorri), il fermo immagine sotto ogni filmato,
+  il punto di fuoco di ogni scena sul telefono, i testi, e venti righe che accendono la libreria.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --buio: #0a0908; --avorio: #ece5d8; --tenue: #9c9387; --rame: #d9b08c;
+    --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+    --sans: "Manrope", "Segoe UI", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--buio); color: var(--avorio); font-family: var(--sans); -webkit-text-size-adjust: 100%; }
+
+  /* Il menu degli anni */
+  .anni { position: fixed; z-index: 10; top: 0; left: 0; right: 0; display: flex; gap: 4px; padding: max(10px, env(safe-area-inset-top)) 12px 18px;
+    background: linear-gradient(to bottom, rgb(10 9 8 / .72), transparent); }
+  .anni a { min-width: 52px; min-height: 44px; display: grid; place-items: center; color: rgb(236 229 216 / .62); text-decoration: none;
+    font-size: 13px; letter-spacing: .08em; }
+  .anni a[aria-current="true"] { color: var(--avorio); box-shadow: inset 0 -1px 0 var(--rame); }
+
+  /* Una scena = una pista lunga; dentro, il filmato resta fermo sullo schermo mentre si scorre */
+  .pista { position: relative; height: 340vh; }
+  .film { background-color: var(--buio); background-repeat: no-repeat; background-size: cover; background-position: var(--fuoco, 50%) 50%; }
+  .film video { position: absolute !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important;
+    min-width: 0 !important; min-height: 0 !important; transform: none !important; object-fit: cover; object-position: var(--fuoco, 50%) 50%; }
+  #film-1 { background-image: url(immagini/scorri/s1-tel.jpg); --fuoco: 80%; }
+  #film-2 { background-image: url(immagini/scorri/s2-tel.jpg); --fuoco: 47%; }
+  #film-3 { background-image: url(immagini/scorri/s3-tel.jpg); --fuoco: 24%; }
+  #film-4 { background-image: url(immagini/scorri/s4-tel.jpg); --fuoco: 31%; }
+
+  /* Le righe della scena, ferme in basso sopra il loro filmato */
+  .testo { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+  .righe { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 max(20px, env(safe-area-inset-right)) calc(34px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+    background: linear-gradient(to top, rgb(10 9 8 / .94) 0%, rgb(10 9 8 / .72) 26%, rgb(10 9 8 / 0) 58%); }
+  .numero { margin: 0 0 8px; color: var(--rame); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; }
+  .titolo { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(27px, 7.6vw, 34px); line-height: 1.06; max-width: 18ch; }
+  .riga { margin: 12px 0 0; color: rgb(236 229 216 / .82); font-size: 16px; line-height: 1.5; max-width: 34ch; }
+  .orologio { align-self: flex-start; margin: 14px 0 0; padding: 6px 10px; border: 1px solid rgb(217 176 140 / .42); color: var(--avorio); font-size: 12px; letter-spacing: .04em; }
+
+  .chiusa { min-height: 46vh; display: grid; place-items: center; gap: 14px; padding: 48px 20px 64px; text-align: center; }
+  .chiusa p { margin: 0; font-family: var(--serif); font-size: 22px; color: var(--avorio); }
+  .chiusa a { min-height: 44px; display: inline-grid; place-items: center; padding: 0 18px; color: var(--rame); text-decoration: none; letter-spacing: .14em; font-size: 12px; border: 1px solid rgb(217 176 140 / .42); }
+
+  @media (min-width: 861px) {
+    #film-1 { background-image: url(immagini/scorri/s1.jpg); } #film-2 { background-image: url(immagini/scorri/s2.jpg); }
+    #film-3 { background-image: url(immagini/scorri/s3.jpg); } #film-4 { background-image: url(immagini/scorri/s4.jpg); }
+    .film, .film video { --fuoco: 50%; }
+    .righe { justify-content: center; padding: 0 6vw; background: linear-gradient(to right, rgb(10 9 8 / .82) 0%, rgb(10 9 8 / .5) 30%, rgb(10 9 8 / 0) 60%); }
+    .titolo { font-size: clamp(40px, 4.2vw, 68px); max-width: 16ch; }
+    .riga { font-size: 18px; max-width: 38ch; }
+    .anni { padding: 18px 5vw 26px; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="anni" aria-label="Le scene">
+  <a href="#s1" data-n="1" aria-current="true">1683</a>
+  <a href="#s2" data-n="2">1580</a>
+  <a href="#s3" data-n="3">1910</a>
+  <a href="#s4" data-n="4">1911</a>
+</nav>
+
+<main>
+  <section class="pista" id="s1" data-n="1" aria-labelledby="t1">
+    <div class="film" id="film-1"></div>
+    <div class="testo"><div class="righe">
+      <p class="numero">N. 031 · Sobieski</p>
+      <h1 class="titolo" id="t1">Vienna, 12 settembre 1683</h1>
+      <p class="riga">Per un allevatore di cavalli. Volgeva l’anno 1683, e la cavalleria scendeva dalla collina.</p>
+      <p class="orologio">Rubino e oro</p>
+    </div></div>
+  </section>
+
+  <section class="pista" id="s2" data-n="2" aria-labelledby="t2">
+    <div class="film" id="film-2"></div>
+    <div class="testo"><div class="righe">
+      <p class="numero">N. 036 · Wanli</p>
+      <h2 class="titolo" id="t2">Cina, dinastia Ming</h2>
+      <p class="riga">Per un maestro di spada. Volgeva l’anno 1580, e una lama era ancora una disciplina.</p>
+      <p class="orologio">La tigre</p>
+    </div></div>
+  </section>
+
+  <section class="pista" id="s3" data-n="3" aria-labelledby="t3">
+    <div class="film" id="film-3"></div>
+    <div class="testo"><div class="righe">
+      <p class="numero">N. 044 · Wright</p>
+      <h2 class="titolo" id="t3">La Manica, 2 giugno 1910</h2>
+      <p class="riga">Per un pilota di linea. Volgeva l’anno 1910, e si andava in Francia e si tornava senza posarsi.</p>
+      <p class="orologio">Cronografo cuoio</p>
+    </div></div>
+  </section>
+
+  <section class="pista" id="s4" data-n="4" aria-labelledby="t4">
+    <div class="film" id="film-4"></div>
+    <div class="testo"><div class="righe">
+      <p class="numero">N. 057 · Polheim</p>
+      <h2 class="titolo" id="t4">Polo Sud, 14 dicembre 1911</h2>
+      <p class="riga">Per una guida alpina. Volgeva l’anno 1911, e si arrivava dove ogni direzione è nord.</p>
+      <p class="orologio">Cronografo blu</p>
+    </div></div>
+  </section>
+</main>
+
+<footer class="chiusa">
+  <p>Hora Vera</p>
+  <a href="ora-vera.html">HOME</a>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/scrolly-video@0.0.24/dist/scrolly-video.js" integrity="sha256-aQfAprhOMKoDPwosehV0UCNKnJdWa8lxiKV4l70DOnM=" crossorigin="anonymous"></script>
+<script>
+(function () {
+  var piste = Array.prototype.slice.call(document.querySelectorAll('.pista'));
+  var voci = Array.prototype.slice.call(document.querySelectorAll('.anni a'));
+  var telefono = window.matchMedia('(max-width: 860px)').matches;
+  var fermo = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var accese = {};
+
+  // Accende la libreria per una scena: il filmato giusto per lo schermo, senza decodifica in memoria (pesa troppo sul telefono).
+  function accendi(pista) {
+    var n = pista.dataset.n;
+    if (accese[n] || fermo || typeof ScrollyVideo !== 'function') return;
+    accese[n] = new ScrollyVideo({
+      scrollyVideoContainer: 'film-' + n,
+      src: 'immagini/scorri/s' + n + (telefono ? '-tel' : '') + '.mp4',
+      useWebCodecs: false,
+      cover: false,
+      transitionSpeed: 10
+    });
+  }
+
+  accendi(piste[0]);
+  if (!('IntersectionObserver' in window)) { piste.forEach(accendi); return; }
+
+  // Le scene vicine si accendono prima di arrivarci; il menu segna quella che sta a metà schermo.
+  var vicine = new IntersectionObserver(function (e) { e.forEach(function (v) { if (v.isIntersecting) accendi(v.target); }); }, { rootMargin: '150% 0px' });
+  var inCorso = new IntersectionObserver(function (e) {
+    e.forEach(function (v) {
+      if (!v.isIntersecting) return;
+      voci.forEach(function (a) { a.setAttribute('aria-current', String(a.dataset.n === v.target.dataset.n)); });
+    });
+  }, { rootMargin: '-50% 0px -50% 0px' });
+  piste.forEach(function (p) { vicine.observe(p); inCorso.observe(p); });
+})();
+</script>
+</body>
+</html>
