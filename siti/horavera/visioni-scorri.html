@@ -132,17 +132,24 @@
   var fermo = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var accese = {};
 
-  // Accende la libreria per una scena: il filmato giusto per lo schermo, senza decodifica in memoria (pesa troppo sul telefono).
+  // Accende la libreria per una scena (19/11, seconda prova: Franco, sulla prima, «Il nostro è decisamente peggio»).
+  // Come il motore di Higgsfield: 1) il filmato intero scaricato in memoria (Blob), così saltare a un fotogramma non chiede niente alla rete;
+  // 2) la libreria nel modo «salto diretto al fotogramma» (il suo modo per Safari, isSafari = true) e mai nel modo che rincorre il dito
+  // accelerando il filmato (playbackRate), che era il difetto sentito da Franco; 3) inseguimento stretto (transitionSpeed alto).
+  // Niente decodifica di tutti i fotogrammi (useWebCodecs): sul telefono sarebbero centinaia di MB per scena.
   function accendi(pista) {
     var n = pista.dataset.n;
     if (accese[n] || fermo || typeof ScrollyVideo !== 'function') return;
-    accese[n] = new ScrollyVideo({
-      scrollyVideoContainer: 'film-' + n,
-      src: 'immagini/scorri/s' + n + (telefono ? '-tel' : '') + '.mp4',
-      useWebCodecs: false,
-      cover: false,
-      transitionSpeed: 10
-    });
+    accese[n] = true;
+    var file = 'immagini/scorri/s' + n + (telefono ? '-tel' : '') + '.mp4';
+    var parti = function (src) {
+      var sv = new ScrollyVideo({ scrollyVideoContainer: 'film-' + n, src: src, useWebCodecs: false, cover: false, transitionSpeed: 40 });
+      sv.isSafari = true;
+      accese[n] = sv;
+    };
+    fetch(file).then(function (r) { if (!r.ok) throw r.status; return r.blob(); })
+      .then(function (b) { parti(URL.createObjectURL(b)); })
+      .catch(function () { parti(file); });
   }
 
   accendi(piste[0]);
