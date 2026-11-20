@@ -247,7 +247,7 @@ body.contatti-aperti .c-foto img { transform: none; transition: transform 2.4s c
 /* il nome sulla foto (17/11/2026): la foto di Franco diceva «Zenit Atelier», scritta tolta dalla foto (venature del legno rifatte) e il nome nuovo scritto qui,
    nello stesso punto e con un carattere simile */
 .c-foto { container-type: inline-size; }
-.c-marca { position: absolute; left: 3.3cqw; top: 2.1cqw; z-index: 1; font: 400 max(17px, 3.25cqw)/1 "Newsreader", Georgia, serif; letter-spacing: .005em; color: #efe4d0; pointer-events: none; }
+.c-marca { position: absolute; left: 3.3cqw; top: 2.1cqw; z-index: 1; font: 400 max(17px, 3.25cqw)/1 "Newsreader", Georgia, serif; letter-spacing: .005em; color: #efe4d0; cursor: pointer; padding: 10px; margin: -10px; }   /* 20/11, Franco: «da qui come si torna alla Home?»: il nome riporta alla vetrina, come la X */
 .c-pannello { position: relative; min-width: 0; display: flex; flex-direction: column; justify-content: center; padding: 9vh 4.9vw 5vh 0; }
 .c-chiudi { all: unset; position: absolute; right: clamp(14px, 1.9vw, 34px); top: clamp(12px, 2.2vh, 24px); width: 44px; height: 44px; display: grid; place-items: center; cursor: pointer; color: var(--c-crema); transition: transform .45s cubic-bezier(.2,.7,.2,1), color .3s; }
 .c-chiudi svg { width: 22px; height: 22px; }
@@ -1262,7 +1262,7 @@ function chiudiContatti() {
 busta.addEventListener('click', apriContatti);
 $('#invito').addEventListener('click', apriContatti);   // l'invito sotto la targa porta ai contatti
 busta.addEventListener('pointerenter', caricaFotoContatti); busta.addEventListener('focus', caricaFotoContatti);
-$('#c-chiudi').addEventListener('click', chiudiContatti); $('#c-fatto').addEventListener('click', chiudiContatti);
+$('#c-chiudi').addEventListener('click', chiudiContatti); $('.c-marca').addEventListener('click', chiudiContatti); $('#c-fatto').addEventListener('click', chiudiContatti);
 modulo.addEventListener('input', () => { cNota.textContent = ''; });
 // dove arrivano i messaggi (FormSubmit, attivato da Franco il 17/11/2026): il codice al posto dell'email, così l'email non si legge nella pagina.
 // I messaggi arrivano alla sua Gmail da submissions@formsubmit.co. Il servizio accetta solo pagine online (kasparduck.github.io): sul computer non parte.
