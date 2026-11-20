@@ -432,7 +432,14 @@ body.tel .frase-wr { display: none; }
 .elenco-siti.vista { opacity: 1; transform: none; }
 .elenco-siti button { all: unset; cursor: pointer; padding: 7px 0; font: 600 .78rem/1.2 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: #fff; border-bottom: 1px solid transparent; transition: border-color .3s; }
 .elenco-siti button:hover { border-bottom-color: var(--bronzo-chiaro); }
-body.tel .elenco-siti { margin-top: 12px; gap: 0; padding-block: 4px; } body.tel .elenco-siti button { padding: 15px 0; font-size: 12px; }
+/* SUL TELEFONO IN BASSO A SINISTRA (20/11/2026, Franco dal suo telefono: «non mi piace che i nomi… a sinistra in alto vadano a coprire l'obiettivo e il bordo
+   del telescopio. Falli più piccoli o meno distanziati in verticale e invece che in alto a sinistra mettili in basso a sinistra»). Più piccoli e stretti;
+   il bersaglio del dito resta di 44 px con un margine invisibile (::before); mentre l'elenco è aperto la scritta d'aiuto in basso sfuma. */
+body.tel .elenco-siti { position: fixed; left: 12px; bottom: max(12px, 1.6svh); margin: 0; gap: 0; padding: 5px 13px; border-radius: 10px; transform: translateY(4px); }
+body.tel .elenco-siti.vista { transform: none; }
+body.tel .elenco-siti button { position: relative; padding: 7px 0; font-size: 11px; letter-spacing: .22em; }
+body.tel .elenco-siti button::before { content: ""; position: absolute; inset: -6px -13px; }
+body.tel.elenco-aperto .didascalia { opacity: 0; }
 </style>
 </head>
 <body>
@@ -1293,10 +1300,10 @@ const caricaFotoContatti = () => { const f = contatti.querySelector('img[data-sr
   if (!voce || !lista) return;
   // (20/11, controllo di Codex) uno stato solo, aperto o no, e un solo timer: i clic svelti e Esc durante l'apertura non lasciano l'elenco a metà
   let aperta = false, tempo = 0;
-  const chiudi = (ridaiFuoco) => { if (!aperta) return; aperta = false; clearTimeout(tempo); lista.classList.remove('vista'); voce.setAttribute('aria-expanded', 'false');
+  const chiudi = (ridaiFuoco) => { if (!aperta) return; aperta = false; clearTimeout(tempo); lista.classList.remove('vista'); document.body.classList.remove('elenco-aperto'); voce.setAttribute('aria-expanded', 'false');
     tempo = setTimeout(() => { if (!aperta) lista.hidden = true; }, 320); if (ridaiFuoco) voce.focus(); };
   const apri = () => { if (aperta) return; aperta = true; clearTimeout(tempo); primoGesto(); annullaSalita();   // un sito già in partenza (tocco su una pagina) si ferma: si sta scegliendo dall'elenco
-    lista.hidden = false; voce.setAttribute('aria-expanded', 'true'); void lista.offsetWidth; lista.classList.add('vista'); };
+    lista.hidden = false; document.body.classList.add('elenco-aperto'); voce.setAttribute('aria-expanded', 'true'); void lista.offsetWidth; lista.classList.add('vista'); };
   ['HORA VERA', 'STUDIO ANGELICATA'].map(n => SITI.findIndex(s => s.nome === n)).filter(i => i >= 0).forEach(i => {
     const b = lista.appendChild(Object.assign(document.createElement('button'), { type: 'button', textContent: SITI[i].nome }));
     b.addEventListener('click', e => { e.stopPropagation(); chiudi(); apriSito(i); });
