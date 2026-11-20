@@ -40,26 +40,28 @@
       }
       const quando = 250 + i * PASSO;
       A(l.s, fl, DUR, quando, 'linear'); A(mp, fm, DUR, quando, 'linear');
-      A(tr, [{ opacity: .8 }, { opacity: 0 }], 900, quando + DUR + 500);
+      A(tr, [{ opacity: .8 }, { opacity: 0 }], 700, quando + DUR + 100);
       const tacca = sv('path', { d: `M${E[0].toFixed(1)} ${(l.y + l.h * .6).toFixed(1)}v${(l.h * .14).toFixed(1)}`, class: 'tacca' }, svg);
-      A(tacca, [{ opacity: 0 }, { opacity: .9, offset: .2 }, { opacity: .9, offset: .7 }, { opacity: 0 }], 1500, quando + DUR - 150);
+      A(tacca, [{ opacity: 0 }, { opacity: .9, offset: .2 }, { opacity: .9, offset: .7 }, { opacity: 0 }], 1000, quando + DUR - 150);
     });
-    A(q.querySelector('.rif'), [{ opacity: 1, clipPath: 'inset(0 100% 0 0)' }, { opacity: 1, clipPath: 'inset(0 0% 0 0)' }], 900, 250 + (n - 1) * PASSO + DUR + 150, 'steps(18)');
+    A(q.querySelector('.rif'), [{ opacity: 1, clipPath: 'inset(0 100% 0 0)' }, { opacity: 1, clipPath: 'inset(0 0% 0 0)' }], 800, 250 + (n - 1) * PASSO + DUR - 500, 'steps(18)');
   }
   // B1 · dal nero, come dall'acqua: il coperchio scorre, il sigillo sale sfocato e va a fuoco con due cerchi, una luce ne percorre i tratti, il nome affiora
   // Prima (Franco, 13/11): la scatola chiusa con le scritte stampate; le scritte diventano grigie, poi sempre più trasparenti fino a scomparire;
   // solo dopo il coperchio scorre. Il resto è la sequenza di prima, spostata di T.
   function acqua(parte) {
-    const c = sel => parte.querySelector(sel), lettere = [...parte.querySelectorAll('.vivente .battesimo span')], T = 2200;
-    A(c('.stampa'), [{ filter: 'grayscale(0) brightness(1)', opacity: 1 }, { filter: 'grayscale(1) brightness(.6)', opacity: 1, offset: .45 }, { filter: 'grayscale(1) brightness(.6)', opacity: 0 }], 1900, 500, 'ease-in-out');
+    const c = sel => parte.querySelector(sel), lettere = [...parte.querySelectorAll('.vivente .battesimo span')], T = 1300;
+    // la rotella non gira mai a vuoto (Franco, 20/11/2026): per tutta l'apertura la confezione si avvicina piano, come una macchina da presa, e arriva alla misura approvata (mai oltre: sul telefono il coperchio aperto tocca il bordo)
+    A(c('.cassa'), [{ transform: 'translate(-50%, -50%) scale(.955)' }, { transform: 'translate(-50%, -50%) scale(1)' }], 4500 + T + lettere.length * 100 + 900, 0, 'linear');
+    A(c('.stampa'), [{ filter: 'grayscale(0) brightness(1)', opacity: 1 }, { filter: 'grayscale(1) brightness(.6)', opacity: 1, offset: .45 }, { filter: 'grayscale(1) brightness(.6)', opacity: 0 }], 1300, 100, 'ease-in-out');
     A(c('.coperchio'), [{ transform: 'translateX(0%)' }, { transform: 'translateX(27%)' }], 1500, 250 + T, 'cubic-bezier(.3,.05,.15,1)');
     A(c('.sigillo'), [{ opacity: 0, filter: 'blur(10px)', transform: 'translateY(22%) scale(.9)' }, { opacity: 1, filter: 'blur(0px)', transform: 'none' }], 1800, 1500 + T, 'cubic-bezier(.2,.7,.2,1)');
     parte.querySelectorAll('.onda').forEach((o, i) => A(o, [{ opacity: 0, transform: 'scale(.35)' }, { opacity: .55, transform: 'scale(.7)', offset: .2 }, { opacity: 0, transform: 'scale(2.3)' }], 1700, 2000 + T + i * 480, 'ease-out'));
     parte.querySelectorAll('.strato.luce *').forEach((t, i) => A(t, [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], 1100, 3500 + T + i * 110, 'ease-in-out'));
     A(c('.strato.luce'), [{ filter: 'drop-shadow(0 0 0px rgb(255 200 140 / 0))' }, { filter: 'drop-shadow(0 0 14px rgb(255 200 140 / .95))', offset: .6 }, { filter: 'drop-shadow(0 0 6px rgb(255 200 140 / .7))' }], 1900, 3500 + T);
     A(c('.alone'), [{ opacity: 0 }, { opacity: 1 }], 1500, 3700 + T);
-    lettere.forEach((s, i) => A(s, [{ opacity: 0, filter: 'blur(8px)', transform: 'translateY(60%)' }, { opacity: 1, filter: 'blur(0px)', transform: 'none' }], 750, 4900 + T + i * 100, 'ease-out'));
-    A(c('.vivente .rif'), [{ opacity: 0 }, { opacity: 1 }], 900, 5200 + T + lettere.length * 100);
+    lettere.forEach((s, i) => A(s, [{ opacity: 0, filter: 'blur(8px)', transform: 'translateY(60%)' }, { opacity: 1, filter: 'blur(0px)', transform: 'none' }], 750, 4200 + T + i * 100, 'ease-out'));
+    A(c('.vivente .rif'), [{ opacity: 0 }, { opacity: 1 }], 900, 4500 + T + lettere.length * 100);
   }
 
   const calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -93,7 +95,8 @@
           p.anims.forEach(a => a.pause());
         }
       }
-      const q = Math.max(0, Math.min(1, (S * .35 - r.top) / (S * .35 + corsa * .8)));
+      const coda = p.el.classList.contains('arrivo') ? .19 : 0;   // la coda della scritta si compie mentre il quadro sale
+      const q = Math.max(0, Math.min(1, (S * .35 - r.top) / (S * .35 + corsa + S * coda)));
       if (p.pronta && q !== p.q) { p.q = q; p.anims.forEach(a => { a.currentTime = q * p.dura; }); }
       if (r.top <= 1 && r.bottom >= S - 1) ferma = q;
     }

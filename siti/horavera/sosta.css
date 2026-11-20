@@ -55,11 +55,11 @@ html, body { margin: 0; background: #0a0908; color: #ece5d8; }
 .confezione.vivo .strato.luce * { stroke-dashoffset: 0; }
 
 /* più strada ai due momenti («ai momenti importanti si dà più strada»), in svh perché la barra del telefono non sposti niente */
-.arrivo { height: 200vh; height: 200svh; position: relative; }
-.confezione { height: 260vh; height: 260svh; position: relative; }
+.arrivo { height: 150vh; height: 150svh; position: relative; }
+.confezione { height: 200vh; height: 200svh; position: relative; }
 .intermezzo .aggancio { position: absolute; left: 0; width: 1px; height: 1px; pointer-events: none; }
-.arrivo .aggancio { top: 80svh; }          /* = 0,8 × (200 − 100): il punto in cui il nome è composto */
-.confezione .aggancio { top: 128svh; }     /* = 0,8 × (260 − 100): il punto in cui la confezione è aperta */
+.arrivo .aggancio { top: 50svh; }          /* = 0,8 × (200 − 100): il punto in cui il nome è composto */
+.confezione .aggancio { top: 100svh; }     /* = 0,8 × (260 − 100): il punto in cui la confezione è aperta */
 .misura { position: absolute; top: 0; left: 0; width: 1px; height: 100vh; height: 100svh; visibility: hidden; pointer-events: none; }
 @media (max-width: 860px) {
   .cassa { width: 78vw; left: 40%; }
