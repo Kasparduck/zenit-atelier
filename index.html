@@ -435,8 +435,11 @@ body.tel .frase-wr { display: none; }
 /* SUL TELEFONO IN BASSO A SINISTRA (20/11/2026, Franco dal suo telefono: «non mi piace che i nomi… a sinistra in alto vadano a coprire l'obiettivo e il bordo
    del telescopio. Falli più piccoli o meno distanziati in verticale e invece che in alto a sinistra mettili in basso a sinistra»). Più piccoli e stretti;
    il bersaglio del dito resta di 44 px con un margine invisibile (::before); mentre l'elenco è aperto la scritta d'aiuto in basso sfuma. */
-body.tel .elenco-siti { position: fixed; left: 12px; bottom: max(12px, 1.6svh); margin: 0; gap: 0; padding: 5px 13px; border-radius: 10px; transform: translateY(4px); }
-body.tel .elenco-siti.vista { transform: none; }
+/* E anche sul PC (Franco, 20/11: «e anche sul PC non mi hai messo le scritte in basso a sinistra»): stesso posto, al posto della frase e delle istruzioni, che sfumano mentre l'elenco è aperto */
+.elenco-siti { position: fixed; left: 18px; bottom: 16px; margin: 0; transform: translateY(4px); }
+.elenco-aperto .didascalia { opacity: 0; }
+body.tel .elenco-siti { left: 12px; bottom: max(12px, 1.6svh); gap: 0; padding: 5px 13px; border-radius: 10px; }
+.elenco-siti.vista, body.tel .elenco-siti.vista { transform: none; }
 body.tel .elenco-siti button { position: relative; padding: 7px 0; font-size: 11px; letter-spacing: .22em; }
 body.tel .elenco-siti button::before { content: ""; position: absolute; inset: -6px -13px; }
 body.tel.elenco-aperto .didascalia { opacity: 0; }
