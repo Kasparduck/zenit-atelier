@@ -419,14 +419,24 @@ body.tel .didascalia .aiuto { font-size: 13px; }
 body.tel .frase-wr { display: none; }
 @media (max-aspect-ratio: 5/4) { .frase-wr { display: none; } .didascalia:has(.aiuto.via:not(.nota))::before { opacity: 0; } }
 .sezioni { display: inline-flex; gap: 22px; vertical-align: middle; margin-left: 16px; padding: 10px 16px 11px; border-radius: 12px; background: rgb(9 13 19 / .92); border: 1px solid rgb(255 240 220 / .07); pointer-events: auto; font: 500 .8rem var(--sans); letter-spacing: .22em; text-transform: uppercase; }
-.sezioni a { color: var(--tenue); text-decoration: none; padding: 3px 0; border-bottom: 1px solid transparent; transition: color .3s, border-color .3s; }
-.sezioni a:hover, .sezioni a:focus-visible { color: var(--avorio); outline: none; }
-.sezioni a[aria-current="page"] { color: var(--avorio); border-bottom-color: var(--bronzo-chiaro); }
-@media (max-width: 720px) { .sezioni { margin-left: 10px; padding: 8px 12px 9px; border-radius: 10px; font-size: .72rem; } .sezioni a { padding: 12px 0; margin: -9px 0; } }
+.sezioni a, .sezioni button { all: unset; cursor: pointer; color: var(--tenue); text-decoration: none; padding: 3px 0; border-bottom: 1px solid transparent; transition: color .3s, border-color .3s; }
+.sezioni a:hover, .sezioni button:hover { color: var(--avorio); }
+.sezioni a:focus-visible, .sezioni button:focus-visible, .elenco-siti button:focus-visible { outline: 1px solid var(--bronzo-chiaro); outline-offset: 5px; border-radius: 2px; }
+.sezioni [aria-current="page"] { color: var(--avorio); border-bottom-color: var(--bronzo-chiaro); }
+@media (max-width: 720px) { .sezioni { margin-left: 10px; padding: 8px 12px 9px; border-radius: 10px; font-size: .72rem; } .sezioni a, .sezioni button { padding: 14px 8px; margin: -11px -8px; } }
+/* L'ELENCO DEI SITI (20/11/2026, Franco: «quando si clicca sulla parola SITI sul lato sinistro appaiono i titoli dei due siti che ci sono: HORA VERA e STUDIO
+   ANGELICATA. Non con scritte esageratamente grandi però. Le scritte va bene se sono bianche»). Sotto l'invito, nello stesso riquadro nero dei tre modi;
+   un clic su un nome apre quel sito come dalla ghiera (apriSito); si chiude con un clic fuori o con Esc. */
+.elenco-siti { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: max-content; margin: 16px 0 0; padding: 8px 16px; border-radius: 12px; background: rgb(9 13 19 / .92); border: 1px solid rgb(255 240 220 / .07); pointer-events: auto; opacity: 0; transform: translateY(-4px); transition: opacity .3s, transform .3s; }
+.elenco-siti[hidden] { display: none; }
+.elenco-siti.vista { opacity: 1; transform: none; }
+.elenco-siti button { all: unset; cursor: pointer; padding: 7px 0; font: 600 .78rem/1.2 var(--sans); letter-spacing: .26em; text-transform: uppercase; color: #fff; border-bottom: 1px solid transparent; transition: border-color .3s; }
+.elenco-siti button:hover { border-bottom-color: var(--bronzo-chiaro); }
+body.tel .elenco-siti { margin-top: 12px; gap: 0; padding-block: 4px; } body.tel .elenco-siti button { padding: 15px 0; font-size: 12px; }
 </style>
 </head>
 <body>
-<p class="firma"><span class="targa"><i></i><b>Web</b> Retold<i></i></span><span class="sezioni" role="navigation" aria-label="Sezioni"><a href="./" aria-current="page">Siti</a></span><button type="button" class="invito" id="invito">Un sito alla volta. <span>Il prossimo può essere il tuo.</span></button></p>
+<p class="firma"><span class="targa"><i></i><b>Web</b> Retold<i></i></span><span class="sezioni" role="navigation" aria-label="Sezioni"><button type="button" id="voce-siti" aria-current="page" aria-expanded="false" aria-controls="elenco-siti">Siti</button></span><button type="button" class="invito" id="invito">Un sito alla volta. <span>Il prossimo può essere il tuo.</span></button><span class="elenco-siti" id="elenco-siti" hidden></span></p>
 <div class="strisce" id="strisce" aria-hidden="true"></div>
 
 <main class="scena" data-decoro aria-label="Un telescopio puntato verso di te: nella lente si vede un sito vero"><div class="alone" aria-hidden="true"></div>
@@ -1069,7 +1079,9 @@ addEventListener('pointermove', e => {
   sopraViva = s; scena.style.cursor = s >= 0 ? 'pointer' : '';
   if (s >= 0) { vive[s].forEach(c => c.classList.add('sopra')); preparaTraPoco(s, 150); }
 });
-addEventListener('click', e => { if (TEL) return toccoPagina(e); if (!scenaLibera(e)) return; const s = vivaSotto(e.clientX, e.clientY); if (s >= 0) { primoGesto(); preparaTraPoco(s, 0); saliEApri(s); } });   // punto 8: prima si accende il nome sull'obiettivo
+let giuSullaFirma = false;   // (20/11, Codex) premuto sul nome, su SITI o sull'elenco e rilasciato su una pagina: non è un clic sulla pagina
+addEventListener('pointerdown', e => { giuSullaFirma = !!(e.target.closest && e.target.closest('.firma')); }, true);
+addEventListener('click', e => { if (giuSullaFirma) return; if (TEL) return toccoPagina(e); if (!scenaLibera(e)) return; const s = vivaSotto(e.clientX, e.clientY); if (s >= 0) { primoGesto(); preparaTraPoco(s, 0); saliEApri(s); } });   // punto 8: prima si accende il nome sull'obiettivo
 /* ---------- il tocco sulle pagine (18/11/2026, solo sul telefono; parole di Franco nello stile, sopra «body.tel .cattura»). Ogni pagina che scorre intorno,
    non solo quella satura, apre il SUO sito come il clic sulla pagina piena del computer: il nome sale sotto la tacca, la piastrina si accende, il sito esce
    dalla lente. Le pagine restano SOTTO il resto: sulle ghiere, sulla lente, sulla busta, sulla linguetta, sull'invito e sulla descrizione un tocco fa la cosa
@@ -1275,6 +1287,24 @@ const contatti = $('#contatti'), modulo = $('#c-modulo'), grazie = $('#c-grazie'
 let contattiAperti = false, copreContatti = null;
 // la foto pesa 280 kB: si carica quando ci si avvicina alla busta (o poco dopo l'avvio), non insieme al telescopio
 const caricaFotoContatti = () => { const f = contatti.querySelector('img[data-src]'); if (f) { f.src = f.dataset.src; f.removeAttribute('data-src'); } };
+// LE SEZIONI: SITI apre l'elenco dei siti (20/11/2026, Franco; stile e parole sue in «L'ELENCO DEI SITI» nello stile). L'ordine è il suo: HORA VERA, STUDIO ANGELICATA.
+(() => {
+  const voce = document.getElementById('voce-siti'), lista = document.getElementById('elenco-siti');
+  if (!voce || !lista) return;
+  // (20/11, controllo di Codex) uno stato solo, aperto o no, e un solo timer: i clic svelti e Esc durante l'apertura non lasciano l'elenco a metà
+  let aperta = false, tempo = 0;
+  const chiudi = (ridaiFuoco) => { if (!aperta) return; aperta = false; clearTimeout(tempo); lista.classList.remove('vista'); voce.setAttribute('aria-expanded', 'false');
+    tempo = setTimeout(() => { if (!aperta) lista.hidden = true; }, 320); if (ridaiFuoco) voce.focus(); };
+  const apri = () => { if (aperta) return; aperta = true; clearTimeout(tempo); primoGesto(); annullaSalita();   // un sito già in partenza (tocco su una pagina) si ferma: si sta scegliendo dall'elenco
+    lista.hidden = false; voce.setAttribute('aria-expanded', 'true'); void lista.offsetWidth; lista.classList.add('vista'); };
+  ['HORA VERA', 'STUDIO ANGELICATA'].map(n => SITI.findIndex(s => s.nome === n)).filter(i => i >= 0).forEach(i => {
+    const b = lista.appendChild(Object.assign(document.createElement('button'), { type: 'button', textContent: SITI[i].nome }));
+    b.addEventListener('click', e => { e.stopPropagation(); chiudi(); apriSito(i); });
+  });
+  voce.addEventListener('click', e => { e.stopPropagation(); aperta ? chiudi() : apri(); });
+  document.addEventListener('pointerdown', e => { if (aperta && !lista.contains(e.target) && e.target !== voce) chiudi(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && aperta) chiudi(lista.contains(document.activeElement)); });
+})();
 function apriContatti() {
   if (contattiAperti || aperto) return; contattiAperti = true; primoGesto(); caricaFotoContatti();
   contatti.setAttribute('aria-hidden', 'false'); document.body.classList.add('contatti-aperti');
