@@ -847,7 +847,7 @@ void main() {
     battito = 0;
     if (!visibile || document.hidden || ultimoCentro === null) return;
     lancette(ultimoCentro, ultimoVede || (i => Math.abs(carte[i].x - ultimoCentro) < larghezza));   // sul computer: solo le carte vicine
-    battito = requestAnimationFrame(batti);
+    if (!battito) battito = requestAnimationFrame(batti);   // un solo giro per fotogramma: lancette() l'ha già riacceso (20/11: due giri raddoppiavano e la pagina si bloccava)
   }
   function lancette(centro, vede) {
     ultimoCentro = centro; ultimoVede = vede || null;
