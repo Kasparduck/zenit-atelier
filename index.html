@@ -163,7 +163,9 @@ body.aperto .scena { pointer-events: none; }
 body.coperto .strisce { visibility: hidden; }
 body.coperto .binario, body.coperto .binario-v { animation-play-state: paused; }
 /* il sito a tutta pagina: caricato di nascosto, dentro un cerchio che parte dal vetro e si allarga */
-.pagina-piena { position: fixed; inset: 0; z-index: 6; overflow: hidden; opacity: 0; pointer-events: none; }
+/* 21/11/2026: «clip» e non «hidden». Una scatola «hidden» si può ancora far scorrere da programma: quando dentro il sito aperto si toccava una voce che porta a
+   un punto della pagina (un'ancora), il browser faceva scorrere anche questa scatola e tutto il sito scivolava in su, con la testata sotto il bordo */
+.pagina-piena { position: fixed; inset: 0; z-index: 6; overflow: hidden; overflow: clip; opacity: 0; pointer-events: none; }
 /* di nascosto: prima trasparente ma «in vista» (così il sito fa la sua entrata e al clic è già composto: una pagina nascosta del tutto il browser la tiene ferma),
    poi, composto, nascosto del tutto (.dorme: non costa più niente); al clic torna in vista (.vista) */
 .pagina-piena.dorme { visibility: hidden; }
@@ -173,7 +175,7 @@ body.coperto .binario, body.coperto .binario-v { animation-play-state: paused; }
    e riportato a 1 con «scale»; dentro, il sito a misura di schermo, ingrandito del contrario. Si muovono solo «transform» e «opacity», con una transizione
    sola fatta partire una volta: il movimento lo fa la scheda grafica e resta liscio anche se la pagina è occupata */
 .pp-cerchio { position: absolute; left: 50%; top: 50%; width: calc(var(--R, 100vmax) * 2); height: calc(var(--R, 100vmax) * 2); margin: calc(var(--R, 100vmax) * -1) 0 0 calc(var(--R, 100vmax) * -1);
-  border-radius: 50%; overflow: hidden; background: #05070a; will-change: transform; }
+  border-radius: 50%; overflow: hidden; overflow: clip; background: #05070a; will-change: transform; }
 .pagina-piena.piena .pp-cerchio { border-radius: 0; }   /* arrivato a tutto schermo non serve più il cerchio */
 .pp-cerchio iframe { position: absolute; left: 50%; top: 50%; width: var(--W, 100vw); height: var(--H, 100vh); margin: calc(var(--H, 100vh) / -2) 0 0 calc(var(--W, 100vw) / -2); display: block; border: 0; transform-origin: 50% 50%; will-change: transform; }
 /* prima di muoversi (.esce-pronta): l'obiettivo passa SOPRA il sito a tutta pagina, che è già al suo posto dietro il vetro, e le strisce si fermano.
@@ -1184,8 +1186,7 @@ document.querySelectorAll('.voce').forEach(v => {
    espande dal centro. Avrei voluto che si schiarisse tutta intera gradualmente. Se vuoi puoi allungare i tempi a 5 o 6 secondi o 7». Quindi: la luce torna su
    tutta la pagina insieme, piano; i tempi sono più lunghi (circa 5 secondi e mezzo); e si muovono solo «transform» e «opacity» con transizioni fatte partire
    una volta (vedi .pp-cerchio nello stile): niente più numeri scritti a ogni fotogramma, tranne le lamelle, che stanno in uno strato loro. ---------- */
-const pieno = $('#pieno'), paginaPiena = $('#pagina-piena'), cerchio = $('#pp-cerchio'), torna = $('#torna'), scena = document.querySelector('.scena');
-/* SUL TELEFONO L'USCITA È SVELTA (18/11/2026, Franco dal suo telefono: «io tocco al centro dell'obiettivo ma non si apre nulla»; «Il lasso di tempo tra il tocco
+const pieno = $('#pieno'), paginaPiena = $('#pagina-piena'), cerchio = $('#pp-cerchio'), torna = $('#torna'), scena = document.querySelector('.scena');/* SUL TELEFONO L'USCITA È SVELTA (18/11/2026, Franco dal suo telefono: «io tocco al centro dell'obiettivo ma non si apre nulla»; «Il lasso di tempo tra il tocco
    e l'apertura del sito è troppo lungo»). Prima: fino a 5 secondi FERMI ad aspettare che il sito a tutta pagina fosse caricato (sulla rete del telefono ci arrivava
    quasi sempre), poi 2,6 secondi di uscita: quasi 8 secondi, e da una pagina intorno 1,15 in più. Sul telefono (TEL): si aspetta al massimo 0,6 secondi (ATTESA_PIENO),
    l'uscita dura 1,5 secondi, la luce torna in 1,6, e da una pagina intorno il nome resta acceso 0,45 secondi. Stessa sequenza, stessi gesti: solo i tempi.
