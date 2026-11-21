@@ -35,12 +35,8 @@
 
     /* ---------- home · apertura ---------- */
     'Avvocata · civile e penale · Milano': 'Lawyer · civil and criminal law · Milan',
-    'Avvocata · diritto civile · Milano': 'Lawyer · civil law · Milan',
-    'Avvocata · diritto penale · Milano': 'Lawyer · criminal law · Milan',
     'Ti ascolto.': 'I listen.', 'Ti spiego.': 'I explain.', 'Ti difendo.': 'I defend you.',
     "Sono Angela Angelicata. Seguo persone e famiglie nelle cause civili e nei processi penali: dal primo incontro all'ultima udienza parli sempre con me.": 'I am Angela Angelicata. I act for individuals and families in civil cases and criminal trials: from the first meeting to the last hearing, you always speak to me.',
-    "Sono Angela Angelicata. Separazioni e figli, eredità, casa, risarcimenti: nelle cause civili ti seguo dal primo incontro all'ultima udienza, e parli sempre con me.": 'I am Angela Angelicata. Separations and children, inheritance, housing, compensation: in civil cases I follow you from the first meeting to the last hearing, and you always speak with me.',
-    "Sono Angela Angelicata. Difendo chi è accusato e assisto chi ha subito un reato: dal primo incontro all'ultima udienza parli sempre con me.": 'I am Angela Angelicata. I defend those who are accused and assist those who have suffered an offence: from the first meeting to the last hearing you always speak with me.',
     'Raccontami cosa è successo': 'Tell me what happened', 'o chiama 02 0000 0000': 'or call 02 0000 0000',
     "Primo incontro di un'ora, in studio o in video.": 'A first meeting of one hour, at my office or by video.', 'Preventivo scritto prima di cominciare.': 'A written fee estimate before we begin.',
     'Una cittadella di gesso e sabbia: su una piazzola, una persona e la sua guida che indica la strada': 'A citadel of plaster and sand: on a small square, a person and their guide, who points the way',

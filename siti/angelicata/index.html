@@ -145,17 +145,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   .entrata .apertura-foto .dentro-foto > * { transform: none; }
 }
 
-/* Prova A: tutte le versioni partecipano alla misura della stessa cella, anche quando cambia la lingua. */
-.apertura-varianti { display: grid; grid-template-columns: minmax(0, 1fr); }
-.apertura-varianti > [data-testo-area] { grid-area: 1 / 1; transform: none; opacity: 1; transition: none; }
-.apertura-varianti > [aria-hidden="true"] { visibility: hidden; opacity: 0; pointer-events: none; }
-@media (prefers-reduced-motion: no-preference) {
-  .apertura-varianti.sfuma > [data-testo-area] { transition: opacity 260ms ease 180ms; }
-  .apertura-varianti.sfuma > [aria-hidden="true"] { transition: opacity 180ms ease, visibility 0s linear 180ms; }
-}
-@media (prefers-reduced-motion: reduce) {
-  html.scelta-filtro-b { scroll-behavior: auto; }
-}
 
 /* ---------- foto con la tendina (da sinistra a destra, con un filo bronzo sul bordo) ---------- */
 .tendina { position: relative; margin: 0; }
@@ -637,7 +626,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 </style>
 <!-- prove dei colori (16/11/2026): senza ?colori= nell'indirizzo non fanno niente; si tolgono quando Franco ha scelto -->
 <link rel="stylesheet" href="colori.css">
-<script>const sceltaFiltro = new URLSearchParams(location.search).get('scelta');</script>
 <script src="colori.js"></script>
 </head>
 <body>
@@ -1009,42 +997,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 <!-- L'INGLESE CON UN CLIC (17/11/2026, passo 5.2): lingua-en.js è il vocabolario, lingua.js il motore (uno solo per le tre pagine) e, solo qui nella home,
      la linguetta ENGLISH sul bordo destro. Stanno prima degli altri script: con ?lang=en la pagina è già in inglese mentre la mappa si carica.
      I pezzi con data-lingua="pagina" (la frase che si accende, la frase di Shakespeare) se li riscrive lo script qui sotto. -->
-<script>
-let area = 'tutto';
-try { const salvata = localStorage.getItem('avv-area'); if (['tutto', 'civile', 'penale'].includes(salvata)) area = salvata; } catch (e) {}
-
-function preparaTestiArea(originale, civile, penale) {
-  const gruppo = document.createElement('div');
-  gruppo.className = 'apertura-varianti';
-  originale.before(gruppo);
-  originale.dataset.testoArea = 'tutto';
-  gruppo.append(originale);
-  for (const [nome, testo] of Object.entries({ civile, penale })) {
-    const copia = originale.cloneNode(false);
-    copia.dataset.testoArea = nome;
-    copia.textContent = testo;
-    gruppo.append(copia);
-  }
-  return gruppo;
-}
-
-function mostraTestiArea(nome, anima) {
-  for (const gruppo of testiApertura) {
-    gruppo.classList.toggle('sfuma', anima);
-    for (const testo of gruppo.children) testo.setAttribute('aria-hidden', String(testo.dataset.testoArea !== nome));
-  }
-}
-
-const testiApertura = sceltaFiltro === 'a' ? [
-  preparaTestiArea(document.querySelector('.apertura .occhio'),
-    'Avvocata · diritto civile · Milano', 'Avvocata · diritto penale · Milano'),
-  preparaTestiArea(document.querySelector('.apertura-sotto'),
-    "Sono Angela Angelicata. Separazioni e figli, eredità, casa, risarcimenti: nelle cause civili ti seguo dal primo incontro all'ultima udienza, e parli sempre con me.",
-    "Sono Angela Angelicata. Difendo chi è accusato e assisto chi ha subito un reato: dal primo incontro all'ultima udienza parli sempre con me.")
-] : [];
-if (sceltaFiltro === 'a') mostraTestiArea(area, false);
-if (sceltaFiltro === 'b') document.documentElement.classList.add('scelta-filtro-b');
-</script>
 <script src="lingua-en.js"></script>
 <script src="lingua.js" data-linguetta></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
@@ -1207,7 +1159,8 @@ const CALCOLI = {
 };
 
 /* ---------- il filtro Tutto · Civile · Penale: adatta tutta la pagina ---------- */
-let casoAttivo = 'separazione', tappaAttiva = 'separazione', listaAttiva = 'separazione', modoCalcolo = 'querela', lato = 'civile';
+let area = 'tutto', casoAttivo = 'separazione', tappaAttiva = 'separazione', listaAttiva = 'separazione', modoCalcolo = 'querela', lato = 'civile';
+try { const salvata = localStorage.getItem('avv-area'); if (['tutto', 'civile', 'penale'].includes(salvata)) area = salvata; } catch (e) {}
 const vale = k => area === 'tutto' || AREA[k] === area;
 function impostaArea(a, daUtente) {
   area = a; if (daUtente) { try { localStorage.setItem('avv-area', a); } catch (e) {} }
@@ -1221,8 +1174,11 @@ function impostaArea(a, daUtente) {
   if (!vale(modoCalcolo)) calcoloSu(Object.keys(CALCOLI).find(vale));
   if (!vale(listaAttiva)) listaAttiva = Object.keys(PORTARE).find(vale);
   mostraLista(listaAttiva);
-  if (sceltaFiltro === 'a') mostraTestiArea(a, Boolean(daUtente));
-  if (sceltaFiltro === 'b' && daUtente && a !== 'tutto' && scrollY < 0.6 * innerHeight) {
+  /* 21/11/2026, scelta di Franco tra due versioni viste sul telefono: «La B direi, altrimenti quelle voci in alto sembra stiano lì per nulla e in un sito ci si
+     aspetta sempre che in quella posizione siano attive. Il fatto che non lo siano potrebbe essere percepito come un malfunzionamento». Chi sceglie Civile o Penale
+     stando in cima viene portato al primo pezzo che cambia, «Cosa ti è successo?». Con scrollTo e non con un'ancora: dentro la vetrina un'ancora fa scorrere anche
+     la pagina che ospita il sito (guasto del 21/11). Più giù nella pagina non sposta nessuno: lì cambia il colore e cambiano i pezzi che si hanno davanti. */
+  if (daUtente && a !== 'tutto' && scrollY < 0.6 * innerHeight) {
     const testataStretta = Math.min($('.testata-riga').offsetHeight, ALTO());
     const top = scrollY + $('#racconta').getBoundingClientRect().top - testataStretta;
     window.scrollTo({ top, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
