@@ -209,10 +209,14 @@ body.tel .torna kbd { display: none; }   /* compare quando il sito è tornato co
 .modi button:hover { color: var(--avorio); }
 .modi button[aria-pressed="true"] { color: var(--avorio); border-bottom-color: var(--bronzo-chiaro); }
 /* sul telefono in basso c'è la riga che spiega: lì le voci restano in alto, sotto la busta */
-@media (max-aspect-ratio: 5/4) { .modi { right: 12px; top: 74px; bottom: auto; gap: 14px; padding: 0; background: none; border: 0; font-size: .74rem; } }
+/* 21/11/2026, Franco: «Le scritte… 'In salita, In discesa, A scalinata' sul cellulare… non le ho trovate. Oltretutto posizionate dove sono adesso non va bene (sono in
+   alto a destra) perché c'è un affollamento di testo e non sta bene. Andrebbero posizionate in basso a destra». A schermo stretto e sul telefono: una targhetta in basso
+   a destra, subito sopra la riga che spiega (--sotto: quanto è alta, lo misura lo script) e mai più giù di 56 px, dove su Framer c'è il bollino. Prima: in alto sotto
+   l'invito (17/11), e sul telefono tolte del tutto (18/11, «tutto si sovrappone un po'») */
+@media (max-aspect-ratio: 5/4) { .modi { right: 10px; top: auto; bottom: max(56px, calc(var(--sotto, 48px) + 10px)); gap: 14px; padding: 4px 12px 5px; border-radius: 10px; background: rgb(9 13 19 / .92); border: 1px solid rgb(255 240 220 / .07); font-size: 12px; letter-spacing: .04em; transition: opacity .6s, bottom .35s; } }
 /* 17/11/2026, sul telefono l'invito sotto la targa finiva sopra i tre modi e non si leggeva: i modi scendono sotto l'invito, e l'invito ha un'ombra scura che lo
    stacca dalle pagine dietro */
-@media (max-aspect-ratio: 5/4) { .modi { top: 124px; padding: 5px 12px 6px; border-radius: 10px; background: rgb(9 13 19 / .9); border: 1px solid rgb(255 240 220 / .07); } .invito { font-size: 1.08rem; } }
+@media (max-aspect-ratio: 5/4) { .invito { font-size: 1.08rem; } }   /* 21/11: i modi non stanno più qui sotto, sono in basso a destra */
 
 /* CONTATTI (11/11/2026 sera, Franco, con due immagini fatte con GPT: ../ispirazioni/franco-contatti-busta.webp e franco-contatti-pagina.jpg): «in alto a destra
    metterei "Contatti" (prendi direttamente la busta allegata e piazzala in alto a destra). Quando si clicca sulla busta si apre una pagina che non mette le
@@ -309,8 +313,13 @@ body.contatti-aperti .c-e { opacity: 1; transform: none; transition: opacity .7s
 .didascalia span { font-size: .82rem; color: var(--tenue); }
 .aiuto { transition: opacity .8s; }
 .aiuto.via { opacity: 0; }
-/* SUL TELEFONO (18/11/2026): via i tre modi; la descrizione più bassa, che non copre l'obiettivo né il nome in basso; l'aiuto, corto, dopo il primo gesto sparisce del tutto */
-body.tel .modi { display: none; }
+/* SUL TELEFONO (18/11/2026): i tre modi erano stati tolti (tornati il 21/11, in basso a destra: vedi sotto); la descrizione più bassa, che non copre l'obiettivo né il nome in basso; l'aiuto, corto, dopo il primo gesto sparisce del tutto */
+/* 21/11/2026: i tre modi tornano anche sul telefono, in basso a destra (parole di Franco sopra, accanto a .modi); anche di traverso. Il dito prende la voce anche un
+   poco fuori dalla scritta; con l'elenco dei siti aperto si fanno da parte, come la riga che spiega */
+body.tel .modi { right: 10px; top: auto; bottom: max(56px, calc(var(--sotto, 48px) + 10px)); gap: 14px; padding: 4px 12px 5px; border-radius: 10px; background: rgb(9 13 19 / .92); border: 1px solid rgb(255 240 220 / .07); font-size: 12px; letter-spacing: .04em; transition: opacity .6s, bottom .35s; }
+body.tel .modi button { position: relative; padding: 6px 0; }   /* 30 px di voce, 48 con il margine per il dito */
+body.tel .modi button::before { content: ""; position: absolute; inset: -9px -7px; }
+body.tel.elenco-aperto .modi { opacity: 0; pointer-events: none; }
 body.tel .didascalia { padding: 9px 13px 10px; gap: 4px; bottom: max(10px, 1.6svh); }
 body.tel .didascalia b { font-size: .82rem; line-height: 1.35; }
 body.tel .aiuto { font-size: 13px; line-height: 1.4; }   /* 18/11 sera (giudice): sul telefono niente scritte sotto 12 px. L'aiuto da 11,5 a 13 */
@@ -564,6 +573,15 @@ const STRETTO = matchMedia('(max-aspect-ratio: 5/4), (max-width: 820px)').matche
    La disposizione e i gesti del telefono (TEL) valgono anche di traverso: lì il dito ha bisogno degli stessi gesti (lente che apre, dito che sfoglia). */
 const fono = () => (navigator.maxTouchPoints > 0 || matchMedia('(pointer: coarse)').matches) && Math.min(screen.width, screen.height) < 520;
 const TEL = STRETTO || fono(); document.body.classList.toggle('tel', TEL);
+/* 21/11/2026: la forma (telefono o computer) si decide qui, una volta. Se poi lo schermo cambia forma (una finestra ristretta, «Phone» nell'anteprima di Framer) la
+   vetrina restava in modo computer dentro uno schermo stretto, e Franco lì vedeva le tre scritte al posto sbagliato e un telefono che non è quello vero: si ricarica
+   da capo nel modo giusto. Un telefono girato di traverso resta telefono e non ricarica. */
+{ let attesa = 0; addEventListener('resize', () => { clearTimeout(attesa); attesa = setTimeout(() => {
+    if ((matchMedia('(max-aspect-ratio: 5/4), (max-width: 820px)').matches || fono()) !== TEL) location.reload(); }, 350); }); }
+/* 21/11/2026: quanto è alta la riga in basso (l'aiuto sparisce dopo il primo gesto, la nota resta, la descrizione cambia): le tre scritte stanno subito sopra (--sotto) */
+{ const riga = document.querySelector('.didascalia'), misura = () => { const q = riga.getBoundingClientRect();
+    document.documentElement.style.setProperty('--sotto', (q.height > 4 ? Math.max(0, Math.round(innerHeight - q.top)) : 0) + 'px'); };
+  if (riga) { misura(); addEventListener('resize', misura); if (window.ResizeObserver) new ResizeObserver(misura).observe(riga); } }
 const chiuso = i => !SITI[i].telefono && (TEL || fono());
 window.TELEFONO = { tel: TEL, fono, chiuso: i => chiuso(i), copre: () => {
   const t = document.querySelector('#telescopio').getBoundingClientRect(), cx = t.left + t.width / 2, cy = t.top + t.height / 2, r = t.width / 2, esce = [];
