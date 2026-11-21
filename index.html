@@ -210,7 +210,7 @@ body.tel .torna kbd { display: none; }   /* compare quando il sito è tornato co
 @media (max-aspect-ratio: 5/4) { .modi { right: 12px; top: 74px; bottom: auto; gap: 14px; padding: 0; background: none; border: 0; font-size: .74rem; } }
 /* 17/11/2026, sul telefono l'invito sotto la targa finiva sopra i tre modi e non si leggeva: i modi scendono sotto l'invito, e l'invito ha un'ombra scura che lo
    stacca dalle pagine dietro */
-@media (max-aspect-ratio: 5/4) { .modi { top: 124px; padding: 5px 12px 6px; border-radius: 10px; background: rgb(9 13 19 / .9); border: 1px solid rgb(255 240 220 / .07); } .invito { font-size: .66rem; text-shadow: 0 0 10px #05080c, 0 0 4px #05080c, 0 0 2px #05080c; } }
+@media (max-aspect-ratio: 5/4) { .modi { top: 124px; padding: 5px 12px 6px; border-radius: 10px; background: rgb(9 13 19 / .9); border: 1px solid rgb(255 240 220 / .07); } .invito { font-size: 1.08rem; } }
 
 /* CONTATTI (11/11/2026 sera, Franco, con due immagini fatte con GPT: ../ispirazioni/franco-contatti-busta.webp e franco-contatti-pagina.jpg): «in alto a destra
    metterei "Contatti" (prendi direttamente la busta allegata e piazzala in alto a destra). Quando si clicca sulla busta si apre una pagina che non mette le
@@ -312,14 +312,14 @@ body.tel .modi { display: none; }
 body.tel .didascalia { padding: 9px 13px 10px; gap: 4px; bottom: max(10px, 1.6svh); }
 body.tel .didascalia b { font-size: .82rem; line-height: 1.35; }
 body.tel .aiuto { font-size: 13px; line-height: 1.4; }   /* 18/11 sera (giudice): sul telefono niente scritte sotto 12 px. L'aiuto da 11,5 a 13 */
-body.tel .invito { font-size: 12px; margin-top: 12px; padding: 2px 0; }   /* l'invito da 11,5 a 12, e alto almeno 44 px per il dito (2 px sopra e sotto, tolti dal margine: resta dov'era) */
+body.tel .invito { font-size: 17.5px; margin-top: 11px; }   /* 21/11: la frase di Franco, in lettere da libro; non si tocca più (prima era il pulsante dei contatti) */
 /* DI TRAVERSO SUL TELEFONO (18/11/2026 sera). Con lo schermo basso l'obiettivo prende tutta l'altezza: sotto non c'è posto e l'invito, largo, gli finiva sopra.
    Scelta mia, la più semplice, da confermare: a sinistra il nome e la descrizione; a destra, dall'alto, la busta, l'invito (a capo, stretto), la linguetta;
    i puntini nell'angolo in basso a destra. Niente si muove in più. Le stesse misure piccole del telefono dritto per busta e nome. */
 @media (max-height: 500px) and (orientation: landscape) and (max-width: 899px) {
   body.tel .firma { left: 12px; top: 12px; } body.tel .targa { font-size: 1.08rem; padding: 9px 14px 10px; border-radius: 8px; } body.tel .targa::before { inset: 5px; }
   body.tel .busta { right: 10px; top: 10px; width: 108px; } body.tel .busta-scritta { font-size: 9.7px; }
-  body.tel .invito { position: fixed; right: 12px; top: 76px; margin: 0; padding: 0; width: 138px; line-height: 1.5; text-shadow: 0 0 10px #05080c, 0 0 4px #05080c, 0 0 2px #05080c; }
+  body.tel .invito { position: fixed; right: 12px; top: 74px; margin: 0; padding: 0; width: 160px; font-size: 13.5px; line-height: 1.3; }
   body.tel .puntini { left: auto; right: 8px; top: auto; bottom: 4px; transform: none; }
 }
 body.tel .aiuto.via { display: none; }
@@ -383,12 +383,14 @@ body.aperto .frecce { opacity: 0; }
    tipo: SIAMO IN COSTRUZIONE, SEGUITECI E RACCONTEREMO IL WEB IN MODO NUOVO CON VOI. O: CON LE VOSTRE PAGINE»). Tra le versioni ha scelto «Un sito alla volta.
    Il prossimo può essere il tuo.» (il numero dei siti no: «sa di poverelli che hanno solo due siti»). Bianca, puntino azzurro, lampeggia piano; un clic apre
    i contatti. Sta al posto di «Vetrina in costruzione». */
-.invito { display: block; margin: 14px 0 0 4px; padding: 0; border: 0; background: none; text-align: left; font: 600 .72rem/1.75 var(--sans); letter-spacing: .22em; text-transform: uppercase; color: #f5f7fa; cursor: pointer; pointer-events: auto; animation: invito 2.6s ease-in-out infinite; }
-.invito::before { content: ""; display: inline-block; width: 6px; height: 6px; margin: 0 10px 1px 0; border-radius: 50%; background: #a9c6ff; box-shadow: 0 0 9px rgb(169 198 255 / .7); vertical-align: middle; }
-.invito span { display: block; padding-left: 16px; }
-.invito:hover, .invito:focus-visible { animation: none; color: #fff; outline: none; }
-body.aperto .invito { pointer-events: none; }
-@keyframes invito { 0%, 40% { opacity: 1; } 55%, 85% { opacity: .22; } 100% { opacity: 1; } }
+/* DAL 21/11/2026 QUI STA LA FRASE DI FRANCO, «Questi siti sono racconti: seguili senza fretta.» (Franco: «è troppo piccola e insignificante messa lì in basso a
+   sinistra e dato che è proprio su questa base che li costruirò per differenziarmi davvero dal bello in serie e lo farò sempre di più, occorre che appaia più
+   visibile. Io la metterei sotto la scritta in alto Web Retold al posto di: "Un sito alla volta, il prossimo può essere il tuo" che non mi piace proprio»).
+   «Un sito alla volta» non si ripropone. Scelte mie, da vedere con lui: lettere da libro (Newsreader, come la frase in basso) grandi quasi quanto il nome, ferma
+   (niente più lampeggio: dice «senza fretta»), la seconda riga in rame; non apre più i contatti (per quelli c’è la busta). */
+.invito { display: block; margin: 15px 0 0 4px; padding: 0; text-align: left; font: 400 1.42rem/1.24 Newsreader, Georgia, serif; letter-spacing: .004em; color: #f6f3ee; text-shadow: 0 1px 2px rgb(5 8 12 / .95), 0 0 14px rgb(5 8 12 / .9), 0 0 28px rgb(5 8 12 / .75); animation: invito 1.8s .5s cubic-bezier(.2, .7, .2, 1) both; }
+.invito span { display: block; color: #f1c49c; }
+@keyframes invito { from { opacity: 0; transform: translateY(7px); } }
 @media (prefers-reduced-motion: reduce) { .invito { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .telescopio, .inclina { transition: none; } }
 @media (max-width: 720px) { .nome-sito { font-size: 19px; letter-spacing: 5px; } .tacca-num { font-size: 14px; } .incisione { font-size: 12px; } .didascalia span { font-size: .76rem; } .firma { left: 12px; top: 12px; } .targa { font-size: 1.08rem; padding: 9px 14px 10px; border-radius: 8px; } .targa::before { inset: 5px; } }
@@ -446,7 +448,7 @@ body.tel.elenco-aperto .didascalia { opacity: 0; }
 </style>
 </head>
 <body>
-<p class="firma"><span class="targa"><i></i><b>Web</b> Retold<i></i></span><span class="sezioni" role="navigation" aria-label="Sezioni"><button type="button" id="voce-siti" aria-current="page" aria-expanded="false" aria-controls="elenco-siti">Siti</button></span><button type="button" class="invito" id="invito">Un sito alla volta. <span>Il prossimo può essere il tuo.</span></button><span class="elenco-siti" id="elenco-siti" hidden></span></p>
+<p class="firma"><span class="targa"><i></i><b>Web</b> Retold<i></i></span><span class="sezioni" role="navigation" aria-label="Sezioni"><button type="button" id="voce-siti" aria-current="page" aria-expanded="false" aria-controls="elenco-siti">Siti</button></span><span class="invito" id="invito">Questi siti sono racconti: <span>seguili senza fretta.</span></span><span class="elenco-siti" id="elenco-siti" hidden></span></p>
 <div class="strisce" id="strisce" aria-hidden="true"></div>
 
 <main class="scena" data-decoro aria-label="Un telescopio puntato verso di te: nella lente si vede un sito vero"><div class="alone" aria-hidden="true"></div>
@@ -588,7 +590,10 @@ const qs = new URLSearchParams(location.search);   // per le prove: ?zoom=2&diaf
    Meridiano (la boutique fatta da Franco) è un segnaposto al posto del poliambulatorio, finché non c'è il secondo sito nuovo. */
 const serie = (nome, da, a) => Array.from({ length: a - da + 1 }, (_, k) => nome + '-' + String(da + k).padStart(2, '0') + '.jpg');
 // 17/11/2026: quando la vetrina e in inglese, anche il sito nella lente e a tutta pagina si apre in inglese (?lang=en; un sito che non lo conosce lo ignora)
-const inLingua = src => document.documentElement.lang === 'en' ? src + (src.includes('?') ? '&' : '?') + 'lang=en' : src;
+// 21/11/2026 sera: dopo un cambio di lingua anche l'italiano si dice (?lang=it). Un sito che tiene per la visita la lingua dell'indirizzo (Hora Vera in
+// Framer) senza questo resterebbe in inglese quando la vetrina torna in italiano. Finché nessuno cambia lingua l'indirizzo resta com'era.
+let linguaDetta = false;
+const inLingua = src => document.documentElement.lang === 'en' ? src + (src.includes('?') ? '&' : '?') + 'lang=en' : linguaDetta ? src + (src.includes('?') ? '&' : '?') + 'lang=it' : src;
 const SITI = [
   { nome: 'STUDIO ANGELICATA', telefono: true, src: 'siti/angelicata/index.html', fondo: '#f4ede3', esce: '#f6efe5', fa: "Studio legale · calcola le scadenze, capisce le parole della gente, mette in ordine le richieste",
     carte: [serie('angelicata', 1, 8), serie('angelicata', 9, 15)] },
@@ -1287,6 +1292,9 @@ addEventListener('message', e => {
   if (!e.data) return;
   if (e.data.esci) chiudiSito();   // Esc premuto dentro il sito: i nostri siti lo passano alla vetrina
   if (e.data.rovescio === 'fatto' && e.source === pieno.contentWindow) pienoRovescio = true;   // il sito a tutta pagina dice che si è rovesciato
+  // 21/11/2026 sera: una pagina di Framer, nella lente o a tutta pagina, chiede se sta dentro la vetrina. Le rispondo con la lingua di adesso: così
+  // nasconde la sua linguetta (qui sopra c'è già la mia, nello stesso punto) e mi segue in ogni pagina, anche dopo una voce del suo menu.
+  if (e.data.chiede === 'vetrina' && (e.source === pieno.contentWindow || e.source === cornice.contentWindow)) e.source.postMessage({ vetrina: 1, lingua }, '*');
 });
 
 /* ---------- i contatti (11/11/2026 sera, Franco: la busta in alto a destra apre la pagina «Parliamo del tuo sito.»). Un gesto alla volta: la pagina scura copre,
@@ -1332,7 +1340,6 @@ function chiudiContatti() {
   setTimeout(() => { if (!contattiAperti && !grazie.hidden) { modulo.reset(); cNota.textContent = ''; grazie.hidden = true; modulo.hidden = false; } }, 500);
 }
 busta.addEventListener('click', apriContatti);
-$('#invito').addEventListener('click', apriContatti);   // l'invito sotto la targa porta ai contatti
 busta.addEventListener('pointerenter', caricaFotoContatti); busta.addEventListener('focus', caricaFotoContatti);
 $('#c-chiudi').addEventListener('click', chiudiContatti); $('.c-marca').addEventListener('click', chiudiContatti); $('#c-fatto').addEventListener('click', chiudiContatti);
 modulo.addEventListener('input', () => { cNota.textContent = ''; });
@@ -1389,7 +1396,7 @@ else mostraSito(attivo, true).then(() => {
    dall'indirizzo (?lang=en). Una frase nuova nella pagina = una riga nuova in EN; quelle rimaste in italiano le dice window.LINGUA.mancanti().
    La busta ha la sua immagine senza parola per l'inglese (vedi «LA BUSTA IN INGLESE» nello stile). Resta in italiano, per ora: la pagina dell'informativa privacy. */
 const EN = {
-  'Un sito alla volta.': 'One site at a time.', 'Il prossimo può essere il tuo.': 'The next one could be yours.',
+  'Questi siti sono racconti:': 'These sites are stories:', 'seguili senza fretta.': 'follow them unhurried.',
   'Un telescopio puntato verso di te: nella lente si vede un sito vero': 'A telescope pointed at you: a real website shows in the lens',
   'Il sito dentro la lente': 'The website inside the lens', 'Il sito a tutta pagina': 'The website, full screen',
   'Lente: trascina o usa la rotella per muoverti nel sito; frecce della tastiera per scorrere': 'Lens: drag or use the wheel to move around the site; arrow keys to scroll',
@@ -1427,8 +1434,12 @@ const LINGUA = window.LINGUA = (() => {
   }
   const zone = () => [...document.querySelectorAll(ZONE)];
   function metti(l) {
-    const prima = lingua; lingua = l === 'en' ? 'en' : 'it'; document.documentElement.lang = lingua; zone().forEach(passa);
+    const prima = lingua; lingua = l === 'en' ? 'en' : 'it'; if (prima !== lingua) linguaDetta = true; document.documentElement.lang = lingua; zone().forEach(passa);
     if (prima !== lingua && partito && caricato >= 0) { cornice.src = inLingua(SITI[caricato].src); if (!aperto) { pienoDi = -1; pieno.src = 'about:blank'; preparaTraPoco(attivo, 900); } }   // il sito nella lente si riapre nella lingua nuova
+    // 21/11/2026 sera (Franco: «nella stessa pagina non si può passare dall'inglese all'italiano e viceversa… se si torna indietro alla Home cambia
+    // lingua, ma non sulla pagina stessa»): con un sito aperto a tutta pagina la linguetta che si tocca è questa, e il sito aperto non lo sapeva.
+    // Ora glielo dico: cambia lingua lì dov'è (i siti ascoltano già il messaggio { lingua }).
+    if (prima !== lingua && aperto && pieno.contentWindow) pieno.contentWindow.postMessage({ lingua }, '*');
     if (prima !== lingua) cambiaCarte();   // e le pagine che scorrono intorno diventano quelle di quella lingua
     const b = document.querySelector('#lingua'); if (b) { (b.querySelector('span') || b).textContent = lingua === 'en' ? 'Italiano' : 'English'; b.setAttribute('aria-label', lingua === 'en' ? 'Leggi il sito in italiano' : 'Read this site in English'); }   // sul telefono la scritta sta nella «veste» dentro il pulsante
     const bu = document.querySelector('#busta'), im = bu && bu.querySelector('img'), vuole = lingua === 'en' ? 'contatti-busta-vuota.webp' : 'contatti-busta.webp';   // la busta: in inglese l'immagine senza parola e «Contact» scritto sopra
@@ -1443,6 +1454,8 @@ const LINGUA = window.LINGUA = (() => {
   return { metti, mancanti, adesso: () => lingua };
 })();
 { let scelta = qs.get('lang'); if (!scelta) { try { scelta = localStorage.getItem('webretold-lingua'); } catch (e) {} } if (scelta === 'en' && qs.get('lingua') !== 'no') LINGUA.metti('en'); }   // di serie dal 18/11/2026 (?lingua=no spegne linguetta e inglese); prima l'inglese non partiva da solo
+// 21/11/2026 sera: se la lingua la cambia chi guarda DENTRO un sito (la linguetta nell'apertura di Hora Vera), la vetrina la segue: la scelta ricordata è la stessa
+addEventListener('storage', e => { if (e.key === 'webretold-lingua' && (e.newValue === 'en' || e.newValue === 'it') && e.newValue !== lingua && qs.get('lingua') !== 'no') LINGUA.metti(e.newValue); });
 /* LA SCRITTA «ENGLISH», PROVA DEL POSTO (17/11/2026, passo 5.2; Franco: «vorrei che uno vedesse ad esempio la scritta deutsch o english già su un lato
    del sito e che cliccandovi sopra immediatamente il sito viene tradotto»; solo nella home, su un lato). IL POSTO, scelto da lui tra tre («scelgo
    la 1»): una linguetta in piedi sul bordo destro, a metà altezza. IL CONTORNO: «ENGLISH lo voglio contornato in amaranto metallico che si veda
