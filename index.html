@@ -769,7 +769,7 @@ async function mostraSito(i, primo) {
   const carico = new Promise(r => { cornice.onload = () => r(); setTimeout(r, TEL ? 1200 : 6000); });   // 18/11, Franco dal telefono: «il diaframma deve aprirsi più velocemente. È lento»: sul telefono le lamelle non restano chiuse ad aspettare il sito più di 1,2 secondi
   caricato = attivo; cornice.src = inLingua(SITI[attivo].src); await carico;
   await new Promise(r => setTimeout(r, primo ? (TEL ? 400 : 900) : (TEL ? 150 : 350)));   // il sito disegna la sua apertura
-  if (!aperto) { panX = 0; disegnaZoom(); }
+  if (!aperto) { if (primo) panX = 0; else lenteDaCapo(); disegnaZoom(); }   // sul telefono il sito nuovo entra a 1, anche se quello di prima era ingrandito con due dita
   await anima(aperto ? apertura : 0, 1, MUOVI ? (TEL ? 520 : 1400) : 1, lamelle);
   cambiando = false;
   if (caricato !== attivo) mostraSito(attivo);   // se nel frattempo si è girata la ghiera su un altro sito
@@ -892,7 +892,7 @@ lente.addEventListener('pointermove', e => {
   if (!presaLente || e.pointerId !== ditoLente) return;
   mossaLente += Math.abs(e.clientX - presaLente[0]) + Math.abs(e.clientY - presaLente[1]);
   lontanoLente = Math.max(lontanoLente, Math.hypot(e.clientX - partenzaLente[0], e.clientY - partenzaLente[1]));   // quanto si è allontanato il dito dal punto in cui ha toccato
-  const dx = TEL ? 0 : e.clientX - presaLente[0], dy = e.clientY - presaLente[1]; presaLente = [e.clientX, e.clientY];   // sul telefono il sito scorre su e giù ma non scivola di lato
+  const dx = TEL && zoom <= ZOOM_TEL ? 0 : e.clientX - presaLente[0], dy = e.clientY - presaLente[1]; presaLente = [e.clientX, e.clientY];   // sul telefono il sito scorre su e giù ma non scivola di lato (ingrandito con due dita sì: vedi «DUE DITA SULLA LENTE»)
   scorri(-dy / (scala() * zoom)); panX += dx; disegnaZoom();
   spinta = [spinta[0] + dx, spinta[1] + dy]; inerzia = [inerzia[0] * .5 + dx * .5, inerzia[1] * .5 + dy * .5]; ultimoMoto = performance.now();
 });
@@ -905,12 +905,68 @@ lente.addEventListener('pointerup', e => {
   if (e.pointerId !== ditoLente || !TEL || !presaLente || document.body.classList.contains('aperto')) return;   // solo il dito che ha toccato la lente
   const dx = e.clientX - partenzaLente[0], dy = e.clientY - partenzaLente[1];
   lontanoLente = Math.max(lontanoLente, Math.hypot(dx, dy));   // anche l'ultimo tratto, fino al punto in cui il dito si alza
-  if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { inerzia = [0, 0]; sfoglia(dx < 0 ? 1 : -1); }
+  if (zoom <= ZOOM_TEL && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { inerzia = [0, 0]; sfoglia(dx < 0 ? 1 : -1); }   // ingrandito, il dito di lato sposta il sito e non sfoglia
   else if (lontanoLente < 10 && !salendo) apriSito(attivo);   // mentre un nome sale (una carta appena toccata) il sito sta già per aprirsi
 });
 const lasciaSe = e => { if (e.pointerId === ditoLente) lascia(); };
 lente.addEventListener('pointerup', lasciaSe); lente.addEventListener('pointercancel', lasciaSe); lente.addEventListener('lostpointercapture', lasciaSe);
 addEventListener('pointerup', lasciaSe); addEventListener('pointercancel', lasciaSe);   // di riserva, se il rilascio non arriva alla lente
+/* DUE DITA SULLA LENTE (22/11/2026, Franco dal suo telefono: «vorrei che almeno, al centro dell'obiettivo in Web Retold si potesse ingrandire e rimpicciolire
+   il sito con due dita»). Sul telefono le ghiere girano solo i nomi (18/11); il sito nel vetro si ingrandisce e si rimpicciolisce allargando e stringendo due
+   dita, come una foto: da 0,6 a 3 volte, come la ghiera zigrinata sul computer, che gira insieme. Cresce solo il sito nel vetro, mai l'obiettivo (era quello
+   che il 18/11 copriva le scritte). Il primo dito tocca la lente, il secondo può posarsi anche fuori, sull'obiettivo: è del pizzico e non gira la ghiera.
+   - Il pizzico parte quando la distanza tra le dita cambia di 14 px: un secondo dito appoggiato e basta non ferma il primo, che continua a scorrere il sito.
+   - Partito il pizzico, il dito rimasto giù non conta più finché non si alza: non apre e non sfoglia.
+   - Finché un dito del pizzico è giù, ogni dito nuovo (un terzo, o uno che tocca di nuovo) non apre, non gira, non cambia sito. Un tocco «primario»
+     (nessun altro dito giù) azzera tutto, anche se un rilascio si è perso; azzera anche la pagina che va in secondo piano.
+   - Ingrandito oltre 1,05 il dito sposta il sito anche di lato e non sfoglia (come una foto ingrandita); finito vicino a 1 il sito torna al centro, a 1 preciso
+     (un pizzico nuovo ferma quel ritorno). Cambiando sito si riparte da 1, senza inerzia (lenteDaCapo).
+   - Al primo tocco la ghiera dello zoom che gira da sola all'avvio si ferma e il sito torna a 1, così il primo dito che sfoglia sfoglia davvero.
+   Revisione di Codex del 22/11 (terzo dito, dito appoggiato, ritorno sovrascritto, cambio sito, avvio): tutte e cinque dentro. Prova: il punto 5 di
+   strumenti/prova-tocchi-vetrina.js. */
+const ZOOM_TEL = 1.05, dita = new Map(), sessione = new Set();
+let pizzico = null, ritorno = 0, dimostra = false;
+const medio = () => { const [a, b] = pizzico.id.map(i => dita.get(i)); return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, Math.hypot(a[0] - b[0], a[1] - b[1])]; };
+const viaDita = () => { dita.clear(); sessione.clear(); pizzico = null; };
+function lenteDaCapo() { panX = 0; if (TEL) { inerzia = [0, 0]; zoom = zoomMeta = 1; pizzico = null; ritorno++; } }   // un sito nuovo nel vetro
+addEventListener('pointerdown', e => {
+  if (!TEL || e.pointerType === 'mouse') return;
+  if (e.isPrimary) viaDita();   // nessun altro dito è giù: del gesto di prima non resta niente
+  dita.set(e.pointerId, [e.clientX, e.clientY]);
+  if (dimostra) { dimostra = false; zoom = zoomMeta = 1; disegnaZoom(); }
+  if (sessione.size) { e.stopPropagation(); return; }   // un dito del pizzico è ancora giù: questo non arriva a niente
+  if (ditoLente === null || e.pointerId === ditoLente || !dita.has(ditoLente) || document.body.classList.contains('aperto')) return;
+  e.stopPropagation();   // il secondo dito è del pizzico: non arriva alla ghiera né alla lente
+  ritorno++; pizzico = { id: [ditoLente, e.pointerId], attivo: false }; sessione.add(ditoLente); sessione.add(e.pointerId);
+  const [mx, my, d] = medio(); Object.assign(pizzico, { d0: d, m: [mx, my] });
+}, true);
+addEventListener('pointermove', e => {
+  if (!dita.has(e.pointerId)) return;
+  dita.set(e.pointerId, [e.clientX, e.clientY]);
+  if (!pizzico || !pizzico.id.includes(e.pointerId)) return;
+  const [mx, my, d] = medio();
+  if (!pizzico.attivo) {   // le dita non si sono ancora allargate né strette: il primo dito continua a fare il suo
+    if (Math.abs(d - pizzico.d0) < 14) return;
+    Object.assign(pizzico, { attivo: true, z0: zoom, d0: d, m: [mx, my] });
+    presaLente = null; inerzia = [0, 0]; lente.classList.remove('presa-lente');   // da qui è un pizzico: il primo dito smette di scorrere e, alzandosi, non apre e non sfoglia
+    return;
+  }
+  const s0 = scala() * zoom, z = Math.max(.6, Math.min(3, pizzico.z0 * d / pizzico.d0)), dx = mx - pizzico.m[0], dy = my - pizzico.m[1];
+  pizzico.m = [mx, my]; zoom = zoomMeta = z;
+  panX = panX * (scala() * z) / s0 + (z > ZOOM_TEL ? dx : 0);   // il centro del vetro resta sullo stesso punto del sito; le due dita insieme lo spostano
+  if (dy) scorri(-dy / (scala() * z));
+  disegnaZoom();
+}, true);
+const fineDito = e => {
+  dita.delete(e.pointerId); sessione.delete(e.pointerId);
+  if (!pizzico || !pizzico.id.includes(e.pointerId)) return;
+  const fu = pizzico.attivo; pizzico = null;
+  if (!fu) return;
+  const z0 = zoom, p0 = panX, z1 = Math.abs(zoom - 1) < .08 ? 1 : zoom, mio = ++ritorno;
+  if (z1 <= ZOOM_TEL) anima(0, 1, 240, k => { if (mio !== ritorno) return; zoom = zoomMeta = z0 + (z1 - z0) * k; panX = (p0 * (1 - k)) || 0; disegnaZoom(); });   // vicino a 1: torna dritto, a 1 preciso
+};
+addEventListener('pointerup', fineDito, true); addEventListener('pointercancel', fineDito, true);
+document.addEventListener('visibilitychange', () => { if (document.hidden) viaDita(); }); addEventListener('pagehide', viaDita);
 addEventListener('keydown', e => {
   if (contattiAperti) { if (e.key === 'Escape') chiudiContatti(); return; }   // mentre si scrive nei contatti, frecce e + / − non muovono la lente
   if (e.key === 'Escape') { chiudiSito(); return; }
@@ -1267,7 +1323,7 @@ async function apriSito(i) {
   if (i !== attivo) {   // il nome cliccato va sotto la tacca e il suo sito nella lente: al ritorno si ritrova quello
     let meta = -i * PASSO_NOMI; while (meta - angNomi > 180) meta -= 360; while (meta - angNomi < -180) meta += 360;
     anima(angNomi, meta, 500, v => { angNomi = v; disegnaNomi(); });
-    attivo = caricato = i; cornice.src = inLingua(SITI[i].src); panX = 0; disegnaZoom(); $('#cosa-fa').textContent = SITI[i].fa; notaTel();   // la nota segue sempre il sito attivo (18/11 sera: al ritorno lo Studio mostrava ancora quella di Hora Vera)
+    attivo = caricato = i; cornice.src = inLingua(SITI[i].src); lenteDaCapo(); disegnaZoom(); $('#cosa-fa').textContent = SITI[i].fa; notaTel();   // la nota segue sempre il sito attivo (18/11 sera: al ritorno lo Studio mostrava ancora quella di Hora Vera)
   }
   sopraNome = null; accendi();
   document.body.classList.add('aperto');   // le scritte intorno sfumano subito
@@ -1423,7 +1479,8 @@ else mostraSito(attivo, true).then(() => {
   pronto();
   // la ghiera dello zoom gira un poco da sola, per far capire che si tocca
   if (!MUOVI) return;
-  setTimeout(async () => { if (toccato) return; await anima(1, 1.6, 900, v => { zoom = zoomMeta = v; disegnaZoom(); }); await new Promise(r => setTimeout(r, 500)); await anima(1.6, 1, 900, v => { zoom = zoomMeta = v; disegnaZoom(); }); if (!DUE_ANELLI || toccato || TEL) return;   /* 18/11: sul telefono l'obiettivo non cresce (lì il bordo gira i nomi): la prova da sola lo faceva crescere sopra i puntini e le scritte */ await new Promise(r => setTimeout(r, 400)); await anima(0, -24, 900, mettiGiro); await new Promise(r => setTimeout(r, 400)); await anima(-24, 0, 900, mettiGiro); }, 1200);
+  setTimeout(async () => { if (toccato) return; dimostra = TEL; const z = v => { if (!TEL || dimostra) { zoom = zoomMeta = v; disegnaZoom(); } };   // 22/11: sul telefono il primo tocco la ferma e rimette il sito a 1 (vedi «DUE DITA SULLA LENTE»)
+    await anima(1, 1.6, 900, z); await new Promise(r => setTimeout(r, 500)); await anima(1.6, 1, 900, z); dimostra = false; if (!DUE_ANELLI || toccato || TEL) return;   /* 18/11: sul telefono l'obiettivo non cresce (lì il bordo gira i nomi): la prova da sola lo faceva crescere sopra i puntini e le scritte */ await new Promise(r => setTimeout(r, 400)); await anima(0, -24, 900, mettiGiro); await new Promise(r => setTimeout(r, 400)); await anima(-24, 0, 900, mettiGiro); }, 1200);
 });
 /* L'INGLESE CON UN CLIC (17/11/2026, passo 5.2; Franco: «cliccandovi sopra immediatamente il sito viene tradotto»). Niente pagina doppia: un vocabolario
    (EN: la frase italiana → la frase inglese) e una passata sulle scritte delle zone della vetrina (testi, e gli attributi che si leggono: aria-label,
