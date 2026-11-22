@@ -324,7 +324,7 @@ body.tel .didascalia { padding: 9px 13px 10px; gap: 4px; bottom: max(10px, 1.6sv
 body.tel .didascalia b { font-size: .82rem; line-height: 1.35; }
 body.tel .aiuto { font-size: 13px; line-height: 1.4; }   /* 18/11 sera (giudice): sul telefono niente scritte sotto 12 px. L'aiuto da 11,5 a 13 */
 body.tel .invito { font-size: 17.5px; margin-top: 11px; }
-body.tel .quanto { font-size: 14.5px; margin-top: 10px; }   /* 21/11: la frase di Franco, in lettere da libro; non si tocca più (prima era il pulsante dei contatti) */
+body.tel .quanto { font-size: 13px; margin-top: 12px; padding-bottom: 4px; }   /* 22/11, Franco: «rimpicciolisci ancora un po' e stacca dalle righe precedenti in alto. Attento a non finire sulle ghiere dell'obiettivo» */   /* 21/11: la frase di Franco, in lettere da libro; non si tocca più (prima era il pulsante dei contatti) */
 /* DI TRAVERSO SUL TELEFONO (18/11/2026 sera). Con lo schermo basso l'obiettivo prende tutta l'altezza: sotto non c'è posto e l'invito, largo, gli finiva sopra.
    Scelta mia, la più semplice, da confermare: a sinistra il nome e la descrizione; a destra, dall'alto, la busta, l'invito (a capo, stretto), la linguetta;
    i puntini nell'angolo in basso a destra. Niente si muove in più. Le stesse misure piccole del telefono dritto per busta e nome. */
@@ -406,8 +406,8 @@ body.aperto .frecce { opacity: 0; }
 /* LA PORTA DELL'OFFERTA (22/11/2026, passo 2 della scaletta). Posto scelto da Franco tra tre (la B: «una riga sotto Questi siti sono racconti»), e il colore suo:
    «lo metterei amaranto che si veda bene e che sai, catturi la vista. Un colore acceso che non si confonde in mezzo agli altri». L'amaranto è quello della
    linguetta ENGLISH, un poco più chiaro perché si legga sul fondo scuro; sotto, il filo di amaranto metallico. Porta a offerta.html (italiano e inglese). */
-.quanto { display: block; width: max-content; max-width: 100%; margin: 9px 0 0 4px; padding: 2px 0 6px; position: relative; pointer-events: auto; text-decoration: none;
-  font: 400 1.08rem/1.2 Newsreader, Georgia, serif; letter-spacing: .006em; color: #f3b58a; text-shadow: 0 1px 2px rgb(5 8 12 / .95), 0 0 14px rgb(5 8 12 / .9), 0 0 26px rgb(5 8 12 / .7);
+.quanto { display: block; width: max-content; max-width: 100%; margin: 20px 0 0 4px; padding: 2px 0 6px; position: relative; pointer-events: auto; text-decoration: none;
+  font: 400 .95rem/1.2 Newsreader, Georgia, serif; letter-spacing: .01em; color: #f3b58a; text-shadow: 0 1px 2px rgb(5 8 12 / .95), 0 0 14px rgb(5 8 12 / .9), 0 0 26px rgb(5 8 12 / .7);
   animation: invito 1.8s .8s cubic-bezier(.2, .7, .2, 1) both; transition: color .3s; }
 .quanto::after { content: ""; position: absolute; left: 0; right: 1.7em; bottom: 0; height: 2px; border-radius: 2px; background: linear-gradient(90deg, #b8703f, #f08a4c 22%, #ffd0ab 46%, #f08a4c 70%, #b8703f); }
 /* 22/11, Franco: «un po' più piccolo così la lineetta di sottolineatura non va sull'obiettivo e più acceso però»; provato più acceso (#ff4f80), poi: «fa un po' a pugni
